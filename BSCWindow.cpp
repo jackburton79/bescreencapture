@@ -64,18 +64,24 @@ BSCWindow::BSCWindow()
 				
 	BGroupView* outputGroup = new BGroupView(B_HORIZONTAL);
 	outputGroup->SetName("Output");
+	outputGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
+		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 	fTabView->AddTab(outputGroup);
 	BLayoutBuilder::Group<>(outputGroup)
 		.Add(outputView);
 					
 	BGroupView* postGroup = new BGroupView(B_HORIZONTAL);
 	postGroup->SetName("Post Processing");
+	postGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
+		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 	fTabView->AddTab(postGroup);
 	BLayoutBuilder::Group<>(postGroup)
 		.Add(ppView);
 		
 	BGroupView* advancedGroup = new BGroupView(B_HORIZONTAL);
 	advancedGroup->SetName("Advanced Options");
+	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
+		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 	fTabView->AddTab(advancedGroup);
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(advancedView);
