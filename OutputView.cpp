@@ -52,7 +52,7 @@ OutputView::OutputView(Controller *controller)
 	BBox *outputBox = new BBox("output");
 	outputBox->SetLabel("Output");
 	AddChild(outputBox);	
-	
+
 	Settings settings;
 	
 	const char *kTCLabel = "File name:"; 
@@ -99,18 +99,21 @@ OutputView::OutputView(Controller *controller)
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL)
 			.AddGroup(B_HORIZONTAL)
-				.AddGroup(B_VERTICAL)
+				.AddGroup(B_VERTICAL, 0)
 					.Add(fWholeScreen)
 					.Add(fCustomArea)
 				.End()
-				.Add(fSelectArea)
+				.AddGroup(B_VERTICAL)
+					.Add(new BStringView("spacer", ""))
+					.Add(fSelectArea)
+				.End()
 			.End()
 			.Add(fRectView)
 		.End()
 		.View();
 	
 	selectBox->AddChild(layoutView);
-	
+
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 	
 	// fill in the list of available file formats
