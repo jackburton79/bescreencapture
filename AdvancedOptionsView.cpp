@@ -28,9 +28,11 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 {
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	
-	BBox *box = new BBox("Advanced");
-	box->SetLabel("Advanced options");
-	AddChild(box);
+	BBox *advancedBox = new BBox("Advanced");
+	advancedBox->SetLabel("Advanced options");
+	advancedBox->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
+		B_ALIGN_TOP));
+	AddChild(advancedBox);
 	
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
@@ -50,7 +52,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 		.End()
 		.View();
 	
-	box->AddChild(layoutView);
+	advancedBox->AddChild(layoutView);
 	
 	if (static_cast<BDirectWindow *>(Window())->SupportsWindowMode()) {
 		fUseDirectWindow->SetEnabled(true);

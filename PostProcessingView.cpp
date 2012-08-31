@@ -2,6 +2,7 @@
 #include "PostProcessingView.h"
 #include "Settings.h"
 
+#include <Alignment.h>
 #include <Box.h>
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
@@ -17,10 +18,12 @@ PostProcessingView::PostProcessingView(const char *name, uint32 flags)
 	BView(name, flags)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
-	
-	BBox *box = new BBox("container");
-	AddChild(box);
-	box->SetLabel("Clip size");
+
+	BBox *clipSizeBox = new BBox("container");
+	clipSizeBox->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
+		B_ALIGN_TOP));
+	AddChild(clipSizeBox);
+	clipSizeBox->SetLabel("Clip size");
 	
 	BRadioButton *normalSizeRB 
 		= new BRadioButton("100 Original", "100\% (Original size)",
@@ -37,7 +40,7 @@ PostProcessingView::PostProcessingView(const char *name, uint32 flags)
 		.End()
 		.View();
 	
-	box->AddChild(layoutView);
+	clipSizeBox->AddChild(layoutView);
 
 	normalSizeRB->SetValue(B_CONTROL_ON);
 }
