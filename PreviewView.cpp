@@ -2,10 +2,12 @@
 
 #include <cstdio>
 
+#include <Alignment.h>
 #include <Bitmap.h>
-#include <LayoutUtils.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
+#include <LayoutBuilder.h>
+#include <LayoutUtils.h>
 #include <Screen.h>
 #include <StringView.h>
 
@@ -31,16 +33,26 @@ PreviewView::PreviewView()
 {
 	fCoordRect = BRect(10, 10, 20, 20);
 	fChanged = true;
-	
+
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
+	SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
+		B_ALIGN_VERTICAL_CENTER));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
-		.Add(fTop = new BStringView("top", "top"))
+		.AddGroup(B_HORIZONTAL)
+			.Add(new BStringView("spacer", ""))
+			.Add(fTop = new BStringView("top", "top"))
+			.Add(new BStringView("spacer", ""))
+		.End()
 		.AddGroup(B_HORIZONTAL)
 			.Add(fLeft = new BStringView("left", "left"))
 			.Add(fBitmapView = new BitmapView())
 			.Add(fRight = new BStringView("right", "right"))
 		.End()
-		.Add(fBottom = new BStringView("bottom", "bottom"))
+		.AddGroup(B_HORIZONTAL)
+			.Add(new BStringView("spacer", ""))
+			.Add(fBottom = new BStringView("bottom", "bottom"))
+			.Add(new BStringView("spacer", ""))
+		.End()
 	);
 }
 
