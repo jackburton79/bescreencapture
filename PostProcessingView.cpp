@@ -27,8 +27,9 @@ PostProcessingView::PostProcessingView(const char *name, uint32 flags)
 			new BMessage(kClipSizeChanged));
 			
 	BView *layoutView = BLayoutBuilder::Group<>()
-		.AddGroup(B_VERTICAL, 15)
-		.SetInsets(10, 10, 10, 10)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(new BRadioButton("200", "200\%", new BMessage(kClipSizeChanged)))
 			.Add(normalSizeRB)
 			.Add(new BRadioButton("50", "50\%", new BMessage(kClipSizeChanged)))

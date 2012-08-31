@@ -33,8 +33,9 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	AddChild(box);
 	
 	BView *layoutView = BLayoutBuilder::Group<>()
-		.AddGroup(B_VERTICAL, 15)
-		.SetInsets(10, 10, 10, 10)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(fUseDirectWindow = new BCheckBox("Use DW",
 					"Use BDirectWindow (allows less CPU usage)",
 					new BMessage(kUseDirectWindow)))

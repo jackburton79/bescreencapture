@@ -50,8 +50,9 @@ BSCWindow::BSCWindow()
 	
 	const char *kString = "Encoding movie...";			
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
-		.AddGroup(B_VERTICAL, 1)
-		.SetInsets(10, 10, 10, 10)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(fTabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL))
 			.AddGroup(B_HORIZONTAL)
 				.Add(fCamStatus = new CamStatusView("CamStatusView"))
