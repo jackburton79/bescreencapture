@@ -97,6 +97,8 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerEncodeFinished);
 		fController->StartWatching(this, kMsgControllerAreaSelectionChanged);
 		
+		fController->StartWatching(outputView, kMsgControllerAreaSelectionChanged);
+		
 		fController->UnlockLooper();
 	}
 	

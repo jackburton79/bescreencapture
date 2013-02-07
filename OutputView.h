@@ -55,10 +55,12 @@ private:
 				const int32 &width, const int32 &height,
 				BMenu *, media_format &outFormat);
 
+	void _UpdatePreview();
 	static void SetInitialFormat(const int32 &width, const int32 &height,
 				const color_space &space, const int32 &fieldRate,
 				media_format &initialFormat);
 	static BMenuItem *CreateCodecMenuItem(const media_codec_info &codec);
+	
 	
 };
 

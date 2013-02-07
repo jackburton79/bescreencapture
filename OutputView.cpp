@@ -164,25 +164,8 @@ OutputView::MessageReceived(BMessage *message)
 			break;
 			
 		case kAreaSelectionChanged:
-		case kMsgControllerAreaSelectionChanged:
-		{
-			fSelectArea->SetEnabled(fCustomArea->Value() == B_CONTROL_ON);
-			BRect screenFrame = BScreen(Window()).Frame();
-			Settings settings;
-			BRect captureArea;
-			settings.GetCaptureArea(captureArea);
-			if (captureArea == screenFrame)
-				break;
-			if (fWholeScreen->Value() == B_CONTROL_ON)
-				settings.SetCaptureArea(screenFrame);
-			
-			UpdatePreview();
-			
-			// the size of the destination
-			// clip maybe isn't supported by the codec	
-			UpdateSettings();
-			break;
-		}	
+			_UpdatePreview();
+			break;	
 		
 		case kMsgControllerVideoDepthChanged:
 			UpdateSettings();
@@ -212,6 +195,20 @@ OutputView::MessageReceived(BMessage *message)
 			break;				
 		}
 		
+		case B_OBSERVER_NOTICE_CHANGE:
+		{
+			int32 code;
+			message->FindInt32("be:observe_change_what", &code);
+			switch (code) {
+				case kMsgControllerAreaSelectionChanged:
+					_UpdatePreview();
+					break;
+				default:
+					break;
+			}
+			break;
+		}
+					
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -354,6 +351,27 @@ OutputView::FormatFamily() const
 	return (media_format_family)fOutputFileType->Value();
 }
 
+
+void
+OutputView::_UpdatePreview()
+{
+	fSelectArea->SetEnabled(fCustomArea->Value() == B_CONTROL_ON);
+	BRect screenFrame = BScreen(Window()).Frame();
+	Settings settings;
+	BRect captureArea;
+	settings.GetCaptureArea(captureArea);
+	if (captureArea == screenFrame)
+		return;
+	if (fWholeScreen->Value() == B_CONTROL_ON)
+		settings.SetCaptureArea(screenFrame);
+	
+	UpdatePreview();
+	
+	// the size of the destination
+	// clip maybe isn't supported by the codec	
+	UpdateSettings();
+}
+	
 
 /* static */
 void
