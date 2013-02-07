@@ -1,0 +1,537 @@
+Index: CamStatusView.cpp
+===================================================================
+--- CamStatusView.cpp	(revisione 16)
++++ CamStatusView.cpp	(copia locale)
+@@ -1,4 +1,5 @@
+ #include "CamStatusView.h"
++#include "Controller.h"
+ #include "ControllerObserver.h"
+ 
+ #include <LayoutUtils.h>
+@@ -18,6 +19,10 @@
+ CamStatusView::AttachedToWindow()
+ {
+ 	SetViewColor(Parent()->ViewColor());
++	gControllerLooper->StartWatching(this, kMsgControllerCaptureStarted);
++	gControllerLooper->StartWatching(this, kMsgControllerCaptureFinished);
++	gControllerLooper->StartWatching(this, kMsgControllerCapturePaused);
++	gControllerLooper->StartWatching(this, kMsgControllerCaptureResumed);
+ }
+ 
+ 
+@@ -53,19 +58,31 @@
+ CamStatusView::MessageReceived(BMessage *message)
+ {
+ 	switch (message->what) {
+-		case kMsgControllerCaptureStarted:
+-			SetRecording(true);
++		case B_OBSERVER_NOTICE_CHANGE:
++		{
++			int32 what;
++			message->FindInt32("be:observe_change_what", &what);
++			switch (what) {
++				case kMsgControllerCaptureStarted:
++					SetRecording(true);
++					break;
++				case kMsgControllerCaptureFinished:
++					SetRecording(false);
++					break;
++				case kMsgControllerCapturePaused:
++				case kMsgControllerCaptureResumed:
++					TogglePause();
++					break;
++				default:
++					break;
++			}
+ 			break;
+-		case kMsgControllerCaptureFinished:
+-			SetRecording(false);
+-			break;
+-		case kMsgControllerCapturePaused:
+-		case kMsgControllerCaptureResumed:
+-			TogglePause();
+-			break;
++		}
++		
+ 		default:
+ 			BView::MessageReceived(message);
+ 			break;
++		
+ 	}
+ 	
+ }
+Index: BSCWindow.h
+===================================================================
+--- BSCWindow.h	(revisione 16)
++++ BSCWindow.h	(copia locale)
+@@ -27,6 +27,8 @@
+ 	virtual void DirectConnected(direct_buffer_info *info);
+ 	
+ 	status_t ReadBitmap(BBitmap *bitmap, BRect bounds);
++
++	BLooper* GetController();
+ 	
+ private:
+ 	status_t _CaptureStarted();
+Index: BSCApp.cpp
+===================================================================
+--- BSCApp.cpp	(revisione 13)
++++ BSCApp.cpp	(copia locale)
+@@ -1,12 +1,15 @@
+ #include "BSCApp.h"
+ #include "BSCWindow.h"
++#include "Controller.h"
+ #include "DeskbarControlView.h"
+ #include "messages.h"
+ #include "Settings.h"
+ 
+ #include <Deskbar.h>
+ 
++#include <stdio.h>
+ 
++
+ int
+ main()
+ {
+@@ -21,6 +24,7 @@
+ 	:
+ 	BApplication(kAppSignature)
+ {
++	gControllerLooper = new Controller();
+ 	Settings::Load();
+ }
+ 
+@@ -29,6 +33,9 @@
+ {
+ 	BDeskbar().RemoveItem("BSC Control");
+ 	Settings::Save();
++	
++	gControllerLooper->Lock();
++	gControllerLooper->Quit();
+ }
+ 
+ 
+@@ -43,12 +50,15 @@
+ 	}
+ 	
+ 	fWindow->Show();
+-	BDeskbar deskbar; 
+-	while (deskbar.HasItem("BSC Control"))
+-		deskbar.RemoveItem("BSC Control");
++	
++	BDeskbar deskbar;
++	if (deskbar.IsRunning()) { 
++		while (deskbar.HasItem("BSC Control"))
++			deskbar.RemoveItem("BSC Control");
+ 		
+-	deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
+-		"BSC Control"));
++		deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
++			"BSC Control"));
++	}
+ }
+ 
+ 
+@@ -63,7 +73,6 @@
+ BSCApp::MessageReceived(BMessage *message)
+ {
+ 	switch (message->what) {
+-		case kAddonStarted:
+ 		case kMsgGUIToggleCapture:
+ 		case kPauseResumeCapture:
+ 			fWindow->PostMessage(message);
+Index: DeskbarControlView.h
+===================================================================
+--- DeskbarControlView.h	(revisione 10)
++++ DeskbarControlView.h	(copia locale)
+@@ -16,6 +16,7 @@
+ 	virtual status_t Archive(BMessage *data, bool deep) const;
+ 	
+ 	virtual void AttachedToWindow();
++	virtual void DetachedFromWindow();
+ 	
+ 	virtual void Draw(BRect rect);
+ 	virtual void MessageReceived(BMessage *message);
+@@ -25,7 +26,8 @@
+ private:
+ 	void InitData();
+ 	
+-	BMessenger fMessenger;
++	BMessenger fControllerMessenger;
++	BMessenger fAppMessenger;
+ 	BBitmap *fBitmap;
+ 	BBitmap *fRecordingBitmap;
+ 	
+Index: Controller.cpp
+===================================================================
+--- Controller.cpp	(revisione 15)
++++ Controller.cpp	(copia locale)
+@@ -25,6 +25,8 @@
+ static BTranslatorRoster* sTranslatorRoster = NULL;
+ 
+ 
++BLooper *gControllerLooper = NULL;
++
+ Controller::Controller()
+ 	:
+ 	BLooper("Controller"),
+@@ -38,7 +40,7 @@
+ 	fEncoder = new MovieEncoder;
+ 	if (sTranslatorRoster == NULL)
+ 		sTranslatorRoster = BTranslatorRoster::Default();
+-	
++		
+ 	Run();
+ }
+ 
+@@ -61,7 +63,6 @@
+ 		{
+ 			status_t error;
+ 			message->FindInt32("status", (int32*)&error);
+-			//printf("Encoding finished: %s\n", strerror(error));
+ 			_EncodingFinished(error);
+ 			break;
+ 		}
+@@ -136,7 +137,6 @@
+ 
+ void
+ Controller::EncodeMovie()
+-
+ {
+ 	BAutolock _(this);
+ 	BList* fileList = new BList;
+@@ -295,18 +295,9 @@
+ 					
+ 	if (fCaptureThread < 0)
+ 		return; 
+-	
+-	fKillThread = false;
+-	fPaused = false;
+-	
+-	status_t status = resume_thread(fCaptureThread);
+-	if (status < B_OK) {
+-		kill_thread(fCaptureThread);
+-		return;
+-	}
+-	
++		
+ 	BPath path;
+-	status = find_directory(B_COMMON_TEMP_DIRECTORY, &path);
++	status_t status = find_directory(B_COMMON_TEMP_DIRECTORY, &path);
+ 	if (status != B_OK)
+ 		return;
+ 			
+@@ -317,6 +308,17 @@
+ 		return;
+ 	}
+ 		
++	fKillThread = false;
++	fPaused = false;
++	
++	status = resume_thread(fCaptureThread);
++	if (status < B_OK) {
++		kill_thread(fCaptureThread);
++		return;
++	}
++
++	SendNotices(kMsgControllerCaptureStarted);
++	
+ 	for (int32 i = 0; i < fListeners.CountItems(); i++) {
+ 		Listener *listener = static_cast<Listener*>(fListeners.ItemAtFast(i));
+ 		listener->CaptureStarted();
+@@ -327,6 +329,8 @@
+ void
+ Controller::EndCapture()
+ {
++	BAutolock _(this);
++	printf("Controller::EndCapture()\n");
+ 	if (fCaptureThread > 0) {
+ 		fPaused = false;
+ 		fKillThread = true;
+@@ -334,17 +338,24 @@
+ 		wait_for_thread(fCaptureThread, &unused);
+ 	}
+ 	
++	SendNotices(kMsgControllerCaptureFinished);
++	
+ 	fCaptureThread = -1;
+ 	for (int32 i = 0; i < fListeners.CountItems(); i++) {
+ 		Listener *listener = static_cast<Listener*>(fListeners.ItemAtFast(i));
+ 		listener->CaptureFinished();
+ 	}
++	
++	printf("Encoding movie...\n");
++	EncodeMovie();
++	printf("done!\n");
+ }
+ 
+ 
+ void
+ Controller::_PauseCapture()
+ {
++	BAutolock _(this);
+ 	fPaused = true;
+ 	suspend_thread(fCaptureThread);
+ 	
+@@ -358,6 +369,7 @@
+ void
+ Controller::_ResumeCapture()
+ {
++	BAutolock _(this);
+ 	resume_thread(fCaptureThread);
+ 	fPaused = false;
+ 	
+Index: BSCWindow.cpp
+===================================================================
+--- BSCWindow.cpp	(revisione 16)
++++ BSCWindow.cpp	(copia locale)
+@@ -35,7 +35,7 @@
+ 	:
+ 	BDirectWindow(kWindowRect, "BeScreenCapture", B_TITLED_WINDOW,
+ 		B_ASYNCHRONOUS_CONTROLS|B_AUTO_UPDATE_SIZE_LIMITS),
+-	fController(new Controller()),
++	fController(dynamic_cast<Controller*>(gControllerLooper)),
+ 	fObserver(new ControllerObserver(this))
+ {
+ 	OutputView *outputView
+@@ -87,7 +87,6 @@
+ 		
+ 	fController->AddListener(fObserver, CONTROLLER_LISTEN_ALL);
+ 	fController->AddListener(new ControllerObserver(outputView));
+-	fController->AddListener(new ControllerObserver(fCamStatus));
+ 	
+ 	CenterOnScreen();
+ }
+@@ -97,10 +96,6 @@
+ {
+ 	fController->RemoveListener(fObserver);
+ 	
+-	fController->Lock();
+-	fController->Quit();
+-	
+-	//delete fController;
+ 	delete fObserver;
+ }
+ 
+@@ -187,14 +182,7 @@
+ 			fStatusBar->MessageReceived(message);
+ 			break;
+ 		
+-		case kAddonStarted:
+-			if (message->FindMessenger("messenger",
+-				&fAddonMessenger) == B_OK) {
+-					fController->AddListener(
+-						new ControllerObserver(fAddonMessenger));
+-				}
+-			break;
+-			
++		
+ 		// TODO: Move away from here!
+ 		case kMsgGUIToggleCapture:
+ 			fController->MessageReceived(message);
+@@ -230,7 +218,13 @@
+ }
+ 
+ 
++BLooper*
++BSCWindow::GetController()
++{
++	return fController;
++}
+ 
++
+ status_t
+ BSCWindow::_CaptureStarted()
+ {
+@@ -255,8 +249,6 @@
+ 				
+ 	fStartStopButton->SetEnabled(false);
+ 	fStartStopButton->SetLabel("Start Recording");
+-	
+-	fController->EncodeMovie();
+-	
++		
+ 	return B_OK;
+ }
+Index: DeskbarControlView.cpp
+===================================================================
+--- DeskbarControlView.cpp	(revisione 10)
++++ DeskbarControlView.cpp	(copia locale)
+@@ -1,4 +1,5 @@
+ #include "BSCApp.h"
++#include "Controller.h"
+ #include "ControllerObserver.h"
+ #include "DeskbarControlView.h"
+ #include "messages.h"
+@@ -33,11 +34,16 @@
+ };
+ 
+ 
++const static char* kControllerMessengerName = "controller_messenger";
++
+ DeskbarControlView::DeskbarControlView(BRect rect, const char *name)
+ 	:
+ 	BView(rect, name, B_FOLLOW_LEFT|B_FOLLOW_TOP, B_WILL_DRAW)
+ {
+ 	InitData();
++	
++	fAppMessenger = BMessenger(kAppSignature);
++	fControllerMessenger = BMessenger(gControllerLooper);
+ }
+ 
+ 
+@@ -46,6 +52,9 @@
+ 	BView(data)
+ {
+ 	InitData();
++	fAppMessenger = BMessenger(kAppSignature);
++	
++	data->FindMessenger(kControllerMessengerName, &fControllerMessenger);
+ }
+ 
+ 
+@@ -56,7 +65,7 @@
+ }
+ 
+ 
+-DeskbarControlView *
++DeskbarControlView*
+ DeskbarControlView::Instantiate(BMessage *archive)
+ {
+ 	if (!validate_instantiation(archive, "DeskbarControlView"))
+@@ -70,10 +79,15 @@
+ DeskbarControlView::Archive(BMessage *message, bool deep) const
+ {
+ 	status_t status = BView::Archive(message, deep);
+-	if (status < B_OK)
++	if (status != B_OK)
+ 		return status;
+ 	
+ 	status = message->AddString("add_on", kAppSignature);
++	if (status != B_OK)
++		return status;
++	
++	status = message->AddMessenger(kControllerMessengerName,
++		fControllerMessenger);
+ 	return status;
+ }
+ 
+@@ -82,17 +96,35 @@
+ DeskbarControlView::AttachedToWindow()
+ {
+ 	SetViewColor(Parent()->ViewColor());
+-	BMessenger thisMessenger(this);
+ 	
+-	if (fMessenger.IsValid()) {
+-		BMessage *message = new BMessage(kAddonStarted);
+-		message->AddMessenger("messenger", thisMessenger);
+-		fMessenger.SendMessage(message);
++	BLooper *controllerLooper = NULL;
++	BHandler *handler = fControllerMessenger.Target(&controllerLooper);
++	if (controllerLooper == NULL) {
++		printf("controlleLooper is null\n");
++		return;
++	}	
++	if (controllerLooper->LockLooper()) {
++		controllerLooper->StartWatching(this, kMsgControllerCaptureStarted);
++		controllerLooper->StartWatching(this, kMsgControllerCaptureFinished);	
++		controllerLooper->UnlockLooper();
+ 	}
+ }
+ 
+ 
+ void
++DeskbarControlView::DetachedFromWindow()
++{
++	BLooper *controllerLooper = NULL;
++	fControllerMessenger.Target(&controllerLooper);
++	if (controllerLooper->LockLooper()) {
++		controllerLooper->StopWatching(this, kMsgControllerCaptureStarted);
++		controllerLooper->StopWatching(this, kMsgControllerCaptureFinished);	
++		controllerLooper->UnlockLooper();
++	}
++}
++
++
++void
+ DeskbarControlView::Draw(BRect rect)
+ {
+ 	SetDrawingMode(B_OP_OVER);
+@@ -112,20 +144,30 @@
+ 	switch (message->what) {
+ 		case kMsgGUIToggleCapture:
+ 		case kPauseResumeCapture:
+-			if (fMessenger.IsValid())
+-				fMessenger.SendMessage(message->what);
++			if (fAppMessenger.IsValid())
++				fAppMessenger.SendMessage(message->what);
+ 			break;
+ 		
+-		case kMsgControllerCaptureStarted:
+-			fRecording = true;
+-			Invalidate();
+-			break;
+-		
+-		case kMsgControllerCaptureFinished:
+-			fRecording = false;
+-			Invalidate();
+-			break;
++		case B_OBSERVER_NOTICE_CHANGE:
++		{
++			printf("Notice change\n");
++			int32 code;
++			message->FindInt32("be:observe_change_what", &code);
++			switch (code) {			
++				case kMsgControllerCaptureStarted:
++					fRecording = true;
++					Invalidate();
++					break;
++				
++				case kMsgControllerCaptureFinished:
++					fRecording = false;
++					Invalidate();
++					break;
+ 					
++				default:
++					break;
++			}
++		}					
+ 		default:
+ 			BView::MessageReceived(message);
+ 			break;
+@@ -164,8 +206,6 @@
+ 	
+ 	fBitmap = new BBitmap(BRect(0, 0, 15, 15), B_COLOR_8_BIT);
+ 	BNodeInfo::GetTrackerIcon(&info.ref, fBitmap, B_MINI_ICON);
+-	
+-	fMessenger = BMessenger(kAppSignature);
+ }
+ 
+ 
+Index: messages.h
+===================================================================
+--- messages.h	(revisione 10)
++++ messages.h	(copia locale)
+@@ -13,7 +13,8 @@
+ 	kFileNameChanged,
+ 	kMinimizeOnRecording,
+ 	kClipSizeChanged,
+-	kPauseResumeCapture
++	kPauseResumeCapture,
++	kMsgGetControllerMessenger
+ };
+ 
+ #endif 
+Index: Controller.h
+===================================================================
+--- Controller.h	(revisione 15)
++++ Controller.h	(copia locale)
+@@ -20,6 +20,8 @@
+ 	CONTROLLER_LISTEN_ALL = 0x3
+ };
+ 
++extern BLooper *gControllerLooper;
++
+ class BBitmap;
+ class MovieEncoder;
+ class Controller : public BLooper {
