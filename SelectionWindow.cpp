@@ -89,6 +89,7 @@ SelectionView::Draw(BRect updateRect)
 	if (fMouseDown) {
 		BRect selection;
 		MakeSelectionRect(&selection);
+		
 		StrokeRect(selection, B_MIXED_COLORS);
 	}
 }
@@ -115,7 +116,7 @@ SelectionView::MakeSelectionRect(BRect *rect)
 
 SelectionWindow::SelectionWindow()
 	:
-	BWindow(BScreen().Frame(), "Area Window", B_BORDERED_WINDOW,
+	BWindow(BScreen().Frame(), "Area Window", window_type(1026),
 		B_ASYNCHRONOUS_CONTROLS|B_NOT_RESIZABLE|B_NOT_CLOSABLE|B_NOT_ZOOMABLE)
 {
 	fView = new SelectionView(Bounds(), "Selection view");
