@@ -118,7 +118,6 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(fCamStatus, kMsgControllerCapturePaused);
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureResumed);
 		
-		
 		fController->StartWatching(outputView, kMsgControllerAreaSelectionChanged);
 			
 		fController->UnlockLooper();
