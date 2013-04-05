@@ -27,7 +27,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-const static BRect kWindowRect(0, 0, 600, 500);
+const static BRect kWindowRect(0, 0, 400, 500);
 
 enum {
 	kMsgGUIToggleCapture = 0x10000
