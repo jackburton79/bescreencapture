@@ -164,13 +164,6 @@ void
 OutputView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		/*case kMsgControllerCaptureFinished:
-		case kMsgControllerCaptureStarted:
-		case kMsgControllerEncodeStarted:
-		case kMsgControllerEncodeFinished:
-		
-			break;
-		*/	
 		case kAreaSelectionChanged:
 			_UpdatePreview(NULL);
 			break;	
