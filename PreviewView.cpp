@@ -118,7 +118,7 @@ PreviewView::MinSize()
 // BitmapView
 BitmapView::BitmapView()
 	:
-	BView("bitmap view", B_WILL_DRAW)
+	BView("bitmap view", B_WILL_DRAW|B_FULL_UPDATE_ON_RESIZE)
 {
 }
 
