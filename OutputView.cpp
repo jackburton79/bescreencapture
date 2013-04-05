@@ -161,13 +161,13 @@ void
 OutputView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case kMsgControllerCaptureFinished:
+		/*case kMsgControllerCaptureFinished:
 		case kMsgControllerCaptureStarted:
 		case kMsgControllerEncodeStarted:
 		case kMsgControllerEncodeFinished:
 		
 			break;
-			
+		*/	
 		case kAreaSelectionChanged:
 			_UpdatePreview(NULL);
 			break;	
@@ -205,7 +205,7 @@ OutputView::MessageReceived(BMessage *message)
 			int32 code;
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {
-				case kAreaSelected:
+				case kSelectionWindowClosed:
 				case kMsgControllerAreaSelectionChanged:
 					_UpdatePreview(message);
 					message->PrintToStream();
@@ -381,7 +381,6 @@ OutputView::_UpdatePreview(BMessage* message)
 		
 		BBitmap* bitmap = NULL;
 		if (message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {
-			printf("bitmap color space: %d\n", bitmap->ColorSpace());
 			fRectView->UpdateBitmap(bitmap);
 			delete bitmap;
 		}
