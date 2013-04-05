@@ -5,7 +5,6 @@
 #include "ControllerObserver.h"
 #include "messages.h"
 #include "OutputView.h"
-#include "PostProcessingView.h"
 #include "SelectionWindow.h"
 #include "Settings.h"
 #include "Utils.h"
@@ -44,8 +43,6 @@ BSCWindow::BSCWindow()
 {
 	OutputView *outputView
 		= new OutputView(fController);
-	PostProcessingView *ppView 
-		= new PostProcessingView("Post Processing");
 	AdvancedOptionsView *advancedView 
 		= new AdvancedOptionsView(fController);
 	
@@ -76,15 +73,7 @@ BSCWindow::BSCWindow()
 	fTabView->AddTab(outputGroup);
 	BLayoutBuilder::Group<>(outputGroup)
 		.Add(outputView);
-					
-	BGroupView* postGroup = new BGroupView(B_HORIZONTAL);
-	postGroup->SetName("Post Processing");
-	postGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
-		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
-	fTabView->AddTab(postGroup);
-	BLayoutBuilder::Group<>(postGroup)
-		.Add(ppView);
-		
+							
 	BGroupView* advancedGroup = new BGroupView(B_HORIZONTAL);
 	advancedGroup->SetName("Advanced Options");
 	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,

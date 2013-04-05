@@ -13,7 +13,6 @@ Application BeScreenCapture :
 	Executor.cpp
 	MovieEncoder.cpp
 	OutputView.cpp
-	PostProcessingView.cpp
 	PreviewView.cpp
 	PriorityControl.cpp
 	SelectionWindow.cpp
