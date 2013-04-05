@@ -1,7 +1,7 @@
 # BeScreenCapture
 by Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 
-![Screenshot](https://raw.github.com/jscipione/BeScreenCapture/master/BeScreenCapture.png)
+![Screenshot](https://raw.github.com/jackburton79/doctor-who/master/BeScreenCapture.png)
 
 
 BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format you want, as long as it's supported by Haiku.
