@@ -18,7 +18,8 @@
 enum {
 	BSC_STOP,
 	BSC_START,
-	BSC_PAUSE_RESUME
+	BSC_PAUSE,
+	BSC_RESUME
 };
 
 class BSCMenuItem : public BMenuItem {
@@ -130,7 +131,7 @@ DeskbarControlView::Draw(BRect rect)
 	
 	if (fPaused) {
 		SetDrawingMode(B_OP_COPY);
-		SetHighColor(124, 124, 0);
+		SetHighColor(0, 240, 0);
 		FillRect(BRect(2, 12, 5, 15));
 	} else if (fRecording) {
 		SetDrawingMode(B_OP_COPY);
@@ -192,7 +193,10 @@ DeskbarControlView::MouseDown(BPoint where)
 	BPopUpMenu *menu = new BPopUpMenu("menu");
 	if (fRecording) {
 		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIStopCapture)));
-		menu->AddItem(new BSCMenuItem(BSC_PAUSE_RESUME, new BMessage(kPauseResumeCapture)));	
+		if (fPaused)
+			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kPauseResumeCapture)));
+		else
+			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kPauseResumeCapture)));
 	} else
 		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIStartCapture)));
 	
@@ -233,23 +237,89 @@ void
 BSCMenuItem::DrawContent()
 {
 	Menu()->SetFontSize(10);
-	if (fAction == BSC_START) {
-		BPoint drawPoint(ContentLocation());
-		drawPoint.x += 20;
-		Menu()->MovePenTo(drawPoint);
-		BMenuItem::DrawContent();
-	
-		BRect imageRect;
-		imageRect.SetLeftTop(ContentLocation());
-	
-		imageRect.top += 2;
-		imageRect.right = imageRect.left + 10;
-		imageRect.bottom = Frame().bottom - 2;
-	
-		Menu()->SetHighColor(248, 0, 0);
-		Menu()->FillEllipse(imageRect);
-	} else
-		BMenuItem::DrawContent();
+	switch (fAction) {
+		case BSC_START:
+		{
+			BPoint drawPoint(ContentLocation());
+			drawPoint.x += 20;
+			drawPoint.y += 2;
+			Menu()->MovePenTo(drawPoint);
+			BMenuItem::DrawContent();
+		
+			BRect imageRect;
+			imageRect.SetLeftTop(ContentLocation());
+		
+			imageRect.top += 2;
+			imageRect.right = imageRect.left + 10;
+			imageRect.bottom = Frame().bottom - 2;
+		
+			Menu()->SetHighColor(248, 0, 0);
+			Menu()->FillEllipse(imageRect);
+
+			break;
+		}
+		case BSC_STOP:
+		{
+			BPoint drawPoint(ContentLocation());
+			drawPoint.x += 20;
+			drawPoint.y += 2;
+			Menu()->MovePenTo(drawPoint);
+			BMenuItem::DrawContent();
+		
+			BRect imageRect;
+			imageRect.SetLeftTop(ContentLocation());
+			imageRect.top += 2;
+			imageRect.right = imageRect.left + 10;
+			imageRect.bottom = Frame().bottom - 2;
+		
+			Menu()->SetHighColor(248, 0, 0);
+			Menu()->FillRect(imageRect);
+			break;
+		}
+		case BSC_PAUSE:
+		{
+			BPoint drawPoint(ContentLocation());
+			drawPoint.x += 20;
+			drawPoint.y += 2;
+			Menu()->MovePenTo(drawPoint);
+			BMenuItem::DrawContent();
+		
+			BRect imageRect;
+			imageRect.SetLeftTop(ContentLocation());
+			imageRect.top += 2;
+			imageRect.right = imageRect.left + 4;
+			imageRect.bottom = Frame().bottom - 2;
+		
+			Menu()->SetHighColor(0, 250, 0);
+			Menu()->FillRect(imageRect);
+			imageRect.OffsetBy(6, 0);
+			Menu()->FillRect(imageRect);
+			
+			break;
+		}
+		case BSC_RESUME:
+		{
+			BPoint drawPoint(ContentLocation());
+			drawPoint.x += 20;
+			drawPoint.y += 2;
+			Menu()->MovePenTo(drawPoint);
+			BMenuItem::DrawContent();
+		
+			BPoint ptOne = ContentLocation();
+			BPoint ptTwo = ptOne;
+			ptTwo.y = Frame().bottom - 2;
+			BPoint ptThree = ptOne;
+			ptThree.x += 10;
+			ptThree.y += (ptTwo.y - ptOne.y) / 2;			
+
+			Menu()->SetHighColor(0, 250, 0);
+			Menu()->FillTriangle(ptOne, ptTwo, ptThree);
+			break;
+		}	
+		default:
+			BMenuItem::DrawContent();
+			break;
+	}
 }
 
 
@@ -261,9 +331,11 @@ BSCMenuItem::ActionToString(uint32 action)
 			return "Start recording";
 		case BSC_STOP:
 			return "Stop recording";
-		case BSC_PAUSE_RESUME:
-			return "Pause/Resume";
+		case BSC_PAUSE:
+			return "Pause Recording";
+		case BSC_RESUME:
+			return "Resume Recording";
 		default:
-			return "No Action";
+			return "";
 	}
 }
