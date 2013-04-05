@@ -93,13 +93,16 @@ PreviewView::SetRect(BRect rect)
 void
 PreviewView::UpdateBitmap(BBitmap* bitmap)
 {
-	if (fChanged && Window() != NULL) {
+	if (/*fChanged && */Window() != NULL) {
 		if (bitmap == NULL) {
+			printf("should get the whole bitmap\n");
 			BScreen screen(Window());
-			screen.GetBitmap(&bitmap, false, &fCoordRect);		
+			screen.GetBitmap(&bitmap, false, &fCoordRect);	
+			fCoordRect.PrintToStream();	
 		}
 		if (bitmap != NULL) {
-			fBitmapView->SetViewBitmap(bitmap, bitmap->Bounds().OffsetToCopy(B_ORIGIN),
+			fBitmapView->SetViewBitmap(bitmap,
+				bitmap->Bounds().OffsetToCopy(B_ORIGIN),
 				fBitmapView->Bounds(),
 				B_FOLLOW_TOP|B_FOLLOW_LEFT, 0);
 			Invalidate();

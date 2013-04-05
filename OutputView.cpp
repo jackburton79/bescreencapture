@@ -362,7 +362,6 @@ OutputView::FormatFamily() const
 void
 OutputView::_UpdatePreview(BMessage* message)
 {
-	
 	fSelectArea->SetEnabled(fCustomArea->Value() == B_CONTROL_ON);
 	BRect screenFrame = BScreen(Window()).Frame();
 	Settings settings;
@@ -384,7 +383,14 @@ OutputView::_UpdatePreview(BMessage* message)
 			fRectView->UpdateBitmap(bitmap);
 			delete bitmap;
 		}
-	}	
+	} else {
+		printf("NULL bitmap, full screen\n");
+		BRect captureArea;
+		settings.GetCaptureArea(captureArea);
+		fRectView->SetRect(captureArea);
+		fRectView->UpdateBitmap(NULL);
+	}
+			
 	// the size of the destination
 	// clip maybe isn't supported by the codec	
 	UpdateSettings();
