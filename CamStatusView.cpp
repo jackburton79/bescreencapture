@@ -32,11 +32,7 @@ void
 CamStatusView::Draw(BRect updateRect)
 {
 	BRect bounds = Bounds();
-	/*
-	SetHighColor(0, 0, 0);
-	StrokeRect(bounds);
-	bounds.InsetBy(.5, .5);
-	*/
+	
 	if (fRecording) {
 		if (fPaused) {
 			SetHighColor(0, 240, 0);
@@ -50,8 +46,8 @@ CamStatusView::Draw(BRect updateRect)
 			FillEllipse(bounds);
 		}
 	} else {
-		SetHighColor(ViewColor());
-		FillRect(bounds & updateRect);
+		//SetHighColor(ViewColor());
+		//FillRect(bounds & updateRect);
 	}
 }
 
