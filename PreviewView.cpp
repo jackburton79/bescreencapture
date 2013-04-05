@@ -94,8 +94,7 @@ PreviewView::UpdateBitmap(BBitmap* bitmap)
 	if (/*fChanged && */Window() != NULL) {
 		if (bitmap == NULL) {
 			BScreen screen(Window());
-			screen.GetBitmap(&bitmap, false, &fCoordRect);	
-			fCoordRect.PrintToStream();	
+			screen.GetBitmap(&bitmap, false, &fCoordRect);		
 		}
 		if (bitmap != NULL) {
 			fBitmapView->SetViewBitmap(bitmap,
