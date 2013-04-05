@@ -85,8 +85,6 @@ PreviewView::SetRect(BRect rect)
 	fBottom->SetText(str);
 	
 	fChanged = true;
-	
-	//UpdateBitmap();
 }
 
 
@@ -95,7 +93,6 @@ PreviewView::UpdateBitmap(BBitmap* bitmap)
 {
 	if (/*fChanged && */Window() != NULL) {
 		if (bitmap == NULL) {
-			printf("should get the whole bitmap\n");
 			BScreen screen(Window());
 			screen.GetBitmap(&bitmap, false, &fCoordRect);	
 			fCoordRect.PrintToStream();	

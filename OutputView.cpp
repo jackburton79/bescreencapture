@@ -384,7 +384,6 @@ OutputView::_UpdatePreview(BMessage* message)
 			delete bitmap;
 		}
 	} else {
-		printf("NULL bitmap, full screen\n");
 		BRect captureArea;
 		settings.GetCaptureArea(captureArea);
 		fRectView->SetRect(captureArea);
