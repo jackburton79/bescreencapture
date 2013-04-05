@@ -9,6 +9,7 @@ public:
 	PreviewView();
 	virtual void AttachedToWindow();
 	void SetRect(BRect rect);
+	void UpdateBitmap(BBitmap* bitmap = NULL);
 
 private:
 	BView *fBitmapView;
@@ -20,7 +21,6 @@ private:
 	BStringView *fRight;
 	BStringView *fBottom;
 
-	void UpdateBitmap();
 	
 	virtual BSize MinSize();
 };

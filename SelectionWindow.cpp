@@ -1,4 +1,5 @@
 #include "SelectionWindow.h"
+#include "Utils.h"
 
 #include <Bitmap.h>
 #include <Message.h>
@@ -127,8 +128,6 @@ SelectionWindow::SelectionWindow()
 void
 SelectionWindow::Show()
 {
-	snooze(500000);
-	
 	BBitmap *bitmap = NULL;	
 	BScreen(this).GetBitmap(&bitmap, false);
 	fView->SetViewBitmap(bitmap);
@@ -139,7 +138,7 @@ SelectionWindow::Show()
 
 
 void
-SelectionWindow::SetTarget(BLooper *target)
+SelectionWindow::SetTarget(BMessenger& target)
 {
 	fTarget = target;
 }
@@ -157,10 +156,15 @@ SelectionWindow::QuitRequested()
 {
 	Hide();
 	BMessage message(fCommand);
-	message.AddRect("selection", fView->SelectionRect());
-	fTarget->PostMessage(&message);
+	BBitmap *bitmap = NULL;	
+	BScreen(this).GetBitmap(&bitmap, false);
+	BRect selection = fView->SelectionRect();
+	FixRect(selection);
+	message.AddRect("selection", selection);
+	message.AddPointer("bitmap", bitmap);
 	
-	snooze(300000);
+	fTarget.SendMessage(&message);
 	
+		
 	return BWindow::QuitRequested();
 }

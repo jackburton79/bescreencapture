@@ -73,7 +73,8 @@ void
 BSCApp::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case kMsgGUIToggleCapture:
+		case kMsgGUIStartCapture:
+		case kMsgGUIStopCapture:
 		case kPauseResumeCapture:
 			fWindow->PostMessage(message);
 			break;

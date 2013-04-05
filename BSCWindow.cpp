@@ -30,6 +30,10 @@
 
 const static BRect kWindowRect(0, 0, 600, 500);
 
+enum {
+	kMsgGUIToggleCapture = 0x10000
+};
+
 
 BSCWindow::BSCWindow()
 	:
@@ -46,7 +50,9 @@ BSCWindow::BSCWindow()
 		= new AdvancedOptionsView(fController);
 	
 	fStartStopButton = new BButton("Start", "Start Recording",
-		new BMessage(kMsgGUIToggleCapture)); 
+		new BMessage(kMsgGUIStartCapture)); 
+	
+	fStartStopButton->SetTarget(fController);
 	
 	const char *kString = "Encoding movie...";			
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
@@ -92,7 +98,8 @@ BSCWindow::BSCWindow()
 		
 	if (fController->LockLooper()) {	
 		// controller should watch for capture messages
-		StartWatching(fController, kMsgGUIToggleCapture);
+		//StartWatching(fController, kMsgGUIStartCapture);
+		//StartWatching(fController, kMsgGUIStopCapture);
 		StartWatching(fController, kAreaSelected);
 		//StartWatching(fCamStatus, kMsgControllerCaptureResumed);	
 		
@@ -103,6 +110,8 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerEncodeProgress);
 		fController->StartWatching(this, kMsgControllerEncodeFinished);
 		fController->StartWatching(this, kMsgControllerAreaSelectionChanged);
+		fController->StartWatching(this, kMsgControllerCaptureStarted);
+		fController->StartWatching(this, kMsgControllerCaptureFinished);
 		
 		fController->StartWatching(outputView, kMsgControllerAreaSelectionChanged);
 		
@@ -142,7 +151,8 @@ BSCWindow::QuitRequested()
 void
 BSCWindow::MessageReceived(BMessage *message)
 {
-	switch (message->what) {					
+	switch (message->what) {		
+						
 		case kPauseResumeCapture:
 			fController->TogglePause();
 			break;
@@ -151,7 +161,8 @@ BSCWindow::MessageReceived(BMessage *message)
 		{
 			Minimize(true);
 			SelectionWindow *window = new SelectionWindow();
-			window->SetTarget(this);
+			BMessenger messenger(this);
+			window->SetTarget(messenger);
 			window->SetCommand(kAreaSelected);
 			window->Show();
 			break;
@@ -162,14 +173,6 @@ BSCWindow::MessageReceived(BMessage *message)
 			SendNotices(kAreaSelected, message);
 			break;
 		}		
-				
-		case kMsgGUIToggleCapture:
-			if (fCapturing)
-				_CaptureFinished();
-			else
-				_CaptureStarted();
-			SendNotices(kMsgGUIToggleCapture);
-			break;
 		
 		
 		case B_OBSERVER_NOTICE_CHANGE:
@@ -189,6 +192,15 @@ BSCWindow::MessageReceived(BMessage *message)
 					if (IsMinimized())
 						Minimize(false);
 					break;
+					
+				case kMsgControllerCaptureStarted:
+					_CaptureStarted();
+					break;
+	
+				case kMsgControllerCaptureFinished:
+					_CaptureFinished();
+					break;
+	
 				case kMsgControllerEncodeStarted:
 					fStringView->Show();
 					fStatusBar->Show();
@@ -270,6 +282,8 @@ BSCWindow::_CaptureStarted()
 	fStatusBar->Reset();
 	
 	fStartStopButton->SetLabel("Stop Recording");
+
+	SendNotices(kMsgGUIStartCapture);
 	
 	return B_OK;
 }
@@ -286,6 +300,8 @@ BSCWindow::_CaptureFinished()
 				
 	fStartStopButton->SetEnabled(false);
 	fStartStopButton->SetLabel("Start Recording");
-		
+
+	SendNotices(kMsgGUIStopCapture);	
+
 	return B_OK;
 }

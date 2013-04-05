@@ -1,6 +1,7 @@
 #ifndef __SELECTIONWINDOW_H
 #define __SELECTIONWINDOW_H
 
+#include <Messenger.h>
 #include <Window.h>
 
 class SelectionView;
@@ -8,13 +9,13 @@ class SelectionWindow : public BWindow {
 public:
 	SelectionWindow();
 	virtual void Show();
-	virtual void SetTarget(BLooper *looper);
+	virtual void SetTarget(BMessenger& target);
 	virtual void SetCommand(uint32 command);
 	virtual bool QuitRequested();
 	
 private:	
 	SelectionView *fView;	
-	BLooper *fTarget;
+	BMessenger fTarget;
 	uint32 fCommand;
 };
 

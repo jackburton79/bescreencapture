@@ -59,17 +59,13 @@ Controller::MessageReceived(BMessage *message)
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
 			switch (what) {
-				case kMsgGUIToggleCapture:
-					ToggleCapture();
-					break;
 				case kAreaSelected:
 				{
 					BRect rect;
 					if (message->FindRect("selection", &rect) == B_OK) {
-						FixRect(rect, true);
 						SetCaptureArea(rect);
 					}
-					SendNotices(kMsgControllerAreaSelectionChanged);
+					SendNotices(kMsgControllerAreaSelectionChanged, message);
 					break;
 				}
 				default:
@@ -77,6 +73,11 @@ Controller::MessageReceived(BMessage *message)
 			}
 			break;
 		}
+		
+		case kMsgGUIStartCapture:
+		case kMsgGUIStopCapture:
+			ToggleCapture();
+			break;
 		
 		case kEncodingFinished:
 		{
@@ -300,7 +301,6 @@ void
 Controller::EndCapture()
 {
 	BAutolock _(this);
-	printf("Controller::EndCapture()\n");
 	if (fCaptureThread > 0) {
 		fPaused = false;
 		fKillThread = true;
@@ -310,9 +310,7 @@ Controller::EndCapture()
 	
 	SendNotices(kMsgControllerCaptureFinished);
 	
-	printf("Encoding movie...\n");
 	EncodeMovie();
-	printf("done!\n");
 }
 
 

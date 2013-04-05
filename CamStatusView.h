@@ -11,7 +11,7 @@ public:
 	virtual void Draw(BRect updateRect);
 	virtual void MessageReceived(BMessage *message);	
 
-	void TogglePause();
+	void TogglePause(const bool paused);
 	bool Paused() const;
 	
 	void SetRecording(const bool recording);

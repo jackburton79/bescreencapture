@@ -3,7 +3,8 @@
 
 
 enum appMessages {
-	kMsgGUIToggleCapture = 2000,
+	kMsgGUIStartCapture = 2000,
+	kMsgGUIStopCapture,
 	kAddonStarted,
 	kSelectArea,
 	kAreaSelected,

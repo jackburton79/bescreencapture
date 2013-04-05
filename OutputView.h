@@ -55,7 +55,7 @@ private:
 				const int32 &width, const int32 &height,
 				BMenu *, media_format &outFormat);
 
-	void _UpdatePreview();
+	void _UpdatePreview(BMessage* message);
 	static void SetInitialFormat(const int32 &width, const int32 &height,
 				const color_space &space, const int32 &fieldRate,
 				media_format &initialFormat);

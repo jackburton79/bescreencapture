@@ -169,7 +169,7 @@ OutputView::MessageReceived(BMessage *message)
 			break;
 			
 		case kAreaSelectionChanged:
-			_UpdatePreview();
+			_UpdatePreview(NULL);
 			break;	
 		
 		case kMsgControllerVideoDepthChanged:
@@ -205,8 +205,10 @@ OutputView::MessageReceived(BMessage *message)
 			int32 code;
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {
+				case kAreaSelected:
 				case kMsgControllerAreaSelectionChanged:
-					_UpdatePreview();
+					_UpdatePreview(message);
+					message->PrintToStream();
 					break;
 				default:
 					break;
@@ -358,20 +360,32 @@ OutputView::FormatFamily() const
 
 
 void
-OutputView::_UpdatePreview()
+OutputView::_UpdatePreview(BMessage* message)
 {
+	
 	fSelectArea->SetEnabled(fCustomArea->Value() == B_CONTROL_ON);
 	BRect screenFrame = BScreen(Window()).Frame();
 	Settings settings;
-	BRect captureArea;
-	settings.GetCaptureArea(captureArea);
-	if (captureArea == screenFrame)
-		return;
+	//BRect captureArea;
+	//settings.GetCaptureArea(captureArea);
+	//if (captureArea == screenFrame)
+	//	return;
 	if (fWholeScreen->Value() == B_CONTROL_ON)
 		settings.SetCaptureArea(screenFrame);
 	
-	UpdatePreview();
-	
+	//UpdatePreview();
+	if (message != NULL) {
+		BRect rect;
+		message->FindRect("selection", &rect);
+		fRectView->SetRect(rect);
+		
+		BBitmap* bitmap = NULL;
+		if (message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {
+			printf("bitmap color space: %d\n", bitmap->ColorSpace());
+			fRectView->UpdateBitmap(bitmap);
+			delete bitmap;
+		}
+	}	
 	// the size of the destination
 	// clip maybe isn't supported by the codec	
 	UpdateSettings();

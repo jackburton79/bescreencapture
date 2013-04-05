@@ -61,12 +61,13 @@ CamStatusView::MessageReceived(BMessage *message)
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
 			switch (what) {
-				case kMsgGUIToggleCapture:
-					SetRecording(!Recording());
+				case kMsgGUIStartCapture:
+				case kMsgGUIStopCapture:
+					SetRecording(what == kMsgGUIStartCapture);
 					break;
 				case kMsgControllerCapturePaused:
 				case kMsgControllerCaptureResumed:
-					TogglePause();
+					TogglePause(what == kMsgControllerCapturePaused);
 					break;
 				default:
 					break;
@@ -84,9 +85,9 @@ CamStatusView::MessageReceived(BMessage *message)
 
 
 void
-CamStatusView::TogglePause()
+CamStatusView::TogglePause(const bool paused)
 {
-	fPaused = !fPaused;
+	fPaused = paused;
 	Invalidate();
 }
 

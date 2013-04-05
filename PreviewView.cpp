@@ -86,27 +86,25 @@ PreviewView::SetRect(BRect rect)
 	
 	fChanged = true;
 	
-	UpdateBitmap();
+	//UpdateBitmap();
 }
 
 
 void
-PreviewView::UpdateBitmap()
+PreviewView::UpdateBitmap(BBitmap* bitmap)
 {
-	if (Window() == NULL)
-		printf("window is null\n");
 	if (fChanged && Window() != NULL) {
-		BBitmap *bitmap;
-		fChanged = false;
-		BScreen screen(Window());
-		screen.GetBitmap(&bitmap, false, &fCoordRect);		
-	
+		if (bitmap == NULL) {
+			BScreen screen(Window());
+			screen.GetBitmap(&bitmap, false, &fCoordRect);		
+		}
 		if (bitmap != NULL) {
 			fBitmapView->SetViewBitmap(bitmap, bitmap->Bounds(),
 				fBitmapView->Bounds(),
 				B_FOLLOW_TOP|B_FOLLOW_LEFT, 0);
 			Invalidate();
 		}
+		fChanged = false;
 	}
 }
 
