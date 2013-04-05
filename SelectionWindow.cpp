@@ -115,13 +115,16 @@ SelectionView::MakeSelectionRect(BRect *rect)
 }
 
 
-SelectionWindow::SelectionWindow()
+SelectionWindow::SelectionWindow(BMessenger& target, uint32 command)
 	:
 	BWindow(BScreen().Frame(), "Area Window", window_type(1026),
 		B_ASYNCHRONOUS_CONTROLS|B_NOT_RESIZABLE|B_NOT_CLOSABLE|B_NOT_ZOOMABLE)
 {
 	fView = new SelectionView(Bounds(), "Selection view");
 	AddChild(fView);
+	
+	SetTarget(target);
+	SetCommand(command);
 }
 
 

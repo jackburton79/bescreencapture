@@ -7,7 +7,8 @@
 class SelectionView;
 class SelectionWindow : public BWindow {
 public:
-	SelectionWindow();
+	SelectionWindow(BMessenger& target, uint32 command);
+	
 	virtual void Show();
 	virtual void SetTarget(BMessenger& target);
 	virtual void SetCommand(uint32 command);

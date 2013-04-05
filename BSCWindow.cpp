@@ -113,13 +113,16 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureFinished);
 		
+		fController->StartWatching(fCamStatus, kMsgControllerCaptureStarted);
+		fController->StartWatching(fCamStatus, kMsgControllerCaptureFinished);
+		
 		fController->StartWatching(outputView, kMsgControllerAreaSelectionChanged);
 		
 		fController->UnlockLooper();
 	}
 	
 	
-	StartWatching(fCamStatus, kMsgGUIToggleCapture);
+	
 
 	CenterOnScreen();
 }
@@ -160,10 +163,8 @@ BSCWindow::MessageReceived(BMessage *message)
 		case kSelectArea:
 		{
 			Minimize(true);
-			SelectionWindow *window = new SelectionWindow();
 			BMessenger messenger(this);
-			window->SetTarget(messenger);
-			window->SetCommand(kAreaSelected);
+			SelectionWindow *window = new SelectionWindow(messenger, kAreaSelected);			
 			window->Show();
 			break;
 		}

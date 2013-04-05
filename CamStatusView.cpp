@@ -7,6 +7,8 @@
 #include <Message.h>
 #include <Window.h>
 
+#include <stdio.h>
+
 CamStatusView::CamStatusView(const char *name)
 	:
 	BView(name, B_WILL_DRAW),
@@ -21,6 +23,8 @@ CamStatusView::AttachedToWindow()
 {
 	if (Parent())
 		SetViewColor(Parent()->ViewColor());
+	else
+		SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 }
 
 
@@ -60,10 +64,11 @@ CamStatusView::MessageReceived(BMessage *message)
 		{
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
+			printf("CamStatus: message %d\n", what);
 			switch (what) {
-				case kMsgGUIStartCapture:
-				case kMsgGUIStopCapture:
-					SetRecording(what == kMsgGUIStartCapture);
+				case kMsgControllerCaptureStarted:
+				case kMsgControllerCaptureFinished:
+					SetRecording(what == kMsgControllerCaptureStarted);
 					break;
 				case kMsgControllerCapturePaused:
 				case kMsgControllerCaptureResumed:
