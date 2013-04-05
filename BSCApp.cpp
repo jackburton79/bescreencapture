@@ -2,7 +2,6 @@
 #include "BSCWindow.h"
 #include "Controller.h"
 #include "DeskbarControlView.h"
-#include "messages.h"
 #include "Settings.h"
 
 #include <Deskbar.h>
@@ -72,13 +71,7 @@ BSCApp::QuitRequested()
 void
 BSCApp::MessageReceived(BMessage *message)
 {
-	switch (message->what) {
-		case kMsgGUIStartCapture:
-		case kMsgGUIStopCapture:
-		case kPauseResumeCapture:
-			fWindow->PostMessage(message);
-			break;
-		
+	switch (message->what) {		
 		default:
 			BApplication::MessageReceived(message);
 			break;

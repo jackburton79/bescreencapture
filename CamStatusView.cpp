@@ -64,10 +64,9 @@ CamStatusView::MessageReceived(BMessage *message)
 		{
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
-			printf("CamStatus: message %d\n", what);
 			switch (what) {
 				case kMsgControllerCaptureStarted:
-				case kMsgControllerCaptureFinished:
+				case kMsgControllerCaptureStopped:
 					SetRecording(what == kMsgControllerCaptureStarted);
 					break;
 				case kMsgControllerCapturePaused:

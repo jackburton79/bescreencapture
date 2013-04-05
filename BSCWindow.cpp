@@ -97,10 +97,10 @@ BSCWindow::BSCWindow()
 	fStringView->Hide();
 		
 	if (fController->LockLooper()) {	
-		// controller should watch for capture messages
+		// controller should watch for these messages
 		//StartWatching(fController, kMsgGUIStartCapture);
 		//StartWatching(fController, kMsgGUIStopCapture);
-		StartWatching(fController, kAreaSelected);
+		StartWatching(fController, kSelectionWindowClosed);
 		//StartWatching(fCamStatus, kMsgControllerCaptureResumed);	
 		
 		// watch Controller for these
@@ -111,18 +111,20 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerEncodeFinished);
 		fController->StartWatching(this, kMsgControllerAreaSelectionChanged);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
-		fController->StartWatching(this, kMsgControllerCaptureFinished);
+		fController->StartWatching(this, kMsgControllerCaptureStopped);
 		
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureStarted);
-		fController->StartWatching(fCamStatus, kMsgControllerCaptureFinished);
+		fController->StartWatching(fCamStatus, kMsgControllerCaptureStopped);
+		fController->StartWatching(fCamStatus, kMsgControllerCapturePaused);
+		fController->StartWatching(fCamStatus, kMsgControllerCaptureResumed);
+		
 		
 		fController->StartWatching(outputView, kMsgControllerAreaSelectionChanged);
-		
+			
 		fController->UnlockLooper();
 	}
 	
-	
-	
+	StartWatching(outputView, kSelectionWindowClosed);
 
 	CenterOnScreen();
 }
@@ -143,7 +145,7 @@ BSCWindow::DispatchMessage(BMessage *message, BHandler *handler)
 bool
 BSCWindow::QuitRequested()
 {
-	bool canQuit = /*!fEncoder->IsRunning() && (fCaptureThread < 0);*/true;
+	bool canQuit = !fCapturing;
 	if (canQuit)
 		be_app->PostMessage(B_QUIT_REQUESTED);
 	
@@ -154,24 +156,22 @@ BSCWindow::QuitRequested()
 void
 BSCWindow::MessageReceived(BMessage *message)
 {
-	switch (message->what) {		
-						
-		case kPauseResumeCapture:
-			fController->TogglePause();
-			break;
-		
+	switch (message->what) {				
 		case kSelectArea:
 		{
 			Minimize(true);
 			BMessenger messenger(this);
-			SelectionWindow *window = new SelectionWindow(messenger, kAreaSelected);			
+			SelectionWindow *window = new SelectionWindow(messenger, kSelectionWindowClosed);			
 			window->Show();
 			break;
 		}
 		
-		case kAreaSelected:
+		case kSelectionWindowClosed:
 		{
-			SendNotices(kAreaSelected, message);
+			if (IsMinimized())
+				Minimize(false);
+				
+			SendNotices(kSelectionWindowClosed, message);
 			break;
 		}		
 		
@@ -189,16 +189,16 @@ BSCWindow::MessageReceived(BMessage *message)
 					PostMessage(message, fStatusBar);
 					break;
 				}
-				case kMsgControllerAreaSelectionChanged:
+				/*case kMsgControllerAreaSelectionChanged:
 					if (IsMinimized())
 						Minimize(false);
 					break;
-					
+				*/	
 				case kMsgControllerCaptureStarted:
 					_CaptureStarted();
 					break;
 	
-				case kMsgControllerCaptureFinished:
+				case kMsgControllerCaptureStopped:
 					_CaptureFinished();
 					break;
 	

@@ -100,7 +100,10 @@ DeskbarControlView::AttachedToWindow()
 		
 	if (LockLooper()) {
 		StartWatching(fControllerMessenger, kMsgControllerCaptureStarted);
-		StartWatching(fControllerMessenger, kMsgControllerCaptureFinished);	
+		StartWatching(fControllerMessenger, kMsgControllerCaptureStopped);
+		StartWatching(fControllerMessenger, kMsgControllerCapturePaused);	
+		StartWatching(fControllerMessenger, kMsgControllerCaptureResumed);	
+		
 		UnlockLooper();
 	}
 }
@@ -111,7 +114,9 @@ DeskbarControlView::DetachedFromWindow()
 {
 	if (LockLooper()) {
 		StopWatching(fControllerMessenger, kMsgControllerCaptureStarted);
-		StopWatching(fControllerMessenger, kMsgControllerCaptureFinished);	
+		StopWatching(fControllerMessenger, kMsgControllerCaptureStopped);	
+		StopWatching(fControllerMessenger, kMsgControllerCapturePaused);	
+		StopWatching(fControllerMessenger, kMsgControllerCaptureResumed);	
 		UnlockLooper();
 	}
 }
@@ -123,7 +128,11 @@ DeskbarControlView::Draw(BRect rect)
 	SetDrawingMode(B_OP_OVER);
 	DrawBitmap(fBitmap);
 	
-	if (fRecording) {
+	if (fPaused) {
+		SetDrawingMode(B_OP_COPY);
+		SetHighColor(124, 124, 0);
+		FillRect(BRect(2, 12, 5, 15));
+	} else if (fRecording) {
 		SetDrawingMode(B_OP_COPY);
 		SetHighColor(250, 0, 0);
 		FillRect(BRect(2, 12, 5, 15));
@@ -141,8 +150,8 @@ DeskbarControlView::MessageReceived(BMessage *message)
 				fControllerMessenger.SendMessage(message);
 			break;
 		case kPauseResumeCapture:
-			if (fAppMessenger.IsValid())
-				fAppMessenger.SendMessage(message->what);
+			if (fControllerMessenger.IsValid())
+				fControllerMessenger.SendMessage(message->what);
 			break;
 		
 		case B_OBSERVER_NOTICE_CHANGE:
@@ -155,8 +164,14 @@ DeskbarControlView::MessageReceived(BMessage *message)
 					Invalidate();
 					break;
 				
-				case kMsgControllerCaptureFinished:
+				case kMsgControllerCaptureStopped:
 					fRecording = false;
+					Invalidate();
+					break;
+				
+				case kMsgControllerCapturePaused:
+				case kMsgControllerCaptureResumed:
+					fPaused = code == kMsgControllerCapturePaused;
 					Invalidate();
 					break;
 					
@@ -194,6 +209,7 @@ DeskbarControlView::InitData()
 	fBitmap = NULL;
 	fRecordingBitmap = NULL;
 	fRecording = false;
+	fPaused = false;
 	
 	app_info info;
 	be_roster->GetAppInfo(kAppSignature, &info);

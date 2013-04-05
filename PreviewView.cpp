@@ -99,7 +99,7 @@ PreviewView::UpdateBitmap(BBitmap* bitmap)
 			screen.GetBitmap(&bitmap, false, &fCoordRect);		
 		}
 		if (bitmap != NULL) {
-			fBitmapView->SetViewBitmap(bitmap, bitmap->Bounds(),
+			fBitmapView->SetViewBitmap(bitmap, bitmap->Bounds().OffsetToCopy(B_ORIGIN),
 				fBitmapView->Bounds(),
 				B_FOLLOW_TOP|B_FOLLOW_LEFT, 0);
 			Invalidate();

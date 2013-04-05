@@ -6,7 +6,7 @@
 
 enum {
 	kMsgControllerCaptureStarted = 5000,
-	kMsgControllerCaptureFinished,
+	kMsgControllerCaptureStopped,
 	kMsgControllerCapturePaused,
 	kMsgControllerCaptureResumed,
 	kMsgControllerEncodeStarted,

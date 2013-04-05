@@ -59,13 +59,12 @@ Controller::MessageReceived(BMessage *message)
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
 			switch (what) {
-				case kAreaSelected:
+				case kSelectionWindowClosed:
 				{
 					BRect rect;
 					if (message->FindRect("selection", &rect) == B_OK) {
 						SetCaptureArea(rect);
 					}
-					SendNotices(kMsgControllerAreaSelectionChanged, message);
 					break;
 				}
 				default:
@@ -79,6 +78,10 @@ Controller::MessageReceived(BMessage *message)
 			ToggleCapture();
 			break;
 		
+		case kPauseResumeCapture:
+			TogglePause();
+			break;
+			
 		case kEncodingFinished:
 		{
 			status_t error;
@@ -175,6 +178,10 @@ Controller::SetCaptureArea(const BRect& rect)
 	fEncoder->SetDestFrame(rect);
 	
 	UpdateAreaDescription(rect);
+	
+	BMessage message(kMsgControllerAreaSelectionChanged);
+	
+	SendNotices(kMsgControllerAreaSelectionChanged, &message);
 }
 
 
@@ -308,7 +315,7 @@ Controller::EndCapture()
 		wait_for_thread(fCaptureThread, &unused);
 	}
 	
-	SendNotices(kMsgControllerCaptureFinished);
+	SendNotices(kMsgControllerCaptureStopped);
 	
 	EncodeMovie();
 }
@@ -317,6 +324,8 @@ Controller::EndCapture()
 void
 Controller::_PauseCapture()
 {
+	SendNotices(kMsgControllerCapturePaused);
+	
 	BAutolock _(this);
 	fPaused = true;
 	suspend_thread(fCaptureThread);
@@ -329,6 +338,8 @@ Controller::_ResumeCapture()
 	BAutolock _(this);
 	resume_thread(fCaptureThread);
 	fPaused = false;
+	
+	SendNotices(kMsgControllerCaptureResumed);
 }
 
 

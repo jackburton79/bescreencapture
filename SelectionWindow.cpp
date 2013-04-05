@@ -160,9 +160,10 @@ SelectionWindow::QuitRequested()
 	Hide();
 	BMessage message(fCommand);
 	BBitmap *bitmap = NULL;	
-	BScreen(this).GetBitmap(&bitmap, false);
 	BRect selection = fView->SelectionRect();
 	FixRect(selection);
+	BScreen(this).GetBitmap(&bitmap, false, &selection);
+	
 	message.AddRect("selection", selection);
 	message.AddPointer("bitmap", bitmap);
 	

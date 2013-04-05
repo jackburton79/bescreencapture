@@ -32,6 +32,7 @@ private:
 	BBitmap *fRecordingBitmap;
 	
 	bool fRecording;
+	bool fPaused;
 };
 
 
