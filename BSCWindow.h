@@ -9,6 +9,7 @@
 
 
 class BButton;
+class BCardLayout;
 class BStatusBar;
 class BStringView;
 class BTabView;
@@ -43,6 +44,7 @@ private:
 	BStringView *fRecordingInfo;
 	BStatusBar *fStatusBar;
 	CamStatusView *fCamStatus;
+	BCardLayout* fCardLayout;
 	
 	bool fCapturing;
 	BMessenger fAddonMessenger;

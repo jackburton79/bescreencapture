@@ -11,6 +11,7 @@
 
 #include <Alert.h>
 #include <Application.h>
+#include <CardLayout.h>
 #include <Box.h>
 #include <Button.h>
 #include <Debug.h>
@@ -51,20 +52,38 @@ BSCWindow::BSCWindow()
 	
 	fStartStopButton->SetTarget(fController);
 	
-	const char *kString = "Encoding movie...";			
+	fCardLayout = new BCardLayout();
+	BView* cardsView = new BView("status", 0, fCardLayout);
+	
+	fCardLayout->AddView(fCamStatus = new CamStatusView("CamStatusView"));
+	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
+	
+	const char *kString = "Encoding movie...";
+	BView* statusView = BLayoutBuilder::Group<>()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+			.Add(fStringView = new BStringView("stringview", kString))
+			.Add(fStatusBar = new BStatusBar("", ""))
+		.End()
+		.View();
+		
+	fStatusBar->SetExplicitMinSize(BSize(60, 20));
+	fCardLayout->AddView(statusView);
+	
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(fTabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL))
 			.AddGroup(B_HORIZONTAL)
-				.Add(fCamStatus = new CamStatusView("CamStatusView"))
-				.Add(fStringView = new BStringView("stringview", kString))
-				.Add(fStatusBar = new BStatusBar("", ""))
+				.Add(cardsView)
 				.AddGlue(1)
 				.Add(fStartStopButton)
 			.End()
 		.End();
+	
+	fCardLayout->SetVisibleItem((int32)0);
 				
 	BGroupView* outputGroup = new BGroupView(B_HORIZONTAL);
 	outputGroup->SetName("Output");
@@ -82,8 +101,8 @@ BSCWindow::BSCWindow()
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(advancedView);
 		
-	fStatusBar->Hide();
-	fStringView->Hide();
+	//fStatusBar->Hide();
+	//fStringView->Hide();
 		
 	if (fController->LockLooper()) {	
 		// controller should watch for these messages
@@ -191,8 +210,9 @@ BSCWindow::MessageReceived(BMessage *message)
 					break;
 	
 				case kMsgControllerEncodeStarted:
-					fStringView->Show();
-					fStatusBar->Show();
+					fCardLayout->SetVisibleItem(1);
+//					fStringView->Show();
+//					fStatusBar->Show();
 					break;
 					
 				case kMsgControllerEncodeProgress:
@@ -208,8 +228,9 @@ BSCWindow::MessageReceived(BMessage *message)
 				case kMsgControllerEncodeFinished:
 				{
 					fStartStopButton->SetEnabled(true);
-					fStringView->Hide();
-					fStatusBar->Hide();
+					//fStringView->Hide();
+					//fStatusBar->Hide();
+					fCardLayout->SetVisibleItem((int32)0);
 					
 					status_t status = B_OK;
 					if (message->FindInt32("status", (int32*)&status) == B_OK
