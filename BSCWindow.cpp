@@ -34,6 +34,8 @@ enum {
 	kMsgGUIToggleCapture = 0x10000
 };
 
+const char* kEncodingString = "Encoding movie...";
+const char* kDoneString = "Done!";
 
 BSCWindow::BSCWindow()
 	:
@@ -51,24 +53,26 @@ BSCWindow::BSCWindow()
 		new BMessage(kMsgGUIStartCapture)); 
 	
 	fStartStopButton->SetTarget(fController);
+	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	
 	fCardLayout = new BCardLayout();
 	BView* cardsView = new BView("status", 0, fCardLayout);
+	cardsView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
 	fCardLayout->AddView(fCamStatus = new CamStatusView("CamStatusView"));
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
-	const char *kString = "Encoding movie...";
 	BView* statusView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.Add(fStringView = new BStringView("stringview", kString))
+			.Add(fStringView = new BStringView("stringview", kEncodingString))
 			.Add(fStatusBar = new BStatusBar("", ""))
 		.End()
 		.View();
-		
-	fStatusBar->SetExplicitMinSize(BSize(60, 20));
+	
+	statusView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));	
+	fStatusBar->SetExplicitMinSize(BSize(100, 20));
 	fCardLayout->AddView(statusView);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
@@ -78,7 +82,6 @@ BSCWindow::BSCWindow()
 			.Add(fTabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL))
 			.AddGroup(B_HORIZONTAL)
 				.Add(cardsView)
-				.AddGlue(1)
 				.Add(fStartStopButton)
 			.End()
 		.End();
@@ -203,8 +206,8 @@ BSCWindow::MessageReceived(BMessage *message)
 					break;
 	
 				case kMsgControllerEncodeStarted:
+					fStringView->SetText(kEncodingString);
 					fCardLayout->SetVisibleItem(1);
-
 					break;
 					
 				case kMsgControllerEncodeProgress:
@@ -220,8 +223,8 @@ BSCWindow::MessageReceived(BMessage *message)
 				case kMsgControllerEncodeFinished:
 				{
 					fStartStopButton->SetEnabled(true);
+					//fStringView->SetText(kDoneString);
 					fCardLayout->SetVisibleItem((int32)0);
-					
 					status_t status = B_OK;
 					if (message->FindInt32("status", (int32*)&status) == B_OK
 						&& status != B_OK) {
@@ -279,6 +282,7 @@ BSCWindow::_CaptureStarted()
 	if (settings.MinimizeOnRecording())
 		Minimize(true);
 	
+	fCardLayout->SetVisibleItem((int32)0);
 	fStatusBar->Reset();
 	
 	fStartStopButton->SetLabel("Stop Recording");
