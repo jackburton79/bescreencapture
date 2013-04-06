@@ -23,8 +23,6 @@ CamStatusView::AttachedToWindow()
 {
 	if (Parent())
 		SetViewColor(Parent()->ViewColor());
-	else
-		SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 }
 
 
@@ -45,9 +43,6 @@ CamStatusView::Draw(BRect updateRect)
 			//bounds.InsetBy(4, 4);
 			FillEllipse(bounds);
 		}
-	} else {
-		//SetHighColor(ViewColor());
-		//FillRect(bounds & updateRect);
 	}
 }
 
@@ -62,8 +57,12 @@ CamStatusView::MessageReceived(BMessage *message)
 			message->FindInt32("be:observe_change_what", &what);
 			switch (what) {
 				case kMsgControllerCaptureStarted:
+					SetRecording(true);
+					break;
 				case kMsgControllerCaptureStopped:
-					SetRecording(what == kMsgControllerCaptureStarted);
+					if (fPaused)
+						fPaused = false;
+					SetRecording(false);
 					break;
 				case kMsgControllerCapturePaused:
 				case kMsgControllerCaptureResumed:
@@ -78,7 +77,6 @@ CamStatusView::MessageReceived(BMessage *message)
 		default:
 			BView::MessageReceived(message);
 			break;
-		
 	}
 	
 }

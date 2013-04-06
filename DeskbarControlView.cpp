@@ -167,6 +167,7 @@ DeskbarControlView::MessageReceived(BMessage *message)
 				
 				case kMsgControllerCaptureStopped:
 					fRecording = false;
+					fPaused = false;
 					Invalidate();
 					break;
 				
