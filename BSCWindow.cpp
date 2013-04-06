@@ -100,10 +100,7 @@ BSCWindow::BSCWindow()
 	fTabView->AddTab(advancedGroup);
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(advancedView);
-		
-	//fStatusBar->Hide();
-	//fStringView->Hide();
-		
+				
 	if (fController->LockLooper()) {	
 		// controller should watch for these messages
 		//StartWatching(fController, kMsgGUIStartCapture);
@@ -196,11 +193,7 @@ BSCWindow::MessageReceived(BMessage *message)
 					PostMessage(message, fStatusBar);
 					break;
 				}
-				/*case kMsgControllerAreaSelectionChanged:
-					if (IsMinimized())
-						Minimize(false);
-					break;
-				*/	
+	
 				case kMsgControllerCaptureStarted:
 					_CaptureStarted();
 					break;
@@ -211,8 +204,7 @@ BSCWindow::MessageReceived(BMessage *message)
 	
 				case kMsgControllerEncodeStarted:
 					fCardLayout->SetVisibleItem(1);
-//					fStringView->Show();
-//					fStatusBar->Show();
+
 					break;
 					
 				case kMsgControllerEncodeProgress:
@@ -228,8 +220,6 @@ BSCWindow::MessageReceived(BMessage *message)
 				case kMsgControllerEncodeFinished:
 				{
 					fStartStopButton->SetEnabled(true);
-					//fStringView->Hide();
-					//fStatusBar->Hide();
 					fCardLayout->SetVisibleItem((int32)0);
 					
 					status_t status = B_OK;
@@ -302,7 +292,6 @@ BSCWindow::_CaptureStarted()
 status_t
 BSCWindow::_CaptureFinished()
 {
-	printf("finished\n");
 	fCapturing = false;
 	
 	if (IsMinimized())
