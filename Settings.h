@@ -28,8 +28,8 @@ public:
 	void GetClipDepth(color_space &space) const;
 	color_space ClipDepth() const;
 	
-	void SetClipSize(const float &rate);
-	void GetClipSize(float &rate) const;
+	void SetClipSize(const float &factor);
+	void GetClipSize(float &factor) const;
 	float ClipSize() const;
 	
 	void SetUseDirectWindow(const bool &use);
