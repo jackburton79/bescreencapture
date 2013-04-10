@@ -76,9 +76,9 @@ BSCWindow::BSCWindow()
 	fCardLayout->AddView(statusView);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.AddGroup(B_VERTICAL, 1)
+		.SetInsets(B_USE_DEFAULT_SPACING, 1,
+			B_USE_DEFAULT_SPACING, 1)
 			.Add(fTabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL))
 			.AddGroup(B_HORIZONTAL)
 				.Add(cardsView)
@@ -109,6 +109,7 @@ BSCWindow::BSCWindow()
 		//StartWatching(fController, kMsgGUIStartCapture);
 		//StartWatching(fController, kMsgGUIStopCapture);
 		StartWatching(fController, kSelectionWindowClosed);
+		advancedView->StartWatching(fController, kClipSizeChanged);
 		//StartWatching(fCamStatus, kMsgControllerCaptureResumed);	
 		
 		// watch Controller for these
@@ -117,7 +118,7 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerEncodeStarted);
 		fController->StartWatching(this, kMsgControllerEncodeProgress);
 		fController->StartWatching(this, kMsgControllerEncodeFinished);
-		fController->StartWatching(this, kMsgControllerAreaSelectionChanged);
+		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
 		
@@ -126,12 +127,13 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(fCamStatus, kMsgControllerCapturePaused);
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureResumed);
 		
-		fController->StartWatching(outputView, kMsgControllerAreaSelectionChanged);
+		fController->StartWatching(outputView, kMsgControllerTargetFrameChanged);
 			
 		fController->UnlockLooper();
 	}
 	
 	StartWatching(outputView, kSelectionWindowClosed);
+	StartWatching(outputView, kClipSizeChanged);
 
 	CenterOnScreen();
 }

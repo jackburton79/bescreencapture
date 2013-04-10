@@ -129,32 +129,6 @@ Settings::CaptureArea() const
 
 
 void
-Settings::SetClipFrame(const BRect &rect)
-{
-	if (!fSettings->HasRect(kClipRect))
-		fSettings->AddRect(kClipRect, rect);
-	else
-		fSettings->ReplaceRect(kClipRect, rect);
-}
-
-
-void
-Settings::GetClipFrame(BRect &rect) const
-{
-	fSettings->FindRect(kClipRect, &rect);
-}
-
-
-BRect
-Settings::ClipFrame() const
-{
-	BRect rect;
-	fSettings->FindRect(kClipRect, &rect);
-	return rect;
-}
-
-
-void
 Settings::SetClipDepth(const color_space &space)
 {
 	const int32 &spaceInt = (int32)space;
@@ -182,7 +156,7 @@ Settings::ClipDepth() const
 
 
 void
-Settings::SetClipSize(const float &rate)
+Settings::SetTargetSize(const float &rate)
 {
 	if (!fSettings->HasFloat(kClipShrink))
 		fSettings->AddFloat(kClipShrink, rate);
@@ -192,14 +166,14 @@ Settings::SetClipSize(const float &rate)
 
 
 void
-Settings::GetClipSize(float &rate) const
+Settings::GetTargetSize(float &rate) const
 {
 	fSettings->FindFloat(kClipShrink, &rate);
 }
 
 
 float
-Settings::ClipSize() const
+Settings::TargetSize() const
 {
 	float rate;
 	fSettings->FindFloat(kClipShrink, &rate);

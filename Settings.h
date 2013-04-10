@@ -20,17 +20,13 @@ public:
 	void GetCaptureArea(BRect &rect) const;
 	BRect CaptureArea() const;
 		
-	void SetClipFrame(const BRect &rect);
-	void GetClipFrame(BRect &rect) const;
-	BRect ClipFrame() const;
-
 	void SetClipDepth(const color_space &space);
 	void GetClipDepth(color_space &space) const;
 	color_space ClipDepth() const;
 	
-	void SetClipSize(const float &factor);
-	void GetClipSize(float &factor) const;
-	float ClipSize() const;
+	void SetTargetSize(const float &factor);
+	void GetTargetSize(float &factor) const;
+	float TargetSize() const;
 	
 	void SetUseDirectWindow(const bool &use);
 	void GetUseDirectWindow(bool &use) const;

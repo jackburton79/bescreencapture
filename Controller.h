@@ -39,6 +39,7 @@ public:
 	
 	void		SetUseDirectWindow(const bool &use);
 	void		SetCaptureArea(const BRect &rect);
+	void		SetTargetSize(const float &percent);
 	void		SetVideoDepth(const color_space &space);
 	void		SetOutputFileName(const char *fileName);
 

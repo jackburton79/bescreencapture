@@ -67,6 +67,12 @@ Controller::MessageReceived(BMessage *message)
 					}
 					break;
 				}
+				case kClipSizeChanged:
+				{
+					printf("Controller: kClipSizeChanged\n");
+					SendNotices(kMsgControllerTargetFrameChanged, message);
+					break;
+				}
 				default:
 					break;
 			}
@@ -174,14 +180,24 @@ Controller::SetCaptureArea(const BRect& rect)
 {
 	BAutolock _(this);
 	Settings().SetCaptureArea(rect);
-	
+	//Settings().SetClipSize(100);
 	fEncoder->SetDestFrame(rect);
-	
+		
 	UpdateAreaDescription(rect);
 	
-	BMessage message(kMsgControllerAreaSelectionChanged);
+	BMessage message(kMsgControllerTargetFrameChanged);
 	
-	SendNotices(kMsgControllerAreaSelectionChanged, &message);
+	SendNotices(kMsgControllerTargetFrameChanged, &message);
+}
+
+
+void
+Controller::SetTargetSize(const float &percent)
+{
+	BAutolock _(this);
+	Settings().SetTargetSize(percent);
+	
+	
 }
 
 

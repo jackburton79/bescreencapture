@@ -29,7 +29,7 @@ public:
 	
 	bool MinimizeOnStart() const;
 		
-	void UpdatePreview();
+	void UpdatePreviewFromSettings();
 		
 	virtual	BSize	MinSize();		
 private:

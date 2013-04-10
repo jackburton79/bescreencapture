@@ -34,7 +34,7 @@
 #include <cstdlib>
 #include <cstring>
 
-const static int32 kAreaSelectionChanged = 'CaCh';
+const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kFileTypeChanged = 'FtyC';
 const static int32 kCodecChanged = 'CdCh';
 const static char *kCodecData = "Codec";
@@ -73,9 +73,9 @@ OutputView::OutputView(Controller *controller)
 	fCodecMenu = new BMenuField("OutCodec", kCodecMenuLabel, popUpMenu);
 	
 	fWholeScreen = new BRadioButton("screen frame", "Whole screen",
-		new BMessage(kAreaSelectionChanged));
+		new BMessage(kCheckBoxAreaSelectionChanged));
 	fCustomArea = new BRadioButton("custom area",
-		"Custom Area", new BMessage(kAreaSelectionChanged));
+		"Custom Area", new BMessage(kCheckBoxAreaSelectionChanged));
 	fSelectArea = new BButton("select area", "Select", new BMessage(kSelectArea));
 	fSelectArea->SetEnabled(false);
 	
@@ -156,7 +156,7 @@ OutputView::AttachedToWindow()
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
 	
-	UpdatePreview();
+	UpdatePreviewFromSettings();
 }
 
 
@@ -164,7 +164,7 @@ void
 OutputView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case kAreaSelectionChanged:
+		case kCheckBoxAreaSelectionChanged:
 			_UpdatePreview(NULL);
 			break;	
 		
@@ -202,9 +202,9 @@ OutputView::MessageReceived(BMessage *message)
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {
 				case kSelectionWindowClosed:
-				case kMsgControllerAreaSelectionChanged:
+				case kMsgControllerTargetFrameChanged:
+				case kClipSizeChanged:
 					_UpdatePreview(message);
-					message->PrintToStream();
 					break;
 				default:
 					break;
@@ -235,10 +235,12 @@ OutputView::UpdateSettings()
 		settings.SetCaptureArea(BScreen().Frame());
 		
 	BRect captureRect = settings.CaptureArea();
-	const float factor = settings.ClipSize();
-	settings.SetClipFrame(GetScaledRect(captureRect, factor));
+	const float factor = 100;
 	
-	UpdatePreview();
+	//  TODO: set the frame
+	//settings.SetClipFrame(GetScaledRect(captureRect, factor));
+	
+	UpdatePreviewFromSettings();
 	
 	BuildCodecMenu(FormatFamily());
 	
@@ -255,12 +257,9 @@ OutputView::OutputFileName() const
 
 
 void
-OutputView::UpdatePreview()
+OutputView::UpdatePreviewFromSettings()
 {
-	BRect rect;
-	Settings settings;
-	
-	settings.GetCaptureArea(rect);
+	const BRect rect = Settings().CaptureArea();
 	
 	fRectView->SetRect(rect);
 }
@@ -270,7 +269,7 @@ void
 OutputView::BuildCodecMenu(const media_format_family &family)
 {
 	Settings settings;
-	BRect rect = settings.ClipFrame();
+	BRect rect = settings.CaptureArea();//ClipFrame();
 	rect.right++;
 	rect.bottom++;
 		

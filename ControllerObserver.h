@@ -12,7 +12,7 @@ enum {
 	kMsgControllerEncodeStarted,
 	kMsgControllerEncodeProgress,	// int32 num_files
 	kMsgControllerEncodeFinished,	// status_t status
-	kMsgControllerAreaSelectionChanged,
+	kMsgControllerTargetFrameChanged,
 	kMsgControllerVideoDepthChanged,
 	kMsgControllerOutputFileNameChanged
 };
