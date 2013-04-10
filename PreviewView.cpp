@@ -35,12 +35,12 @@ PreviewView::PreviewView()
 	fChanged = true;
 
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
-	SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
+	SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
 		B_ALIGN_VERTICAL_CENTER));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
 		.AddGroup(B_HORIZONTAL)
+			//.Add(fLeft = new BStringView("top", "top"))
 			.AddGlue()
-			.Add(fTop = new BStringView("top", "top"))
 			.AddGlue()
 		.End()
 		.AddGroup(B_HORIZONTAL)
@@ -52,10 +52,17 @@ PreviewView::PreviewView()
 		.End()
 		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
-			.Add(fBottom = new BStringView("bottom", "bottom"))
 			.AddGlue()
+			//.Add(fRight = new BStringView("bottom", "bottom"))
 		.End()
 	);
+	
+	fLeft->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
+		B_ALIGN_TOP));
+	fRight->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT,
+		B_ALIGN_BOTTOM));
+	//fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
+	//	B_ALIGN_VERTICAL_CENTER));
 }
 
 
@@ -77,14 +84,10 @@ PreviewView::SetRect(BRect rect)
 	fCoordRect = rect;
 	
 	char str[16];
-	snprintf(str, sizeof(str), "%d", (int)rect.left);
+	snprintf(str, sizeof(str), "%d, %d", (int)rect.left, (int)rect.top);
 	fLeft->SetText(str);
-	snprintf(str, sizeof(str), "%d", (int)rect.top);
-	fTop->SetText(str);
-	snprintf(str, sizeof(str), "%d", (int)rect.right);
+	snprintf(str, sizeof(str), "%d, %d", (int)rect.right, (int)rect.bottom);
 	fRight->SetText(str);
-	snprintf(str, sizeof(str), "%d", (int)rect.bottom);
-	fBottom->SetText(str);
 	
 	fChanged = true;
 }
