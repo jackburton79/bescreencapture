@@ -197,7 +197,7 @@ MovieEncoder::Encode()
 			fMessenger.SendMessage(new BMessage(progressMessage));		
 	}
 	
-	printf("%ld frames written\n", framesWritten);
+	//printf("%ld frames written\n", framesWritten);
 		
 	delete movie;
 	delete destBitmap;
