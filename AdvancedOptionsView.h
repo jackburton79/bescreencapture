@@ -4,12 +4,13 @@
 #include <View.h>
 
 class BCheckBox;
+class BSlider;
 class BTextControl;
 class BOptionPopUp;
 class Controller;
 class AdvancedOptionsView : public BView {
 public:
-	AdvancedOptionsView(Controller *controller);
+	AdvancedOptionsView(Controller* controller);
 	
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage *message);
@@ -17,11 +18,14 @@ public:
 	virtual BSize MinSize();
 	
 private:
-	Controller *fController;
-	BCheckBox *fUseDirectWindow;
-	BOptionPopUp *fDepthControl;
-	BOptionPopUp *fPriorityControl;
+	Controller* fController;
+	BCheckBox* fUseDirectWindow;
 	
+	BOptionPopUp* fDepthControl;
+	BOptionPopUp* fPriorityControl;
+	
+	BSlider* fSizeSlider;
+	BTextControl* fSizeTextControl;
 };
 
 #endif

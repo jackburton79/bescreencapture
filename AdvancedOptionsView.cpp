@@ -11,8 +11,9 @@
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
-#include <RadioButton.h>
 #include <Screen.h>
+#include <Slider.h>
+#include <String.h>
 #include <StringView.h>
 
 #include <cstdio>
@@ -20,6 +21,19 @@
 
 const static uint32 kUseDirectWindow = 'UsDW';
 const static uint32 kDepthChanged = 'DeCh';
+const static uint32 kMsgTextControlSizeChanged = 'TCSC';
+
+class SizeSlider : public BSlider {
+public:
+	SizeSlider(const char* name, const char* label,
+		BMessage* message, int32 minValue,
+		int32 maxValue, orientation posture,
+		thumb_style thumbType = B_BLOCK_THUMB,
+		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
+							| B_FRAME_EVENTS);
+
+	virtual void SetValue(int32 value);
+};
 
 
 AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
@@ -34,25 +48,31 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 		B_ALIGN_TOP));
 	AddChild(clipSizeBox);
 	clipSizeBox->SetLabel("Clip size");
-	
-	BRadioButton *normalSizeRB 
-		= new BRadioButton("100 Original", "100\% (Original size)",
-			new BMessage(kClipSizeChanged));
-			
-	BView *layoutView = BLayoutBuilder::Group<>()
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-			.Add(new BRadioButton("200", "200\%", new BMessage(kClipSizeChanged)))
-			.Add(normalSizeRB)
-			.Add(new BRadioButton("50", "50\%", new BMessage(kClipSizeChanged)))
-			.Add(new BRadioButton("25", "25\%", new BMessage(kClipSizeChanged)))
+
+	fSizeSlider = new SizeSlider("size_slider", "",
+		new BMessage(kClipSizeChanged), 25, 200, B_HORIZONTAL);
+
+	fSizeTextControl = new BTextControl("%", "", new BMessage(kMsgTextControlSizeChanged));
+	fSizeTextControl->SetModificationMessage(new BMessage(kMsgTextControlSizeChanged));
+	fSizeTextControl->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
+		B_ALIGN_TOP));
+	fSizeTextControl->SetExplicitMaxSize(
+		BSize(50, 25));
+	fSizeTextControl->SetAlignment(B_ALIGN_RIGHT, B_ALIGN_LEFT);
+	BView* sliderView = BLayoutBuilder::Group<>()
+		.AddGroup(B_HORIZONTAL, 1)
+			.Add(fSizeSlider)
+			.Add(fSizeTextControl)
 		.End()
 		.View();
-	
-	clipSizeBox->AddChild(layoutView);
+		
+			
+	clipSizeBox->AddChild(sliderView);
 
-	normalSizeRB->SetValue(B_CONTROL_ON);
+	fSizeSlider->SetValue(100);
+	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
+	fSizeSlider->SetHashMarkCount(8);
+	fSizeSlider->SetLimitLabels("25%", "200%");
 	
 	BBox *advancedBox = new BBox("Advanced");
 	advancedBox->SetLabel("Advanced options");
@@ -60,17 +80,14 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 		B_ALIGN_TOP));
 	AddChild(advancedBox);
 	
-	layoutView = BLayoutBuilder::Group<>()
+	BView* layoutView = BLayoutBuilder::Group<>()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(fUseDirectWindow = new BCheckBox("Use DW",
 					"Use BDirectWindow (allows less CPU usage)",
 					new BMessage(kUseDirectWindow)))
-			//.Add(new BCheckBox("FixWidth", "Fix clip width",
-			//	new BMessage))
-			//.Add(new BCheckBox("FixHeight", "Fix clip height",
-			//	new BMessage))
+	
 			.Add(fDepthControl = new BOptionPopUp("DepthControl", "Clip color depth:",
 				new BMessage(kDepthChanged)))
 			.Add(fPriorityControl = new PriorityControl("PriorityControl",
@@ -108,20 +125,15 @@ void
 AdvancedOptionsView::AttachedToWindow()
 {
 	BView::AttachedToWindow();
-	fUseDirectWindow->SetTarget(this);
-	fDepthControl->SetTarget(this);
-	fPriorityControl->SetTarget(this);
 	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
-	BView *container = FindView("container");
-	if (container != NULL) {
-		BControl *child = dynamic_cast<BControl *>(container->ChildAt(0));
-		while (child != NULL) {
-			child->SetTarget(this);
-			child = dynamic_cast<BControl *>(child->NextSibling());
-		}
-	}
+	fUseDirectWindow->SetTarget(this);
+	fDepthControl->SetTarget(this);
+	fPriorityControl->SetTarget(this);
+	fSizeSlider->SetTarget(this);
+	fSizeTextControl->SetTarget(this);
+	fSizeSlider->SetValue(Settings().TargetSize());
 }
 
 
@@ -153,16 +165,25 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		
 		case kClipSizeChanged:
 		{
-			BRadioButton *source = NULL;
-			message->FindPointer("source", (void **)&source);
-			if (source != NULL) {
-				float num;
-				sscanf(source->Name(), "%1f", &num);
-				Settings().SetClipSize(num);
-				Window()->PostMessage(kClipSizeChanged);
-			}
+			float num = fSizeSlider->Value();
+			
+			BString sizeString;
+			sizeString << (int32)num;
+			fSizeTextControl->SetText(sizeString);
+			Settings().SetTargetSize(num);
+			
+			SendNotices(kClipSizeChanged);
+			
 			break;
 		}
+		
+		case kMsgTextControlSizeChanged:
+		{
+			int32 value = atoi(fSizeTextControl->TextView()->Text());
+			fSizeSlider->SetValue(value);
+			break;
+		}
+			
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -176,3 +197,32 @@ AdvancedOptionsView::MinSize()
 	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(300, 400));
 }
 
+
+// SizeSlider
+SizeSlider::SizeSlider(const char* name, const char* label,
+		BMessage* message, int32 minValue,
+		int32 maxValue, orientation posture,
+		thumb_style thumbType,
+		uint32 flags)
+	:
+	BSlider(name, label, message, minValue, maxValue, posture, thumbType, flags)
+{
+}
+
+
+/* virtual */
+void
+SizeSlider::SetValue(int32 value)
+{
+	// TODO: Not really, nice, should not have a fixed list of values
+	const int32 validValues[] = { 25, 50, 75, 100, 125, 150, 175, 200 };
+	int32 numValues = sizeof(validValues) / sizeof(int32);
+	for (int32 i = 0; i < numValues - 1; i++) {
+		if (value > validValues[i] && value < validValues[i + 1]) {
+			value = value > validValues[i] + (validValues[i + 1] - validValues[i]) / 2
+				? validValues[i + 1] : validValues[i];
+		}
+	}
+	
+	BSlider::SetValue(value);
+}
