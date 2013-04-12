@@ -12,7 +12,7 @@
 static BMessage sSettings;
 
 const static char *kCaptureRect = "capture rect";
-const static char *kClipRect = "clip rect";
+//const static char *kClipRect = "clip rect";
 const static char *kClipDepth = "clip depth";
 const static char *kClipShrink = "clip shrink";
 const static char *kUseDirectWindow = "use DW";

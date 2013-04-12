@@ -234,8 +234,8 @@ OutputView::UpdateSettings()
 	if (fWholeScreen->Value() == B_CONTROL_ON)
 		settings.SetCaptureArea(BScreen().Frame());
 		
-	BRect captureRect = settings.CaptureArea();
-	const float factor = 100;
+	//BRect captureRect = settings.CaptureArea();
+	//const float factor = 100;
 	
 	//  TODO: set the frame
 	//settings.SetClipFrame(GetScaledRect(captureRect, factor));
