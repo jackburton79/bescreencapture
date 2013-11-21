@@ -290,7 +290,7 @@ void
 Controller::StartCapture()
 {
 	BPath path;
-	status_t status = find_directory(B_COMMON_TEMP_DIRECTORY, &path);
+	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
 	if (status != B_OK)
 		return;
 			
