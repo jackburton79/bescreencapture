@@ -48,9 +48,8 @@ GetScaledRect(const BRect &rect, const float scale)
 	BRect scaledRect = rect;
 	scaledRect.OffsetTo(B_ORIGIN);
 	
-	scaledRect.right = ceil((scaledRect.right + 1) * scale / 100 - 1);
-	scaledRect.bottom = ceil((scaledRect.bottom + 1) * scale / 100 - 1);
-	
+	scaledRect.right = (scaledRect.right + 1) * scale / 100 - 1;
+	scaledRect.bottom = (scaledRect.bottom + 1) * scale / 100 - 1;	
 	return scaledRect;
 }
 

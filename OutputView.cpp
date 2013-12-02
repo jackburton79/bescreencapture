@@ -278,15 +278,13 @@ OutputView::UpdateSettings()
 	if (fWholeScreen->Value() == B_CONTROL_ON)
 		settings.SetCaptureArea(BScreen().Frame());
 		
-	//BRect captureRect = settings.CaptureArea();
-	//const float factor = 100;
-	
-	//  TODO: set the frame
-	//settings.SetClipFrame(GetScaledRect(captureRect, factor));
+	BRect captureRect = settings.CaptureArea();
 	
 	UpdatePreviewFromSettings();
 	
-	BuildCodecMenu(FormatFamily());
+	BRect destFrame = GetScaledRect(captureRect, Settings().TargetSize());
+	printf("right: %f, bottom: %f\n", destFrame.right, destFrame.bottom);
+	BuildCodecMenu(destFrame, FormatFamily());
 	
 	fController->SetMediaFormat(fFormat);
 }
@@ -310,10 +308,9 @@ OutputView::UpdatePreviewFromSettings()
 
 
 void 
-OutputView::BuildCodecMenu(const media_format_family &family)
+OutputView::BuildCodecMenu(const BRect& destFrame, const media_format_family &family)
 {
-	Settings settings;
-	BRect rect = settings.CaptureArea();//ClipFrame();
+	BRect rect = destFrame;
 	rect.right++;
 	rect.bottom++;
 		

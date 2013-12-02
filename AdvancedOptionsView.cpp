@@ -133,7 +133,11 @@ AdvancedOptionsView::AttachedToWindow()
 	fPriorityControl->SetTarget(this);
 	fSizeSlider->SetTarget(this);
 	fSizeTextControl->SetTarget(this);
-	fSizeSlider->SetValue(Settings().TargetSize());
+	
+	fSizeSlider->SetValue(Settings().TargetSize());		
+	BString sizeString;
+	sizeString << (int32)fSizeSlider->Value();
+	fSizeTextControl->SetText(sizeString);
 }
 
 

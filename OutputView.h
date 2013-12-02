@@ -51,7 +51,7 @@ private:
 	media_format_family FormatFamily() const;
 	media_format Format() const;
 			
-	void BuildCodecMenu(const media_format_family &family);
+	void BuildCodecMenu(const BRect& destRect, const media_format_family &family);
 	status_t GetCodecsForFamily(const media_format_family &,
 				const int32 &width, const int32 &height,
 				BMenu *, media_format &outFormat);
