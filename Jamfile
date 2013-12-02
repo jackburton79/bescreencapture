@@ -19,6 +19,6 @@ Application BeScreenCapture :
 	Settings.cpp
 	Utils.cpp
 
-	: be media game translation $(TARGET_LIBSTDC++)
+	: be media game tracker translation $(TARGET_LIBSTDC++)
 	: BeScreenCapture.rdef
 	;
