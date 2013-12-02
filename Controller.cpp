@@ -69,7 +69,6 @@ Controller::MessageReceived(BMessage *message)
 				}
 				case kClipSizeChanged:
 				{
-					//printf("%f\n", Settings().TargetSize());
 					float targetSize = Settings().TargetSize();
 					BRect rect = Settings().CaptureArea();
 					fEncoder->SetDestFrame(GetScaledRect(rect, targetSize));

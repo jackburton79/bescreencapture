@@ -283,7 +283,6 @@ OutputView::UpdateSettings()
 	UpdatePreviewFromSettings();
 	
 	BRect destFrame = GetScaledRect(captureRect, Settings().TargetSize());
-	printf("right: %f, bottom: %f\n", destFrame.right, destFrame.bottom);
 	BuildCodecMenu(destFrame, FormatFamily());
 	
 	fController->SetMediaFormat(fFormat);
