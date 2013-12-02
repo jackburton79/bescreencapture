@@ -44,6 +44,7 @@ private:
 	BRadioButton *fWholeScreen;
 	BRadioButton *fCustomArea;
 	PreviewView *fRectView;
+	BButton* fFilePanelButton;
 	
 	media_format fFormat;
 	

@@ -10,6 +10,7 @@
 #include <Box.h>
 #include <Button.h>
 #include <CheckBox.h>
+#include <FilePanel.h>
 #include <GridLayoutBuilder.h>
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
@@ -37,6 +38,7 @@
 const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kFileTypeChanged = 'FtyC';
 const static int32 kCodecChanged = 'CdCh';
+const static int32 kOpenFilePanel = 'OpFp';
 const static char *kCodecData = "Codec";
 
 OutputView::OutputView(Controller *controller)
@@ -48,12 +50,10 @@ OutputView::OutputView(Controller *controller)
 	
 	BBox *selectBox = new BBox("selection");
 	selectBox->SetLabel("Selection");
-	selectBox->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
 	AddChild(selectBox);
 	
 	BBox *outputBox = new BBox("output");
 	outputBox->SetLabel("Output");
-	outputBox->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
 	AddChild(outputBox);
 
 	Settings settings;
@@ -79,6 +79,9 @@ OutputView::OutputView(Controller *controller)
 	fSelectArea = new BButton("select area", "Select", new BMessage(kSelectArea));
 	fSelectArea->SetEnabled(false);
 	
+	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
+	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
+	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	fMinimizeOnStart = new BCheckBox("Minimize on start",
 		"Minimize on recording", new BMessage(kMinimizeOnRecording));
 	
@@ -88,7 +91,10 @@ OutputView::OutputView(Controller *controller)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-			.Add(fFileName)
+			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+				.Add(fFileName)
+				.Add(fFilePanelButton)
+			.End()
 			.Add(fOutputFileType)
 			.Add(fCodecMenu)
 			.Add(fMinimizeOnStart)
@@ -155,6 +161,7 @@ OutputView::AttachedToWindow()
 	fOutputFileType->SetTarget(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
+	fFilePanelButton->SetTarget(this);
 	
 	UpdatePreviewFromSettings();
 }
@@ -164,6 +171,15 @@ void
 OutputView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
+		case kOpenFilePanel:
+		{
+			BMessenger target(this);
+			BFilePanel* filePanel = new BFilePanel(B_SAVE_PANEL,
+				&target, NULL, 0, false, NULL);
+			filePanel->Show();
+			break;
+		}
+		
 		case kCheckBoxAreaSelectionChanged:
 			_UpdatePreview(NULL);
 			break;	
@@ -191,7 +207,7 @@ OutputView::MessageReceived(BMessage *message)
 			media_codec_info *info;
 			ssize_t size;
 			if (message->FindData(kCodecData, B_SIMPLE_DATA,
-					(const void **)&info, &size) == B_OK)
+					(const void**)&info, &size) == B_OK)
 				fController->SetMediaCodecInfo(*info);
 			break;				
 		}
@@ -211,7 +227,35 @@ OutputView::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-					
+		
+		case B_SAVE_REQUESTED:
+		{
+			entry_ref ref;
+			const char* name = NULL;
+			message->FindRef("directory", &ref);
+			message->FindString("name", &name);
+			
+			BPath path(&ref);
+			path.Append(name);
+			fFileName->SetText(path.Path());
+			
+			BFilePanel* filePanel = NULL;
+			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
+				delete filePanel;
+				
+			// TODO: why does the textcontrol not send the modification message ?
+			fController->SetOutputFileName(fFileName->Text());
+			
+			break;
+		}
+		
+		case B_CANCEL:
+		{
+			BFilePanel* filePanel = NULL;
+			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
+				delete filePanel;
+			break;
+		}			
 		default:
 			BView::MessageReceived(message);
 			break;
