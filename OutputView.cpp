@@ -15,8 +15,6 @@
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
-//#include <MediaDefs.h>
-//#include <MenuField.h>
 #include <MenuItem.h>
 #include <OptionPopUp.h>
 #include <PopUpMenu.h>
@@ -38,7 +36,6 @@ const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kFileTypeChanged = 'FtyC';
 const static int32 kCodecChanged = 'CdCh';
 const static int32 kOpenFilePanel = 'OpFp';
-const static char *kCodecData = "Codec";
 
 OutputView::OutputView(Controller *controller)
 	:
