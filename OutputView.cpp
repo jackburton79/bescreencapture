@@ -278,9 +278,7 @@ OutputView::UpdateSettings()
 	
 	if (fWholeScreen->Value() == B_CONTROL_ON)
 		settings.SetCaptureArea(BScreen().Frame());
-		
-	BRect captureRect = settings.CaptureArea();
-	
+			
 	UpdatePreviewFromSettings();
 	
 	fController->UpdateMediaFormatAndCodecsForCurrentFamily();
