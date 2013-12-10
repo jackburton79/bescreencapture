@@ -19,6 +19,9 @@ public:
 	void SetCaptureArea(const BRect &rect);
 	void GetCaptureArea(BRect &rect) const;
 	BRect CaptureArea() const;
+	
+	void GetTargetRect(BRect& rect) const;
+	BRect TargetRect() const;
 		
 	void SetClipDepth(const color_space &space);
 	void GetClipDepth(color_space &space) const;

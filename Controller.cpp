@@ -71,7 +71,7 @@ Controller::MessageReceived(BMessage *message)
 				}
 				case kClipSizeChanged:
 				{
-					fEncoder->SetDestFrame(GetScaledRect());
+					fEncoder->SetDestFrame(Settings().TargetRect());
 					SendNotices(kMsgControllerTargetFrameChanged, message);
 					break;
 				}
@@ -183,7 +183,7 @@ Controller::SetCaptureArea(const BRect& rect)
 	BAutolock _(this);
 	Settings().SetCaptureArea(rect);
 	
-	fEncoder->SetDestFrame(rect);
+	fEncoder->SetDestFrame(Settings().TargetRect());
 		
 	UpdateAreaDescription(rect);
 	
@@ -264,7 +264,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	printf("UpdateMediaFormatAndCodecsForCurrentFamily()\n");
 	
 	Settings settings;
-	BRect targetRect = GetScaledRect();
+	BRect targetRect = settings.TargetRect();
 	
 	media_format mediaFormat;
 	UpdateMediaFormat(targetRect.IntegerWidth(), targetRect.IntegerHeight(),

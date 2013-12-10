@@ -43,24 +43,6 @@ MakeUniqueName(const char *name, char *newName, size_t length)
 }
 
 
-BRect
-GetScaledRect()
-{
-	Settings settings;
-	const float scale = settings.Scale();
-	BRect scaledRect = settings.CaptureArea();
-	
-	scaledRect.OffsetTo(B_ORIGIN);
-	
-	scaledRect.PrintToStream();
-	scaledRect.right = (scaledRect.right + 1) * scale / 100 - 1;
-	scaledRect.bottom = (scaledRect.bottom + 1) * scale / 100 - 1;	
-	
-	scaledRect.PrintToStream();
-	return scaledRect;
-}
-
-
 void
 FixRect(BRect &rect, const bool fixWidth, const bool fixHeight)
 {

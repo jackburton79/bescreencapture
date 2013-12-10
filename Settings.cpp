@@ -128,6 +128,27 @@ Settings::CaptureArea() const
 
 
 void
+Settings::GetTargetRect(BRect& rect) const
+{
+	rect = TargetRect();
+}
+
+
+BRect
+Settings::TargetRect() const
+{
+	const float scale = Scale();
+	BRect scaledRect = CaptureArea();
+	
+	scaledRect.OffsetTo(B_ORIGIN);
+	scaledRect.right = (scaledRect.right + 1) * scale / 100 - 1;
+	scaledRect.bottom = (scaledRect.bottom + 1) * scale / 100 - 1;	
+	
+	return scaledRect;
+}
+
+
+void
 Settings::SetClipDepth(const color_space &space)
 {
 	const int32 &spaceInt = (int32)space;
