@@ -128,6 +128,7 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureResumed);
 		
 		fController->StartWatching(outputView, kMsgControllerTargetFrameChanged);
+		fController->StartWatching(outputView, kMsgControllerCodecListUpdated);
 			
 		fController->UnlockLooper();
 	}

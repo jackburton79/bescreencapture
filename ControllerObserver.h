@@ -14,7 +14,8 @@ enum {
 	kMsgControllerEncodeFinished,	// status_t status
 	kMsgControllerTargetFrameChanged,
 	kMsgControllerVideoDepthChanged,
-	kMsgControllerOutputFileNameChanged
+	kMsgControllerOutputFileNameChanged,
+	kMsgControllerCodecListUpdated
 };
 
 
