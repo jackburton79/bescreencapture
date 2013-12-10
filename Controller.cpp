@@ -261,7 +261,6 @@ status_t
 Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 {
 	BAutolock _(this);
-	printf("UpdateMediaFormatAndCodecsForCurrentFamily()\n");
 	
 	Settings settings;
 	BRect targetRect = settings.TargetRect();
