@@ -337,6 +337,10 @@ OutputView::_RebuildCodecsMenu()
 	}
 	
 	Window()->EndViewTransaction();
+	
+	if (currentCodec != codecsMenu->FindMarked()->Label())
+		fController->SetMediaCodec(codecsMenu->FindMarked()->Label());
+		
 }
 
 
