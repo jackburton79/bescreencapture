@@ -12,9 +12,8 @@
 static BMessage sSettings;
 
 const static char *kCaptureRect = "capture rect";
-//const static char *kClipRect = "clip rect";
 const static char *kClipDepth = "clip depth";
-const static char *kClipShrink = "clip shrink";
+const static char *kClipScale = "clip scale";
 const static char *kUseDirectWindow = "use DW";
 const static char *kIncludeCursor = "cursor";
 const static char *kMinimize = "minimize";
@@ -65,8 +64,8 @@ Settings::Load()
 			sSettings.ReplaceRect(kCaptureRect, rect);
 		if (tempMessage.FindInt32(kClipDepth, &integer) == B_OK)
 			sSettings.ReplaceInt32(kClipDepth, integer);
-		if (tempMessage.FindFloat(kClipShrink, &decimal) == B_OK)
-			sSettings.ReplaceFloat(kClipShrink, decimal);
+		if (tempMessage.FindFloat(kClipScale, &decimal) == B_OK)
+			sSettings.ReplaceFloat(kClipScale, decimal);
 		if (tempMessage.FindBool(kUseDirectWindow, &boolean) == B_OK)
 			sSettings.ReplaceBool(kUseDirectWindow, boolean);
 		if (tempMessage.FindBool(kIncludeCursor, &boolean) == B_OK)
@@ -156,28 +155,28 @@ Settings::ClipDepth() const
 
 
 void
-Settings::SetTargetSize(const float &rate)
+Settings::SetScale(const float &scale)
 {
-	if (!fSettings->HasFloat(kClipShrink))
-		fSettings->AddFloat(kClipShrink, rate);
+	if (!fSettings->HasFloat(kClipScale))
+		fSettings->AddFloat(kClipScale, scale);
 	else
-		fSettings->ReplaceFloat(kClipShrink, rate);
+		fSettings->ReplaceFloat(kClipScale, scale);
 }
 
 
 void
-Settings::GetTargetSize(float &rate) const
+Settings::GetScale(float &scale) const
 {
-	fSettings->FindFloat(kClipShrink, &rate);
+	fSettings->FindFloat(kClipScale, &scale);
 }
 
 
 float
-Settings::TargetSize() const
+Settings::Scale() const
 {
-	float rate;
-	fSettings->FindFloat(kClipShrink, &rate);
-	return rate;
+	float scale;
+	fSettings->FindFloat(kClipScale, &scale);
+	return scale;
 }
 
 
@@ -314,7 +313,7 @@ Settings::SetDefaults()
 {
 	sSettings.MakeEmpty();
 	sSettings.AddString(kOutputFile, "/boot/home/outputfile");
-	sSettings.AddFloat(kClipShrink, 100);
+	sSettings.AddFloat(kClipScale, 100);
 	sSettings.AddInt32(kClipDepth, B_RGB32);
 	sSettings.AddBool(kIncludeCursor, true);
 	sSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);

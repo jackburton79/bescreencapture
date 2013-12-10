@@ -134,7 +134,7 @@ AdvancedOptionsView::AttachedToWindow()
 	fSizeSlider->SetTarget(this);
 	fSizeTextControl->SetTarget(this);
 	
-	fSizeSlider->SetValue(Settings().TargetSize());		
+	fSizeSlider->SetValue(Settings().Scale());		
 	BString sizeString;
 	sizeString << (int32)fSizeSlider->Value();
 	fSizeTextControl->SetText(sizeString);
@@ -174,7 +174,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			BString sizeString;
 			sizeString << (int32)num;
 			fSizeTextControl->SetText(sizeString);
-			Settings().SetTargetSize(num);
+			Settings().SetScale(num);
 			
 			SendNotices(kClipSizeChanged);
 			

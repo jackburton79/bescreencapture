@@ -32,7 +32,8 @@ Controller::Controller()
 	BLooper("Controller"),
 	fCaptureThread(-1),
 	fKillThread(true),
-	fPaused(false)
+	fPaused(false),
+	fCodecList(NULL)
 {
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
 	
@@ -47,6 +48,7 @@ Controller::Controller()
 Controller::~Controller()
 {
 	delete fEncoder;
+	delete fCodecList;
 }
 
 
@@ -69,9 +71,7 @@ Controller::MessageReceived(BMessage *message)
 				}
 				case kClipSizeChanged:
 				{
-					float targetSize = Settings().TargetSize();
-					BRect rect = Settings().CaptureArea();
-					fEncoder->SetDestFrame(GetScaledRect(rect, targetSize));
+					fEncoder->SetDestFrame(GetScaledRect());
 					SendNotices(kMsgControllerTargetFrameChanged, message);
 					break;
 				}
@@ -194,12 +194,10 @@ Controller::SetCaptureArea(const BRect& rect)
 
 
 void
-Controller::SetTargetSize(const float &percent)
+Controller::SetScale(const float &scale)
 {
 	BAutolock _(this);
-	Settings().SetTargetSize(percent);
-	
-	
+	Settings().SetScale(scale);
 }
 
 
@@ -221,27 +219,85 @@ Controller::SetOutputFileName(const char *name)
 }
 
 
+media_format_family
+Controller::MediaFormatFamily() const
+{
+	return fEncoder->MediaFormatFamily();
+}
+
+
 void
 Controller::SetMediaFormatFamily(const media_format_family& family)
 {
 	BAutolock _(this);
 	fEncoder->SetMediaFormatFamily(family);
+	UpdateMediaFormatAndCodecsForCurrentFamily();
 }
 
 
 void
-Controller::SetMediaFormat(const media_format& format)
+Controller::SetMediaCodec(const char* codecName)
 {
 	BAutolock _(this);
-	fEncoder->SetMediaFormat(format);
+	for (int32 i = 0; i < fCodecList->CountItems(); i++) {
+		media_codec_info* codec = fCodecList->ItemAt(i);
+		if (!strcmp(codec->pretty_name, codecName)) {
+			fEncoder->SetMediaCodecInfo(*codec);
+			break;
+		}
+	}
 }
 
 
-void
-Controller::SetMediaCodecInfo(const media_codec_info& info)
+status_t
+Controller::GetCodecsList(BObjectList<media_codec_info>& codecList) const
+{
+	codecList = *fCodecList;
+	return B_OK;
+}
+	
+
+status_t
+Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 {
 	BAutolock _(this);
-	fEncoder->SetMediaCodecInfo(info);
+	printf("UpdateMediaFormatAndCodecsForCurrentFamily()\n");
+	
+	Settings settings;
+	BRect targetRect = GetScaledRect();
+	
+	media_format mediaFormat;
+	UpdateMediaFormat(targetRect.IntegerWidth(), targetRect.IntegerHeight(),
+		settings.ClipDepth(), 10, mediaFormat);
+	fEncoder->SetMediaFormat(mediaFormat);
+	
+	// find the full media_file_format corresponding to
+	// the given format family (e.g. AVI)
+	media_file_format fileFormat;
+	if (!GetMediaFileFormat(MediaFormatFamily(), fileFormat)) {
+		printf("GetMediaFileFormat() failed\n");
+		return B_ERROR;
+	}
+	
+	delete fCodecList;
+	fCodecList = new BObjectList<media_codec_info> (1, true);
+	
+	int32 cookie = 0;
+	media_codec_info codec;
+	media_format dummyFormat;
+	while (get_next_encoder(&cookie, &fileFormat, &mediaFormat,
+			&dummyFormat, &codec) == B_OK) {
+		media_codec_info* newCodec = new media_codec_info;
+		*newCodec = codec;
+		fCodecList->AddItem(newCodec);
+	}
+	
+	for (int32 i = 0; i < fCodecList->CountItems(); i++) {
+		printf("%s\n", fCodecList->ItemAt(i)->pretty_name);
+	}
+	
+	SendNotices(kMsgControllerCodecListUpdated);
+	return B_OK;
 }
 
 

@@ -15,9 +15,8 @@
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
-#include <MediaDefs.h>
-#include <MediaFormats.h>
-#include <MenuField.h>
+//#include <MediaDefs.h>
+//#include <MenuField.h>
 #include <MenuItem.h>
 #include <OptionPopUp.h>
 #include <PopUpMenu.h>
@@ -192,6 +191,7 @@ OutputView::MessageReceived(BMessage *message)
 		case kFileTypeChanged:
 			fController->SetMediaFormatFamily(FormatFamily());
 			UpdateSettings();
+			
 			break;
 				
 		case kFileNameChanged:
@@ -204,11 +204,9 @@ OutputView::MessageReceived(BMessage *message)
 		
 		case kCodecChanged:
 		{
-			media_codec_info *info;
-			ssize_t size;
-			if (message->FindData(kCodecData, B_SIMPLE_DATA,
-					(const void**)&info, &size) == B_OK)
-				fController->SetMediaCodecInfo(*info);
+			BMenuItem* marked = fCodecMenu->Menu()->FindMarked();
+			if (marked != NULL)
+				fController->SetMediaCodec(marked->Label());
 			break;				
 		}
 		
@@ -221,6 +219,9 @@ OutputView::MessageReceived(BMessage *message)
 				case kMsgControllerTargetFrameChanged:
 				case kClipSizeChanged:
 					_UpdatePreview(message);
+					break;
+				case kMsgControllerCodecListUpdated:
+					_RebuildCodecsMenu();
 					break;
 				default:
 					break;
@@ -282,10 +283,7 @@ OutputView::UpdateSettings()
 	
 	UpdatePreviewFromSettings();
 	
-	BRect destFrame = GetScaledRect(captureRect, Settings().TargetSize());
-	BuildCodecMenu(destFrame, FormatFamily());
-	
-	fController->SetMediaFormat(fFormat);
+	fController->UpdateMediaFormatAndCodecsForCurrentFamily();
 }
 
 
@@ -307,75 +305,39 @@ OutputView::UpdatePreviewFromSettings()
 
 
 void 
-OutputView::BuildCodecMenu(const BRect& destFrame, const media_format_family &family)
+OutputView::_RebuildCodecsMenu()
 {
-	BRect rect = destFrame;
-	rect.right++;
-	rect.bottom++;
-		
-	GetCodecsForFamily(family, (const int32 &)rect.IntegerWidth(),
-		(const int32 &)rect.IntegerHeight(), fCodecMenu->Menu(), fFormat);
-		
-	// Make the app object the menu's message target
-	fCodecMenu->Menu()->SetTargetForItems(this);
-}
-
-
-status_t
-OutputView::GetCodecsForFamily(const media_format_family &family,
-					const int32 &width, const int32 &height,
-					BMenu *codecs, media_format &initialFormat)
-{
-	SetInitialFormat(width, height, Settings().ClipDepth(),
-		10, initialFormat);
-	
-	// find the full media_file_format corresponding to
-	// the given format family (e.g. AVI)
-	media_file_format fileFormat;
-	if (!GetMediaFileFormat(family, fileFormat))
-		return B_ERROR;
+	BMenu* codecsMenu = fCodecMenu->Menu();
 	
 	BString currentCodec;
-	BMenuItem *marked = codecs->FindMarked();
+	BMenuItem *marked = codecsMenu->FindMarked();
 	if (marked != NULL)
 		currentCodec = marked->Label();
-	
-	// suspend updates while we're rebuilding this menu in order to
-	// reduce window flicker and other annoyances
+		
 	Window()->BeginViewTransaction();
 		
-	codecs->RemoveItems(0, codecs->CountItems(), true);
+	codecsMenu->RemoveItems(0, codecsMenu->CountItems(), true);
 	
-	int32 cookie = 0;
-	media_codec_info codec;
-	media_format dummyFormat;
-	while (get_next_encoder(&cookie, &fileFormat, &initialFormat,
-			&dummyFormat, &codec) == B_OK) {
-		BMenuItem *item = CreateCodecMenuItem(codec);
-		if (item != NULL)
-			codecs->AddItem(item);
-				
-		if (codec.pretty_name == currentCodec)
-			item->SetMarked(true);
+	BObjectList<media_codec_info> codecList(1, true);	
+	if (fController->GetCodecsList(codecList) == B_OK) {
+		for (int32 i = 0; i < codecList.CountItems(); i++) {
+			media_codec_info* codec = codecList.ItemAt(i);
+			BMenuItem* item = new BMenuItem(codec->pretty_name, new BMessage(kCodecChanged));
+			codecsMenu->AddItem(item);
+			if (codec->pretty_name == currentCodec)
+				item->SetMarked(true);
+		}			
+		// Make the app object the menu's message target
+		fCodecMenu->Menu()->SetTargetForItems(this);
 	}
 	
-	if (codecs->FindMarked() == NULL) {
-		BMenuItem *item = codecs->ItemAt(0);
+	if (codecsMenu->FindMarked() == NULL) {
+		BMenuItem *item = codecsMenu->ItemAt(0);
 		if (item != NULL)
 			item->SetMarked(true);
 	}
 	
 	Window()->EndViewTransaction();
-	
-	marked = codecs->FindMarked();
-	BMessage *message = marked->Message();
-	media_codec_info *info;
-	ssize_t size;
-	if (message->FindData(kCodecData, B_SIMPLE_DATA,
-			(const void **)&info, &size) == B_OK)
-		fController->SetMediaCodecInfo(*info);
-		
-	return B_OK;
 }
 
 
@@ -428,46 +390,4 @@ OutputView::_UpdatePreview(BMessage* message)
 	// the size of the destination
 	// clip maybe isn't supported by the codec	
 	UpdateSettings();
-}
-	
-
-/* static */
-void
-OutputView::SetInitialFormat(const int32 &width, const int32 &height,
-	const color_space &colorSpace, const int32 &fieldRate,
-	media_format &initialFormat)
-{
-	memset(&initialFormat, 0, sizeof(media_format));
-		
-	initialFormat.type = B_MEDIA_RAW_VIDEO;
-	initialFormat.u.raw_video.display.line_width = width;
-	initialFormat.u.raw_video.display.line_count = height;
-	initialFormat.u.raw_video.last_active = initialFormat.u.raw_video.display.line_count - 1;
-	
-	size_t pixelChunk;
-	size_t rowAlign;
-	size_t pixelPerChunk;
-	get_pixel_size_for(colorSpace, &pixelChunk, &rowAlign, &pixelPerChunk);
-	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
-	initialFormat.u.raw_video.display.format = colorSpace;
-	initialFormat.u.raw_video.interlace = 1;	
-	
-	// TODO: Calculate this in some way
-	initialFormat.u.raw_video.field_rate = fieldRate; //Frames per second
-	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
-	initialFormat.u.raw_video.pixel_height_aspect = 1;
-	
-}
-
-
-/* static */
-BMenuItem *
-OutputView::CreateCodecMenuItem(const media_codec_info &codec)
-{
-	BMessage *message = new BMessage(kCodecChanged);
-	if (message == NULL)
-		return NULL;
-	message->AddData(kCodecData, B_SIMPLE_DATA, &codec, sizeof(media_codec_info));
-	BMenuItem *item = new BMenuItem(codec.pretty_name, message);
-	return item;
 }

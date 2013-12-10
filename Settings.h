@@ -24,9 +24,9 @@ public:
 	void GetClipDepth(color_space &space) const;
 	color_space ClipDepth() const;
 	
-	void SetTargetSize(const float &factor);
-	void GetTargetSize(float &factor) const;
-	float TargetSize() const;
+	void SetScale(const float &scale);
+	void GetScale(float &scale) const;
+	float Scale() const;
 	
 	void SetUseDirectWindow(const bool &use);
 	void GetUseDirectWindow(bool &use) const;

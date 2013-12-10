@@ -1,3 +1,4 @@
+#include "Settings.h"
 #include "Utils.h"
 
 #include <Directory.h>
@@ -43,13 +44,19 @@ MakeUniqueName(const char *name, char *newName, size_t length)
 
 
 BRect
-GetScaledRect(const BRect &rect, const float scale)
+GetScaledRect()
 {
-	BRect scaledRect = rect;
+	Settings settings;
+	const float scale = settings.Scale();
+	BRect scaledRect = settings.CaptureArea();
+	
 	scaledRect.OffsetTo(B_ORIGIN);
 	
+	scaledRect.PrintToStream();
 	scaledRect.right = (scaledRect.right + 1) * scale / 100 - 1;
 	scaledRect.bottom = (scaledRect.bottom + 1) * scale / 100 - 1;	
+	
+	scaledRect.PrintToStream();
 	return scaledRect;
 }
 
@@ -100,4 +107,32 @@ GetMediaFileFormat(const media_format_family &family,
 	memset(&format, 0, sizeof(format));
 	
 	return false;
+}
+
+
+void
+UpdateMediaFormat(const int32 &width, const int32 &height,
+	const color_space &colorSpace, const int32 &fieldRate,
+	media_format &initialFormat)
+{
+	memset(&initialFormat, 0, sizeof(media_format));
+		
+	initialFormat.type = B_MEDIA_RAW_VIDEO;
+	initialFormat.u.raw_video.display.line_width = width;
+	initialFormat.u.raw_video.display.line_count = height;
+	initialFormat.u.raw_video.last_active = initialFormat.u.raw_video.display.line_count - 1;
+	
+	size_t pixelChunk;
+	size_t rowAlign;
+	size_t pixelPerChunk;
+	get_pixel_size_for(colorSpace, &pixelChunk, &rowAlign, &pixelPerChunk);
+	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
+	initialFormat.u.raw_video.display.format = colorSpace;
+	initialFormat.u.raw_video.interlace = 1;	
+	
+	// TODO: Calculate this in some way
+	initialFormat.u.raw_video.field_rate = fieldRate; //Frames per second
+	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
+	initialFormat.u.raw_video.pixel_height_aspect = 1;
+	
 }

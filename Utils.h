@@ -12,10 +12,12 @@ class BRect;
 
 int32 BuildFileList(const BPath &path, BList &list);
 void MakeUniqueName(const char *name, char *newName, size_t length = B_FILE_NAME_LENGTH);
-BRect GetScaledRect(const BRect &rect, const float factor);
+BRect GetScaledRect();
 void FixRect(BRect &rect, const bool fixWidth = false, const bool fixHeight = false);
 bool GetMediaFileFormat(const media_format_family &family, media_file_format &fileFormat);
-
+void UpdateMediaFormat(const int32 &width, const int32 &height,
+	const color_space &colorSpace, const int32 &fieldRate,
+	media_format &mediaFormat);
 
 #endif
 

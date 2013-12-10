@@ -6,7 +6,9 @@
 #include <Looper.h>
 #include <MediaDefs.h>
 #include <MediaFile.h>
+#include <ObjectList.h>
 #include <OS.h>
+
 
 struct area_desc {
 	int32 offset;
@@ -39,14 +41,20 @@ public:
 	
 	void		SetUseDirectWindow(const bool &use);
 	void		SetCaptureArea(const BRect &rect);
-	void		SetTargetSize(const float &percent);
+	void		SetScale(const float &scale);
 	void		SetVideoDepth(const color_space &space);
 	void		SetOutputFileName(const char *fileName);
 
+	media_format_family MediaFormatFamily() const;
+	media_format		MediaFormat() const;
+	media_codec_info	MediaCodecInfo() const;
+	
 	void		SetMediaFormatFamily(const media_format_family &family);
-	void		SetMediaFormat(const media_format &format);
-	void		SetMediaCodecInfo(const media_codec_info &info);
+	void		SetMediaCodec(const char* codecName);
 
+	status_t	GetCodecsList(BObjectList<media_codec_info>& codecList) const;
+	status_t	UpdateMediaFormatAndCodecsForCurrentFamily();
+	
 	void		UpdateDirectInfo(direct_buffer_info *info);
 	void		UpdateAreaDescription(const BRect &rect);
 
@@ -63,6 +71,8 @@ private:
 	char				*fTemporaryPath;
 
 	area_desc 			fAreaDesc;
+	
+	BObjectList<media_codec_info>* fCodecList;
 	
 	void		StartCapture();
 	void		EndCapture();

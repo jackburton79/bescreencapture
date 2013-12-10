@@ -28,6 +28,11 @@ public:
 	status_t SetThreadPriority(const int32 &value);
 	status_t SetMessenger(const BMessenger &messenger);
 	
+	
+	media_format_family MediaFormatFamily() const;
+	media_format		MediaFormat() const;
+	media_codec_info	MediaCodecInfo() const;
+	
 	void SetMediaFormatFamily(const media_format_family &);
 	void SetMediaFormat(const media_format &);
 	void SetMediaCodecInfo(const media_codec_info &);

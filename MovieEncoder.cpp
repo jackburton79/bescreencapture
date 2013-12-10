@@ -235,6 +235,13 @@ MovieEncoder::ResetConfiguration()
 }
 
 
+media_format_family
+MovieEncoder::MediaFormatFamily() const
+{
+	return fFamily;
+}
+
+
 void
 MovieEncoder::SetMediaFormatFamily(const media_format_family& family)
 {

@@ -26,6 +26,7 @@ public:
 	void UpdateSettings();
 	
 	BPath OutputFileName() const;
+	media_format_family FormatFamily() const;
 	
 	bool MinimizeOnStart() const;
 		
@@ -45,21 +46,11 @@ private:
 	BRadioButton *fCustomArea;
 	PreviewView *fRectView;
 	BButton* fFilePanelButton;
-	
-	media_format fFormat;
-	
-	media_format_family FormatFamily() const;
-	media_format Format() const;
 			
-	void BuildCodecMenu(const BRect& destRect, const media_format_family &family);
-	status_t GetCodecsForFamily(const media_format_family &,
-				const int32 &width, const int32 &height,
-				BMenu *, media_format &outFormat);
+	void _RebuildCodecsMenu();
 
 	void _UpdatePreview(BMessage* message);
-	static void SetInitialFormat(const int32 &width, const int32 &height,
-				const color_space &space, const int32 &fieldRate,
-				media_format &initialFormat);
+	
 	static BMenuItem *CreateCodecMenuItem(const media_codec_info &codec);
 	
 	
