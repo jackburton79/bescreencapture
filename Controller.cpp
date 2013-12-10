@@ -265,6 +265,8 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	
 	Settings settings;
 	BRect targetRect = settings.TargetRect();
+	targetRect.right++;
+	targetRect.bottom++;
 	
 	media_format mediaFormat;
 	UpdateMediaFormat(targetRect.IntegerWidth(), targetRect.IntegerHeight(),
