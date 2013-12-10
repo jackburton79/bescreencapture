@@ -163,6 +163,7 @@ OutputView::AttachedToWindow()
 	fFilePanelButton->SetTarget(this);
 	
 	UpdatePreviewFromSettings();
+	_RebuildCodecsMenu();
 }
 
 
