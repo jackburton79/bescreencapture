@@ -8,6 +8,7 @@
 #include <queue>
 
 class BBitmap;
+class FileList;
 class MovieEncoder {
 public:
 	MovieEncoder();
@@ -15,7 +16,7 @@ public:
 	
 	void DisposeData();
 		 
-	status_t SetSource(BList *fileList, const bool ownsList = true);
+	status_t SetSource(FileList *fileList, const bool ownsList = true);
 	status_t SetCursorQueue(std::queue<BPoint> *queue);
 	
 	status_t SetOutputFile(const char *fileName);
@@ -27,7 +28,6 @@ public:
 	
 	status_t SetThreadPriority(const int32 &value);
 	status_t SetMessenger(const BMessenger &messenger);
-	
 	
 	media_format_family MediaFormatFamily() const;
 	media_format		MediaFormat() const;
@@ -50,7 +50,7 @@ private:
 	int32 fPriority;
 	BMessenger fMessenger;
 		
-	BList *fFileList;
+	FileList* fFileList;
 	std::queue<BPoint> *fCursorQueue;
 	
 	BPath fOutputFile;

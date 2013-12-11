@@ -1,6 +1,7 @@
 #include "Controller.h"
 #include "ControllerObserver.h"
 #include "Executor.h"
+#include "FileList.h"
 #include "FunctionObject.h"
 #include "MovieEncoder.h"
 #include "Settings.h"
@@ -142,12 +143,10 @@ Controller::EncodeMovie()
 	
 	SendNotices(kMsgControllerEncodeStarted);
 	
-	BList* fileList = new BList;
-	
-	int32 fileCount = BuildFileList(fTemporaryPath, *fileList);
+	FileList* fileList = FileList::CreateFileList(fTemporaryPath);
 	 
 	BMessage message(kMsgControllerEncodeProgress);
-	message.AddInt32("num_files", fileCount);
+	message.AddInt32("num_files", fileList->CountItems());
 	
 	SendNotices(kMsgControllerEncodeProgress, &message);
 	

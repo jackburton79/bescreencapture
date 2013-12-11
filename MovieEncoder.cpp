@@ -8,6 +8,7 @@
 #include <cstring>
 
 #include "BitmapMovie.h"
+#include "FileList.h"
 #include "messages.h"
 #include "MovieEncoder.h"
 #include "Utils.h"
@@ -31,20 +32,13 @@ MovieEncoder::~MovieEncoder()
 void
 MovieEncoder::DisposeData()
 {
-	if (fFileList != NULL) {
-		for (int32 i = fFileList->CountItems() - 1; i >= 0; i--) {
-			char* fileName = static_cast<char*>(fFileList->ItemAtFast(i));
-			BEntry(fileName).Remove();
-			free(fileName);
-		}
-		delete fFileList;
-		fFileList = NULL;
-	}
+	delete fFileList;
+	fFileList = NULL;
 }
 
  
 status_t
-MovieEncoder::SetSource(BList *fileList, const bool ownsList)
+MovieEncoder::SetSource(FileList *fileList, const bool ownsList)
 {
 	fFileList = fileList;
 	return B_OK;
@@ -130,7 +124,7 @@ MovieEncoder::Encode()
 		return B_ERROR;
 	}
 	
-	BBitmap* bitmap = BTranslationUtils::GetBitmapFile((const char*)fFileList->ItemAtFast(0));
+	BBitmap* bitmap = BTranslationUtils::GetBitmapFile(fFileList->ItemAt(0));
 	BRect sourceFrame = bitmap->Bounds();
 	delete bitmap;
 		
@@ -167,7 +161,7 @@ MovieEncoder::Encode()
 	for (int32 i = 0; i < fFileList->CountItems(); i++) {
 		if (framesWritten % keyFrameFrequency == 0)
 			keyFrame = true;
-		const char* fileName = reinterpret_cast<const char*>(fFileList->ItemAtFast(i));
+		const char* fileName = fFileList->ItemAt(i);
 		BBitmap* frame = BTranslationUtils::GetBitmapFile(fileName);
 		if (frame == NULL)
 			continue;

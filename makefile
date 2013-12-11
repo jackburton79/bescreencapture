@@ -36,7 +36,7 @@ APP_MIME_SIG=
 #	in folder names do not work well with this makefile.
 SRCS=AdvancedOptionsView.cpp BitmapMovie.cpp BSCApp.cpp \
 BSCWindow.cpp CamStatusView.cpp Controller.cpp DeskbarControlView.cpp \
-Executor.cpp MovieEncoder.cpp OutputView.cpp \
+Executor.cpp FileList.cpp MovieEncoder.cpp OutputView.cpp \
 PreviewView.cpp PriorityControl.cpp SelectionWindow.cpp Settings.cpp \
 Utils.cpp
 

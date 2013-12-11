@@ -1,32 +1,12 @@
 #include "Settings.h"
 #include "Utils.h"
 
-#include <Directory.h>
 #include <Entry.h>
-#include <List.h>
 #include <Path.h>
 #include <String.h>
 
 #include <cstring>
 #include <cstdio>
-
-int32
-BuildFileList(const BPath &path, BList &list)
-{
-	BDirectory directory(path.Path());
-	BEntry entry;
-	BString string;
-	char entryName[B_FILE_NAME_LENGTH];
-	while (directory.GetNextEntry(&entry) == B_OK) {
-		if (entry.GetName(entryName) == B_OK) {
-			string.SetTo(path.Path());
-			string << "/" << entryName;
-			list.AddItem(strdup(string.String()));
-		}
-	}
-	
-	return list.CountItems();
-}
 
 
 void

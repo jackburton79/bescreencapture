@@ -11,6 +11,7 @@ Application BeScreenCapture :
 	Controller.cpp
 	DeskbarControlView.cpp
 	Executor.cpp
+	FileList.cpp
 	MovieEncoder.cpp
 	OutputView.cpp
 	PreviewView.cpp
