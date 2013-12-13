@@ -242,6 +242,7 @@ BSCWindow::MessageReceived(BMessage *message)
 				default:
 					break;
 			}
+			break;
 		}
 		
 

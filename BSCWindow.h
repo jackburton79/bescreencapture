@@ -36,12 +36,10 @@ private:
 	status_t _CaptureFinished();
 		
 	Controller *fController;
-	ControllerObserver *fObserver;
 
 	BTabView *fTabView;
 	BButton *fStartStopButton;
 	BStringView *fStringView;
-	BStringView *fRecordingInfo;
 	BStatusBar *fStatusBar;
 	CamStatusView *fCamStatus;
 	BCardLayout* fCardLayout;
