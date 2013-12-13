@@ -72,7 +72,7 @@ GetMediaFileFormat(const media_format_family &family,
 }
 
 
-void
+status_t
 UpdateMediaFormat(const int32 &width, const int32 &height,
 	const color_space &colorSpace, const int32 &fieldRate,
 	media_format &initialFormat)
@@ -87,7 +87,13 @@ UpdateMediaFormat(const int32 &width, const int32 &height,
 	size_t pixelChunk;
 	size_t rowAlign;
 	size_t pixelPerChunk;
-	get_pixel_size_for(colorSpace, &pixelChunk, &rowAlign, &pixelPerChunk);
+
+	status_t status;
+	status = get_pixel_size_for(colorSpace, &pixelChunk,
+			&rowAlign, &pixelPerChunk);
+	if (status != B_OK)
+		return status;
+
 	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
 	initialFormat.u.raw_video.display.format = colorSpace;
 	initialFormat.u.raw_video.interlace = 1;	
@@ -97,4 +103,5 @@ UpdateMediaFormat(const int32 &width, const int32 &height,
 	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
 	initialFormat.u.raw_video.pixel_height_aspect = 1;
 	
+	return B_OK;
 }

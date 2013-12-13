@@ -267,8 +267,12 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	targetRect.bottom++;
 	
 	media_format mediaFormat;
-	UpdateMediaFormat(targetRect.IntegerWidth(), targetRect.IntegerHeight(),
+	status_t status;
+	status = UpdateMediaFormat(targetRect.IntegerWidth(), targetRect.IntegerHeight(),
 		settings.ClipDepth(), 10, mediaFormat);
+	if (status != B_OK)
+		return status;
+
 	fEncoder->SetMediaFormat(mediaFormat);
 	
 	// find the full media_file_format corresponding to
