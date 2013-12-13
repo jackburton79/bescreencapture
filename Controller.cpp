@@ -357,7 +357,7 @@ Controller::StartCapture()
 		return;
 			
 	// Create temporary path
-	fTemporaryPath = tempnam((char *)path.Path(), (char *)"_BSC");
+	fTemporaryPath = tempnam((char*)path.Path(), (char*)"_BSC");
 	if (create_directory(fTemporaryPath, 0777) < B_OK) {
 		printf("Unable to create temporary folder");
 		return;
