@@ -19,7 +19,7 @@ const static char *kIncludeCursor = "cursor";
 const static char *kMinimize = "minimize";
 const static char *kOutputFile = "output file";
 const static char *kThreadPriority = "thread priority";
-
+const static char *kHideDeskbarIcon = "hide Deskbar icon";
 
 Settings::Settings()
 {
@@ -72,6 +72,8 @@ Settings::Load()
 			sSettings.ReplaceBool(kIncludeCursor, boolean);
 		if (tempMessage.FindBool(kMinimize, &boolean) == B_OK)
 			sSettings.ReplaceBool(kMinimize, boolean);
+		if (tempMessage.FindBool(kHideDeskbarIcon, &boolean) == B_OK)
+			sSettings.ReplaceBool(kHideDeskbarIcon, boolean);
 		if (tempMessage.FindString(kOutputFile, &string) == B_OK)
 			sSettings.ReplaceString(kOutputFile, string);
 		if (tempMessage.FindInt32(kThreadPriority, &integer) == B_OK)
@@ -228,6 +230,32 @@ Settings::UseDirectWindow() const
 
 
 void
+Settings::SetHideDeskbarIcon(const bool &use)
+{
+	if (!fSettings->HasBool(kHideDeskbarIcon))
+		fSettings->AddBool(kHideDeskbarIcon, use);
+	else
+		fSettings->ReplaceBool(kHideDeskbarIcon, use);
+}
+
+
+void
+Settings::GetHideDeskbarIcon(bool &use) const
+{
+	fSettings->FindBool(kHideDeskbarIcon, &use);
+}
+
+
+bool
+Settings::HideDeskbarIcon() const
+{
+	bool hideDeskbar;
+	fSettings->FindBool(kHideDeskbarIcon, &hideDeskbar);
+	return hideDeskbar;
+}
+
+
+void
 Settings::SetIncludeCursor(const bool &include)
 {
 	if (!fSettings->HasBool(kIncludeCursor))
@@ -339,6 +367,7 @@ Settings::SetDefaults()
 	sSettings.AddBool(kIncludeCursor, true);
 	sSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
 	sSettings.AddBool(kMinimize, false);
+	sSettings.AddBool(kHideDeskbarIcon, false);
 	
 	return B_OK;
 }

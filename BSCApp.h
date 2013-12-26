@@ -4,7 +4,7 @@
 #include <Application.h>
 
 const static char *kAppSignature = "application/x-vnd.BeScreenCapture";
-
+const static int32 kCmdToggleRecording = 'StoR';
 class BSCApp : public BApplication {
 public:
 	BSCApp();
@@ -16,6 +16,7 @@ public:
 	
 private:
 	BWindow *fWindow;
+	bool fShouldStartRecording;
 };
 
 #endif

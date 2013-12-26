@@ -21,8 +21,10 @@ main()
 
 BSCApp::BSCApp()
 	:
-	BApplication(kAppSignature)
+	BApplication(kAppSignature),
+	fWindow(NULL)
 {
+	fShouldStartRecording = false;
 	gControllerLooper = new Controller();
 	Settings::Load();
 }
@@ -41,6 +43,8 @@ BSCApp::~BSCApp()
 void
 BSCApp::ReadyToRun()
 {
+	printf("First message");
+	
 	try {
 		fWindow = new BSCWindow();
 	} catch (...) {
@@ -48,15 +52,20 @@ BSCApp::ReadyToRun()
 		return;	
 	}
 	
-	fWindow->Show();
+	if (fShouldStartRecording) {
+		fWindow->Run();
+		BMessenger(fWindow).SendMessage(kCmdToggleRecording);
+	} else {
+		fWindow->Show();
+	}
 	
 	BDeskbar deskbar;
 	if (deskbar.IsRunning()) { 
 		while (deskbar.HasItem("BSC Control"))
 			deskbar.RemoveItem("BSC Control");
-		
-		deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
-			"BSC Control"));
+		if(!Settings().HideDeskbarIcon())
+			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
+				"BSC Control"));
 	}
 }
 
@@ -71,7 +80,13 @@ BSCApp::QuitRequested()
 void
 BSCApp::MessageReceived(BMessage *message)
 {
-	switch (message->what) {		
+	message->PrintToStream();
+	switch (message->what) {
+		case kCmdToggleRecording:
+			if(fWindow != NULL)
+				BMessenger(fWindow).SendMessage(message);
+			fShouldStartRecording = true;
+			break;
 		default:
 			BApplication::MessageReceived(message);
 			break;
