@@ -1,4 +1,5 @@
 #include "AdvancedOptionsView.h"
+#include "BSCApp.h"
 #include "BSCWindow.h"
 #include "CamStatusView.h"
 #include "Controller.h"
@@ -162,6 +163,11 @@ BSCWindow::QuitRequested()
 	return canQuit && BWindow::QuitRequested();
 }
 
+bool
+BSCWindow::IsRecording()
+{
+	return fCapturing;
+}
 
 void
 BSCWindow::MessageReceived(BMessage *message)
@@ -183,8 +189,11 @@ BSCWindow::MessageReceived(BMessage *message)
 				
 			SendNotices(kSelectionWindowClosed, message);
 			break;
-		}		
+		}
 		
+		case kCmdToggleRecording:
+			fStartStopButton->Invoke();
+			break;
 		
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
@@ -309,6 +318,9 @@ BSCWindow::_CaptureFinished()
 	fStartStopButton->SetLabel("Start Recording");
 
 	SendNotices(kMsgGUIStopCapture);	
+
+	if(IsHidden())
+		Show();
 
 	return B_OK;
 }

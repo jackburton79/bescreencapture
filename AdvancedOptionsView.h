@@ -24,6 +24,8 @@ private:
 	BOptionPopUp* fDepthControl;
 	BOptionPopUp* fPriorityControl;
 	
+	BCheckBox* fHideDeskbarIcon;
+	
 	BSlider* fSizeSlider;
 	BTextControl* fSizeTextControl;
 };

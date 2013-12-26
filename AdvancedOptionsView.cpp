@@ -1,11 +1,13 @@
 #include "AdvancedOptionsView.h"
 #include "Controller.h"
+#include "DeskbarControlView.h"
 #include "messages.h"
 #include "PriorityControl.h"
 #include "Settings.h"
 
 #include <Box.h>
 #include <CheckBox.h>
+#include <Deskbar.h>
 #include <DirectWindow.h>
 #include <GroupLayout.h>
 #include <GroupLayoutBuilder.h>
@@ -22,6 +24,7 @@
 const static uint32 kUseDirectWindow = 'UsDW';
 const static uint32 kDepthChanged = 'DeCh';
 const static uint32 kMsgTextControlSizeChanged = 'TCSC';
+const static uint32 kHideDeskbar = 'HiDe';
 
 class SizeSlider : public BSlider {
 public:
@@ -92,6 +95,9 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 				new BMessage(kDepthChanged)))
 			.Add(fPriorityControl = new PriorityControl("PriorityControl",
 				"Encoding thread priority:"))
+			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
+					"Hide Deskbar icon (ctrl+command+shift+r to stop recording)",
+					new BMessage(kHideDeskbar)))
 		.End()
 		.View();
 	
@@ -133,7 +139,10 @@ AdvancedOptionsView::AttachedToWindow()
 	fPriorityControl->SetTarget(this);
 	fSizeSlider->SetTarget(this);
 	fSizeTextControl->SetTarget(this);
+	fHideDeskbarIcon->SetTarget(this);
 	
+	fHideDeskbarIcon->SetValue(Settings().HideDeskbarIcon()
+		? B_CONTROL_ON : B_CONTROL_OFF);
 	fSizeSlider->SetValue(Settings().Scale());		
 	BString sizeString;
 	sizeString << (int32)fSizeSlider->Value();
@@ -155,6 +164,22 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			const char *name = NULL;
 			fPriorityControl->SelectedOption(&name, &value);
 			Settings().SetEncodingThreadPriority(value);
+			break;
+		}
+		
+		case kHideDeskbar:
+		{
+			Settings().SetHideDeskbarIcon(fHideDeskbarIcon->Value() == B_CONTROL_ON);
+			BDeskbar deskbar;
+			if (deskbar.IsRunning()) { 
+				while (deskbar.HasItem("BSC Control")
+					&& fHideDeskbarIcon->Value() == B_CONTROL_ON)
+					deskbar.RemoveItem("BSC Control");
+				if(fHideDeskbarIcon->Value() != B_CONTROL_ON
+					&& !deskbar.HasItem("BSC Control"))
+					deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
+						"BSC Control"));
+			}
 			break;
 		}
 		
