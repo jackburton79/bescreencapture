@@ -31,10 +31,6 @@
 
 const static BRect kWindowRect(0, 0, 400, 500);
 
-enum {
-	kMsgGUIToggleCapture = 0x10000
-};
-
 const char* kEncodingString = "Encoding movie...";
 const char* kDoneString = "Done!";
 

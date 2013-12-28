@@ -3,8 +3,13 @@
 
 #include <Application.h>
 
-const static char *kAppSignature = "application/x-vnd.BeScreenCapture";
-const static int32 kCmdToggleRecording = 'StoR';
+#define kAppSignature "application/x-vnd.BeScreenCapture"
+
+enum {
+	kCmdToggleRecording = 'StoR'
+};
+
+
 class BSCApp : public BApplication {
 public:
 	BSCApp();
