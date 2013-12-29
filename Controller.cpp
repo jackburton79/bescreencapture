@@ -154,11 +154,6 @@ Controller::EncodeMovie()
 	
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
-	
-	Settings settings;
-	
-	const char* fileName = NULL;
-	settings.GetOutputFileName(&fileName);
 			
 	Executor* executor 
 		= new Executor(NewMemberFunctionObjectWithResult
