@@ -315,7 +315,7 @@ BSCWindow::_CaptureFinished()
 
 	SendNotices(kMsgGUIStopCapture);	
 
-	if(IsHidden())
+	if (IsHidden())
 		Show();
 
 	return B_OK;

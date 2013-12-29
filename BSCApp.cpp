@@ -43,8 +43,6 @@ BSCApp::~BSCApp()
 void
 BSCApp::ReadyToRun()
 {
-	printf("First message");
-	
 	try {
 		fWindow = new BSCWindow();
 	} catch (...) {
@@ -63,9 +61,10 @@ BSCApp::ReadyToRun()
 	if (deskbar.IsRunning()) { 
 		while (deskbar.HasItem("BSC Control"))
 			deskbar.RemoveItem("BSC Control");
-		if(!Settings().HideDeskbarIcon())
+		if (!Settings().HideDeskbarIcon()) {
 			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
 				"BSC Control"));
+		}
 	}
 }
 
@@ -80,10 +79,9 @@ BSCApp::QuitRequested()
 void
 BSCApp::MessageReceived(BMessage *message)
 {
-	message->PrintToStream();
 	switch (message->what) {
 		case kCmdToggleRecording:
-			if(fWindow != NULL)
+			if (fWindow != NULL)
 				BMessenger(fWindow).SendMessage(message);
 			fShouldStartRecording = true;
 			break;
