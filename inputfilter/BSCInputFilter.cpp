@@ -5,7 +5,7 @@
 #include <Roster.h>
 #include <syslog.h>
 
-#include "../BSCApp.h"
+#include "BSCApp.h"
 
 class ThinInputFilter : public BInputServerFilter {
 	status_t		InitCheck();
@@ -56,7 +56,7 @@ ThinInputFilter::Filter(BMessage* message, BList* outList)
 			break;
 		}
 	}
-	
+
 	return B_DISPATCH_MESSAGE;
 }
 

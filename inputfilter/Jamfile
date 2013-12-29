@@ -1,0 +1,8 @@
+SubDir HAIKU_TOP src add-ons input_server filters bescreencapture ;
+
+SubDirHdrs $(HAIKU_TOP) src apps bescreencapture ;
+#Includes [ FGristFiles BSCInputFilter.cpp ] : <src!apps!bescreencapture>BSCApp.h ;
+
+Addon bescreencapturefilter : 
+	BSCInputFilter.cpp 
+	: be input_server $(TARGET_LIBSUPC++) ;
