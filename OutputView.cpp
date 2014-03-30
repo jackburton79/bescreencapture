@@ -127,7 +127,9 @@ OutputView::OutputView(Controller *controller)
 	int32 cookie = 0;
 	bool firstFound = true;
 	while (get_next_file_format(&cookie, &mff) == B_OK) {
-		if (mff.capabilities & media_file_format::B_KNOWS_ENCODED_VIDEO) {
+		if (mff.capabilities &
+				(media_file_format::B_KNOWS_ENCODED_VIDEO
+				| media_file_format::B_WRITABLE)) {
 			fOutputFileType->AddOption(mff.pretty_name, mff.family);
 			if (firstFound) {
 				fOutputFileType->MenuField()->Menu()->ItemAt(0)->SetMarked(true);
