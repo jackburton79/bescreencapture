@@ -159,11 +159,13 @@ BSCWindow::QuitRequested()
 	return canQuit && BWindow::QuitRequested();
 }
 
+
 bool
 BSCWindow::IsRecording()
 {
 	return fCapturing;
 }
+
 
 void
 BSCWindow::MessageReceived(BMessage *message)
