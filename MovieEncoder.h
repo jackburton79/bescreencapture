@@ -28,17 +28,19 @@ public:
 	status_t SetThreadPriority(const int32 &value);
 	status_t SetMessenger(const BMessenger &messenger);
 	
-	
+	media_file_format	MediaFileFormat() const;
 	media_format_family MediaFormatFamily() const;
 	media_format		MediaFormat() const;
 	media_codec_info	MediaCodecInfo() const;
 	
+	void SetMediaFileFormat(const media_file_format&);
 	void SetMediaFormatFamily(const media_format_family &);
 	void SetMediaFormat(const media_format &);
 	void SetMediaCodecInfo(const media_codec_info &);
 
-	status_t Encode(const media_format_family &, const media_format &,
-					const media_codec_info &, const color_space &space = B_RGB32);
+	status_t Encode(const media_format_family &, const media_file_format& fileFormat,
+			const media_format &, const media_codec_info &,
+			const color_space &space = B_RGB32);
 	status_t Encode();
 	
 private:
@@ -58,6 +60,7 @@ private:
 	BRect fDestFrame;
 	color_space fColorSpace;
 
+	media_file_format	fFileFormat;
 	media_format_family	fFamily;
 	media_format		fFormat;
 	media_codec_info	fCodecInfo;

@@ -215,11 +215,13 @@ MovieEncoder::Encode()
 
 status_t
 MovieEncoder::Encode(const media_format_family& family,
+					const media_file_format& fileFormat,
 					const media_format& format,
 					const media_codec_info& info,
 					const color_space& space)
 {
 	SetMediaFormatFamily(family);
+	SetMediaFileFormat(fileFormat);
 	SetMediaFormat(format);
 	SetMediaCodecInfo(info);
 	SetColorSpace(space);
@@ -246,6 +248,27 @@ void
 MovieEncoder::SetMediaFormatFamily(const media_format_family& family)
 {
 	fFamily = family;
+}
+
+
+media_file_format
+MovieEncoder::MediaFileFormat() const
+{
+	return fFileFormat;
+}
+
+
+void
+MovieEncoder::SetMediaFileFormat(const media_file_format& fileFormat)
+{
+	fFileFormat = fileFormat;
+}
+
+
+media_format
+MovieEncoder::MediaFormat() const
+{
+	return fFormat;
 }
 
 
