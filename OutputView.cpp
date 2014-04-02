@@ -67,7 +67,7 @@ OutputView::OutputView(Controller *controller)
 	settings.GetOutputFileName(&fileName);
 	fFileName = new BTextControl("file name",
 			kTCLabel, fileName, new BMessage(kFileNameChanged));
-	
+
 	const char *kOutputMenuLabel = "Output Format:";
 	BPopUpMenu *fileFormatPopUp = new BPopUpMenu("Format");
 	fOutputFileType = new BMenuField("OutFormat",
@@ -148,6 +148,8 @@ OutputView::OutputView(Controller *controller)
 		}	
 	}
 	
+	_SetFileNameExtension(FileFormat().file_extension);
+
 	fWholeScreen->SetValue(B_CONTROL_ON);
 	
 	UpdateSettings();
@@ -200,10 +202,12 @@ OutputView::MessageReceived(BMessage *message)
 			
 		case kRebuildCodec:
 		case kFileTypeChanged:
+		{
 			fController->SetMediaFileFormat(FileFormat());
 			fController->SetMediaFormatFamily(FormatFamily());
+			_SetFileNameExtension(FileFormat().file_extension);
 			UpdateSettings();
-			
+		}
 			break;
 				
 		case kFileNameChanged:
@@ -255,7 +259,9 @@ OutputView::MessageReceived(BMessage *message)
 			BFilePanel* filePanel = NULL;
 			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
 				delete filePanel;
-				
+
+			_SetFileNameExtension(FileFormat().file_extension);
+
 			// TODO: why does the textcontrol not send the modification message ?
 			fController->SetOutputFileName(fFileName->Text());
 			
@@ -376,6 +382,19 @@ media_format_family
 OutputView::FormatFamily() const
 {
 	return FileFormat().family;
+}
+
+
+void
+OutputView::_SetFileNameExtension(const char* newExtension)
+{
+	BString fileName = fFileName->Text();
+	fileName.RemoveLast(fFileExtension);
+	fileName.RemoveLast(".");
+	fileName.Append(".");
+	fFileExtension = newExtension;
+	fileName.Append(fFileExtension);
+	fFileName->SetText(fileName.String());
 }
 
 

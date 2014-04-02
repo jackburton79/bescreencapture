@@ -5,6 +5,7 @@
 #include <MediaFormats.h>
 #include <Path.h>
 #include <Size.h>
+#include <String.h>
 #include <View.h>
 
 class BButton;
@@ -36,7 +37,8 @@ public:
 	virtual	BSize	MinSize();		
 private:
 	Controller *fController;
-	BTextControl *fFileName;	
+	BTextControl *fFileName;
+	BString fFileExtension;
 	BMenuField *fOutputFileType;
 	BMenuField *fCodecMenu;
 	BCheckBox *fMinimizeOnStart;
@@ -48,12 +50,10 @@ private:
 	BButton* fFilePanelButton;
 			
 	void _RebuildCodecsMenu();
-
+	void _SetFileNameExtension(const char* extension);
 	void _UpdatePreview(BMessage* message);
 	
 	static BMenuItem *CreateCodecMenuItem(const media_codec_info &codec);
-	
-	
 };
 
 
