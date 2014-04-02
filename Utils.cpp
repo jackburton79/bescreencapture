@@ -56,20 +56,7 @@ FixRect(BRect &rect, const bool fixWidth, const bool fixHeight)
 }
 
 
-bool
-GetMediaFileFormat(const media_format_family &family,
-	media_file_format &format)
-{
-	int32 cookie = 0;
-	while (get_next_file_format(&cookie, &format) == B_OK) {
-		if (format.family == family)
-			return true;
-	}
-	
-	memset(&format, 0, sizeof(format));
-	
-	return false;
-}
+
 
 
 status_t
