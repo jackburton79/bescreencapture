@@ -46,9 +46,11 @@ public:
 	void		SetOutputFileName(const char *fileName);
 
 	media_format_family MediaFormatFamily() const;
+	media_file_format	MediaFileFormat() const;
 	media_format		MediaFormat() const;
 	media_codec_info	MediaCodecInfo() const;
 	
+	void		SetMediaFileFormat(const media_file_format& format);
 	void		SetMediaFormatFamily(const media_format_family &family);
 	void		SetMediaCodec(const char* codecName);
 

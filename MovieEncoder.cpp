@@ -122,14 +122,6 @@ MovieEncoder::Encode()
 	entry_ref movieRef;
 	get_ref_for_path(movieName, &movieRef);
 	
-	media_file_format fileFormat;
-	if (!GetMediaFileFormat(fFamily, fileFormat)) {
-		BMessage message(kEncodingFinished);
-		message.AddInt32("status", (int32)B_ERROR);
-		fMessenger.SendMessage(&message);
-		return B_ERROR;
-	}
-	
 	BBitmap* bitmap = BTranslationUtils::GetBitmapFile((const char*)fFileList->ItemAtFast(0));
 	BRect sourceFrame = bitmap->Bounds();
 	delete bitmap;
@@ -140,7 +132,7 @@ MovieEncoder::Encode()
 	BitmapMovie* movie = new BitmapMovie(fDestFrame.IntegerWidth() + 1,
 					fDestFrame.IntegerHeight() + 1, fColorSpace);
 				
-	status_t error = movie->CreateFile(movieRef, fileFormat, fFormat, fCodecInfo);
+	status_t error = movie->CreateFile(movieRef, fFileFormat, fFormat, fCodecInfo);
 	if (error < B_OK) {
 		delete movie;
 		DisposeData();

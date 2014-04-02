@@ -11,7 +11,6 @@ class BButton;
 class BCheckBox;
 class BMenu;
 class BMenuField;
-class BOptionPopUp;
 class BRadioButton;
 class BTextControl;
 class Controller;
@@ -26,6 +25,8 @@ public:
 	void UpdateSettings();
 	
 	BPath OutputFileName() const;
+
+	media_file_format FileFormat() const;
 	media_format_family FormatFamily() const;
 	
 	bool MinimizeOnStart() const;
@@ -36,8 +37,7 @@ public:
 private:
 	Controller *fController;
 	BTextControl *fFileName;	
-	BOptionPopUp *fOutputFileType;
-	
+	BMenuField *fOutputFileType;
 	BMenuField *fCodecMenu;
 	BCheckBox *fMinimizeOnStart;
 	

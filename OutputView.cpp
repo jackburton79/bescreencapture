@@ -16,7 +16,6 @@
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
 #include <MenuItem.h>
-#include <OptionPopUp.h>
 #include <PopUpMenu.h>
 #include <Path.h>
 #include <RadioButton.h>
@@ -36,6 +35,15 @@ const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kFileTypeChanged = 'FtyC';
 const static int32 kCodecChanged = 'CdCh';
 const static int32 kOpenFilePanel = 'OpFp';
+
+class MediaFileFormatMenuItem : public BMenuItem {
+public:
+	MediaFileFormatMenuItem(const media_file_format& fileFormat);
+	media_file_format MediaFileFormat() const;
+private:
+	media_file_format fFileFormat;
+};
+
 
 OutputView::OutputView(Controller *controller)
 	:
@@ -61,8 +69,9 @@ OutputView::OutputView(Controller *controller)
 			kTCLabel, fileName, new BMessage(kFileNameChanged));
 	
 	const char *kOutputMenuLabel = "Output Format:";
-	fOutputFileType = new BOptionPopUp("OutFormat",
-			kOutputMenuLabel, new BMessage(kFileTypeChanged));
+	BPopUpMenu *fileFormatPopUp = new BPopUpMenu("Format");
+	fOutputFileType = new BMenuField("OutFormat",
+			kOutputMenuLabel, fileFormatPopUp);
 						
 	const char *kCodecMenuLabel = "Codec:";
 	BPopUpMenu *popUpMenu = new BPopUpMenu("Codecs");
@@ -123,16 +132,17 @@ OutputView::OutputView(Controller *controller)
 	
 	// fill in the list of available file formats
 	media_file_format mff;
-	
 	int32 cookie = 0;
 	bool firstFound = true;
 	while (get_next_file_format(&cookie, &mff) == B_OK) {
 		if (mff.capabilities &
 				(media_file_format::B_KNOWS_ENCODED_VIDEO
 				| media_file_format::B_WRITABLE)) {
-			fOutputFileType->AddOption(mff.pretty_name, mff.family);
+			MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(
+					mff);
+			fOutputFileType->Menu()->AddItem(item);
 			if (firstFound) {
-				fOutputFileType->MenuField()->Menu()->ItemAt(0)->SetMarked(true);
+				fOutputFileType->Menu()->ItemAt(0)->SetMarked(true);
 				firstFound = false;
 			}
 		}	
@@ -143,6 +153,7 @@ OutputView::OutputView(Controller *controller)
 	UpdateSettings();
 	
 	fController->SetCaptureArea(BScreen(Window()).Frame());
+	fController->SetMediaFileFormat(FileFormat());
 	fController->SetMediaFormatFamily(FormatFamily());
 	fController->SetOutputFileName(fFileName->Text());
 }
@@ -156,7 +167,7 @@ OutputView::AttachedToWindow()
 	
 	fMinimizeOnStart->SetTarget(this);
 	fFileName->SetTarget(this);
-	fOutputFileType->SetTarget(this);
+	fOutputFileType->Menu()->SetTargetForItems(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
@@ -189,6 +200,7 @@ OutputView::MessageReceived(BMessage *message)
 			
 		case kRebuildCodec:
 		case kFileTypeChanged:
+			fController->SetMediaFileFormat(FileFormat());
 			fController->SetMediaFormatFamily(FormatFamily());
 			UpdateSettings();
 			
@@ -351,10 +363,19 @@ OutputView::MinSize()
 }
 
 
+media_file_format
+OutputView::FileFormat() const
+{
+	MediaFileFormatMenuItem* item = dynamic_cast<MediaFileFormatMenuItem*>(
+			fOutputFileType->Menu()->FindMarked());
+	return item->MediaFileFormat();
+}
+
+
 media_format_family
 OutputView::FormatFamily() const
 {
-	return (media_format_family)fOutputFileType->Value();
+	return FileFormat().family;
 }
 
 
@@ -392,4 +413,21 @@ OutputView::_UpdatePreview(BMessage* message)
 	// the size of the destination
 	// clip maybe isn't supported by the codec	
 	UpdateSettings();
+}
+
+
+// MediaFileFormatMenuItem
+MediaFileFormatMenuItem::MediaFileFormatMenuItem(const media_file_format& fileFormat)
+	:
+	BMenuItem(fileFormat.pretty_name, new BMessage(kFileTypeChanged)),
+	fFileFormat(fileFormat)
+{
+
+}
+
+
+media_file_format
+MediaFileFormatMenuItem::MediaFileFormat() const
+{
+	return fFileFormat;
 }
