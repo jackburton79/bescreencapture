@@ -216,6 +216,7 @@ Controller::SetOutputFileName(const char *name)
 media_format_family
 Controller::MediaFormatFamily() const
 {
+	BAutolock _((BLooper*)this);
 	return fEncoder->MediaFormatFamily();
 }
 
@@ -225,6 +226,23 @@ Controller::SetMediaFormatFamily(const media_format_family& family)
 {
 	BAutolock _(this);
 	fEncoder->SetMediaFormatFamily(family);
+	UpdateMediaFormatAndCodecsForCurrentFamily();
+}
+
+
+media_file_format
+Controller::MediaFileFormat() const
+{
+	BAutolock _((BLooper*)this);
+	return fEncoder->MediaFileFormat();
+}
+
+
+void
+Controller::SetMediaFileFormat(const media_file_format& fileFormat)
+{
+	BAutolock _(this);
+	fEncoder->SetMediaFileFormat(fileFormat);
 	UpdateMediaFormatAndCodecsForCurrentFamily();
 }
 
@@ -270,13 +288,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 
 	fEncoder->SetMediaFormat(mediaFormat);
 	
-	// find the full media_file_format corresponding to
-	// the given format family (e.g. AVI)
-	media_file_format fileFormat;
-	if (!GetMediaFileFormat(MediaFormatFamily(), fileFormat)) {
-		printf("GetMediaFileFormat() failed\n");
-		return B_ERROR;
-	}
+	media_file_format fileFormat = fEncoder->MediaFileFormat();
 	
 	delete fCodecList;
 	fCodecList = new BObjectList<media_codec_info> (1, true);
