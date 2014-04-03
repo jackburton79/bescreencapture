@@ -12,6 +12,7 @@ class ThinInputFilter : public BInputServerFilter {
 	filter_result	Filter(BMessage* message, BList* outList);
 };
 
+
 status_t
 ThinInputFilter::InitCheck()
 {
@@ -30,26 +31,28 @@ ThinInputFilter::Filter(BMessage* message, BList* outList)
 		{
 			int32 key = message->GetInt32("raw_char", -1);
 			int32 modifiers = message->GetInt32("modifiers", -1);
-			if ((modifiers & B_CONTROL_KEY) && (modifiers & B_COMMAND_KEY)
-				&& (modifiers & B_SHIFT_KEY)) {
+			if ((modifiers & B_CONTROL_KEY)
+					&& (modifiers & B_COMMAND_KEY)
+					&& (modifiers & B_SHIFT_KEY)) {
 				if (key == 'r') {
-						// That's for ignoring repeat keypresses
-					int32 rep;
-					if (message->FindInt32("be:key_repeat", &rep) == B_OK) {
+					int32 repeat;
+					if (message->FindInt32("be:key_repeat", &repeat) == B_OK) {
+						// Ignore repeat keypresses
 						return B_SKIP_MESSAGE;
 					}
-						// That's for only toggling record on keydown
-					if(message->what == B_KEY_UP
-						|| message->what == B_UNMAPPED_KEY_UP)
+					if (message->what == B_KEY_UP
+						|| message->what == B_UNMAPPED_KEY_UP) {
+						// Only toggle record on keydown
 						return B_SKIP_MESSAGE;
-						// And that's for starting the app or sending the message
+					}
+
 					BMessage msg(kCmdToggleRecording);
-					if (!be_roster->IsRunning(kAppSignature)) {
-						be_roster->Launch(kAppSignature, &msg);
-					} else {
+					if (be_roster->IsRunning(kAppSignature)) {
 						BMessenger messenger(kAppSignature);
 						messenger.SendMessage(&msg);
-					}
+					} else
+						be_roster->Launch(kAppSignature, &msg);
+
 					return B_SKIP_MESSAGE;
 				}
 			}
