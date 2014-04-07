@@ -26,10 +26,8 @@ PreviewView::PreviewView()
 	:
 	BView("Rect View", B_WILL_DRAW),
 	fBitmapView(NULL),
-	fTop(NULL),
-	fLeft(NULL),
-	fRight(NULL),
-	fBottom(NULL)
+	fLeftTop(NULL),
+	fRightBottom(NULL)
 {
 	fCoordRect = BRect(10, 10, 20, 20);
 	fChanged = true;
@@ -39,30 +37,26 @@ PreviewView::PreviewView()
 		B_ALIGN_VERTICAL_CENTER));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
 		.AddGroup(B_HORIZONTAL)
-			//.Add(fLeft = new BStringView("top", "top"))
 			.AddGlue()
 			.AddGlue()
 		.End()
 		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
-			.Add(fLeft = new BStringView("left", "left"))
+			.Add(fLeftTop = new BStringView("lefttop", ""))
 			.Add(fBitmapView = new BitmapView())
-			.Add(fRight = new BStringView("right", "right"))
+			.Add(fRightBottom = new BStringView("rightbottom", ""))
 			.AddGlue()
 		.End()
 		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
 			.AddGlue()
-			//.Add(fRight = new BStringView("bottom", "bottom"))
 		.End()
 	);
 	
-	fLeft->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
+	fLeftTop->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
 		B_ALIGN_TOP));
-	fRight->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT,
+	fRightBottom->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT,
 		B_ALIGN_BOTTOM));
-	//fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
-	//	B_ALIGN_VERTICAL_CENTER));
 }
 
 
@@ -85,9 +79,9 @@ PreviewView::SetRect(BRect rect)
 	
 	char str[16];
 	snprintf(str, sizeof(str), "%d, %d", (int)rect.left, (int)rect.top);
-	fLeft->SetText(str);
+	fLeftTop->SetText(str);
 	snprintf(str, sizeof(str), "%d, %d", (int)rect.right, (int)rect.bottom);
-	fRight->SetText(str);
+	fRightBottom->SetText(str);
 	
 	fChanged = true;
 }

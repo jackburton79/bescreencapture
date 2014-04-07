@@ -16,10 +16,8 @@ private:
 	BRect fCoordRect;
 	bool fChanged;
 
-	BStringView *fTop;
-	BStringView *fLeft;
-	BStringView *fRight;
-	BStringView *fBottom;
+	BStringView *fLeftTop;
+	BStringView *fRightBottom;
 
 	
 	virtual BSize MinSize();
