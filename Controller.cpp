@@ -249,6 +249,8 @@ Controller::SetMediaFileFormat(const media_file_format& fileFormat)
 {
 	BAutolock _(this);
 	fEncoder->SetMediaFileFormat(fileFormat);
+
+	Settings().SetOutputFileFormat(fileFormat.pretty_name);
 	UpdateMediaFormatAndCodecsForCurrentFamily();
 }
 

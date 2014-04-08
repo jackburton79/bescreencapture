@@ -96,7 +96,7 @@ OutputView::OutputView(Controller *controller)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+			.AddGroup(B_HORIZONTAL, 0)
 				.Add(fFileName)
 				.Add(fFilePanelButton)
 			.End()
@@ -133,7 +133,6 @@ OutputView::OutputView(Controller *controller)
 	// fill in the list of available file formats
 	media_file_format mff;
 	int32 cookie = 0;
-	bool firstFound = true;
 	while (get_next_file_format(&cookie, &mff) == B_OK) {
 		if (mff.capabilities &
 				(media_file_format::B_KNOWS_ENCODED_VIDEO
@@ -141,13 +140,20 @@ OutputView::OutputView(Controller *controller)
 			MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(
 					mff);
 			fOutputFileType->Menu()->AddItem(item);
-			if (firstFound) {
-				fOutputFileType->Menu()->ItemAt(0)->SetMarked(true);
-				firstFound = false;
-			}
 		}	
 	}
 	
+	BString savedFileFormat;
+	settings.GetOutputFileFormat(savedFileFormat);
+
+	BMenuItem* item = fOutputFileType->Menu()->ItemAt(0);
+	if (savedFileFormat != "") {
+		item = fOutputFileType->Menu()->FindItem(savedFileFormat.String());
+	}
+
+	if (item != NULL)
+		item->SetMarked(true);
+
 	_SetFileNameExtension(FileFormat().file_extension);
 
 	fWholeScreen->SetValue(B_CONTROL_ON);

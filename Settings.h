@@ -47,6 +47,9 @@ public:
 	void GetOutputFileName(const char **name) const;
 	void GetOutputFileName(BString &name) const;
 	
+	void SetOutputFileFormat(const char* format);
+	void GetOutputFileFormat(BString& format) const;
+
 	void SetEncodingThreadPriority(const int32 &value);
 	void GetEncodingThreadPriority(int32 &value) const;
 	int32 EncodingThreadPriority() const;
