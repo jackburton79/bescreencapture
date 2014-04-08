@@ -18,8 +18,10 @@ const static char *kUseDirectWindow = "use DW";
 const static char *kIncludeCursor = "cursor";
 const static char *kMinimize = "minimize";
 const static char *kOutputFile = "output file";
+const static char *kOutputFileFormat = "output file format";
 const static char *kThreadPriority = "thread priority";
 const static char *kHideDeskbarIcon = "hide Deskbar icon";
+
 
 Settings::Settings()
 {
@@ -76,6 +78,8 @@ Settings::Load()
 			sSettings.ReplaceBool(kHideDeskbarIcon, boolean);
 		if (tempMessage.FindString(kOutputFile, &string) == B_OK)
 			sSettings.ReplaceString(kOutputFile, string);
+		if (tempMessage.FindString(kOutputFileFormat, &string) == B_OK)
+			sSettings.ReplaceString(kOutputFileFormat, string);
 		if (tempMessage.FindInt32(kThreadPriority, &integer) == B_OK)
 			sSettings.ReplaceInt32(kThreadPriority, integer);	
 	}	
@@ -332,10 +336,27 @@ Settings::GetOutputFileName(BString &name) const
 
 
 void
+Settings::SetOutputFileFormat(const char* fileFormat)
+{
+	if (!fSettings->HasString(kOutputFileFormat))
+		fSettings->AddString(kOutputFileFormat, fileFormat);
+	else
+		fSettings->ReplaceString(kOutputFileFormat, fileFormat);
+}
+
+
+void
+Settings::GetOutputFileFormat(BString& string) const
+{
+	fSettings->FindString(kOutputFileFormat, &string);
+}
+
+
+void
 Settings::SetEncodingThreadPriority(const int32 &value)
 {
 	if (!fSettings->HasInt32(kThreadPriority))
-		fSettings->AddInt32(kThreadPriority, value);
+		fSettings->AdkOutputFileFormatdInt32(kThreadPriority, value);
 	else
 		fSettings->ReplaceInt32(kThreadPriority, value);
 }
@@ -368,6 +389,7 @@ Settings::SetDefaults()
 	sSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
 	sSettings.AddBool(kMinimize, false);
 	sSettings.AddBool(kHideDeskbarIcon, false);
+	sSettings.AddString(kOutputFileFormat, "AVI");
 	
 	return B_OK;
 }
