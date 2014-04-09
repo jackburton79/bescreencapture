@@ -48,8 +48,10 @@ private:
 	BRadioButton *fCustomArea;
 	PreviewView *fRectView;
 	BButton* fFilePanelButton;
-			
+
+	void _BuildFileFormatsMenu();
 	void _RebuildCodecsMenu();
+
 	void _SetFileNameExtension(const char* extension);
 	void _UpdatePreview(BMessage* message);
 	
