@@ -48,7 +48,6 @@ public:
 	bool MinimizeOnRecording() const;
 	
 	void SetOutputFileName(const char *name);
-	void GetOutputFileName(const char **name) const;
 	void GetOutputFileName(BString &name) const;
 	
 	void SetOutputFileFormat(const char* format);

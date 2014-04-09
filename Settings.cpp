@@ -5,6 +5,7 @@
 #include <FindDirectory.h>
 #include <Message.h>
 #include <Path.h>
+#include <String.h>
 
 #include <cstdio>
 #include <cstring>
@@ -321,12 +322,6 @@ Settings::SetOutputFileName(const char *name)
 }
 
 
-void
-Settings::GetOutputFileName(const char **name) const
-{
-	fSettings->FindString(kOutputFile, name);
-}
-
 
 void
 Settings::GetOutputFileName(BString &name) const
@@ -356,7 +351,7 @@ void
 Settings::SetEncodingThreadPriority(const int32 &value)
 {
 	if (!fSettings->HasInt32(kThreadPriority))
-		fSettings->AdkOutputFileFormatdInt32(kThreadPriority, value);
+		fSettings->AddInt32(kThreadPriority, value);
 	else
 		fSettings->ReplaceInt32(kThreadPriority, value);
 }
