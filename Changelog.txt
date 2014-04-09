@@ -1,0 +1,19 @@
+v1.9.4
+    - Save the output file format to settings.
+    - Add automatic extension to the file name, based on the file format
+    - Fix bug where choosing some file format wouldn't work
+	- Filter out non-writable file formats (Jessica Hamilton)
+	- Code cleanup
+
+v1.9.3
+	- First version hosted on github
+	- Add a filepanel to choose the output file name
+	- Fix Preview
+	- Improve DeskBar control
+	- Fix state detection mismatches when starting, then pausing, then stopping,
+      then starting again.
+    - Fix clip size handling
+    - Fix location of the temporary file due to changes
+      in Haiku filesystem hierarchy (noryb009)
+    - Improve GUI (John Scipione, me)
+	
