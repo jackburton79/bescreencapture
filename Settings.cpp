@@ -58,6 +58,8 @@ Settings::Load()
 	
 	if (status == B_OK) {
 		// Copy the loaded fields to the real settings message
+		// TODO: Change this: if there is no default value,
+		// the setting is never saved!
 		BRect rect;
 		bool boolean;
 		int32 integer;
@@ -355,7 +357,7 @@ Settings::SetDefaults()
 	sSettings.AddBool(kIncludeCursor, true);
 	sSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
 	sSettings.AddBool(kMinimize, false);
-	sSettings.AddString(kOutputFileFormat, "AVI");
+	sSettings.AddString(kOutputFileFormat, "");
 	
 	return B_OK;
 }
