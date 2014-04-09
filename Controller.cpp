@@ -18,6 +18,7 @@
 #include <File.h>
 #include <FindDirectory.h>
 #include <Screen.h>
+#include <String.h>
 #include <TranslationKit.h>
 #include <TranslatorRoster.h>
 
@@ -156,11 +157,6 @@ Controller::EncodeMovie()
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
 	
-	Settings settings;
-	
-	const char* fileName = NULL;
-	settings.GetOutputFileName(&fileName);
-			
 	Executor* executor 
 		= new Executor(NewMemberFunctionObjectWithResult
 			<MovieEncoder, status_t>(&MovieEncoder::Encode, fEncoder));
