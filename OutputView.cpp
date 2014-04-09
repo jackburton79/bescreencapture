@@ -63,10 +63,10 @@ OutputView::OutputView(Controller *controller)
 	Settings settings;
 	
 	const char *kTCLabel = "File name:"; 
-	const char *fileName = NULL;
-	settings.GetOutputFileName(&fileName);
+	BString fileName;
+	settings.GetOutputFileName(fileName);
 	fFileName = new BTextControl("file name",
-			kTCLabel, fileName, new BMessage(kFileNameChanged));
+			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
 
 	const char *kOutputMenuLabel = "Output Format:";
 	BPopUpMenu *fileFormatPopUp = new BPopUpMenu("Format");
@@ -154,7 +154,7 @@ OutputView::OutputView(Controller *controller)
 	if (item != NULL)
 		item->SetMarked(true);
 
-	_SetFileNameExtension(FileFormat().file_extension);
+	fFileExtension = FileFormat().file_extension;
 
 	fWholeScreen->SetValue(B_CONTROL_ON);
 	
@@ -208,14 +208,11 @@ OutputView::MessageReceived(BMessage *message)
 			
 		case kRebuildCodec:
 		case kFileTypeChanged:
-		{
 			fController->SetMediaFileFormat(FileFormat());
 			fController->SetMediaFormatFamily(FormatFamily());
 			_SetFileNameExtension(FileFormat().file_extension);
 			UpdateSettings();
-		}
-			break;
-				
+			// Fall through
 		case kFileNameChanged:
 			fController->SetOutputFileName(fFileName->Text());
 			break;
