@@ -130,29 +130,27 @@ OutputView::OutputView(Controller *controller)
 
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 	
-	// fill in the list of available file formats
-	media_file_format mff;
-	int32 cookie = 0;
-	while (get_next_file_format(&cookie, &mff) == B_OK) {
-		if (mff.capabilities &
-				(media_file_format::B_KNOWS_ENCODED_VIDEO
-				| media_file_format::B_WRITABLE)) {
-			MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(
-					mff);
-			fOutputFileType->Menu()->AddItem(item);
-		}	
-	}
+
+	_BuildFileFormatsMenu();
 	
 	BString savedFileFormat;
 	settings.GetOutputFileFormat(savedFileFormat);
 
-	BMenuItem* item = fOutputFileType->Menu()->ItemAt(0);
+	BMenuItem* item = NULL;
 	if (savedFileFormat != "") {
 		item = fOutputFileType->Menu()->FindItem(savedFileFormat.String());
 	}
 
+	if (item == NULL)
+		item = fOutputFileType->Menu()->ItemAt(0);
+
 	if (item != NULL)
 		item->SetMarked(true);
+	else {
+		// TODO: This means there is no working media encoder.;
+		// do something smart (like showing an alert and disable
+		// the "Start" button
+	}
 
 	fFileExtension = FileFormat().file_extension;
 
@@ -320,6 +318,27 @@ OutputView::UpdatePreviewFromSettings()
 	const BRect rect = Settings().CaptureArea();
 	
 	fRectView->SetRect(rect);
+}
+
+
+void
+OutputView::_BuildFileFormatsMenu()
+{
+	const int32 numItems = fOutputFileType->Menu()->CountItems();
+	if (numItems > 0)
+		fOutputFileType->Menu()->RemoveItems(0, numItems);
+
+	const uint32 mediaFormatMask = media_file_format::B_KNOWS_ENCODED_VIDEO
+								| media_file_format::B_WRITABLE;
+	media_file_format mediaFileFormat;
+	int32 cookie = 0;
+	while (get_next_file_format(&cookie, &mediaFileFormat) == B_OK) {
+		if ((mediaFileFormat.capabilities & mediaFormatMask) == mediaFormatMask) {
+			MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(
+					mediaFileFormat);
+			fOutputFileType->Menu()->AddItem(item);
+		}
+	}
 }
 
 
