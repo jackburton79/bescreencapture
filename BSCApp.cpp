@@ -53,9 +53,9 @@ BSCApp::ReadyToRun()
 	if (fShouldStartRecording) {
 		fWindow->Run();
 		BMessenger(fWindow).SendMessage(kCmdToggleRecording);
-	} else {
+	} else
 		fWindow->Show();
-	}
+
 	
 	BDeskbar deskbar;
 	if (deskbar.IsRunning()) { 
@@ -83,7 +83,10 @@ BSCApp::MessageReceived(BMessage *message)
 		case kCmdToggleRecording:
 			if (fWindow != NULL)
 				BMessenger(fWindow).SendMessage(message);
-			fShouldStartRecording = true;
+			else {
+				// Start recording as soon as a window is created
+				fShouldStartRecording = true;
+			}
 			break;
 		default:
 			BApplication::MessageReceived(message);
