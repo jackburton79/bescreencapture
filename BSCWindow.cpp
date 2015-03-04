@@ -173,7 +173,9 @@ BSCWindow::MessageReceived(BMessage *message)
 	switch (message->what) {				
 		case kSelectArea:
 		{
-			Minimize(true);
+			Hide();
+			while (!IsHidden())
+				snooze(500);
 			BMessenger messenger(this);
 			SelectionWindow *window = new SelectionWindow(messenger, kSelectionWindowClosed);			
 			window->Show();
@@ -182,8 +184,8 @@ BSCWindow::MessageReceived(BMessage *message)
 		
 		case kSelectionWindowClosed:
 		{
-			if (IsMinimized())
-				Minimize(false);
+			if (IsHidden())
+				Show();
 				
 			SendNotices(kSelectionWindowClosed, message);
 			break;
@@ -291,7 +293,7 @@ BSCWindow::_CaptureStarted()
 	Settings settings;
 						
 	if (settings.MinimizeOnRecording())
-		Minimize(true);
+		Hide();
 	
 	fCardLayout->SetVisibleItem((int32)0);
 	fStatusBar->Reset();
@@ -308,10 +310,7 @@ status_t
 BSCWindow::_CaptureFinished()
 {
 	fCapturing = false;
-	
-	if (IsMinimized())
-		Minimize(false);
-				
+
 	fStartStopButton->SetEnabled(false);
 	fStartStopButton->SetLabel("Start Recording");
 
