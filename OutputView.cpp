@@ -129,7 +129,6 @@ OutputView::OutputView(Controller *controller)
 	selectBox->AddChild(layoutView);
 
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
-	
 
 	_BuildFileFormatsMenu();
 	
@@ -137,9 +136,8 @@ OutputView::OutputView(Controller *controller)
 	settings.GetOutputFileFormat(savedFileFormat);
 
 	BMenuItem* item = NULL;
-	if (savedFileFormat != "") {
+	if (savedFileFormat != "")
 		item = fOutputFileType->Menu()->FindItem(savedFileFormat.String());
-	}
 
 	if (item == NULL)
 		item = fOutputFileType->Menu()->ItemAt(0);
