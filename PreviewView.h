@@ -8,8 +8,7 @@ class PreviewView : public BView {
 public:
 	PreviewView();
 	virtual void AttachedToWindow();
-	void SetRect(BRect rect);
-	void UpdateBitmap(BBitmap* bitmap = NULL);
+	void Update(const BRect* rect = NULL, BBitmap* bitmap = NULL);
 
 private:
 	BView *fBitmapView;
@@ -18,8 +17,8 @@ private:
 
 	BStringView *fLeftTop;
 	BStringView *fRightBottom;
-
 	
+	void _SetRect(const BRect& rect);
 	virtual BSize MinSize();
 };
 

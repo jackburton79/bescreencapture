@@ -65,44 +65,43 @@ PreviewView::AttachedToWindow()
 {	
 	BView::AttachedToWindow();
 	SetViewColor(Parent()->ViewColor());
-	UpdateBitmap();
+
+	Update();
 }
 
 
 void
-PreviewView::SetRect(BRect rect)
+PreviewView::_SetRect(const BRect& rect)
 {
-	if (fCoordRect == rect)
-		return;
+	if (fCoordRect != rect) {
+		fCoordRect = rect;
 		
-	fCoordRect = rect;
-	
-	char str[16];
-	snprintf(str, sizeof(str), "%d, %d", (int)rect.left, (int)rect.top);
-	fLeftTop->SetText(str);
-	snprintf(str, sizeof(str), "%d, %d", (int)rect.right, (int)rect.bottom);
-	fRightBottom->SetText(str);
-	
-	fChanged = true;
+		char str[16];
+		snprintf(str, sizeof(str), "%d, %d", (int)rect.left, (int)rect.top);
+		fLeftTop->SetText(str);
+		snprintf(str, sizeof(str), "%d, %d", (int)rect.right, (int)rect.bottom);
+		fRightBottom->SetText(str);
+	}
 }
 
 
 void
-PreviewView::UpdateBitmap(BBitmap* bitmap)
+PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 {
-	if (/*fChanged && */Window() != NULL) {
-		if (bitmap == NULL) {
-			BScreen screen(Window());
-			screen.GetBitmap(&bitmap, false, &fCoordRect);		
-		}
-		if (bitmap != NULL) {
-			fBitmapView->SetViewBitmap(bitmap,
-				bitmap->Bounds().OffsetToCopy(B_ORIGIN),
-				fBitmapView->Bounds(),
-				B_FOLLOW_TOP|B_FOLLOW_LEFT, 0);
+	if (rect != NULL)
+		_SetRect(*rect);
+
+	if (bitmap == NULL && Window() != NULL) {
+		BScreen screen(Window());
+		screen.GetBitmap(&bitmap, false, &fCoordRect);
+	}
+	if (bitmap != NULL) {
+		fBitmapView->SetViewBitmap(bitmap,
+			bitmap->Bounds().OffsetToCopy(B_ORIGIN),
+			fBitmapView->Bounds(),
+			B_FOLLOW_TOP|B_FOLLOW_LEFT, 0);
+		if (Window() != NULL)
 			Invalidate();
-		}
-		fChanged = false;
 	}
 }
 

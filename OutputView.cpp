@@ -315,7 +315,7 @@ OutputView::UpdatePreviewFromSettings()
 {
 	const BRect rect = Settings().CaptureArea();
 	
-	fRectView->SetRect(rect);
+	fRectView->Update(&rect);
 }
 
 
@@ -435,22 +435,18 @@ OutputView::_UpdatePreview(BMessage* message)
 	if (message != NULL) {
 		BRect rect;
 		message->FindRect("selection", &rect);
-		fRectView->SetRect(rect);
-		
 		BBitmap* bitmap = NULL;
-		if (message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {
-			fRectView->UpdateBitmap(bitmap);
-			delete bitmap;
-		}
+		message->FindPointer("bitmap", (void**)&bitmap);
+		fRectView->Update(&rect, bitmap);
+		delete bitmap;
 	} else {
 		BRect captureArea;
 		settings.GetCaptureArea(captureArea);
-		fRectView->SetRect(captureArea);
-		fRectView->UpdateBitmap(NULL);
+		fRectView->Update(&captureArea);
 	}
 			
-	// the size of the destination
-	// clip maybe isn't supported by the codec	
+	// the size of the destination clip could not be supported
+	// by the active codec, rebuild the codec list
 	UpdateSettings();
 }
 
