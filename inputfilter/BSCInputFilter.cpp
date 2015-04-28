@@ -7,21 +7,21 @@
 
 #include "BSCApp.h"
 
-class ThinInputFilter : public BInputServerFilter {
+class BSCInputFilter : public BInputServerFilter {
 	status_t		InitCheck();
 	filter_result	Filter(BMessage* message, BList* outList);
 };
 
 
 status_t
-ThinInputFilter::InitCheck()
+BSCInputFilter::InitCheck()
 {
 	return B_NO_ERROR;
 }
 
 
 filter_result
-ThinInputFilter::Filter(BMessage* message, BList* outList)
+BSCInputFilter::Filter(BMessage* message, BList* outList)
 {
 	switch (message->what) {
 		case B_KEY_DOWN:
@@ -68,5 +68,5 @@ extern "C"
 BInputServerFilter*
 instantiate_input_filter()
 {
-	return new ThinInputFilter();
+	return new BSCInputFilter();
 }
