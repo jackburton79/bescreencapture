@@ -52,8 +52,8 @@ OutputView::OutputView(Controller *controller)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	
-	BBox *selectBox = new BBox("selection");
-	selectBox->SetLabel("Selection");
+	BBox *selectBox = new BBox("source");
+	selectBox->SetLabel("Source");
 	AddChild(selectBox);
 	
 	BBox *outputBox = new BBox("output");
@@ -68,19 +68,19 @@ OutputView::OutputView(Controller *controller)
 	fFileName = new BTextControl("file name",
 			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
 
-	const char *kOutputMenuLabel = "Output Format:";
+	const char *kOutputMenuLabel = "File format:";
 	BPopUpMenu *fileFormatPopUp = new BPopUpMenu("Format");
 	fOutputFileType = new BMenuField("OutFormat",
 			kOutputMenuLabel, fileFormatPopUp);
 						
-	const char *kCodecMenuLabel = "Codec:";
+	const char *kCodecMenuLabel = "Media codec:";
 	BPopUpMenu *popUpMenu = new BPopUpMenu("Codecs");
 	fCodecMenu = new BMenuField("OutCodec", kCodecMenuLabel, popUpMenu);
 	
 	fWholeScreen = new BRadioButton("screen frame", "Whole screen",
 		new BMessage(kCheckBoxAreaSelectionChanged));
-	fCustomArea = new BRadioButton("custom area",
-		"Custom Area", new BMessage(kCheckBoxAreaSelectionChanged));
+	fCustomArea = new BRadioButton("region",
+		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
 	fSelectArea = new BButton("select area", "Select", new BMessage(kSelectArea));
 	fSelectArea->SetEnabled(false);
 	
@@ -111,16 +111,11 @@ OutputView::OutputView(Controller *controller)
 	layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_VERTICAL)
-			.AddGroup(B_HORIZONTAL)
-				.AddGroup(B_VERTICAL, 0)
-					.Add(fWholeScreen)
-					.Add(fCustomArea)
-				.End()
-				.AddGroup(B_VERTICAL)
-					.AddGlue()
-					.Add(fSelectArea)
-				.End()
+		.AddGroup(B_HORIZONTAL)
+			.AddGroup(B_VERTICAL, 0)
+				.Add(fWholeScreen)
+				.Add(fCustomArea)
+				.Add(fSelectArea)
 			.End()
 			.Add(fRectView)
 		.End()
@@ -378,14 +373,6 @@ OutputView::_RebuildCodecsMenu()
 	if (currentCodec != codecsMenu->FindMarked()->Label())
 		fController->SetMediaCodec(codecsMenu->FindMarked()->Label());
 		
-}
-
-
-/* virtual */
-BSize
-OutputView::MinSize()
-{
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(620, 300));
 }
 
 

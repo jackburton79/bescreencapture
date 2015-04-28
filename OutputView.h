@@ -33,8 +33,7 @@ public:
 	bool MinimizeOnStart() const;
 		
 	void UpdatePreviewFromSettings();
-		
-	virtual	BSize	MinSize();		
+			
 private:
 	Controller *fController;
 	BTextControl *fFileName;
