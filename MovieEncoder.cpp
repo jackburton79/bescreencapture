@@ -126,14 +126,14 @@ MovieEncoder::Encode()
 	BitmapMovie* movie = new BitmapMovie(fDestFrame.IntegerWidth() + 1,
 					fDestFrame.IntegerHeight() + 1, fColorSpace);
 				
-	status_t error = movie->CreateFile(movieRef, fFileFormat, fFormat, fCodecInfo);
-	if (error < B_OK) {
+	status_t status = movie->CreateFile(movieRef, fFileFormat, fFormat, fCodecInfo);
+	if (status < B_OK) {
 		delete movie;
 		DisposeData();
 		BMessage message(kEncodingFinished);
-		message.AddInt32("status", (int32)error);
+		message.AddInt32("status", (int32)status);
 		fMessenger.SendMessage(&message);		
-		return error;
+		return status;
 	}
 		
 	// Bitmap and view used to convert the source bitmap
@@ -146,20 +146,23 @@ MovieEncoder::Encode()
 	}
 	
 	const uint32 keyFrameFrequency = 10;
+		// TODO: Make this tunable
 	
 	BMessage progressMessage(B_UPDATE_STATUS_BAR);
 	progressMessage.AddFloat("delta", 1.0);
-	bool keyFrame = true;		
+	
+	status = B_OK;
 	for (int32 i = 0; i < fFileList->CountItems(); i++) {
-		if (framesWritten % keyFrameFrequency == 0)
-			keyFrame = true;
+		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		const char* fileName = fFileList->ItemAt(i);
 		BBitmap* frame = BTranslationUtils::GetBitmapFile(fileName);
-		if (frame == NULL)
+		if (frame == NULL) {
+			// TODO: What to do here ? Exit with an error ?
 			continue;
+		}
 						
 		// Draw scaled
-		if (error == B_OK) {
+		if (status == B_OK) {
 			destBitmap->Lock();
 			destDrawer->DrawBitmap(frame, frame->Bounds(), destDrawer->Bounds());
 			destDrawer->Sync();
@@ -168,17 +171,14 @@ MovieEncoder::Encode()
 		
 		delete frame;
 			
-		if (error == B_OK)
-			error = movie->WriteFrame(destBitmap, keyFrame);
+		if (status == B_OK)
+			status = movie->WriteFrame(destBitmap, keyFrame);
 		
-		if (error == B_OK) {
-			framesWritten++;
-			keyFrame = false;				
-		} else {
-			printf("%s\n", strerror(error));
+		if (status != B_OK)
 			break;
-		}
-		
+
+		framesWritten++;
+
 		if (fMessenger.IsValid())
 			fMessenger.SendMessage(new BMessage(progressMessage));		
 	}
@@ -188,11 +188,14 @@ MovieEncoder::Encode()
 	
 	DisposeData();
 	
-	BMessage message(kEncodingFinished);
-	message.AddInt32("status", (int32)B_OK);
-	fMessenger.SendMessage(&message);
+	if (fMessenger.IsValid()) {
+		BMessage message(kEncodingFinished);
+		message.AddInt32("status", (int32)status);
+		message.AddInt32("frames", (int32)framesWritten);
+		fMessenger.SendMessage(&message);
+	}
 		
-	return B_OK;
+	return status;
 }
 
 
