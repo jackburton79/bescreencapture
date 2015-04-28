@@ -19,7 +19,6 @@ private:
 	BStringView *fRightBottom;
 	
 	void _SetRect(const BRect& rect);
-	virtual BSize MinSize();
 };
 
 

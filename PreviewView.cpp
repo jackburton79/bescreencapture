@@ -2,6 +2,7 @@
 
 #include <cstdio>
 
+#include <AbstractLayout.h>
 #include <Alignment.h>
 #include <Bitmap.h>
 #include <GroupLayout.h>
@@ -18,7 +19,9 @@ public:
 	virtual ~BitmapView();
 	
 	virtual void Draw(BRect update);
-	virtual BSize MinSize();
+	virtual bool HasHeightForWidth() { return true; };
+	virtual void GetHeightForWidth(float width, float* min, float* max, float* preferred);
+	//virtual BSize MinSize();
 };
 
 
@@ -36,27 +39,27 @@ PreviewView::PreviewView()
 	SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
 		B_ALIGN_VERTICAL_CENTER));
 	AddChild(BGroupLayoutBuilder(B_VERTICAL)
-		.AddGroup(B_HORIZONTAL)
-			.AddGlue()
-			.AddGlue()
-		.End()
-		.AddGroup(B_HORIZONTAL)
-			.AddGlue()
-			.Add(fLeftTop = new BStringView("lefttop", ""))
+		//.AddGroup(B_HORIZONTAL)
+		//	.AddGlue()
+		//	.AddGlue()
+		//.End()
+		//.AddGroup(B_HORIZONTAL)
+			//.AddGlue()
+			//.Add(fLeftTop = new BStringView("lefttop", ""))
 			.Add(fBitmapView = new BitmapView())
-			.Add(fRightBottom = new BStringView("rightbottom", ""))
+			//.Add(fRightBottom = new BStringView("rightbottom", ""))
+			//.AddGlue()
+		//.End()
+		/*.AddGroup(B_HORIZONTAL)
 			.AddGlue()
-		.End()
-		.AddGroup(B_HORIZONTAL)
 			.AddGlue()
-			.AddGlue()
-		.End()
+		.End()*/
 	);
 	
-	fLeftTop->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
+	/*fLeftTop->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
 		B_ALIGN_TOP));
 	fRightBottom->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT,
-		B_ALIGN_BOTTOM));
+		B_ALIGN_BOTTOM));*/
 }
 
 
@@ -78,9 +81,9 @@ PreviewView::_SetRect(const BRect& rect)
 		
 		char str[16];
 		snprintf(str, sizeof(str), "%d, %d", (int)rect.left, (int)rect.top);
-		fLeftTop->SetText(str);
+		//fLeftTop->SetText(str);
 		snprintf(str, sizeof(str), "%d, %d", (int)rect.right, (int)rect.bottom);
-		fRightBottom->SetText(str);
+		//fRightBottom->SetText(str);
 	}
 }
 
@@ -106,13 +109,6 @@ PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 }
 
 
-BSize
-PreviewView::MinSize()
-{
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(160, 100));
-}
-
-
 // BitmapView
 BitmapView::BitmapView()
 	:
@@ -135,9 +131,24 @@ BitmapView::Draw(BRect rect)
 }
 
 
+void
+BitmapView::GetHeightForWidth(float width, float* min,
+			float* max, float* preferred)
+{
+	float preferredHeight = (width / 16) * 9;
+	float variation = preferredHeight / 10;
+	if (preferred != NULL)
+		*preferred = preferredHeight;
+	if (min != NULL)
+		*min = preferredHeight - variation;
+	if (max != NULL)
+		*max = preferredHeight + variation;
+}
+	
+/*	
 BSize
 BitmapView::MinSize()
 {
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(100, 60));
+	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(90, 60));
 }
-
+*/
