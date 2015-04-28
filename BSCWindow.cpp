@@ -86,7 +86,7 @@ BSCWindow::BSCWindow()
 	fCardLayout->SetVisibleItem((int32)0);
 				
 	BGroupView* outputGroup = new BGroupView(B_HORIZONTAL);
-	outputGroup->SetName("Output");
+	outputGroup->SetName("Capture");
 	outputGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
 		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 	fTabView->AddTab(outputGroup);
@@ -94,7 +94,7 @@ BSCWindow::BSCWindow()
 		.Add(outputView);
 							
 	BGroupView* advancedGroup = new BGroupView(B_HORIZONTAL);
-	advancedGroup->SetName("Advanced Options");
+	advancedGroup->SetName("Options");
 	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
 		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
 	fTabView->AddTab(advancedGroup);
