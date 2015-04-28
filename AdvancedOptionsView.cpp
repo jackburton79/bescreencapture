@@ -220,13 +220,6 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 }
 
 
-BSize
-AdvancedOptionsView::MinSize()
-{
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(300, 400));
-}
-
-
 // SizeSlider
 SizeSlider::SizeSlider(const char* name, const char* label,
 		BMessage* message, int32 minValue,

@@ -14,8 +14,6 @@ public:
 	
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage *message);
-
-	virtual BSize MinSize();
 	
 private:
 	Controller* fController;
