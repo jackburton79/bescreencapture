@@ -13,6 +13,7 @@ class BCheckBox;
 class BMenu;
 class BMenuField;
 class BRadioButton;
+class SizeControl;
 class BTextControl;
 class Controller;
 class PreviewView;
@@ -47,6 +48,7 @@ private:
 	BRadioButton *fCustomArea;
 	PreviewView *fRectView;
 	BButton* fFilePanelButton;
+	SizeControl* fSizeSlider;
 
 	void _BuildFileFormatsMenu();
 	void _RebuildCodecsMenu();

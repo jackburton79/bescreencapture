@@ -4,8 +4,6 @@
 #include <View.h>
 
 class BCheckBox;
-class BSlider;
-class BTextControl;
 class BOptionPopUp;
 class Controller;
 class AdvancedOptionsView : public BView {
@@ -23,9 +21,6 @@ private:
 	BOptionPopUp* fPriorityControl;
 	
 	BCheckBox* fHideDeskbarIcon;
-	
-	BSlider* fSizeSlider;
-	BTextControl* fSizeTextControl;
 };
 
 #endif

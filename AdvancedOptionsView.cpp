@@ -14,7 +14,6 @@
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
 #include <Screen.h>
-#include <Slider.h>
 #include <String.h>
 #include <StringView.h>
 
@@ -23,20 +22,7 @@
 
 const static uint32 kUseDirectWindow = 'UsDW';
 const static uint32 kDepthChanged = 'DeCh';
-const static uint32 kMsgTextControlSizeChanged = 'TCSC';
 const static uint32 kHideDeskbar = 'HiDe';
-
-class SizeSlider : public BSlider {
-public:
-	SizeSlider(const char* name, const char* label,
-		BMessage* message, int32 minValue,
-		int32 maxValue, orientation posture,
-		thumb_style thumbType = B_BLOCK_THUMB,
-		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
-							| B_FRAME_EVENTS);
-
-	virtual void SetValue(int32 value);
-};
 
 
 AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
@@ -45,37 +31,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	fController(controller)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
-	
-	BBox *clipSizeBox = new BBox("container");
-	clipSizeBox->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
-		B_ALIGN_TOP));
-	AddChild(clipSizeBox);
-	clipSizeBox->SetLabel("Clip size");
-
-	fSizeSlider = new SizeSlider("size_slider", "",
-		new BMessage(kClipSizeChanged), 25, 200, B_HORIZONTAL);
-
-	fSizeTextControl = new BTextControl("%", "", new BMessage(kMsgTextControlSizeChanged));
-	fSizeTextControl->SetModificationMessage(new BMessage(kMsgTextControlSizeChanged));
-	fSizeTextControl->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
-		B_ALIGN_TOP));
-	fSizeTextControl->SetExplicitMaxSize(
-		BSize(50, 25));
-	fSizeTextControl->SetAlignment(B_ALIGN_RIGHT, B_ALIGN_LEFT);
-	BView* sliderView = BLayoutBuilder::Group<>()
-		.AddGroup(B_HORIZONTAL, 1)
-			.Add(fSizeSlider)
-			.Add(fSizeTextControl)
-		.End()
-		.View();
-		
-			
-	clipSizeBox->AddChild(sliderView);
-
-	fSizeSlider->SetValue(100);
-	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
-	fSizeSlider->SetHashMarkCount(8);
-	fSizeSlider->SetLimitLabels("25%", "200%");
 	
 	BBox *advancedBox = new BBox("Advanced");
 	advancedBox->SetLabel("Advanced options");
@@ -137,16 +92,11 @@ AdvancedOptionsView::AttachedToWindow()
 	fUseDirectWindow->SetTarget(this);
 	fDepthControl->SetTarget(this);
 	fPriorityControl->SetTarget(this);
-	fSizeSlider->SetTarget(this);
-	fSizeTextControl->SetTarget(this);
+	
 	fHideDeskbarIcon->SetTarget(this);
 	
 	fHideDeskbarIcon->SetValue(Settings().HideDeskbarIcon()
 		? B_CONTROL_ON : B_CONTROL_OFF);
-	fSizeSlider->SetValue(Settings().Scale());		
-	BString sizeString;
-	sizeString << (int32)fSizeSlider->Value();
-	fSizeTextControl->SetText(sizeString);
 }
 
 
@@ -192,59 +142,9 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			break;
 		}
 		
-		case kClipSizeChanged:
-		{
-			float num = fSizeSlider->Value();
-			
-			BString sizeString;
-			sizeString << (int32)num;
-			fSizeTextControl->SetText(sizeString);
-			Settings().SetScale(num);
-			
-			SendNotices(kClipSizeChanged);
-			
-			break;
-		}
-		
-		case kMsgTextControlSizeChanged:
-		{
-			int32 value = atoi(fSizeTextControl->TextView()->Text());
-			fSizeSlider->SetValue(value);
-			break;
-		}
 			
 		default:
 			BView::MessageReceived(message);
 			break;
 	}
-}
-
-
-// SizeSlider
-SizeSlider::SizeSlider(const char* name, const char* label,
-		BMessage* message, int32 minValue,
-		int32 maxValue, orientation posture,
-		thumb_style thumbType,
-		uint32 flags)
-	:
-	BSlider(name, label, message, minValue, maxValue, posture, thumbType, flags)
-{
-}
-
-
-/* virtual */
-void
-SizeSlider::SetValue(int32 value)
-{
-	// TODO: Not really, nice, should not have a fixed list of values
-	const int32 validValues[] = { 25, 50, 75, 100, 125, 150, 175, 200 };
-	int32 numValues = sizeof(validValues) / sizeof(int32);
-	for (int32 i = 0; i < numValues - 1; i++) {
-		if (value > validValues[i] && value < validValues[i + 1]) {
-			value = value > validValues[i] + (validValues[i + 1] - validValues[i]) / 2
-				? validValues[i + 1] : validValues[i];
-		}
-	}
-	
-	BSlider::SetValue(value);
 }

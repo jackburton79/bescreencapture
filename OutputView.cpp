@@ -3,6 +3,7 @@
 #include "OutputView.h"
 #include "PreviewView.h"
 #include "Settings.h"
+#include "SizeControl.h"
 #include "Utils.h"
 
 #include <Alignment.h>
@@ -20,6 +21,7 @@
 #include <Path.h>
 #include <RadioButton.h>
 #include <Screen.h>
+#include <Slider.h>
 #include <SplitView.h>
 #include <SplitLayoutBuilder.h>
 #include <String.h>
@@ -35,6 +37,7 @@ const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kFileTypeChanged = 'FtyC';
 const static int32 kCodecChanged = 'CdCh';
 const static int32 kOpenFilePanel = 'OpFp';
+const static int32 kMsgTextControlSizeChanged = 'TCSC';
 
 class MediaFileFormatMenuItem : public BMenuItem {
 public:
@@ -43,6 +46,9 @@ public:
 private:
 	media_file_format fFileFormat;
 };
+
+
+
 
 
 OutputView::OutputView(Controller *controller)
@@ -90,8 +96,9 @@ OutputView::OutputView(Controller *controller)
 	fMinimizeOnStart = new BCheckBox("Minimize on start",
 		"Minimize on recording", new BMessage(kMinimizeOnRecording));
 	
-	fRectView = new PreviewView();
-	
+	fSizeSlider = new SizeControl("size_slider", "Resize",
+		new BMessage(kClipSizeChanged), 25, 200, B_HORIZONTAL);
+				
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
@@ -102,6 +109,8 @@ OutputView::OutputView(Controller *controller)
 			.End()
 			.Add(fOutputFileType)
 			.Add(fCodecMenu)
+			.Add(fSizeSlider)
+			.SetInsets(B_USE_DEFAULT_SPACING)
 			.Add(fMinimizeOnStart)
 		.End()	
 		.View();
@@ -117,12 +126,14 @@ OutputView::OutputView(Controller *controller)
 				.Add(fCustomArea)
 				.Add(fSelectArea)
 			.End()
-			.Add(fRectView)
+			.Add(fRectView = new PreviewView())
 		.End()
 		.View();
 	
 	selectBox->AddChild(layoutView);
 
+	fSizeSlider->SetValue(100);
+	
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 
 	_BuildFileFormatsMenu();
@@ -169,7 +180,14 @@ OutputView::AttachedToWindow()
 	fOutputFileType->Menu()->SetTargetForItems(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
+	fSizeSlider->SetTarget(this);
+	//fSizeTextControl->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
+	
+	fSizeSlider->SetValue(Settings().Scale());		
+	/*BString sizeString;
+	sizeString << (int32)fSizeSlider->Value();
+	fSizeTextControl->SetText(sizeString);*/
 	
 	UpdatePreviewFromSettings();
 	_RebuildCodecsMenu();
@@ -220,6 +238,17 @@ OutputView::MessageReceived(BMessage *message)
 			break;				
 		}
 		
+		case kClipSizeChanged:
+		{
+			float num = fSizeSlider->Value();
+			
+			Settings().SetScale(num);
+			
+			SendNotices(kClipSizeChanged);
+			
+			break;
+		}
+				
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -453,3 +482,8 @@ MediaFileFormatMenuItem::MediaFileFormat() const
 {
 	return fFileFormat;
 }
+
+
+
+
+
