@@ -375,6 +375,13 @@ Settings::EncodingThreadPriority() const
 }
 
 
+void
+Settings::PrintToStream()
+{
+	fSettings->PrintToStream();
+}
+
+
 status_t
 Settings::SetDefaults()
 {
