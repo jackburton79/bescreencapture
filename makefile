@@ -37,7 +37,7 @@ APP_MIME_SIG=
 SRCS=AdvancedOptionsView.cpp BitmapMovie.cpp BSCApp.cpp \
 BSCWindow.cpp CamStatusView.cpp Controller.cpp DeskbarControlView.cpp \
 Executor.cpp FileList.cpp MovieEncoder.cpp OutputView.cpp \
-PreviewView.cpp PriorityControl.cpp SelectionWindow.cpp Settings.cpp \
+PreviewView.cpp PriorityControl.cpp SizeControl.cpp SelectionWindow.cpp Settings.cpp \
 Utils.cpp
 
 #	specify the resource definition files to use
