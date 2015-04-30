@@ -24,7 +24,7 @@ public:
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage *message);
 	
-	void UpdateSettings();
+	void RequestMediaFormatUpdate();
 	
 	BPath OutputFileName() const;
 
@@ -47,7 +47,7 @@ private:
 	BRadioButton *fWholeScreen;
 	BRadioButton *fCustomArea;
 	PreviewView *fRectView;
-	BRect fCaptureArea;
+	BRect fCustomCaptureRect;
 	BButton* fFilePanelButton;
 	SizeControl* fSizeSlider;
 

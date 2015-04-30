@@ -111,6 +111,13 @@ PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 }
 
 
+BRect
+PreviewView::Rect() const
+{
+	return fCoordRect;
+}
+
+
 // BitmapView
 BitmapView::BitmapView()
 	:

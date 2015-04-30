@@ -101,14 +101,7 @@ BSCWindow::BSCWindow()
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(advancedView);
 				
-	if (fController->LockLooper()) {	
-		// controller should watch for these messages
-		//StartWatching(fController, kMsgGUIStartCapture);
-		//StartWatching(fController, kMsgGUIStopCapture);
-		StartWatching(fController, kSelectionWindowClosed);
-		outputView->StartWatching(fController, kClipSizeChanged);
-		//StartWatching(fCamStatus, kMsgControllerCaptureResumed);	
-		
+	if (fController->LockLooper()) {
 		// watch Controller for these
 		fController->StartWatching(this, B_UPDATE_STATUS_BAR);
 		fController->StartWatching(this, B_RESET_STATUS_BAR);
@@ -118,20 +111,23 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
-		
+		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
+		 
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureStarted);
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureStopped);
 		fController->StartWatching(fCamStatus, kMsgControllerCapturePaused);
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureResumed);
 		
+		// Outputview should watch for these from Controller
+		fController->StartWatching(outputView, kMsgControllerSourceFrameChanged);
 		fController->StartWatching(outputView, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(outputView, kMsgControllerCodecListUpdated);
+		fController->StartWatching(outputView, kMsgControllerSelectionWindowClosed);
 			
 		fController->UnlockLooper();
 	}
 	
-	StartWatching(outputView, kSelectionWindowClosed);
-	StartWatching(outputView, kClipSizeChanged);
+	//StartWatching(outputView, kClipSizeChanged);
 
 	CenterOnScreen();
 }
@@ -176,21 +172,12 @@ BSCWindow::MessageReceived(BMessage *message)
 			Hide();
 			while (!IsHidden())
 				snooze(500);
-			BMessenger messenger(this);
+			BMessenger messenger(fController);
 			SelectionWindow *window = new SelectionWindow(messenger, kSelectionWindowClosed);			
 			window->Show();
 			break;
 		}
-		
-		case kSelectionWindowClosed:
-		{
-			if (IsHidden())
-				Show();
 				
-			SendNotices(kSelectionWindowClosed, message);
-			break;
-		}
-		
 		case kCmdToggleRecording:
 			fStartStopButton->Invoke();
 			break;
@@ -209,6 +196,13 @@ BSCWindow::MessageReceived(BMessage *message)
 					break;
 				}
 	
+				case kMsgControllerSelectionWindowClosed:
+				{
+					if (IsHidden())
+						Show();
+			
+					break;
+				}	
 				case kMsgControllerCaptureStarted:
 					_CaptureStarted();
 					break;

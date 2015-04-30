@@ -40,6 +40,7 @@ const static int32 kFileTypeChanged = 'FtyC';
 const static int32 kCodecChanged = 'CdCh';
 const static int32 kOpenFilePanel = 'OpFp';
 const static int32 kMsgTextControlSizeChanged = 'TCSC';
+const static int32 kScaleChanged = 'ScCh';
 
 class MediaFileFormatMenuItem : public BMenuItem {
 public:
@@ -48,8 +49,6 @@ public:
 private:
 	media_file_format fFileFormat;
 };
-
-
 
 
 
@@ -99,7 +98,7 @@ OutputView::OutputView(Controller *controller)
 		"Minimize on recording", new BMessage(kMinimizeOnRecording));
 	
 	fSizeSlider = new SizeControl("size_slider", "Resize",
-		new BMessage(kClipSizeChanged), 25, 200, B_HORIZONTAL);
+		new BMessage(kScaleChanged), 25, 200, B_HORIZONTAL);
 				
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
@@ -162,7 +161,7 @@ OutputView::OutputView(Controller *controller)
 
 	fWholeScreen->SetValue(B_CONTROL_ON);
 	
-	UpdateSettings();
+	RequestMediaFormatUpdate();
 	
 	fController->SetCaptureArea(BScreen(Window()).Frame());
 	fController->SetMediaFileFormat(FileFormat());
@@ -206,19 +205,24 @@ OutputView::MessageReceived(BMessage *message)
 		}
 		
 		case kCheckBoxAreaSelectionChanged:
-			_UpdatePreview(NULL);
+		{
+			std::cout << "kCheckBoxAreaSelectionChanged" << std::endl;
+			BRect rect = fCustomCaptureRect;
+			if (fWholeScreen->Value() == B_CONTROL_ON) {
+				rect = BScreen().Frame();
+				fSelectArea->SetEnabled(false);
+			} else
+				fSelectArea->SetEnabled(true);
+			fController->SetCaptureArea(rect);
 			break;	
-		
-		case kMsgControllerVideoDepthChanged:
-			UpdateSettings();
-			break;
+		}
 			
 		case kRebuildCodec:
 		case kFileTypeChanged:
 			fController->SetMediaFileFormat(FileFormat());
 			fController->SetMediaFormatFamily(FormatFamily());
 			_SetFileNameExtension(FileFormat().file_extension);
-			UpdateSettings();
+			RequestMediaFormatUpdate();
 			// Fall through
 		case kFileNameChanged:
 			fController->SetOutputFileName(fFileName->Text());
@@ -236,12 +240,11 @@ OutputView::MessageReceived(BMessage *message)
 			break;				
 		}
 		
-		case kClipSizeChanged:
+		case kScaleChanged:
 		{
-			std::cout << "OutputView: kClipSizeChanged" << std::endl;
-				
-			SendNotices(kClipSizeChanged, message);
-			
+			int32 value;
+			message->FindInt32("be:value", &value);
+			fController->SetScale((float)value);
 			break;
 		}
 				
@@ -250,13 +253,25 @@ OutputView::MessageReceived(BMessage *message)
 			int32 code;
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {
-				case kSelectionWindowClosed:
-				case kMsgControllerTargetFrameChanged:
-				case kClipSizeChanged:
+				case kMsgControllerSourceFrameChanged:
+				{
+					std::cout << "kMsgControllerSourceFrameChanged" << std::endl;
+					BRect rect;
+					if (message->FindRect("frame", &rect) == B_OK) {
+						if (rect != BScreen().Frame())
+							fCustomCaptureRect = rect;
+					}
+					_UpdatePreview(message);
+					break;	
+				}
+				case kMsgControllerSelectionWindowClosed:
 					_UpdatePreview(message);
 					break;
 				case kMsgControllerCodecListUpdated:
 					_RebuildCodecsMenu();
+					break;
+				case kMsgControllerVideoDepthChanged:
+					RequestMediaFormatUpdate();
 					break;
 				default:
 					break;
@@ -309,17 +324,8 @@ OutputView::MinimizeOnStart() const
 
 
 void
-OutputView::UpdateSettings()
+OutputView::RequestMediaFormatUpdate()
 {
-	Settings settings;
-	
-	if (fWholeScreen->Value() == B_CONTROL_ON)
-		settings.SetCaptureArea(BScreen().Frame());
-	else
-		settings.SetCaptureArea(fCaptureArea);
-				
-	UpdatePreviewFromSettings();
-	
 	fController->UpdateMediaFormatAndCodecsForCurrentFamily();
 }
 
@@ -435,32 +441,20 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 void
 OutputView::_UpdatePreview(BMessage* message)
 {
-	fSelectArea->SetEnabled(fCustomArea->Value() == B_CONTROL_ON);
-	BRect screenFrame = BScreen(Window()).Frame();
-	Settings settings;
-	//BRect captureArea;
-	//settings.GetCaptureArea(captureArea);
-	//if (captureArea == screenFrame)
-	//	return;
-	
-	
-	//UpdatePreview();
-	if (message != NULL) {
-		BRect rect;
-		message->FindRect("selection", &rect);
-		BBitmap* bitmap = NULL;
-		message->FindPointer("bitmap", (void**)&bitmap);
+	if (message)
+		message->PrintToStream();
+
+	BRect rect;
+	BBitmap* bitmap = NULL;
+	if (message != NULL && message->FindRect("selection", &rect) == B_OK
+		&& message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {	
 		fRectView->Update(&rect, bitmap);
 		delete bitmap;
 	} else {
-		BRect captureArea;
-		settings.GetCaptureArea(captureArea);
-		fRectView->Update(&captureArea);
+		Settings settings;
+		settings.GetCaptureArea(rect);
+		fRectView->Update(&rect);
 	}
-			
-	// the size of the destination clip could not be supported
-	// by the active codec, rebuild the codec list
-	UpdateSettings();
 }
 
 

@@ -9,7 +9,8 @@ public:
 	PreviewView();
 	virtual void AttachedToWindow();
 	void Update(const BRect* rect = NULL, BBitmap* bitmap = NULL);
-
+	BRect Rect() const;
+	
 private:
 	BView *fBitmapView;
 	BRect fCoordRect;

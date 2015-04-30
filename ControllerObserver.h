@@ -10,8 +10,11 @@ enum {
 	kMsgControllerCapturePaused,
 	kMsgControllerCaptureResumed,
 	kMsgControllerEncodeStarted,
-	kMsgControllerEncodeProgress,	// int32 num_files
-	kMsgControllerEncodeFinished,	// status_t status
+	kMsgControllerEncodeProgress,		// int32 num_files
+	kMsgControllerEncodeFinished,		// status_t status
+	
+	kMsgControllerSelectionWindowClosed,
+	kMsgControllerSourceFrameChanged,	// BRect frame
 	kMsgControllerTargetFrameChanged,
 	kMsgControllerVideoDepthChanged,
 	kMsgControllerOutputFileNameChanged,

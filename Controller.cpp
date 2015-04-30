@@ -63,28 +63,28 @@ Controller::MessageReceived(BMessage *message)
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
 			switch (what) {
-				case kSelectionWindowClosed:
-				{
-					BRect rect;
-					if (message->FindRect("selection", &rect) == B_OK) {
-						SetCaptureArea(rect);
-					}
-					break;
-				}
 				case kClipSizeChanged:
 				{
 					std::cout << "Controller: kClipSizeChanged" << std::endl;
 					message->PrintToStream();
 					int32 value = 0;
 					if (message->FindInt32("be:value", &value) == B_OK)
-						Settings().SetScale(value);	
-					fEncoder->SetDestFrame(Settings().TargetRect());
-					SendNotices(kMsgControllerTargetFrameChanged, message);
+						
 					Settings().PrintToStream();
 					break;
 				}
 				default:
 					break;
+			}
+			break;
+		}
+		case kSelectionWindowClosed:
+		{
+			SendNotices(kMsgControllerSelectionWindowClosed, message);
+			
+			BRect rect;
+			if (message->FindRect("selection", &rect) == B_OK) {
+				SetCaptureArea(rect);
 			}
 			break;
 		}
@@ -188,9 +188,11 @@ Controller::SetCaptureArea(const BRect& rect)
 		
 	UpdateAreaDescription(rect);
 	
-	BMessage message(kMsgControllerTargetFrameChanged);
+	BMessage message(kMsgControllerSourceFrameChanged);
+	message.AddRect("frame", rect);
+	SendNotices(kMsgControllerSourceFrameChanged, &message);
+	SendNotices(kMsgControllerTargetFrameChanged);
 	
-	SendNotices(kMsgControllerTargetFrameChanged, &message);
 }
 
 
@@ -199,6 +201,12 @@ Controller::SetScale(const float &scale)
 {
 	BAutolock _(this);
 	Settings().SetScale(scale);
+	BRect rect(Settings().TargetRect());
+	fEncoder->SetDestFrame(rect);
+	BMessage message(kMsgControllerTargetFrameChanged);
+	message.AddRect("frame", rect);
+	SendNotices(kMsgControllerTargetFrameChanged, &message);
+	Settings().PrintToStream();
 }
 
 
@@ -208,6 +216,7 @@ Controller::SetVideoDepth(const color_space &space)
 	BAutolock _(this);
 	fEncoder->SetColorSpace(space);
 	Settings().SetClipDepth(space);
+	SendNotices(kMsgControllerVideoDepthChanged);
 }
 
 
