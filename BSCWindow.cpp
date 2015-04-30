@@ -29,7 +29,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-const static BRect kWindowRect(0, 0, 400, 500);
+const static BRect kWindowRect(0, 0, 400, 900);
 
 const char* kEncodingString = "Encoding movie...";
 const char* kDoneString = "Done!";
@@ -106,7 +106,7 @@ BSCWindow::BSCWindow()
 		//StartWatching(fController, kMsgGUIStartCapture);
 		//StartWatching(fController, kMsgGUIStopCapture);
 		StartWatching(fController, kSelectionWindowClosed);
-		advancedView->StartWatching(fController, kClipSizeChanged);
+		outputView->StartWatching(fController, kClipSizeChanged);
 		//StartWatching(fCamStatus, kMsgControllerCaptureResumed);	
 		
 		// watch Controller for these

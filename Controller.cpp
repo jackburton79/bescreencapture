@@ -73,8 +73,14 @@ Controller::MessageReceived(BMessage *message)
 				}
 				case kClipSizeChanged:
 				{
+					std::cout << "Controller: kClipSizeChanged" << std::endl;
+					message->PrintToStream();
+					int32 value = 0;
+					if (message->FindInt32("be:value", &value) == B_OK)
+						Settings().SetScale(value);	
 					fEncoder->SetDestFrame(Settings().TargetRect());
 					SendNotices(kMsgControllerTargetFrameChanged, message);
+					Settings().PrintToStream();
 					break;
 				}
 				default:

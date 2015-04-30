@@ -33,6 +33,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <iostream>
+
 const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kFileTypeChanged = 'FtyC';
 const static int32 kCodecChanged = 'CdCh';
@@ -102,6 +104,21 @@ OutputView::OutputView(Controller *controller)
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+			.AddGroup(B_VERTICAL, 0)
+				.Add(fWholeScreen)
+				.Add(fCustomArea)
+				.Add(fSelectArea)
+			.End()
+			.Add(fRectView = new PreviewView())
+		.End()
+		.View();
+	
+	selectBox->AddChild(layoutView);
+	
+	layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.AddGroup(B_HORIZONTAL, 0)
 				.Add(fFileName)
@@ -115,23 +132,8 @@ OutputView::OutputView(Controller *controller)
 		.End()	
 		.View();
 
-	outputBox->AddChild(layoutView);
-
-	layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_HORIZONTAL)
-			.AddGroup(B_VERTICAL, 0)
-				.Add(fWholeScreen)
-				.Add(fCustomArea)
-				.Add(fSelectArea)
-			.End()
-			.Add(fRectView = new PreviewView())
-		.End()
-		.View();
+	outputBox->AddChild(layoutView);	
 	
-	selectBox->AddChild(layoutView);
-
 	fSizeSlider->SetValue(100);
 	
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
@@ -181,13 +183,9 @@ OutputView::AttachedToWindow()
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
 	fSizeSlider->SetTarget(this);
-	//fSizeTextControl->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
 	
 	fSizeSlider->SetValue(Settings().Scale());		
-	/*BString sizeString;
-	sizeString << (int32)fSizeSlider->Value();
-	fSizeTextControl->SetText(sizeString);*/
 	
 	UpdatePreviewFromSettings();
 	_RebuildCodecsMenu();
@@ -240,11 +238,9 @@ OutputView::MessageReceived(BMessage *message)
 		
 		case kClipSizeChanged:
 		{
-			float num = fSizeSlider->Value();
-			
-			Settings().SetScale(num);
-			
-			SendNotices(kClipSizeChanged);
+			std::cout << "OutputView: kClipSizeChanged" << std::endl;
+				
+			SendNotices(kClipSizeChanged, message);
 			
 			break;
 		}
@@ -319,7 +315,9 @@ OutputView::UpdateSettings()
 	
 	if (fWholeScreen->Value() == B_CONTROL_ON)
 		settings.SetCaptureArea(BScreen().Frame());
-			
+	else
+		settings.SetCaptureArea(fCaptureArea);
+				
 	UpdatePreviewFromSettings();
 	
 	fController->UpdateMediaFormatAndCodecsForCurrentFamily();
@@ -444,8 +442,7 @@ OutputView::_UpdatePreview(BMessage* message)
 	//settings.GetCaptureArea(captureArea);
 	//if (captureArea == screenFrame)
 	//	return;
-	if (fWholeScreen->Value() == B_CONTROL_ON)
-		settings.SetCaptureArea(screenFrame);
+	
 	
 	//UpdatePreview();
 	if (message != NULL) {

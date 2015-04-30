@@ -12,6 +12,7 @@
 #include <Screen.h>
 #include <StringView.h>
 
+#include <iostream>
 
 class BitmapView : public BView {
 public:
@@ -19,9 +20,9 @@ public:
 	virtual ~BitmapView();
 	
 	virtual void Draw(BRect update);
-	virtual bool HasHeightForWidth() { return true; };
+	//virtual bool HasHeightForWidth() { return true; };
 	virtual void GetHeightForWidth(float width, float* min, float* max, float* preferred);
-	//virtual BSize MinSize();
+	virtual BSize MinSize();
 };
 
 
@@ -35,26 +36,27 @@ PreviewView::PreviewView()
 	fCoordRect = BRect(10, 10, 20, 20);
 	fChanged = true;
 
-	SetLayout(new BGroupLayout(B_HORIZONTAL));
-	SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
-		B_ALIGN_VERTICAL_CENTER));
-	AddChild(BGroupLayoutBuilder(B_VERTICAL)
+	SetLayout(new BGroupLayout(B_VERTICAL));
+	//SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
+	//	B_ALIGN_VERTICAL_CENTER));
+	BLayoutBuilder::Group<>(this)
+	.AddGroup(B_VERTICAL, 0)
 		//.AddGroup(B_HORIZONTAL)
 		//	.AddGlue()
 		//	.AddGlue()
 		//.End()
-		//.AddGroup(B_HORIZONTAL)
-			//.AddGlue()
+		.AddGroup(B_HORIZONTAL, 0)
+			//.AddStrut(10)
 			//.Add(fLeftTop = new BStringView("lefttop", ""))
 			.Add(fBitmapView = new BitmapView())
 			//.Add(fRightBottom = new BStringView("rightbottom", ""))
-			//.AddGlue()
-		//.End()
+			//.AddStrut(10)
+			.End()
 		/*.AddGroup(B_HORIZONTAL)
 			.AddGlue()
 			.AddGlue()
 		.End()*/
-	);
+		.End();
 	
 	/*fLeftTop->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
 		B_ALIGN_TOP));
@@ -136,19 +138,22 @@ BitmapView::GetHeightForWidth(float width, float* min,
 			float* max, float* preferred)
 {
 	float preferredHeight = (width / 16) * 9;
-	float variation = preferredHeight / 10;
+	float variation = preferredHeight / 5;
 	if (preferred != NULL)
 		*preferred = preferredHeight;
 	if (min != NULL)
 		*min = preferredHeight - variation;
 	if (max != NULL)
-		*max = preferredHeight + variation;
+		*max = preferredHeight;
+	std::cout << "width: " << width << ", min: " << (min ? *min : 0);
+	std::cout << ", preferred: " << (preferred ? *preferred : 0);
+	std::cout << ", max: " << (max ? *max : 0) << std::endl;
 }
 	
-/*	
+	
 BSize
 BitmapView::MinSize()
 {
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(90, 60));
+	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(90, 70));
 }
-*/
+

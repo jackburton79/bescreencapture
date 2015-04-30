@@ -379,6 +379,7 @@ void
 Settings::PrintToStream()
 {
 	fSettings->PrintToStream();
+	TargetRect().PrintToStream();
 }
 
 
