@@ -159,9 +159,6 @@ BitmapView::GetHeightForWidth(float width, float* min,
 		*min = preferredHeight - variation;
 	if (max != NULL)
 		*max = preferredHeight;
-	std::cout << "width: " << width << ", min: " << (min ? *min : 0);
-	std::cout << ", preferred: " << (preferred ? *preferred : 0);
-	std::cout << ", max: " << (max ? *max : 0) << std::endl;
 }
 	
 	
