@@ -88,7 +88,8 @@ OutputView::OutputView(Controller *controller)
 		new BMessage(kCheckBoxAreaSelectionChanged));
 	fCustomArea = new BRadioButton("region",
 		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
-	fSelectArea = new BButton("select area", "Select", new BMessage(kSelectArea));
+	fSelectArea = new BButton("select region", "Select region", new BMessage(kSelectArea));
+	fSelectArea->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	fSelectArea->SetEnabled(false);
 	
 	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
@@ -104,10 +105,11 @@ OutputView::OutputView(Controller *controller)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_VERTICAL, 0)
+			.AddGroup(B_VERTICAL)
 				.Add(fWholeScreen)
 				.Add(fCustomArea)
 				.Add(fSelectArea)
+				.AddStrut(20)
 			.End()
 			.Add(fRectView = new PreviewView())
 		.End()
