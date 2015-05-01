@@ -208,7 +208,6 @@ OutputView::MessageReceived(BMessage *message)
 		
 		case kCheckBoxAreaSelectionChanged:
 		{
-			std::cout << "kCheckBoxAreaSelectionChanged" << std::endl;
 			BRect rect = fCustomCaptureRect;
 			if (fWholeScreen->Value() == B_CONTROL_ON) {
 				rect = BScreen().Frame();
@@ -257,18 +256,25 @@ OutputView::MessageReceived(BMessage *message)
 			switch (code) {
 				case kMsgControllerSourceFrameChanged:
 				{
-					std::cout << "kMsgControllerSourceFrameChanged" << std::endl;
 					BRect rect;
 					if (message->FindRect("frame", &rect) == B_OK) {
 						if (rect != BScreen().Frame())
 							fCustomCaptureRect = rect;
 					}
-					_UpdatePreview(message);
+					_UpdatePreview(&rect);
 					break;	
 				}
 				case kMsgControllerSelectionWindowClosed:
-					_UpdatePreview(message);
+				{
+					BRect rect;
+					BBitmap* bitmap = NULL;
+					if (message != NULL && message->FindRect("selection", &rect) == B_OK
+						&& message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {	
+						_UpdatePreview(&rect, bitmap);
+						delete bitmap;
+					}
 					break;
+				}
 				case kMsgControllerCodecListUpdated:
 					_RebuildCodecsMenu();
 					break;
@@ -344,7 +350,6 @@ void
 OutputView::UpdatePreviewFromSettings()
 {
 	const BRect rect = Settings().CaptureArea();
-	
 	fRectView->Update(&rect);
 }
 
@@ -441,22 +446,9 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 
 
 void
-OutputView::_UpdatePreview(BMessage* message)
+OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 {
-	if (message)
-		message->PrintToStream();
-
-	BRect rect;
-	BBitmap* bitmap = NULL;
-	if (message != NULL && message->FindRect("selection", &rect) == B_OK
-		&& message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {	
-		fRectView->Update(&rect, bitmap);
-		delete bitmap;
-	} else {
-		Settings settings;
-		settings.GetCaptureArea(rect);
-		fRectView->Update(&rect);
-	}
+	fRectView->Update(rect, bitmap);
 }
 
 

@@ -164,6 +164,7 @@ SelectionWindow::QuitRequested()
 	FixRect(selection);
 	BScreen(this).GetBitmap(&bitmap, false, &selection);
 	
+	snooze(2000);
 	message.AddRect("selection", selection);
 	message.AddPointer("bitmap", bitmap);
 	

@@ -33,7 +33,7 @@ PreviewView::PreviewView()
 	fLeftTop(NULL),
 	fRightBottom(NULL)
 {
-	fCoordRect = BRect(10, 10, 20, 20);
+	fCoordRect = BScreen().Frame();
 	fChanged = true;
 
 	SetLayout(new BGroupLayout(B_VERTICAL));
@@ -71,6 +71,13 @@ PreviewView::AttachedToWindow()
 	BView::AttachedToWindow();
 	SetViewColor(Parent()->ViewColor());
 
+	Update();
+}
+
+
+void
+PreviewView::WindowActivated()
+{
 	Update();
 }
 

@@ -98,9 +98,7 @@ MovieEncoder::SetMessenger(const BMessenger &messenger)
 
 status_t
 MovieEncoder::Encode()
-{
-	fDestFrame.PrintToStream();
-	
+{	
 	int32 framesLeft = fFileList->CountItems();
 	int32 framesWritten = 0;
 	

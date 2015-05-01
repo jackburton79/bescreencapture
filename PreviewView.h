@@ -8,6 +8,7 @@ class PreviewView : public BView {
 public:
 	PreviewView();
 	virtual void AttachedToWindow();
+	virtual void WindowActivated();
 	void Update(const BRect* rect = NULL, BBitmap* bitmap = NULL);
 	BRect Rect() const;
 	

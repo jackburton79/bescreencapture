@@ -172,6 +172,7 @@ BSCWindow::MessageReceived(BMessage *message)
 			Hide();
 			while (!IsHidden())
 				snooze(500);
+			snooze(2000);
 			BMessenger messenger(fController);
 			SelectionWindow *window = new SelectionWindow(messenger, kSelectionWindowClosed);			
 			window->Show();

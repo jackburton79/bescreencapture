@@ -206,7 +206,6 @@ Controller::SetScale(const float &scale)
 	BMessage message(kMsgControllerTargetFrameChanged);
 	message.AddRect("frame", rect);
 	SendNotices(kMsgControllerTargetFrameChanged, &message);
-	Settings().PrintToStream();
 }
 
 

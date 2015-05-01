@@ -55,7 +55,7 @@ private:
 	void _RebuildCodecsMenu();
 
 	void _SetFileNameExtension(const char* extension);
-	void _UpdatePreview(BMessage* message);
+	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
 	
 	static BMenuItem *CreateCodecMenuItem(const media_codec_info &codec);
 };
