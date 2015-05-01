@@ -137,7 +137,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		{
 			color_space depth;
 			const char *name = NULL;
-			fDepthControl->SelectedOption(&name, (int32 *)&depth);
+			fDepthControl->SelectedOption(&name, (int32*)&depth);
 			fController->SetVideoDepth(depth);
 			break;
 		}
