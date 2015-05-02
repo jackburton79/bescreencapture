@@ -377,13 +377,20 @@ Controller::StartCapture()
 {
 	BPath path;
 	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
-	if (status != B_OK)
+	if (status != B_OK) {
+		BMessage message(kMsgControllerCaptureFailed);
+		message.AddInt32("status", status);
+		SendNotices(kMsgControllerCaptureFailed, &message);
 		return;
-			
+	}
+	
 	// Create temporary path
 	fTemporaryPath = tempnam((char*)path.Path(), (char*)"_BSC");
-	if (create_directory(fTemporaryPath, 0777) < B_OK) {
-		printf("Unable to create temporary folder");
+	status = create_directory(fTemporaryPath, 0777);
+	if (status < B_OK) {
+		BMessage message(kMsgControllerCaptureFailed);
+		message.AddInt32("status", status);
+		SendNotices(kMsgControllerCaptureFailed, &message);
 		return;
 	}
 		
@@ -393,12 +400,19 @@ Controller::StartCapture()
 	fCaptureThread = spawn_thread((thread_entry)CaptureStarter,
 		"Capture Thread", B_DISPLAY_PRIORITY, this);
 					
-	if (fCaptureThread < 0)
+	if (fCaptureThread < 0) {
+		BMessage message(kMsgControllerCaptureFailed);
+		message.AddInt32("status", fCaptureThread);
+		SendNotices(kMsgControllerCaptureFailed, &message);	
 		return;
+	}
 		
 	status = resume_thread(fCaptureThread);
 	if (status < B_OK) {
 		kill_thread(fCaptureThread);
+		BMessage message(kMsgControllerCaptureFailed);
+		message.AddInt32("status", status);
+		SendNotices(kMsgControllerCaptureFailed, &message);
 		return;
 	}
 

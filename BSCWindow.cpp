@@ -111,6 +111,7 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
+		fController->StartWatching(this, kMsgControllerCaptureFailed);
 		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
 		 
 		fController->StartWatching(fCamStatus, kMsgControllerCaptureStarted);
@@ -203,7 +204,17 @@ BSCWindow::MessageReceived(BMessage *message)
 						Show();
 			
 					break;
-				}	
+				}
+				case kMsgControllerCaptureFailed:
+				{
+					status_t status;
+					message->FindInt32("status", &status);
+					char errorString[128];
+					snprintf(errorString, 128, "A problem has occurred while starting capture:\n"
+						"%s", strerror(status));
+					(new BAlert("Capture Failed", errorString, "Ok"))->Go();
+					break;
+				}
 				case kMsgControllerCaptureStarted:
 					_CaptureStarted();
 					break;

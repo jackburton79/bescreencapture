@@ -9,6 +9,7 @@ enum {
 	kMsgControllerCaptureStopped,
 	kMsgControllerCapturePaused,
 	kMsgControllerCaptureResumed,
+	kMsgControllerCaptureFailed,		// status_t status
 	kMsgControllerEncodeStarted,
 	kMsgControllerEncodeProgress,		// int32 num_files
 	kMsgControllerEncodeFinished,		// status_t status
