@@ -194,6 +194,14 @@ OutputView::AttachedToWindow()
 
 
 void
+OutputView::WindowActivated(bool active)
+{
+	if (fWholeScreen->Value() == B_CONTROL_ON)
+		_UpdatePreview(NULL);
+}
+
+
+void
 OutputView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {

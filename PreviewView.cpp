@@ -76,13 +76,6 @@ PreviewView::AttachedToWindow()
 
 
 void
-PreviewView::WindowActivated()
-{
-	Update();
-}
-
-
-void
 PreviewView::_SetRect(const BRect& rect)
 {
 	if (fCoordRect != rect) {

@@ -23,7 +23,7 @@ public:
 
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage *message);
-	
+	virtual void WindowActivated(bool active);
 	void RequestMediaFormatUpdate();
 	
 	BPath OutputFileName() const;
