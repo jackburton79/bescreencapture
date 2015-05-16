@@ -81,11 +81,13 @@ PreviewView::_SetRect(const BRect& rect)
 	if (fCoordRect != rect) {
 		fCoordRect = rect;
 		
-		char str[16];
-		snprintf(str, sizeof(str), "%d, %d", (int)rect.left, (int)rect.top);
-		//fLeftTop->SetText(str);
-		snprintf(str, sizeof(str), "%d, %d", (int)rect.right, (int)rect.bottom);
-		//fRightBottom->SetText(str);
+		BString text;
+		text << "Capture area:\n";
+		text << "left: " << (int)rect.left << ", ";
+		text << "top: " << (int)rect.top << ", ";
+		text << "right: " << (int)rect.right << ", ";
+		text << "bottom: " << (int)rect.bottom;
+		SetToolTip(text.String());
 	}
 }
 
