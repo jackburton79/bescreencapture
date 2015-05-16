@@ -359,7 +359,9 @@ OutputView::OutputFileName() const
 void
 OutputView::UpdatePreviewFromSettings()
 {
-	const BRect rect = Settings().CaptureArea();
+	BRect rect = Settings().CaptureArea();
+	if (!rect.IsValid())
+		rect = BScreen().Frame();
 	fRectView->Update(&rect);
 }
 
