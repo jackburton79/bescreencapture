@@ -241,7 +241,6 @@ BSCWindow::MessageReceived(BMessage *message)
 				case kMsgControllerEncodeFinished:
 				{
 					fStartStopButton->SetEnabled(true);
-					//fStringView->SetText(kDoneString);
 					fCardLayout->SetVisibleItem((int32)0);
 					status_t status = B_OK;
 					if (message->FindInt32("status", (int32*)&status) == B_OK
