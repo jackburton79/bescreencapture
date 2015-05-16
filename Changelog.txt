@@ -2,6 +2,9 @@ v2.0 (not yet released)
 	- Implement option to hide the Deskbar icon. Stopping the capture
 	  is done via a ctrl+command+shift+r key combo, intercepted
 	  by an input-server addon (puckipedia)
+	- Fix preview not being updated in various circumstances
+	- Moved resizing slider to the main tab view
+	- Enlarged the preview area, and hopefully improved layout
 	  
 v1.9.4
     - Save the output file format to settings.
