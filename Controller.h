@@ -66,9 +66,10 @@ private:
 	thread_id			fCaptureThread;
 	bool				fKillThread;
 	bool				fPaused;
-	
-	direct_buffer_info		fDirectInfo;
-	MovieEncoder*			fEncoder;
+
+	bool				fDirectWindowAvailable;	
+	direct_buffer_info	fDirectInfo;
+	MovieEncoder*		fEncoder;
 	
 	char				*fTemporaryPath;
 

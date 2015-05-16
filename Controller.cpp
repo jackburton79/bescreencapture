@@ -35,6 +35,7 @@ Controller::Controller()
 	fCaptureThread(-1),
 	fKillThread(true),
 	fPaused(false),
+	fDirectWindowAvailable(false),
 	fCodecList(NULL)
 {
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
@@ -333,6 +334,8 @@ void
 Controller::UpdateDirectInfo(direct_buffer_info* info)
 {
 	BAutolock _(this);
+	if (!fDirectWindowAvailable)
+		fDirectWindowAvailable = true;
 	fDirectInfo = *info;
 	UpdateAreaDescription(Settings().CaptureArea());
 }
@@ -496,7 +499,7 @@ Controller::CaptureThread()
 		if (!fPaused) {
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 		
-			if (useDirectWindow)		
+			if (fDirectWindowAvailable && useDirectWindow)		
 				error = ReadBitmap(bitmap, bounds);			
 			else 
 				error = screen.ReadBitmap(bitmap, false, &bounds);
