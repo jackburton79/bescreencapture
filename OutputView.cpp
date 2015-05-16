@@ -169,6 +169,8 @@ OutputView::OutputView(Controller *controller)
 	fController->SetMediaFileFormat(FileFormat());
 	fController->SetMediaFormatFamily(FormatFamily());
 	fController->SetOutputFileName(fFileName->Text());
+	
+	fCustomCaptureRect = BScreen().Frame();
 }
 
 
