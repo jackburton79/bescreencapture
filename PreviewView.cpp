@@ -78,17 +78,15 @@ PreviewView::AttachedToWindow()
 void
 PreviewView::_SetRect(const BRect& rect)
 {
-	if (fCoordRect != rect) {
-		fCoordRect = rect;
-		
-		BString text;
-		text << "Capture area:\n";
-		text << "left: " << (int)rect.left << ", ";
-		text << "top: " << (int)rect.top << ", ";
-		text << "right: " << (int)rect.right << ", ";
-		text << "bottom: " << (int)rect.bottom;
-		SetToolTip(text.String());
-	}
+	fCoordRect = rect;
+	
+	BString text;
+	text << "Capture area:\n";
+	text << "left: " << (int)rect.left << ", ";
+	text << "top: " << (int)rect.top << ", ";
+	text << "right: " << (int)rect.right << ", ";
+	text << "bottom: " << (int)rect.bottom;
+	SetToolTip(text.String());
 }
 
 
