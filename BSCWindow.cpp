@@ -324,6 +324,8 @@ BSCWindow::_CaptureFinished()
 
 	if (IsHidden())
 		Show();
+	if (IsMinimized())
+		Minimize(false);
 
 	return B_OK;
 }
