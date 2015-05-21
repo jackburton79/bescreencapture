@@ -14,10 +14,10 @@ Q: I have the codec <insert your favourite codec name here> but it's not listed 
 
 A: Not every codec supports every clip configuration: some codecs can only support some particular
 color depth, or certain particular sizes (i.e. 320x200): try changing the "Clip color depth" option in the
-"Advanced" settings. The default (32 bit), though, should work for most codecs.
+"Options" tab. The default (32 bit), though, should work for most codecs.
 
 
-Q: BeScreenCapture crashed while using the codec <insert your favourite codec name here> !!!
+Q: BeScreenCapture crashed while using the codec \<insert your favourite codec name here\> !!!
 
 A: There are many buggy codecs around. I've seen many codecs which simply refuse to record anything,
 and in some cases, codecs which simply crash (3ivx, for example). 
