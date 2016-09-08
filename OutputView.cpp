@@ -88,6 +88,9 @@ OutputView::OutputView(Controller *controller)
 		new BMessage(kCheckBoxAreaSelectionChanged));
 	fCustomArea = new BRadioButton("region",
 		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
+	fWindow = new BRadioButton("window", 
+		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
+		
 	fSelectArea = new BButton("select region", "Select region", new BMessage(kSelectArea));
 	fSelectArea->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	fSelectArea->SetEnabled(false);
@@ -108,6 +111,7 @@ OutputView::OutputView(Controller *controller)
 			.AddGroup(B_VERTICAL)
 				.Add(fWholeScreen)
 				.Add(fCustomArea)
+				.Add(fWindow)
 				.Add(fSelectArea)
 				.AddStrut(20)
 			.End()
@@ -185,6 +189,7 @@ OutputView::AttachedToWindow()
 	fOutputFileType->Menu()->SetTargetForItems(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
+	fWindow->SetTarget(this);
 	fSizeSlider->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
 	
@@ -222,8 +227,13 @@ OutputView::MessageReceived(BMessage *message)
 			if (fWholeScreen->Value() == B_CONTROL_ON) {
 				rect = BScreen().Frame();
 				fSelectArea->SetEnabled(false);
-			} else
+			} else {
 				fSelectArea->SetEnabled(true);
+				if (fCustomArea->Value() == B_CONTROL_ON)
+					fSelectArea->SetLabel("Select Region");
+				else if (fWindow->Value() == B_CONTROL_ON)
+					fSelectArea->SetLabel("Select Window");
+			}
 			fController->SetCaptureArea(rect);
 			break;	
 		}

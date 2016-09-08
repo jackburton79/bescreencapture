@@ -46,6 +46,7 @@ private:
 	BButton *fSelectArea;
 	BRadioButton *fWholeScreen;
 	BRadioButton *fCustomArea;
+	BRadioButton *fWindow;
 	PreviewView *fRectView;
 	BRect fCustomCaptureRect;
 	BButton* fFilePanelButton;
