@@ -5,6 +5,8 @@
 #include <StorageDefs.h>
 #include <SupportDefs.h>
 
+#include <ObjectList.h>
+
 class BPath;
 class BRect;
 
@@ -13,6 +15,8 @@ void FixRect(BRect &rect, const bool fixWidth = false, const bool fixHeight = fa
 status_t UpdateMediaFormat(const int32 &width, const int32 &height,
 	const color_space &colorSpace, const int32 &fieldRate,
 	media_format &mediaFormat);
+
+status_t GetWindowsFrameList(BObjectList<BRect> &framesList);
 
 #endif
 

@@ -1,12 +1,22 @@
 #include "Settings.h"
 #include "Utils.h"
 
+// Private Haiku header
+#include "WindowInfo.h"
+
+
 #include <Entry.h>
+#include <Looper.h>
 #include <Path.h>
+#include <Roster.h>
 #include <String.h>
+#include <Window.h>
 
 #include <cstring>
 #include <cstdio>
+#include <cstdlib>
+
+#include <iostream>
 
 
 void
@@ -92,3 +102,38 @@ UpdateMediaFormat(const int32 &width, const int32 &height,
 	
 	return B_OK;
 }
+
+
+
+status_t
+GetWindowsFrameList(BObjectList<BRect> &framesList)
+{
+	BList appList;
+	BRoster roster;
+	roster.GetAppList(&appList);
+	BObjectList<window_info> windowInfoList;
+	for (int32 i = appList.CountItems() - 1; i >= 0; i--) {
+		team_id teamID = (team_id)appList.ItemAt(i);
+		int32 tokenCount = 0;
+		// Haiku does not have a public API to retrieve windows from other teams, 
+		// so we have to use this.
+		int32 *tokenList = NULL;
+		status_t status = BPrivate::get_window_order(current_workspace(), &tokenList, &tokenCount);
+		if (status == B_OK) {
+			for (int32 i = 0; i < tokenCount; i++) {
+				client_window_info* info = get_window_info(tokenList[i]);
+				if (info != NULL && info->layer >= 3 && !info->is_mini && info->show_hide_level == 0)
+					windowInfoList.AddItem(info);
+			}
+			free(tokenList);
+		}		
+	}
+	
+	int32 count = windowInfoList.CountItems();
+	for (int32 i = 0; i < count; i++) {
+		window_info* info = windowInfoList.ItemAt(i);
+		BRect* rect = new BRect(info->window_left, info->window_top, info->window_right, info->window_bottom);
+		framesList.AddItem(rect);
+	}	
+}
+
