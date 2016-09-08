@@ -13,12 +13,22 @@ const char *kInfo = "Select the area to capture";
 class SelectionView : public BView {
 public:
 	SelectionView(BRect frame, const char *name);
+
+	//virtual void MouseDown(BPoint where);
+	virtual void MouseUp(BPoint where);
+	virtual BRect SelectionRect();
+};
+
+
+class SelectionViewRegion : public SelectionView {
+public:
+	SelectionViewRegion(BRect frame, const char *name);
 	virtual void MouseDown(BPoint where);
 	virtual void MouseUp(BPoint where);
 	virtual void MouseMoved(BPoint where, uint32 code, const BMessage *message);
 	virtual void Draw(BRect updateRect);
 	
-	BRect SelectionRect();
+	virtual BRect SelectionRect();
 		
 private:
 	bool fMouseDown;
@@ -31,9 +41,50 @@ private:
 };
 
 
+class SelectionViewWindow : public SelectionView {
+public:
+	SelectionViewWindow(BRect frame, const char* name);
+	//virtual void MouseDown(BPoint where);
+	//virtual void MouseUp(BPoint where);
+	virtual void MouseMoved(BPoint where, uint32 code, const BMessage *message);
+	virtual void Draw(BRect updateRect);
+	
+	virtual BRect SelectionRect();
+	
+private:
+	BObjectList<BRect> fFrameList;
+	BRect fHighlightFrame;
+	
+	BRect HitTestFrame(BPoint& where);
+};
+
+
+// SelectionView
 SelectionView::SelectionView(BRect frame, const char *name)
 	:
-	BView(frame, name, B_FOLLOW_NONE, B_WILL_DRAW),
+	BView(frame, name, B_FOLLOW_NONE, B_WILL_DRAW)
+{
+	SetFontSize(20);
+}
+
+
+void
+SelectionView::MouseUp(BPoint where)
+{
+	Window()->PostMessage(B_QUIT_REQUESTED);	
+}
+
+BRect
+SelectionView::SelectionRect()
+{
+	return BRect(0, 0, -1, -1);
+}
+
+
+// SelectionViewRegion
+SelectionViewRegion::SelectionViewRegion(BRect frame, const char *name)
+	:
+	SelectionView(frame, name),
 	fMouseDown(false)
 {
 	SetFontSize(20);
@@ -49,17 +100,18 @@ SelectionView::SelectionView(BRect frame, const char *name)
 	fStringRect.bottom = fStringRect.top + stringHeight;
 }
 
-
 void
-SelectionView::MouseDown(BPoint where)
+SelectionViewRegion::MouseDown(BPoint where)
 {
+	SelectionView::MouseDown(where);
+	
 	fMouseDown = true;
 	fSelectionStart = where;
 }
 
 
 void
-SelectionView::MouseMoved(BPoint where, uint32 code, const BMessage *a_message)
+SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *a_message)
 {
 	if (fMouseDown && code == B_INSIDE_VIEW) {
 		BRect selectionRect;
@@ -75,17 +127,18 @@ SelectionView::MouseMoved(BPoint where, uint32 code, const BMessage *a_message)
 
 
 void
-SelectionView::MouseUp(BPoint where)
+SelectionViewRegion::MouseUp(BPoint where)
 {
 	fSelectionEnd = where;
 	fMouseDown = false;
 	
+	SelectionView::MouseUp(where);
 	Window()->PostMessage(B_QUIT_REQUESTED);	
 }
 
 
 void
-SelectionView::Draw(BRect updateRect)
+SelectionViewRegion::Draw(BRect updateRect)
 {
 	if (fMouseDown) {
 		BRect selection;
@@ -97,7 +150,7 @@ SelectionView::Draw(BRect updateRect)
 
 
 BRect
-SelectionView::SelectionRect()
+SelectionViewRegion::SelectionRect()
 {
 	BRect rect;
 	MakeSelectionRect(&rect);
@@ -106,7 +159,7 @@ SelectionView::SelectionRect()
 
 
 void
-SelectionView::MakeSelectionRect(BRect *rect)
+SelectionViewRegion::MakeSelectionRect(BRect *rect)
 {
 	rect->SetLeftTop(BPoint(min_c(fSelectionStart.x, fSelectionEnd.x),
 					min_c(fSelectionStart.y, fSelectionEnd.y)));
@@ -115,12 +168,69 @@ SelectionView::MakeSelectionRect(BRect *rect)
 }
 
 
-SelectionWindow::SelectionWindow(BMessenger& target, uint32 command)
+// SelectionViewWindow
+SelectionViewWindow::SelectionViewWindow(BRect frame, const char *name)
+	:
+	SelectionView(frame, name)
+{	
+	GetWindowsFrameList(fFrameList);
+}
+
+
+void
+SelectionViewWindow::MouseMoved(BPoint where, uint32 code, const BMessage *a_message)
+{
+	BRect frame = HitTestFrame(where);
+	if (frame.IsValid())
+		fHighlightFrame = frame;
+	else
+		fHighlightFrame.Set(0, 0, -1, -1);
+	Invalidate();
+}
+
+
+void
+SelectionViewWindow::Draw(BRect updateRect)
+{
+	if (fHighlightFrame.IsValid()) {
+		SetDrawingMode(B_OP_ALPHA);
+		SetHighColor(76, 0, 0, 100);
+		FillRect(fHighlightFrame);
+	}
+}
+
+
+BRect
+SelectionViewWindow::SelectionRect()
+{
+	return fHighlightFrame;
+}
+
+
+BRect
+SelectionViewWindow::HitTestFrame(BPoint& where)
+{
+	int32 count = fFrameList.CountItems();
+	for (int32 i = 0; i < count; i++) {
+		BRect *frame = fFrameList.ItemAt(i);
+		if (frame->Contains(where))
+			return *frame;
+	}
+	
+	return BRect(0, 0, -1, -1);
+}
+
+
+// SelectionWindow
+SelectionWindow::SelectionWindow(int mode, BMessenger& target, uint32 command)
 	:
 	BWindow(BScreen().Frame(), "Area Window", window_type(1026),
 		B_ASYNCHRONOUS_CONTROLS|B_NOT_RESIZABLE|B_NOT_CLOSABLE|B_NOT_ZOOMABLE)
 {
-	fView = new SelectionView(Bounds(), "Selection view");
+	if (mode == REGION)
+		fView = new SelectionViewRegion(Bounds(), "Selection view");
+	else
+		fView = new SelectionViewWindow(Bounds(), "Selection view");
 	AddChild(fView);
 	
 	SetTarget(target);

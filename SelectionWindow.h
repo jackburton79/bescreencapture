@@ -7,7 +7,12 @@
 class SelectionView;
 class SelectionWindow : public BWindow {
 public:
-	SelectionWindow(BMessenger& target, uint32 command);
+	enum mode {
+		REGION,
+		WINDOW
+	};
+	
+	SelectionWindow(int mode, BMessenger& target, uint32 command);
 	
 	virtual void Show();
 	virtual void SetTarget(BMessenger& target);

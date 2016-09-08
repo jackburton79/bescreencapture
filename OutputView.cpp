@@ -91,7 +91,7 @@ OutputView::OutputView(Controller *controller)
 	fWindow = new BRadioButton("window", 
 		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
 		
-	fSelectArea = new BButton("select region", "Select region", new BMessage(kSelectArea));
+	fSelectArea = new BButton("select region", "Select Region", new BMessage(kSelectArea));
 	fSelectArea->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	fSelectArea->SetEnabled(false);
 	
@@ -229,10 +229,13 @@ OutputView::MessageReceived(BMessage *message)
 				fSelectArea->SetEnabled(false);
 			} else {
 				fSelectArea->SetEnabled(true);
-				if (fCustomArea->Value() == B_CONTROL_ON)
+				if (fCustomArea->Value() == B_CONTROL_ON) {
 					fSelectArea->SetLabel("Select Region");
-				else if (fWindow->Value() == B_CONTROL_ON)
+					fSelectArea->SetMessage(new BMessage(kSelectArea));
+				} else if (fWindow->Value() == B_CONTROL_ON) {
 					fSelectArea->SetLabel("Select Window");
+					fSelectArea->SetMessage(new BMessage(kSelectWindow));
+				}
 			}
 			fController->SetCaptureArea(rect);
 			break;	

@@ -7,6 +7,7 @@ enum appMessages {
 	kMsgGUIStopCapture,
 	kAddonStarted,
 	kSelectArea,
+	kSelectWindow,
 	kSelectionWindowClosed,
 	kCaptureFinished,
 	kEncodingFinished,

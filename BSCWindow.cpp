@@ -169,13 +169,15 @@ BSCWindow::MessageReceived(BMessage *message)
 {
 	switch (message->what) {				
 		case kSelectArea:
+		case kSelectWindow:
 		{
 			Hide();
 			while (!IsHidden())
 				snooze(500);
 			snooze(2000);
 			BMessenger messenger(fController);
-			SelectionWindow *window = new SelectionWindow(messenger, kSelectionWindowClosed);			
+			int mode = message->what == kSelectArea ? SelectionWindow::REGION : SelectionWindow::WINDOW;
+			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);			
 			window->Show();
 			break;
 		}
