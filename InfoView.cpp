@@ -4,7 +4,9 @@
  */
 
 
+#include "ControllerObserver.h"
 #include "InfoView.h"
+
 
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
@@ -26,4 +28,55 @@ InfoView::InfoView(Controller* controller)
 		.End()
 		.View();
 	AddChild(layoutView);
+}
+
+
+void
+InfoView::MessageReceived(BMessage* message)
+{
+	switch (message->what) {
+		case B_OBSERVER_NOTICE_CHANGE:
+		{
+			int32 code;
+			message->FindInt32("be:observe_change_what", &code);
+			switch (code) {
+				case kMsgControllerSourceFrameChanged:
+				{
+					BString string = "Source region: ";
+					BRect rect;
+					if (message->FindRect("frame", &rect) == B_OK) {
+						string << RectToString(rect);
+						fSourceSize->SetText(string.String());
+					}
+					break;
+				}
+				case kMsgControllerTargetFrameChanged:
+				{
+					BString string = "Clip frame size: ";
+					BRect rect;
+					if (message->FindRect("frame", &rect) == B_OK) {
+						string << RectToString(rect);
+						fClipSize->SetText(string.String());
+					}
+					break;
+				}
+				default:
+					break;
+			}
+		}
+		default:
+			BView::MessageReceived(message);
+			break;
+	}
+	
+}
+
+
+BString
+InfoView::RectToString(const BRect& rect)
+{
+	BString string;
+	string << "l: " << rect.left << ", t: " << rect.top;
+	string << ", r: " << rect.right << ", b: " << rect.bottom;
+	return string;
 }
