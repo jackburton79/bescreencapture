@@ -31,9 +31,8 @@ public:
 SizeControl::SizeControl(const char* name, const char* label,
 		BMessage* message, int32 minValue,
 		int32 maxValue, orientation posture,
-		thumb_style thumbType = B_BLOCK_THUMB,
-		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
-							| B_FRAME_EVENTS)
+		thumb_style thumbType,
+		uint32 flags)
 	:
 	BControl(name, label, message, flags),
 	fWhat(message->what)

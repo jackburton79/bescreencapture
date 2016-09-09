@@ -16,7 +16,7 @@ status_t UpdateMediaFormat(const int32 &width, const int32 &height,
 	const color_space &colorSpace, const int32 &fieldRate,
 	media_format &mediaFormat);
 
-status_t GetWindowsFrameList(BObjectList<BRect> &framesList);
+void GetWindowsFrameList(BObjectList<BRect> &framesList);
 
 #endif
 
