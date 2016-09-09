@@ -1,4 +1,8 @@
-v2.0 (not yet released)
+v2.1 (not yet released)
+	- Added option to capture a single window. Note that the application
+	  remembers the initial window position, it does not follow the window if
+	  it's moved or resized.
+v2.0 
 	- Implement option to hide the Deskbar icon. Stopping the capture
 	  is done via a ctrl+command+shift+r key combo, intercepted
 	  by an input-server addon (puckipedia)
