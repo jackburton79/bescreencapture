@@ -11,7 +11,6 @@ enum appMessages {
 	kSelectionWindowClosed,
 	kCaptureFinished,
 	kEncodingFinished,
-	kRebuildCodec,
 	kFileNameChanged,
 	kMinimizeOnRecording,
 	kClipSizeChanged,

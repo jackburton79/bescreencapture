@@ -241,7 +241,6 @@ OutputView::MessageReceived(BMessage *message)
 			break;	
 		}
 			
-		case kRebuildCodec:
 		case kFileTypeChanged:
 			fController->SetMediaFileFormat(FileFormat());
 			fController->SetMediaFormatFamily(FormatFamily());
@@ -302,6 +301,7 @@ OutputView::MessageReceived(BMessage *message)
 					_RebuildCodecsMenu();
 					break;
 				case kMsgControllerVideoDepthChanged:
+				case kMsgControllerTargetFrameChanged:
 					RequestMediaFormatUpdate();
 					break;
 				default:

@@ -322,11 +322,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 		*newCodec = codec;
 		fCodecList->AddItem(newCodec);
 	}
-	
-	/*for (int32 i = 0; i < fCodecList->CountItems(); i++) {
-		printf("%s\n", fCodecList->ItemAt(i)->pretty_name);
-	}*/
-	
+		
 	SendNotices(kMsgControllerCodecListUpdated);
 	return B_OK;
 }
