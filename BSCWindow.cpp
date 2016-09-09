@@ -240,14 +240,15 @@ BSCWindow::MessageReceived(BMessage *message)
 					fStringView->SetText(kEncodingString);
 					fCardLayout->SetVisibleItem(1);
 					break;
-					
 				case kMsgControllerEncodeProgress:
 				{
 					int32 numFiles = 0;
-					message->FindInt32("num_files", &numFiles);
-					
+					message->FindInt32("num_files", &numFiles);					
 					fStatusBar->SetMaxValue(float(numFiles));
 					
+					BString string = kEncodingString;
+					string << " (" << numFiles << " frames)";
+					fStringView->SetText(string);
 					break;
 				}
 		
