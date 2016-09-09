@@ -272,6 +272,13 @@ MovieEncoder::SetMediaCodecInfo(const media_codec_info& info)
 }
 
 
+media_codec_info
+MovieEncoder::MediaCodecInfo() const
+{
+	return fCodecInfo;
+}
+
+
 // private methods
 BBitmap*
 MovieEncoder::GetCursorBitmap(const uint8* cursor)
