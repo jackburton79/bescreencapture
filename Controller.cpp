@@ -195,7 +195,6 @@ Controller::SetCaptureArea(const BRect& rect)
 	message.AddRect("frame", rect);
 	SendNotices(kMsgControllerSourceFrameChanged, &message);
 	SendNotices(kMsgControllerTargetFrameChanged);
-	
 }
 
 
