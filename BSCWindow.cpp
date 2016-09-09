@@ -135,6 +135,7 @@ BSCWindow::BSCWindow()
 		
 		fController->StartWatching(infoView, kMsgControllerSourceFrameChanged);
 		fController->StartWatching(infoView, kMsgControllerTargetFrameChanged);
+		fController->StartWatching(infoView, kMsgControllerCodecChanged);
 		
 		fController->UnlockLooper();
 	}

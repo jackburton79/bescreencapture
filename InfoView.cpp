@@ -60,6 +60,17 @@ InfoView::MessageReceived(BMessage* message)
 					}
 					break;
 				}
+				case kMsgControllerCodecChanged:
+				{
+					const char* codecName = NULL;
+					if (message->FindString("codec_name", &codecName) == B_OK) {
+						BString string = "Codec: ";
+						string << codecName;
+						fCodec->SetText(string.String());
+					}
+						
+					break;
+				}
 				default:
 					break;
 			}
