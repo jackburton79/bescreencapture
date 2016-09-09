@@ -58,7 +58,7 @@ BSCWindow::BSCWindow()
 	
 	fCardLayout->AddView(fCamStatus = new CamStatusView("CamStatusView"));
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
-	
+		
 	BView* statusView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
@@ -136,12 +136,11 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(infoView, kMsgControllerSourceFrameChanged);
 		fController->StartWatching(infoView, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(infoView, kMsgControllerCodecChanged);
+		fController->StartWatching(infoView, kMsgControllerMediaFileFormatChanged);
 		
 		fController->UnlockLooper();
 	}
 	
-	//StartWatching(outputView, kClipSizeChanged);
-
 	CenterOnScreen();
 }
 

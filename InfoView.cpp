@@ -12,6 +12,25 @@
 #include <LayoutBuilder.h>
 #include <StringView.h>
 
+static BString
+GetFormatString(const char* formatName)
+{
+	BString string = "Format: ";
+	string << formatName;
+	return string;
+}
+
+
+static BString
+GetCodecString(const char* codecName)
+{
+	BString string = "Codec: ";
+	string << codecName;
+	return string;
+}
+
+
+
 InfoView::InfoView(Controller* controller)
 	:
 	BView("Info", B_WILL_DRAW),
@@ -24,7 +43,10 @@ InfoView::InfoView(Controller* controller)
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(fSourceSize = new BStringView("source size", ""))
 			.Add(fClipSize = new BStringView("clip size", ""))
-			.Add(fCodec = new BStringView("codec", ""))
+			.Add(fFormat = new BStringView("format",
+				GetFormatString(fController->MediaFileFormatName())))
+			.Add(fCodec = new BStringView("codec",
+				GetCodecString(fController->MediaCodecName())))
 		.End()
 		.View();
 	AddChild(layoutView);
@@ -64,11 +86,16 @@ InfoView::MessageReceived(BMessage* message)
 				{
 					const char* codecName = NULL;
 					if (message->FindString("codec_name", &codecName) == B_OK) {
-						BString string = "Codec: ";
-						string << codecName;
-						fCodec->SetText(string.String());
+						fCodec->SetText(GetCodecString(codecName));
 					}
-						
+					break;
+				}
+				case kMsgControllerMediaFileFormatChanged:
+				{
+					const char* formatName = NULL;
+					if (message->FindString("format_name", &formatName) == B_OK) {						
+						fFormat->SetText(GetFormatString(formatName));
+					}
 					break;
 				}
 				default:

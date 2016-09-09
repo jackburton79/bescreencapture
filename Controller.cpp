@@ -255,6 +255,14 @@ Controller::MediaFileFormat() const
 }
 
 
+const char*
+Controller::MediaFileFormatName() const
+{
+	BAutolock _((BLooper*)this);
+	return fEncoder->MediaFileFormat().pretty_name;
+}
+
+
 void
 Controller::SetMediaFileFormat(const media_file_format& fileFormat)
 {
@@ -262,6 +270,11 @@ Controller::SetMediaFileFormat(const media_file_format& fileFormat)
 	fEncoder->SetMediaFileFormat(fileFormat);
 
 	Settings().SetOutputFileFormat(fileFormat.pretty_name);
+	
+	BMessage message(kMsgControllerMediaFileFormatChanged);
+	message.AddString("format_name", fileFormat.pretty_name);
+	SendNotices(kMsgControllerMediaFileFormatChanged, &message);
+	
 	UpdateMediaFormatAndCodecsForCurrentFamily();
 }
 
@@ -280,6 +293,13 @@ Controller::SetMediaCodec(const char* codecName)
 			break;
 		}
 	}
+}
+
+
+const char*
+Controller::MediaCodecName() const
+{
+	fEncoder->MediaCodecInfo().pretty_name;
 }
 
 

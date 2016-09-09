@@ -168,12 +168,7 @@ OutputView::OutputView(Controller *controller)
 	fWholeScreen->SetValue(B_CONTROL_ON);
 	
 	RequestMediaFormatUpdate();
-	
-	fController->SetCaptureArea(BScreen(Window()).Frame());
-	fController->SetMediaFileFormat(FileFormat());
-	fController->SetMediaFormatFamily(FormatFamily());
-	fController->SetOutputFileName(fFileName->Text());
-	
+		
 	fCustomCaptureRect = BScreen().Frame();
 }
 
@@ -195,6 +190,11 @@ OutputView::AttachedToWindow()
 	
 	fSizeSlider->SetValue(Settings().Scale());		
 	
+	fController->SetCaptureArea(BScreen(Window()).Frame());
+	fController->SetMediaFileFormat(FileFormat());
+	fController->SetMediaFormatFamily(FormatFamily());
+	fController->SetOutputFileName(fFileName->Text());
+
 	UpdatePreviewFromSettings();
 	_RebuildCodecsMenu();
 }

@@ -19,10 +19,11 @@ public:
 									
 private:
 	static BString RectToString(const BRect& rect);
-
+	
 	Controller* fController;
 	BStringView* fSourceSize;
 	BStringView* fClipSize;
+	BStringView* fFormat;
 	BStringView* fCodec;
 };
 
