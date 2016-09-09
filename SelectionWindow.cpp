@@ -9,13 +9,14 @@
 #include <cstdio>
 
 const char *kInfo = "Select the area to capture";
+const static rgb_color sWindowSelectionColor = { 0, 0, 128, 100 };
 
 class SelectionView : public BView {
 public:
 	SelectionView(BRect frame, const char *name);
 
-	//virtual void MouseDown(BPoint where);
 	virtual void MouseUp(BPoint where);
+	
 	virtual BRect SelectionRect();
 };
 
@@ -44,8 +45,7 @@ private:
 class SelectionViewWindow : public SelectionView {
 public:
 	SelectionViewWindow(BRect frame, const char* name);
-	//virtual void MouseDown(BPoint where);
-	//virtual void MouseUp(BPoint where);
+	
 	virtual void MouseMoved(BPoint where, uint32 code, const BMessage *message);
 	virtual void Draw(BRect updateRect);
 	
@@ -73,6 +73,7 @@ SelectionView::MouseUp(BPoint where)
 {
 	Window()->PostMessage(B_QUIT_REQUESTED);	
 }
+
 
 BRect
 SelectionView::SelectionRect()
@@ -178,7 +179,7 @@ SelectionViewWindow::SelectionViewWindow(BRect frame, const char *name)
 
 
 void
-SelectionViewWindow::MouseMoved(BPoint where, uint32 code, const BMessage *a_message)
+SelectionViewWindow::MouseMoved(BPoint where, uint32 code, const BMessage *message)
 {
 	BRect frame = HitTestFrame(where);
 	if (frame.IsValid())
@@ -194,7 +195,7 @@ SelectionViewWindow::Draw(BRect updateRect)
 {
 	if (fHighlightFrame.IsValid()) {
 		SetDrawingMode(B_OP_ALPHA);
-		SetHighColor(76, 0, 0, 100);
+		SetHighColor(sWindowSelectionColor);
 		FillRect(fHighlightFrame);
 	}
 }
@@ -279,7 +280,6 @@ SelectionWindow::QuitRequested()
 	message.AddPointer("bitmap", bitmap);
 	
 	fTarget.SendMessage(&message);
-	
 		
 	return BWindow::QuitRequested();
 }
