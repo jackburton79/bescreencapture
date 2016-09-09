@@ -4,6 +4,7 @@
 #include "CamStatusView.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
+#include "InfoView.h"
 #include "messages.h"
 #include "OutputView.h"
 #include "SelectionWindow.h"
@@ -41,10 +42,9 @@ BSCWindow::BSCWindow()
 	fController(dynamic_cast<Controller*>(gControllerLooper)),
 	fCapturing(false)
 {
-	OutputView *outputView
-		= new OutputView(fController);
-	AdvancedOptionsView *advancedView 
-		= new AdvancedOptionsView(fController);
+	OutputView* outputView = new OutputView(fController);
+	AdvancedOptionsView* advancedView = new AdvancedOptionsView(fController);
+	InfoView* infoView = new InfoView(fController);
 	
 	fStartStopButton = new BButton("Start", "Start Recording",
 		new BMessage(kMsgGUIStartCapture)); 
@@ -92,7 +92,7 @@ BSCWindow::BSCWindow()
 	fTabView->AddTab(outputGroup);
 	BLayoutBuilder::Group<>(outputGroup)
 		.Add(outputView);
-							
+								
 	BGroupView* advancedGroup = new BGroupView(B_HORIZONTAL);
 	advancedGroup->SetName("Options");
 	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
@@ -100,7 +100,15 @@ BSCWindow::BSCWindow()
 	fTabView->AddTab(advancedGroup);
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(advancedView);
-				
+
+	BGroupView* infoGroup = new BGroupView(B_HORIZONTAL);
+	infoGroup->SetName("Info");
+	infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
+		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+	fTabView->AddTab(infoGroup);
+	BLayoutBuilder::Group<>(infoGroup)
+		.Add(infoView);
+						
 	if (fController->LockLooper()) {
 		// watch Controller for these
 		fController->StartWatching(this, B_UPDATE_STATUS_BAR);
@@ -124,7 +132,10 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(outputView, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(outputView, kMsgControllerCodecListUpdated);
 		fController->StartWatching(outputView, kMsgControllerSelectionWindowClosed);
-			
+		
+		fController->StartWatching(infoView, kMsgControllerSourceFrameChanged);
+		fController->StartWatching(infoView, kMsgControllerTargetFrameChanged);
+		
 		fController->UnlockLooper();
 	}
 	

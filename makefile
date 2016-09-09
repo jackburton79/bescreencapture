@@ -34,22 +34,42 @@ APP_MIME_SIG=
 #	if two source files with the same name (source.c or source.cpp)
 #	are included from different directories.  Also note that spaces
 #	in folder names do not work well with this makefile.
-SRCS=AdvancedOptionsView.cpp BitmapMovie.cpp BSCApp.cpp \
-BSCWindow.cpp CamStatusView.cpp Controller.cpp DeskbarControlView.cpp \
-Executor.cpp FileList.cpp MovieEncoder.cpp OutputView.cpp \
-PreviewView.cpp PriorityControl.cpp SizeControl.cpp SelectionWindow.cpp Settings.cpp \
-Utils.cpp
+SRCS = \
+	 AdvancedOptionsView.cpp  \
+	 BitmapMovie.cpp  \
+	 BSCApp.cpp  \
+	 BSCWindow.cpp  \
+	 CamStatusView.cpp  \
+	 Controller.cpp  \
+	 DeskbarControlView.cpp  \
+	 Executor.cpp  \
+	 FileList.cpp  \
+	 InfoView.cpp  \
+	 MovieEncoder.cpp  \
+	 OutputView.cpp  \
+	 PreviewView.cpp  \
+	 PriorityControl.cpp  \
+	 SelectionWindow.cpp  \
+	 Settings.cpp  \
+	 SizeControl.cpp  \
+	 Utils.cpp  \
+
 
 #	specify the resource definition files to use
 #	full path or a relative path to the resource file can be used.
-RDEFS=BeScreenCapture.rdef
+RDEFS = \
+	 BeScreenCapture.rdef  \
+
 	
 #	specify the resource files to use. 
 #	full path or a relative path to the resource file can be used.
 #	both RDEFS and RSRCS can be defined in the same makefile.
-RSRCS= 
+RSRCS = \
+
 
 # @<-src@ 
+#%}
+
 #%}
 
 #	end support for Pe and Eddie
