@@ -274,6 +274,9 @@ Controller::SetMediaCodec(const char* codecName)
 		media_codec_info* codec = fCodecList->ItemAt(i);
 		if (!strcmp(codec->pretty_name, codecName)) {
 			fEncoder->SetMediaCodecInfo(*codec);
+			BMessage message(kMsgControllerCodecChanged);
+			message.AddString("codec_name", codec->pretty_name);
+			SendNotices(kMsgControllerCodecChanged, &message);
 			break;
 		}
 	}
