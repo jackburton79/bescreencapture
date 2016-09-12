@@ -187,7 +187,8 @@ OutputView::AttachedToWindow()
 	fSizeSlider->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
 	
-	fSizeSlider->SetValue(Settings().Scale());		
+	fSizeSlider->SetValue(Settings().Scale());	
+		
 	Settings().GetCaptureArea(fCustomCaptureRect);
 	if (fCustomCaptureRect == BScreen().Frame())
 		fWholeScreen->SetValue(B_CONTROL_ON);
@@ -202,7 +203,8 @@ OutputView::AttachedToWindow()
 void
 OutputView::WindowActivated(bool active)
 {
-	_UpdatePreview(&fCustomCaptureRect);
+	BRect rect = _CaptureRect();
+	_UpdatePreview(&rect);
 }
 
 
@@ -452,6 +454,16 @@ media_format_family
 OutputView::FormatFamily() const
 {
 	return FileFormat().family;
+}
+
+
+BRect
+OutputView::_CaptureRect() const
+{
+	if (fWholeScreen->Value() == B_CONTROL_ON)
+		return BScreen(Window()).Frame();
+	else
+		return fCustomCaptureRect;
 }
 
 

@@ -58,6 +58,8 @@ private:
 	void _SetFileNameExtension(const char* extension);
 	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
 	
+	BRect _CaptureRect() const;
+	
 	static BMenuItem *CreateCodecMenuItem(const media_codec_info &codec);
 };
 
