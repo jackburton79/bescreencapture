@@ -144,7 +144,7 @@ BSCWindow::DispatchMessage(BMessage *message, BHandler *handler)
 bool
 BSCWindow::QuitRequested()
 {
-	bool canQuit = !fCapturing;
+	bool canQuit = fController->CanQuit();
 	if (canQuit)
 		be_app->PostMessage(B_QUIT_REQUESTED);
 	

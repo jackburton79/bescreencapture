@@ -130,6 +130,14 @@ Controller::MessageReceived(BMessage *message)
 }
 
 
+bool
+Controller::CanQuit() const
+{
+	BAutolock _((BLooper*)this);
+	return fCaptureThread < 0 && fTemporaryPath == NULL;
+}
+
+
 void
 Controller::ToggleCapture()
 {
@@ -564,7 +572,12 @@ Controller::CaptureThread()
 				// Cleanup
 				bitmapStream.DetachBitmap(&bitmap);	
 				outFile.Unset();
-				
+				/*if (LockLooper()) {
+					BMessage message(kMsgControllerCaptureProgress);
+					message.AddInt32("num_frames", bitmapCount);
+					SendNotices(kMsgControllerCaptureProgress, &message);
+					UnlockLooper();
+				}*/
 			} else {
 				//PRINT(("Error while getting screenshot: %s\n", strerror(error)));
 				break;

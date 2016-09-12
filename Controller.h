@@ -34,6 +34,8 @@ public:
 	
 	virtual void	MessageReceived(BMessage *message);
 
+	bool		CanQuit() const;
+	
 	void		ToggleCapture();
 	void		TogglePause();
 	
