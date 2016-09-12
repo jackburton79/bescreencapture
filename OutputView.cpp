@@ -178,6 +178,15 @@ OutputView::AttachedToWindow()
 	BView::AttachedToWindow();
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
+	// Watch for these from Controller
+	if (fController->LockLooper()) {
+		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
+		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
+		fController->StartWatching(this, kMsgControllerCodecListUpdated);
+		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
+		fController->UnlockLooper();
+	}
+	
 	fMinimizeOnStart->SetTarget(this);
 	fFileName->SetTarget(this);
 	fOutputFileType->Menu()->SetTargetForItems(this);

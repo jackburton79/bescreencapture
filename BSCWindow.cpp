@@ -56,7 +56,7 @@ BSCWindow::BSCWindow()
 	BView* cardsView = new BView("status", 0, fCardLayout);
 	cardsView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
-	fCardLayout->AddView(fCamStatus = new CamStatusView("CamStatusView"));
+	fCardLayout->AddView(fCamStatus = new CamStatusView(fController));
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 		
 	BView* statusView = BLayoutBuilder::Group<>()
@@ -121,23 +121,7 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
 		fController->StartWatching(this, kMsgControllerCaptureFailed);
 		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
-		 
-		fController->StartWatching(fCamStatus, kMsgControllerCaptureStarted);
-		fController->StartWatching(fCamStatus, kMsgControllerCaptureStopped);
-		fController->StartWatching(fCamStatus, kMsgControllerCapturePaused);
-		fController->StartWatching(fCamStatus, kMsgControllerCaptureResumed);
-		
-		// Outputview should watch for these from Controller
-		fController->StartWatching(outputView, kMsgControllerSourceFrameChanged);
-		fController->StartWatching(outputView, kMsgControllerTargetFrameChanged);
-		fController->StartWatching(outputView, kMsgControllerCodecListUpdated);
-		fController->StartWatching(outputView, kMsgControllerSelectionWindowClosed);
-		
-		fController->StartWatching(infoView, kMsgControllerSourceFrameChanged);
-		fController->StartWatching(infoView, kMsgControllerTargetFrameChanged);
-		fController->StartWatching(infoView, kMsgControllerCodecChanged);
-		fController->StartWatching(infoView, kMsgControllerMediaFileFormatChanged);
-		
+				
 		fController->UnlockLooper();
 	}
 	

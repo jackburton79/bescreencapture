@@ -9,9 +9,10 @@
 
 #include <stdio.h>
 
-CamStatusView::CamStatusView(const char *name)
+CamStatusView::CamStatusView(Controller* controller)
 	:
-	BView(name, B_WILL_DRAW),
+	BView("CamStatusView", B_WILL_DRAW),
+	fController(controller),
 	fRecording(false),
 	fPaused(false)
 {
@@ -21,6 +22,14 @@ CamStatusView::CamStatusView(const char *name)
 void
 CamStatusView::AttachedToWindow()
 {
+	if (fController->LockLooper()) {
+		fController->StartWatching(this, kMsgControllerCaptureStarted);
+		fController->StartWatching(this, kMsgControllerCaptureStopped);
+		fController->StartWatching(this, kMsgControllerCapturePaused);
+		fController->StartWatching(this, kMsgControllerCaptureResumed);
+		fController->UnlockLooper();
+	}
+	
 	if (Parent())
 		SetViewColor(Parent()->ViewColor());
 }

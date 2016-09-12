@@ -94,6 +94,14 @@ void
 InfoView::AttachedToWindow()
 {
 	BView::AttachedToWindow();
+	
+	if (fController->LockLooper()) {
+		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
+		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
+		fController->StartWatching(this, kMsgControllerCodecChanged);
+		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
+		fController->UnlockLooper();
+	}
 }
 
 

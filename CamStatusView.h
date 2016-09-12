@@ -3,9 +3,10 @@
 
 #include <View.h>
 
+class Controller;
 class CamStatusView : public BView {
 public:
-	CamStatusView(const char *name);
+	CamStatusView(Controller* controller);
 	
 	virtual void AttachedToWindow();
 	virtual void Draw(BRect updateRect);
@@ -19,7 +20,9 @@ public:
 
 	virtual BSize MinSize();
 	virtual BSize MaxSize();
+	
 private:
+	Controller* fController;
 	bool fRecording;
 	bool fPaused;
 };
