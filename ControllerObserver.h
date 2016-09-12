@@ -17,8 +17,8 @@ enum {
 	
 	
 	kMsgControllerSelectionWindowClosed,
-	kMsgControllerSourceFrameChanged,	// BRect frame
-	kMsgControllerTargetFrameChanged,	// BRect frame
+	kMsgControllerSourceFrameChanged,	// BRect frame,
+	kMsgControllerTargetFrameChanged,	// BRect frame, float scale
 	kMsgControllerVideoDepthChanged,
 	kMsgControllerOutputFileNameChanged,
 	kMsgControllerCodecListUpdated,

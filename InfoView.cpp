@@ -50,13 +50,24 @@ GetTargetRectString(const BRect& rect)
 }
 
 
+static BString
+GetScaleString(float scale)
+{
+	BString string = "Clip scaling factor: ";
+	string << scale << "%";
+	return string;
+}
+
+
 InfoView::InfoView(Controller* controller)
 	:
 	BView("Info", B_WILL_DRAW),
 	fController(controller)
 {
-	BRect sourceArea = Settings().CaptureArea();
-	BRect targetRect = Settings().TargetRect();
+	Settings settings;
+	BRect sourceArea = settings.CaptureArea();
+	BRect targetRect = settings.TargetRect();
+	float scale = settings.Scale();
 	
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	BView* layoutView = BLayoutBuilder::Group<>()
@@ -67,6 +78,8 @@ InfoView::InfoView(Controller* controller)
 				GetSourceRectString(sourceArea)))
 			.Add(fClipSize = new BStringView("clip size",
 				GetTargetRectString(targetRect)))
+			.Add(fScale = new BStringView("clip scale",
+				GetScaleString(scale)))
 			.Add(fFormat = new BStringView("format",
 				GetFormatString(fController->MediaFileFormatName())))
 			.Add(fCodec = new BStringView("codec",
@@ -108,6 +121,11 @@ InfoView::MessageReceived(BMessage* message)
 					if (message->FindRect("frame", &rect) == B_OK) {
 						BString string = GetTargetRectString(rect);
 						fClipSize->SetText(string.String());
+					}
+					float scale;
+					if (message->FindFloat("scale", &scale) == B_OK) {
+						BString string = GetScaleString(scale);
+						fScale->SetText(string.String());
 					}
 					break;
 				}

@@ -53,7 +53,6 @@ Controller::Controller()
 
 	BRect rect;
 	settings.GetCaptureArea(rect);
-	rect.PrintToStream();
 	SetCaptureArea(rect);
 
 	Run();
@@ -217,6 +216,7 @@ Controller::SetScale(const float &scale)
 	fEncoder->SetDestFrame(rect);
 	BMessage message(kMsgControllerTargetFrameChanged);
 	message.AddRect("frame", rect);
+	message.AddFloat("scale", scale);
 	SendNotices(kMsgControllerTargetFrameChanged, &message);
 }
 

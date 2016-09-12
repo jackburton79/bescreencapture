@@ -23,8 +23,10 @@ private:
 	Controller* fController;
 	BStringView* fSourceSize;
 	BStringView* fClipSize;
+	BStringView* fScale;
 	BStringView* fFormat;
 	BStringView* fCodec;
+	
 };
 
 
