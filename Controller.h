@@ -25,6 +25,7 @@ enum {
 extern BLooper *gControllerLooper;
 
 class BBitmap;
+class BString;
 class MovieEncoder;
 class Controller : public BLooper {
 public:
@@ -34,7 +35,7 @@ public:
 	
 	virtual void	MessageReceived(BMessage *message);
 
-	bool		CanQuit() const;
+	bool		CanQuit(BString& reason) const;
 	
 	void		ToggleCapture();
 	void		TogglePause();

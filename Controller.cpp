@@ -131,9 +131,14 @@ Controller::MessageReceived(BMessage *message)
 
 
 bool
-Controller::CanQuit() const
+Controller::CanQuit(BString& reason) const
 {
 	BAutolock _((BLooper*)this);
+	if (fCaptureThread)
+		reason = "Recording is in progress.";
+	else if (fTemporaryPath != NULL)
+		reason = "Encoding is in progress.";
+		
 	return fCaptureThread < 0 && fTemporaryPath == NULL;
 }
 

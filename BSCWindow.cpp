@@ -144,7 +144,18 @@ BSCWindow::DispatchMessage(BMessage *message, BHandler *handler)
 bool
 BSCWindow::QuitRequested()
 {
-	bool canQuit = fController->CanQuit();
+	BString reason;
+	bool canQuit = fController->CanQuit(reason);
+	if (!canQuit) {
+		BString text = "Really Quit?";
+		text.Append(" ");
+		text.Append(reason);
+		BAlert* alert = new BAlert("Really Quit?", text, "Yes", "No");
+		int32 result = alert->Go();
+		if (result == 0) {
+			canQuit = true;
+		}
+	}
 	if (canQuit)
 		be_app->PostMessage(B_QUIT_REQUESTED);
 	
