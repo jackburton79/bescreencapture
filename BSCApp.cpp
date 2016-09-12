@@ -24,9 +24,10 @@ BSCApp::BSCApp()
 	BApplication(kAppSignature),
 	fWindow(NULL)
 {
+	Settings::Load();
+
 	fShouldStartRecording = false;
 	gControllerLooper = new Controller();
-	Settings::Load();
 }
 
 

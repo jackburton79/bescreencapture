@@ -5,6 +5,7 @@
 #include <FindDirectory.h>
 #include <Message.h>
 #include <Path.h>
+#include <Screen.h>
 #include <String.h>
 
 #include <cstdio>
@@ -386,8 +387,10 @@ Settings::PrintToStream()
 status_t
 Settings::SetDefaults()
 {
+	BRect rect = BScreen().Frame();
 	sSettings.MakeEmpty();
-	sSettings.AddString(kOutputFile, "/boot/home/outputfile");
+	sSettings.AddRect(kCaptureRect, rect);
+	sSettings.AddString(kOutputFile, "/boot/home/outputfile.avi");
 	sSettings.AddFloat(kClipScale, 100);
 	sSettings.AddInt32(kClipDepth, B_RGB32);
 	sSettings.AddBool(kIncludeCursor, true);
