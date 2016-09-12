@@ -43,9 +43,9 @@ GetSourceRectString(const BRect& rect)
 static BString
 GetTargetRectString(const BRect& rect)
 {
-	BString string = "Clip frame rect: ";
-	string << "l: " << rect.left << ", t: " << rect.top;
-	string << ", r: " << rect.right << ", b: " << rect.bottom;
+	BString string = "Clip frame size: ";
+	string << (int32)(rect.right - rect.left + 1) << " x ";
+	string << (int32)(rect.bottom - rect.top + 1);
 	return string;
 }
 
