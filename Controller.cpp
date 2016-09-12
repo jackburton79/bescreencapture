@@ -152,7 +152,7 @@ Controller::Cancel()
 		wait_for_thread(fCaptureThread, &status);
 		fCaptureThread = -1;
 	} else if (fTemporaryPath != NULL) {
-		// TODO: Cancel the encoding
+		// TODO: Cancel the encoding process
 	}
 }
 
@@ -201,6 +201,14 @@ Controller::EncodeMovie()
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
 
+	BString name;
+	Settings().GetOutputFileName(name);
+	BEntry entry(name.String());
+	if (entry.Exists()) {
+		// file exists.
+		std::cout << "File exists already." << std::endl;
+	}
+	
 	Executor* executor 
 		= new Executor(NewMemberFunctionObjectWithResult
 			<MovieEncoder, status_t>(&MovieEncoder::Encode, fEncoder));
