@@ -265,7 +265,7 @@ Controller::MediaFileFormat() const
 }
 
 
-const char*
+BString
 Controller::MediaFileFormatName() const
 {
 	BAutolock _((BLooper*)this);
@@ -306,7 +306,7 @@ Controller::SetMediaCodec(const char* codecName)
 }
 
 
-const char*
+BString
 Controller::MediaCodecName() const
 {
 	BAutolock _((BLooper*)this);

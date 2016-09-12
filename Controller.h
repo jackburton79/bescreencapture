@@ -47,8 +47,8 @@ public:
 
 	media_format_family MediaFormatFamily() const;
 	media_file_format	MediaFileFormat() const;
-	const char*			MediaFileFormatName() const;
-	const char*			MediaCodecName() const;
+	BString			MediaFileFormatName() const;
+	BString			MediaCodecName() const;
 	
 	void		SetMediaFileFormat(const media_file_format& format);
 	void		SetMediaFormatFamily(const media_format_family &family);
