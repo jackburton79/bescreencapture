@@ -45,7 +45,17 @@ Controller::Controller()
 	fEncoder = new MovieEncoder;
 	if (sTranslatorRoster == NULL)
 		sTranslatorRoster = BTranslatorRoster::Default();
-		
+
+	Settings settings;	
+	BString name;
+	settings.GetOutputFileName(name);
+	fEncoder->SetOutputFile(name.String());
+
+	BRect rect;
+	settings.GetCaptureArea(rect);
+	rect.PrintToStream();
+	SetCaptureArea(rect);
+
 	Run();
 }
 
@@ -299,13 +309,15 @@ Controller::SetMediaCodec(const char* codecName)
 const char*
 Controller::MediaCodecName() const
 {
-	fEncoder->MediaCodecInfo().pretty_name;
+	BAutolock _((BLooper*)this);
+	return fEncoder->MediaCodecInfo().pretty_name;
 }
 
 
 status_t
 Controller::GetCodecsList(BObjectList<media_codec_info>& codecList) const
 {
+	BAutolock _((BLooper*)this);
 	codecList = *fCodecList;
 	return B_OK;
 }
