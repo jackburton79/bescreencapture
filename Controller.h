@@ -36,6 +36,7 @@ public:
 	virtual void	MessageReceived(BMessage *message);
 
 	bool		CanQuit(BString& reason) const;
+	void		Cancel();
 	
 	void		ToggleCapture();
 	void		TogglePause();

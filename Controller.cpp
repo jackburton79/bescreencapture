@@ -134,12 +134,26 @@ bool
 Controller::CanQuit(BString& reason) const
 {
 	BAutolock _((BLooper*)this);
-	if (fCaptureThread)
+	if (fCaptureThread > 0)
 		reason = "Recording is in progress.";
 	else if (fTemporaryPath != NULL)
 		reason = "Encoding is in progress.";
 		
 	return fCaptureThread < 0 && fTemporaryPath == NULL;
+}
+
+
+void
+Controller::Cancel()
+{
+	if (fCaptureThread > 0) {
+		fKillThread = true;
+		status_t status;
+		wait_for_thread(fCaptureThread, &status);
+		fCaptureThread = -1;
+	} else if (fTemporaryPath != NULL) {
+		// TODO: Cancel the encoding
+	}
 }
 
 

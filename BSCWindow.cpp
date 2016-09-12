@@ -153,6 +153,7 @@ BSCWindow::QuitRequested()
 		BAlert* alert = new BAlert("Really Quit?", text, "Yes", "No");
 		int32 result = alert->Go();
 		if (result == 0) {
+			fController->Cancel();
 			canQuit = true;
 		}
 	}
