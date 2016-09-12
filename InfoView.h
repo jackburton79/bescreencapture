@@ -15,10 +15,10 @@ class BStringView;
 class InfoView : public BView {
 public:
 	InfoView(Controller* controller);
+	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
 									
 private:
-	static BString RectToString(const BRect& rect);
 	
 	Controller* fController;
 	BStringView* fSourceSize;

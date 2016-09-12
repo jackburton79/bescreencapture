@@ -6,7 +6,7 @@
 
 #include "ControllerObserver.h"
 #include "InfoView.h"
-
+#include "Settings.h"
 
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
@@ -30,19 +30,43 @@ GetCodecString(const char* codecName)
 }
 
 
+static BString
+GetSourceRectString(const BRect& rect)
+{
+	BString string = "Source region: ";
+	string << "l: " << rect.left << ", t: " << rect.top;
+	string << ", r: " << rect.right << ", b: " << rect.bottom;
+	return string;
+}
+
+
+static BString
+GetTargetRectString(const BRect& rect)
+{
+	BString string = "Clip frame rect: ";
+	string << "l: " << rect.left << ", t: " << rect.top;
+	string << ", r: " << rect.right << ", b: " << rect.bottom;
+	return string;
+}
+
 
 InfoView::InfoView(Controller* controller)
 	:
 	BView("Info", B_WILL_DRAW),
 	fController(controller)
 {
+	BRect sourceArea = Settings().CaptureArea();
+	BRect targetRect = Settings().TargetRect();
+	
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-			.Add(fSourceSize = new BStringView("source size", ""))
-			.Add(fClipSize = new BStringView("clip size", ""))
+			.Add(fSourceSize = new BStringView("source size",
+				GetSourceRectString(sourceArea)))
+			.Add(fClipSize = new BStringView("clip size",
+				GetTargetRectString(targetRect)))
 			.Add(fFormat = new BStringView("format",
 				GetFormatString(fController->MediaFileFormatName())))
 			.Add(fCodec = new BStringView("codec",
@@ -50,6 +74,13 @@ InfoView::InfoView(Controller* controller)
 		.End()
 		.View();
 	AddChild(layoutView);
+}
+
+
+void
+InfoView::AttachedToWindow()
+{
+	BView::AttachedToWindow();
 }
 
 
@@ -64,20 +95,18 @@ InfoView::MessageReceived(BMessage* message)
 			switch (code) {
 				case kMsgControllerSourceFrameChanged:
 				{
-					BString string = "Source region: ";
 					BRect rect;
 					if (message->FindRect("frame", &rect) == B_OK) {
-						string << RectToString(rect);
+						BString string = GetSourceRectString(rect);
 						fSourceSize->SetText(string.String());
 					}
 					break;
 				}
 				case kMsgControllerTargetFrameChanged:
 				{
-					BString string = "Clip frame size: ";
 					BRect rect;
 					if (message->FindRect("frame", &rect) == B_OK) {
-						string << RectToString(rect);
+						BString string = GetTargetRectString(rect);
 						fClipSize->SetText(string.String());
 					}
 					break;
@@ -107,14 +136,4 @@ InfoView::MessageReceived(BMessage* message)
 			break;
 	}
 	
-}
-
-
-BString
-InfoView::RectToString(const BRect& rect)
-{
-	BString string;
-	string << "l: " << rect.left << ", t: " << rect.top;
-	string << ", r: " << rect.right << ", b: " << rect.bottom;
-	return string;
 }
