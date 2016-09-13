@@ -41,6 +41,8 @@ public:
 	void		ToggleCapture();
 	void		TogglePause();
 	
+	int32		RecordedFrames() const;
+	
 	void		EncodeMovie();
 	
 	void		SetUseDirectWindow(const bool &use);
@@ -50,12 +52,13 @@ public:
 	void		SetOutputFileName(const char *fileName);
 
 	media_format_family MediaFormatFamily() const;
-	media_file_format	MediaFileFormat() const;
-	BString			MediaFileFormatName() const;
-	BString			MediaCodecName() const;
-	
-	void		SetMediaFileFormat(const media_file_format& format);
 	void		SetMediaFormatFamily(const media_format_family &family);
+	
+	media_file_format	MediaFileFormat() const;
+	void		SetMediaFileFormat(const media_file_format& format);
+	
+	BString		MediaFileFormatName() const;
+	BString		MediaCodecName() const;
 	void		SetMediaCodec(const char* codecName);
 
 	status_t	GetCodecsList(BObjectList<media_codec_info>& codecList) const;
@@ -68,6 +71,7 @@ public:
 	
 private:
 	thread_id			fCaptureThread;
+	int32				fNumFrames;
 	bool				fKillThread;
 	bool				fPaused;
 

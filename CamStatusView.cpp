@@ -11,8 +11,9 @@
 
 CamStatusView::CamStatusView(Controller* controller)
 	:
-	BView("CamStatusView", B_WILL_DRAW),
+	BView("CamStatusView", B_WILL_DRAW|B_PULSE_NEEDED),
 	fController(controller),
+	fNumFrames(0),
 	fRecording(false),
 	fPaused(false)
 {
@@ -39,6 +40,7 @@ void
 CamStatusView::Draw(BRect updateRect)
 {
 	BRect bounds = Bounds();
+	bounds.InsetBy(20, 20);
 	
 	if (fRecording) {
 		if (fPaused) {
@@ -49,9 +51,18 @@ CamStatusView::Draw(BRect updateRect)
 			FillRect(one);
 		} else {
 			SetHighColor(248, 0, 0);
-			//bounds.InsetBy(4, 4);
 			FillEllipse(bounds);
 		}
+		SetHighColor(0, 0, 0);
+		SetDrawingMode(B_OP_OVER);
+		BString string;
+		string << fNumFrames;
+		float width = StringWidth(string);
+		font_height height;
+		GetFontHeight(&height);	
+		BPoint point((bounds.Width() - width) / 2 + bounds.left,
+					(bounds.Height() - (height.ascent + height.descent)) + bounds.top + 1);
+		DrawString(string, point);
 	}
 }
 
@@ -77,6 +88,7 @@ CamStatusView::MessageReceived(BMessage *message)
 				case kMsgControllerCaptureResumed:
 					TogglePause(what == kMsgControllerCapturePaused);
 					break;
+	
 				default:
 					break;
 			}
@@ -88,6 +100,14 @@ CamStatusView::MessageReceived(BMessage *message)
 			break;
 	}
 	
+}
+
+
+void
+CamStatusView::Pulse()
+{
+	fNumFrames = fController->RecordedFrames();
+	Invalidate();
 }
 
 
@@ -124,13 +144,15 @@ CamStatusView::Recording() const
 BSize
 CamStatusView::MinSize()
 {
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(25, 25));
+	float width = StringWidth("999999") + 20;
+	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(width, width));
 }
 
 
 BSize
 CamStatusView::MaxSize()
 {
-	return BLayoutUtils::ComposeSize(ExplicitMaxSize(), BSize(25, 25));
+	float width = StringWidth("999999") + 20;
+	return BLayoutUtils::ComposeSize(ExplicitMaxSize(), BSize(width, width));
 }
 

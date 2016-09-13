@@ -11,7 +11,8 @@ public:
 	virtual void AttachedToWindow();
 	virtual void Draw(BRect updateRect);
 	virtual void MessageReceived(BMessage *message);	
-
+	virtual void Pulse();
+	
 	void TogglePause(const bool paused);
 	bool Paused() const;
 	
@@ -23,6 +24,7 @@ public:
 	
 private:
 	Controller* fController;
+	int32 fNumFrames;
 	bool fRecording;
 	bool fPaused;
 };

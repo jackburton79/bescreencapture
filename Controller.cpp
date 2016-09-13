@@ -35,6 +35,7 @@ Controller::Controller()
 	:
 	BLooper("Controller"),
 	fCaptureThread(-1),
+	fNumFrames(0),
 	fKillThread(true),
 	fPaused(false),
 	fDirectWindowAvailable(false),
@@ -179,6 +180,13 @@ Controller::TogglePause()
 		_ResumeCapture();
 	else
 		_PauseCapture();
+}
+
+
+int32
+Controller::RecordedFrames() const
+{
+	return atomic_get((int32*)&fNumFrames);
 }
 
 
@@ -450,6 +458,8 @@ Controller::UpdateAreaDescription(const BRect &rect)
 void
 Controller::StartCapture()
 {
+	fNumFrames = 0;
+	
 	BPath path;
 	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
 	if (status != B_OK) {
@@ -564,7 +574,6 @@ Controller::CaptureThread()
 	
 	//fStartTime = system_time();
 	
-	int32 bitmapCount = 0;
 	char string[B_FILE_NAME_LENGTH];
 	status_t error = B_ERROR;
 	while (!fKillThread) {
@@ -589,22 +598,17 @@ Controller::CaptureThread()
 						&translatorInfo, 0, NULL, 'BMP ');
 				}
 				
-				snprintf(string, B_FILE_NAME_LENGTH, "%s/frame %5ld",
-					fTemporaryPath, bitmapCount);
+				snprintf(string, B_FILE_NAME_LENGTH, "%s/frame_%5ld",
+					fTemporaryPath, fNumFrames);
 				outFile.SetTo(string, B_WRITE_ONLY|B_CREATE_FILE);
 				error = sTranslatorRoster->Translate(&bitmapStream,
 					&translatorInfo, NULL, &outFile, 'BMP ');	
-				bitmapCount++;
+				
+				atomic_add(&fNumFrames, 1);
 				
 				// Cleanup
 				bitmapStream.DetachBitmap(&bitmap);	
 				outFile.Unset();
-				/*if (LockLooper()) {
-					BMessage message(kMsgControllerCaptureProgress);
-					message.AddInt32("num_frames", bitmapCount);
-					SendNotices(kMsgControllerCaptureProgress, &message);
-					UnlockLooper();
-				}*/
 			} else {
 				//PRINT(("Error while getting screenshot: %s\n", strerror(error)));
 				break;
