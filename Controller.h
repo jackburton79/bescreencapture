@@ -26,6 +26,7 @@ extern BLooper *gControllerLooper;
 
 class BBitmap;
 class BString;
+class FileList;
 class MovieEncoder;
 class Controller : public BLooper {
 public:
@@ -80,6 +81,7 @@ private:
 	MovieEncoder*		fEncoder;
 	thread_id			fEncoderThread;
 	
+	FileList			*fFileList;
 	char				*fTemporaryPath;
 
 	area_desc 			fAreaDesc;

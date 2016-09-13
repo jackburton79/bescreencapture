@@ -11,10 +11,9 @@
 #include <Entry.h>
 #include <Path.h>
 
-FileList::FileList(const bool ownsFiles)
+FileList::FileList()
 	:
-	BStringList(),
-	fOwnsFiles(ownsFiles)
+	BStringList()
 {
 
 }
@@ -47,26 +46,4 @@ int32
 FileList::CountItems() const
 {
 	return CountStrings();
-}
-
-
-/* static */
-FileList*
-FileList::CreateFileList(const BPath &path)
-{
-	FileList* list = new FileList(true);
-
-	BDirectory directory(path.Path());
-	BEntry entry;
-	BString string;
-	char entryName[B_FILE_NAME_LENGTH];
-	while (directory.GetNextEntry(&entry) == B_OK) {
-		if (entry.GetName(entryName) == B_OK) {
-			string.SetTo(path.Path());
-			string << "/" << entryName;
-			list->AddItem(string);
-		}
-	}
-
-	return list;
 }

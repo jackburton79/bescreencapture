@@ -13,18 +13,13 @@
 class BPath;
 class FileList : private BStringList {
 public:
-	FileList(const bool ownsFiles);
+	FileList();
 	virtual ~FileList();
 
 	void AddItem(const BString& fileName);
 	BString ItemAt(int32 i) const;
 
 	int32 CountItems() const;
-
-	static FileList* CreateFileList(const BPath &path);
-
-private:
-	bool fOwnsFiles;
 };
 
 

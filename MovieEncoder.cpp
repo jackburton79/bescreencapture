@@ -2,6 +2,7 @@
 #include <Debug.h>
 #include <List.h>
 #include <Screen.h>
+#include <String.h>
 #include <TranslationUtils.h>
 #include <View.h>
 
@@ -113,7 +114,7 @@ MovieEncoder::Encode()
 	// Create movie
 	entry_ref movieRef;
 	get_ref_for_path(fOutputFile.Path(), &movieRef);
-	
+		
 	BBitmap* bitmap = BTranslationUtils::GetBitmapFile(fFileList->ItemAt(0));
 	BRect sourceFrame = bitmap->Bounds();
 	delete bitmap;
@@ -152,7 +153,7 @@ MovieEncoder::Encode()
 	status = B_OK;
 	for (int32 i = 0; i < fFileList->CountItems(); i++) {
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
-		const char* fileName = fFileList->ItemAt(i);
+		BString fileName = fFileList->ItemAt(i);
 		BBitmap* frame = BTranslationUtils::GetBitmapFile(fileName);
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?

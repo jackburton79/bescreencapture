@@ -41,6 +41,7 @@ Controller::Controller()
 	fDirectWindowAvailable(false),
 	fEncoder(NULL),
 	fEncoderThread(-1),
+	fFileList(NULL),
 	fCodecList(NULL)
 {
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
@@ -58,6 +59,8 @@ Controller::Controller()
 	settings.GetCaptureArea(rect);
 	SetCaptureArea(rect);
 
+	fFileList = new FileList();
+	
 	Run();
 }
 
@@ -66,6 +69,7 @@ Controller::~Controller()
 {
 	delete fEncoder;
 	delete fCodecList;
+	delete fFileList;
 }
 
 
@@ -211,15 +215,13 @@ Controller::EncodeMovie()
 	}
 	
 	SendNotices(kMsgControllerEncodeStarted);
-	
-	FileList* fileList = FileList::CreateFileList(fTemporaryPath);
-	 
+		 
 	BMessage message(kMsgControllerEncodeProgress);
-	message.AddInt32("num_files", fileList->CountItems());
+	message.AddInt32("num_files", fFileList->CountItems());
 	
 	SendNotices(kMsgControllerEncodeProgress, &message);
 	
-	fEncoder->SetSource(fileList);
+	fEncoder->SetSource(fFileList);
 	
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
@@ -560,6 +562,9 @@ Controller::_EncodingFinished(const status_t status)
 
 	fEncoderThread = -1;
 	
+	delete fFileList;
+	fFileList = new FileList();
+	
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
 	SendNotices(kMsgControllerEncodeFinished, &message);
@@ -580,10 +585,8 @@ Controller::CaptureThread()
 	
 	bool firstFrame = true;
 	translator_info translatorInfo;
-	
-	//fStartTime = system_time();
-	
-	char string[B_FILE_NAME_LENGTH];
+			
+	//char string[B_FILE_NAME_LENGTH];
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {
@@ -595,10 +598,6 @@ Controller::CaptureThread()
 				error = screen.ReadBitmap(bitmap, false, &bounds);
 					 
 	    	if (error == B_OK) {
-	    		/*if (fCaptureOptions.includeCursor) {    			
-	    			
-				}*/
-					
 				//Save bitmap to disk
 				BBitmapStream bitmapStream(bitmap);
 				if (firstFrame) {
@@ -606,18 +605,18 @@ Controller::CaptureThread()
 					sTranslatorRoster->Identify(&bitmapStream, NULL,
 						&translatorInfo, 0, NULL, 'BMP ');
 				}
-				
-				snprintf(string, B_FILE_NAME_LENGTH, "%s/frame_%5ld",
-					fTemporaryPath, fNumFrames);
+
+				char* string = tempnam(fTemporaryPath, "frame_");
 				outFile.SetTo(string, B_WRITE_ONLY|B_CREATE_FILE);
 				error = sTranslatorRoster->Translate(&bitmapStream,
 					&translatorInfo, NULL, &outFile, 'BMP ');	
-				
+				fFileList->AddItem(string);
 				atomic_add(&fNumFrames, 1);
 				
 				// Cleanup
 				bitmapStream.DetachBitmap(&bitmap);	
 				outFile.Unset();
+				free(string);
 			} else {
 				//PRINT(("Error while getting screenshot: %s\n", strerror(error)));
 				break;
@@ -625,9 +624,7 @@ Controller::CaptureThread()
 		} else
 			snooze(500000);
 	}
-	
-	//fEndTime = system_time();
-	
+		
 	delete bitmap;
 	
 	fCaptureThread = -1;
