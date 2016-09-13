@@ -1,6 +1,5 @@
 #include "Controller.h"
 #include "ControllerObserver.h"
-#include "Executor.h"
 #include "FileList.h"
 #include "FunctionObject.h"
 #include "MovieEncoder.h"
@@ -58,8 +57,6 @@ Controller::Controller()
 	BRect rect;
 	settings.GetCaptureArea(rect);
 	SetCaptureArea(rect);
-
-	fFileList = new FileList();
 	
 	Run();
 }
@@ -226,11 +223,7 @@ Controller::EncodeMovie()
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
 
-	Executor* executor 
-		= new Executor(NewMemberFunctionObjectWithResult
-			<MovieEncoder, status_t>(&MovieEncoder::Encode, fEncoder));
-	
-	fEncoderThread = executor->RunThreaded();
+	fEncoderThread = fEncoder->EncodeThreaded();
 }
 
 

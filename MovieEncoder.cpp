@@ -9,6 +9,7 @@
 #include <cstring>
 
 #include "BitmapMovie.h"
+#include "Executor.h"
 #include "FileList.h"
 #include "messages.h"
 #include "MovieEncoder.h"
@@ -36,7 +37,7 @@ MovieEncoder::DisposeData()
 	fFileList = NULL;
 }
 
- 
+
 status_t
 MovieEncoder::SetSource(const FileList *fileList)
 {
@@ -178,7 +179,12 @@ MovieEncoder::Encode()
 		framesWritten++;
 
 		if (fMessenger.IsValid())
-			fMessenger.SendMessage(new BMessage(progressMessage));		
+			fMessenger.SendMessage(new BMessage(progressMessage));
+		else {
+			// BMessenger is no longer valid. This means that the application
+			// has been closed or it has crashed.
+			break;
+		}
 	}
 
 	delete movie;
@@ -212,6 +218,17 @@ MovieEncoder::Encode(const media_format_family& family,
 	
 	return Encode();
 }
+
+
+thread_id
+MovieEncoder::EncodeThreaded()
+{
+	Executor* executor 
+		= new Executor(NewMemberFunctionObjectWithResult
+			<MovieEncoder, status_t>(&MovieEncoder::Encode, this));
+	return executor->RunThreaded();
+}
+
 
 
 void

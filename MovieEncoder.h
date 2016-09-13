@@ -15,8 +15,9 @@ public:
 	~MovieEncoder();
 	
 	void DisposeData();
-		 
-	status_t SetSource(const FileList *fileList);
+	
+	status_t SetSource(const FileList* fileList);
+	
 	status_t SetCursorQueue(std::queue<BPoint> *queue);
 	
 	status_t SetOutputFile(const char *fileName);
@@ -43,6 +44,7 @@ public:
 			const media_format &, const media_codec_info &,
 			const color_space &space = B_RGB32);
 	status_t Encode();
+	thread_id EncodeThreaded();
 	
 private:
 	void ResetConfiguration();
@@ -54,6 +56,7 @@ private:
 	BMessenger fMessenger;
 		
 	const FileList* fFileList;
+	
 	std::queue<BPoint> *fCursorQueue;
 	
 	BPath fOutputFile;
