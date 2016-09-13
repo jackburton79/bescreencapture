@@ -25,7 +25,6 @@ GetUniqueFileName(const BString fileName, const char *extension)
 	BEntry entry(newName);
 	while (entry.Exists()) {
 		newName = fileName;
-		std::cout << "current name: " << newName << ", suffix: " << suffix << std::endl;
 		newName.RemoveLast(extension);
 		newName.RemoveLast(".");
 		newName << '_' << suffix << '.' << extension;		
