@@ -90,6 +90,27 @@ PreviewView::_SetRect(const BRect& rect)
 }
 
 
+static float
+BRectRatio(const BRect& rect)
+{
+	return rect.Width() / rect.Height();
+}
+
+
+static float
+BRectHorizontalOverlap(const BRect& original, const BRect& resized)
+{
+	return ((original.Height() / resized.Height() * resized.Width()) - original.Width()) / 2;
+}
+
+
+static float
+BRectVerticalOverlap(const BRect& original, const BRect& resized)
+{
+	return ((original.Width() / resized.Width() * resized.Height()) - original.Height()) / 2;
+}
+
+
 void
 PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 {
@@ -101,9 +122,21 @@ PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 		screen.GetBitmap(&bitmap, false, &fCoordRect);
 	}
 	if (bitmap != NULL) {
+		BRect destRect;
+		BRect bitmapBounds = bitmap->Bounds();
+		BRect viewBounds = fBitmapView->Bounds();
+		if (BRectRatio(viewBounds) >= BRectRatio(bitmapBounds)) {
+			float overlap = BRectHorizontalOverlap(viewBounds, bitmapBounds);
+			destRect.Set(-overlap, 0, viewBounds.Width() + overlap,
+						viewBounds.Height());
+		} else {
+			float overlap = BRectVerticalOverlap(viewBounds, bitmapBounds);
+			destRect.Set(0, -overlap, viewBounds.Width(), viewBounds.Height() + overlap);
+		}
+		
 		fBitmapView->SetViewBitmap(bitmap,
 			bitmap->Bounds().OffsetToCopy(B_ORIGIN),
-			fBitmapView->Bounds(),
+			destRect,
 			B_FOLLOW_TOP|B_FOLLOW_LEFT, 0);
 		if (Window() != NULL)
 			Invalidate();
