@@ -563,7 +563,7 @@ Controller::_EncodingFinished(const status_t status)
 	fEncoderThread = -1;
 	
 	delete fFileList;
-	fFileList = new FileList();
+	fFileList = NULL;
 	
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
@@ -578,15 +578,16 @@ Controller::CaptureThread()
 	BScreen screen;
 	BRect bounds = Settings().CaptureArea();
 	
-	//bigtime_t lastFrameTime = 0;
 	bigtime_t waitTime = 1000000 / /*fCaptureOptions.framesPerSecond*/10;
 	BFile outFile;
 	BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 	
 	bool firstFrame = true;
 	translator_info translatorInfo;
-			
-	//char string[B_FILE_NAME_LENGTH];
+	
+	if (fFileList == NULL)
+		fFileList = new FileList();
+		
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {
