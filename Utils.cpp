@@ -108,7 +108,6 @@ UpdateMediaFormat(const int32 &width, const int32 &height,
 void
 GetWindowsFrameList(BObjectList<BRect> &framesList)
 {
-	BObjectList<window_info> windowInfoList;
 	int32 tokenCount = 0;
 	// Haiku does not have a public API to retrieve windows from other teams, 
 	// so we have to use this.
@@ -117,17 +116,13 @@ GetWindowsFrameList(BObjectList<BRect> &framesList)
 	if (status == B_OK) {
 		for (int32 i = 0; i < tokenCount; i++) {
 			client_window_info* info = get_window_info(tokenList[i]);
-			if (info != NULL && info->layer >= 3 && !info->is_mini && info->show_hide_level == 0)
-				windowInfoList.AddItem(info);
+			if (info != NULL && info->layer >= 3 && !info->is_mini && info->show_hide_level == 0) {
+				BRect* rect = new BRect(info->window_left, info->window_top, info->window_right, info->window_bottom);
+				framesList.AddItem(rect);
+				free(info);
+			}
 		}
 		free(tokenList);
 	}
-	
-	int32 count = windowInfoList.CountItems();
-	for (int32 i = 0; i < count; i++) {
-		window_info* info = windowInfoList.ItemAt(i);
-		BRect* rect = new BRect(info->window_left, info->window_top, info->window_right, info->window_bottom);
-		framesList.AddItem(rect);
-	}	
 }
 
