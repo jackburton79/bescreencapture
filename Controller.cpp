@@ -200,7 +200,6 @@ Controller::EncodeMovie()
 	BEntry entry(fileName.String());
 	if (entry.Exists()) {
 		// file exists.
-		Settings().GetOutputFileName(fileName);
 		fileName = GetUniqueFileName(fileName, MediaFileFormat().file_extension);
 		fEncoder->SetOutputFile(fileName);
 	}
