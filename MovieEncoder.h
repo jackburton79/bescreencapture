@@ -16,7 +16,7 @@ public:
 	
 	void DisposeData();
 		 
-	status_t SetSource(FileList *fileList, const bool ownsList = true);
+	status_t SetSource(const FileList *fileList);
 	status_t SetCursorQueue(std::queue<BPoint> *queue);
 	
 	status_t SetOutputFile(const char *fileName);
@@ -53,7 +53,7 @@ private:
 	int32 fPriority;
 	BMessenger fMessenger;
 		
-	FileList* fFileList;
+	const FileList* fFileList;
 	std::queue<BPoint> *fCursorQueue;
 	
 	BPath fOutputFile;

@@ -33,13 +33,12 @@ MovieEncoder::~MovieEncoder()
 void
 MovieEncoder::DisposeData()
 {
-	delete fFileList;
 	fFileList = NULL;
 }
 
  
 status_t
-MovieEncoder::SetSource(FileList *fileList, const bool ownsList)
+MovieEncoder::SetSource(const FileList *fileList)
 {
 	fFileList = fileList;
 	return B_OK;
