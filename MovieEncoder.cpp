@@ -111,10 +111,8 @@ MovieEncoder::Encode()
 	}
 	
 	// Create movie
-	char movieName[B_FILE_NAME_LENGTH];
-	MakeUniqueName(fOutputFile.Path(), movieName, B_FILE_NAME_LENGTH);
 	entry_ref movieRef;
-	get_ref_for_path(movieName, &movieRef);
+	get_ref_for_path(fOutputFile.Path(), &movieRef);
 	
 	BBitmap* bitmap = BTranslationUtils::GetBitmapFile(fFileList->ItemAt(0));
 	BRect sourceFrame = bitmap->Bounds();

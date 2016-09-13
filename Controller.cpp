@@ -195,12 +195,14 @@ Controller::EncodeMovie()
 {
 	BAutolock _(this);
 	
-	BString name;
-	Settings().GetOutputFileName(name);
-	BEntry entry(name.String());
+	BString fileName;
+	Settings().GetOutputFileName(fileName);
+	BEntry entry(fileName.String());
 	if (entry.Exists()) {
 		// file exists.
-		std::cout << "File exists already." << std::endl;
+		Settings().GetOutputFileName(fileName);
+		fileName = GetUniqueFileName(fileName, MediaFileFormat().file_extension);
+		fEncoder->SetOutputFile(fileName);
 	}
 	
 	SendNotices(kMsgControllerEncodeStarted);

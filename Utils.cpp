@@ -17,17 +17,23 @@
 #include <iostream>
 
 
-void
-MakeUniqueName(const char *name, char *newName, size_t length)
+BString
+GetUniqueFileName(const BString fileName, const char *extension)
 {
+	BString newName = fileName;
 	int32 suffix = 1;
-	BEntry entry(name);
-	snprintf(newName, length, "%s", name);
+	BEntry entry(newName);
 	while (entry.Exists()) {
-		snprintf(newName, length, "%s %ld", name, suffix);
+		newName = fileName;
+		std::cout << "current name: " << newName << ", suffix: " << suffix << std::endl;
+		newName.RemoveLast(extension);
+		newName.RemoveLast(".");
+		newName << '_' << suffix << '.' << extension;		
 		entry.SetTo(newName);
 		suffix++;
 	}
+
+	return newName;
 }
 
 
