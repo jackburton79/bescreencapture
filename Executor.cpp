@@ -21,12 +21,14 @@ Executor::Run()
 }
 
 
-void
+thread_id
 Executor::RunThreaded()
 {
 	fThread = spawn_thread((thread_entry)_executing_starter,
 		"Capture Thread", B_LOW_PRIORITY, this);
 	resume_thread(fThread);
+	
+	return fThread;
 }
 
 

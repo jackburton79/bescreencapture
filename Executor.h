@@ -11,7 +11,7 @@ public:
 	virtual	~Executor();
 
 	virtual void Run();
-	virtual void RunThreaded();
+	virtual thread_id RunThreaded();
 private:
 	FunctionObjectWithResult<status_t> *fFunction;
 	thread_id fThread;
