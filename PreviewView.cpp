@@ -137,7 +137,7 @@ PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 		fBitmapView->SetViewBitmap(bitmap,
 			bitmap->Bounds().OffsetToCopy(B_ORIGIN),
 			destRect,
-			B_FOLLOW_TOP|B_FOLLOW_LEFT, 0);
+			B_FOLLOW_TOP|B_FOLLOW_LEFT, B_FILTER_BITMAP_BILINEAR);
 		if (Window() != NULL)
 			Invalidate();
 	}
