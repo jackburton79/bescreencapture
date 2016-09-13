@@ -39,6 +39,8 @@ Controller::Controller()
 	fKillThread(true),
 	fPaused(false),
 	fDirectWindowAvailable(false),
+	fEncoder(NULL),
+	fEncoderThread(-1),
 	fCodecList(NULL)
 {
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
@@ -104,7 +106,8 @@ Controller::MessageReceived(BMessage *message)
 		
 		case kMsgGUIStartCapture:
 		case kMsgGUIStopCapture:
-			ToggleCapture();
+			if (fEncoderThread < 0)
+				ToggleCapture();
 			break;
 		
 		case kPauseResumeCapture:
@@ -140,7 +143,7 @@ Controller::CanQuit(BString& reason) const
 	else if (fTemporaryPath != NULL)
 		reason = "Encoding is in progress.";
 		
-	return fCaptureThread < 0 && fTemporaryPath == NULL;
+	return fCaptureThread < 0 && fTemporaryPath == NULL && fEncoderThread < 0;
 }
 
 
@@ -152,8 +155,11 @@ Controller::Cancel()
 		status_t status;
 		wait_for_thread(fCaptureThread, &status);
 		fCaptureThread = -1;
-	} else if (fTemporaryPath != NULL) {
-		// TODO: Cancel the encoding process
+	} else if (fTemporaryPath != NULL && fEncoderThread > 0) {
+		thread_info info;
+		if (get_thread_info(fEncoderThread, &info) == B_OK) {
+			// TODO: Cancel the encoding process
+		}
 	}
 }
 
@@ -222,7 +228,7 @@ Controller::EncodeMovie()
 		= new Executor(NewMemberFunctionObjectWithResult
 			<MovieEncoder, status_t>(&MovieEncoder::Encode, fEncoder));
 	
-	executor->RunThreaded();
+	fEncoderThread = executor->RunThreaded();
 }
 
 
@@ -552,6 +558,8 @@ Controller::_EncodingFinished(const status_t status)
 	free(fTemporaryPath);
 	fTemporaryPath = NULL;
 
+	fEncoderThread = -1;
+	
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
 	SendNotices(kMsgControllerEncodeFinished, &message);

@@ -78,6 +78,7 @@ private:
 	bool				fDirectWindowAvailable;	
 	direct_buffer_info	fDirectInfo;
 	MovieEncoder*		fEncoder;
+	thread_id			fEncoderThread;
 	
 	char				*fTemporaryPath;
 
