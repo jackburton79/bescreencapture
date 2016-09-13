@@ -80,10 +80,8 @@ InfoView::InfoView(Controller* controller)
 				GetTargetRectString(targetRect)))
 			.Add(fScale = new BStringView("clip scale",
 				GetScaleString(scale)))
-			.Add(fFormat = new BStringView("format",
-				GetFormatString(fController->MediaFileFormatName())))
-			.Add(fCodec = new BStringView("codec",
-				GetCodecString(fController->MediaCodecName())))
+			.Add(fFormat = new BStringView("format", ""))
+			.Add(fCodec = new BStringView("codec", ""))
 		.End()
 		.View();
 	AddChild(layoutView);
@@ -102,6 +100,9 @@ InfoView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
 		fController->UnlockLooper();
 	}
+	
+	fFormat->SetText(GetFormatString(fController->MediaFileFormatName()));
+	fCodec->SetText(GetCodecString(fController->MediaCodecName()));
 }
 
 
