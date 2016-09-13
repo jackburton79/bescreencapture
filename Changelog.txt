@@ -4,8 +4,11 @@ v2.1 (not yet released)
 	  it's moved or resized.
 	- An alert is shown if the user tries to quit the app and recording or encoding is in progress.
 	  This way the user can force quitting.
+	- Added a live indicator of the number of recorded frames
 	- Added an Information view, mostly for debugging reasons
-	- Fixed some crashes on quit when encoding is in progress
+	- Fixed crashes on quit when encoding is in progress
+	- Fixed starting recording from the Deskbar control when encoding is in progress
+	- Code cleanup
 
 v2.0 
 	- Implement option to hide the Deskbar icon. Stopping the capture
