@@ -18,6 +18,8 @@
 
 MovieEncoder::MovieEncoder()
 	:
+	fEncoderThread(-1),
+	fKillThread(false),
 	fFileList(NULL),
 	fCursorQueue(NULL),
 	fColorSpace(B_NO_COLOR_SPACE)
@@ -35,6 +37,17 @@ void
 MovieEncoder::DisposeData()
 {
 	fFileList = NULL;
+}
+
+
+void
+MovieEncoder::Cancel()
+{
+	if (fEncoderThread > 0) {
+		fKillThread = true;
+		status_t dummy;
+		wait_for_thread(fEncoderThread, &dummy);
+	}
 }
 
 
@@ -97,8 +110,10 @@ MovieEncoder::SetMessenger(const BMessenger &messenger)
 }
 
 
+// When this is running, no member variable should be accessed
+// from other threads
 status_t
-MovieEncoder::Encode()
+MovieEncoder::_EncoderThread()
 {	
 	int32 framesLeft = fFileList->CountItems();
 	int32 framesWritten = 0;
@@ -152,6 +167,9 @@ MovieEncoder::Encode()
 	
 	status = B_OK;
 	for (int32 i = 0; i < fFileList->CountItems(); i++) {
+		if (fKillThread)
+			break;
+			
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		BString fileName = fFileList->ItemAt(i);
 		BBitmap* frame = BTranslationUtils::GetBitmapFile(fileName);
@@ -203,30 +221,24 @@ MovieEncoder::Encode()
 }
 
 
-status_t
-MovieEncoder::Encode(const media_format_family& family,
-					const media_file_format& fileFormat,
-					const media_format& format,
-					const media_codec_info& info,
-					const color_space& space)
-{
-	SetMediaFormatFamily(family);
-	SetMediaFileFormat(fileFormat);
-	SetMediaFormat(format);
-	SetMediaCodecInfo(info);
-	SetColorSpace(space);
-	
-	return Encode();
-}
-
-
 thread_id
 MovieEncoder::EncodeThreaded()
 {
-	Executor* executor 
-		= new Executor(NewMemberFunctionObjectWithResult
-			<MovieEncoder, status_t>(&MovieEncoder::Encode, this));
-	return executor->RunThreaded();
+	fKillThread = false;
+	
+	fEncoderThread = spawn_thread((thread_entry)EncodeStarter,
+		"Encoder Thread", B_DISPLAY_PRIORITY, this);
+					
+	if (fEncoderThread < 0)
+		return fEncoderThread;
+	
+	status_t status = resume_thread(fEncoderThread);
+	if (status < B_OK) {
+		kill_thread(fEncoderThread);
+		return status;
+	}
+	
+	return fEncoderThread;
 }
 
 
@@ -342,3 +354,11 @@ MovieEncoder::PopCursorPosition(BPoint& point)
 	
 	return B_OK;
 }
+
+
+int32
+MovieEncoder::EncodeStarter(void* arg)
+{
+	return static_cast<MovieEncoder*>(arg)->_EncoderThread();
+}
+

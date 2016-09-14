@@ -136,6 +136,16 @@ Controller::MessageReceived(BMessage *message)
 
 
 bool
+Controller::QuitRequested()
+{
+	if (fCaptureThread < 0 && fTemporaryPath == NULL && fEncoderThread < 0)
+		return BLooper::QuitRequested();
+	
+	return false;
+}
+
+
+bool
 Controller::CanQuit(BString& reason) const
 {
 	BAutolock _((BLooper*)this);
@@ -156,11 +166,9 @@ Controller::Cancel()
 		status_t status;
 		wait_for_thread(fCaptureThread, &status);
 		fCaptureThread = -1;
-	} else if (fTemporaryPath != NULL && fEncoderThread > 0) {
-		thread_info info;
-		if (get_thread_info(fEncoderThread, &info) == B_OK) {
-			// TODO: Cancel the encoding process
-		}
+	} else if (fEncoderThread > 0) {
+		fEncoder->Cancel();
+		fEncoderThread = -1;
 	}
 }
 

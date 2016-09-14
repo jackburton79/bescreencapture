@@ -35,7 +35,8 @@ public:
 	virtual		~Controller();
 	
 	virtual void	MessageReceived(BMessage *message);
-
+	virtual bool	QuitRequested();
+	
 	bool		CanQuit(BString& reason) const;
 	void		Cancel();
 	

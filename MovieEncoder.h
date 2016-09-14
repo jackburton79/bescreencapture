@@ -16,6 +16,8 @@ public:
 	
 	void DisposeData();
 	
+	void Cancel();
+	
 	status_t SetSource(const FileList* fileList);
 	
 	status_t SetCursorQueue(std::queue<BPoint> *queue);
@@ -39,11 +41,7 @@ public:
 	void SetMediaFormatFamily(const media_format_family &);
 	void SetMediaFormat(const media_format &);
 	void SetMediaCodecInfo(const media_codec_info &);
-
-	status_t Encode(const media_format_family &, const media_file_format& fileFormat,
-			const media_format &, const media_codec_info &,
-			const color_space &space = B_RGB32);
-	status_t Encode();
+	
 	thread_id EncodeThreaded();
 	
 private:
@@ -51,7 +49,13 @@ private:
 	
 	BBitmap *GetCursorBitmap(const uint8 *data);
 	status_t PopCursorPosition(BPoint &point);
-			
+	
+	static int32 EncodeStarter(void *arg);		
+	status_t _EncoderThread();
+	
+	thread_id	fEncoderThread;
+	bool		fKillThread;
+	
 	int32 fPriority;
 	BMessenger fMessenger;
 		
