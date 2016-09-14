@@ -80,26 +80,6 @@ void
 Controller::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case B_OBSERVER_NOTICE_CHANGE:
-		{
-			int32 what;
-			message->FindInt32("be:observe_change_what", &what);
-			switch (what) {
-				case kClipSizeChanged:
-				{
-					std::cout << "Controller: kClipSizeChanged" << std::endl;
-					message->PrintToStream();
-					int32 value = 0;
-					if (message->FindInt32("be:value", &value) == B_OK)
-						
-					Settings().PrintToStream();
-					break;
-				}
-				default:
-					break;
-			}
-			break;
-		}
 		case kSelectionWindowClosed:
 		{
 			SendNotices(kMsgControllerSelectionWindowClosed, message);

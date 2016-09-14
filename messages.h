@@ -13,7 +13,6 @@ enum appMessages {
 	kEncodingFinished,
 	kFileNameChanged,
 	kMinimizeOnRecording,
-	kClipSizeChanged,
 	kPauseResumeCapture,
 	kMsgGetControllerMessenger
 };
