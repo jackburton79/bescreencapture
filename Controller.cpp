@@ -67,6 +67,12 @@ Controller::~Controller()
 	delete fEncoder;
 	delete fCodecList;
 	delete fFileList;
+		
+	if (fTemporaryPath != NULL) {
+		BEntry(fTemporaryPath).Remove();
+		free(fTemporaryPath);
+		fTemporaryPath = NULL;
+	}
 }
 
 
@@ -557,15 +563,18 @@ Controller::_ResumeCapture()
 void
 Controller::_EncodingFinished(const status_t status)
 {
-	BEntry(fTemporaryPath).Remove();
-	free(fTemporaryPath);
-	fTemporaryPath = NULL;
-
-	fEncoderThread = -1;
-	
+	// Deleting the filelist removes the files referenced by it.
 	delete fFileList;
 	fFileList = NULL;
 	
+	if (fTemporaryPath != NULL) {
+		BEntry(fTemporaryPath).Remove();
+		free(fTemporaryPath);
+		fTemporaryPath = NULL;
+	}
+	
+	fEncoderThread = -1;
+		
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
 	SendNotices(kMsgControllerEncodeFinished, &message);
