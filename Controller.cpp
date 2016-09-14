@@ -202,8 +202,9 @@ Controller::EncodeMovie()
 	if (entry.Exists()) {
 		// file exists.
 		fileName = GetUniqueFileName(fileName, MediaFileFormat().file_extension);
-		fEncoder->SetOutputFile(fileName);
 	}
+	
+	fEncoder->SetOutputFile(fileName);
 	
 	SendNotices(kMsgControllerEncodeStarted);
 		 
