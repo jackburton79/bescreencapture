@@ -569,16 +569,15 @@ Controller::CaptureThread()
 	BScreen screen;
 	BRect bounds = Settings().CaptureArea();
 	
-	bigtime_t waitTime = 1000000 / /*fCaptureOptions.framesPerSecond*/10;
+	bigtime_t waitTime = 1000000 / 10;
 	BFile outFile;
 	BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
-	
-	bool firstFrame = true;
-	translator_info translatorInfo;
-	
+
 	if (fFileList == NULL)
 		fFileList = new FileList();
-		
+
+	bool firstFrame = true;
+	translator_info translatorInfo;
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {
@@ -588,6 +587,8 @@ Controller::CaptureThread()
 				error = ReadBitmap(bitmap, bounds);			
 			else 
 				error = screen.ReadBitmap(bitmap, false, &bounds);
+
+			bigtime_t currentTime = system_time();
 					 
 	    	if (error == B_OK) {
 				//Save bitmap to disk
@@ -602,7 +603,7 @@ Controller::CaptureThread()
 				outFile.SetTo(string, B_WRITE_ONLY|B_CREATE_FILE);
 				error = sTranslatorRoster->Translate(&bitmapStream,
 					&translatorInfo, NULL, &outFile, 'BMP ');	
-				fFileList->AddItem(string);
+				fFileList->AddItem(string, currentTime);
 				atomic_add(&fNumFrames, 1);
 				
 				// Cleanup

@@ -130,7 +130,7 @@ MovieEncoder::_EncoderThread()
 	entry_ref movieRef;
 	get_ref_for_path(fOutputFile.Path(), &movieRef);
 		
-	BBitmap* bitmap = BTranslationUtils::GetBitmapFile(fFileList->ItemAt(0));
+	BBitmap* bitmap = BTranslationUtils::GetBitmapFile(fFileList->ItemAt(0)->file_name);
 	BRect sourceFrame = bitmap->Bounds();
 	delete bitmap;
 		
@@ -171,7 +171,7 @@ MovieEncoder::_EncoderThread()
 			break;
 			
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
-		BString fileName = fFileList->ItemAt(i);
+		BString fileName = fFileList->ItemAt(i)->file_name;
 		BBitmap* frame = BTranslationUtils::GetBitmapFile(fileName);
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?
