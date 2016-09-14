@@ -1,14 +1,14 @@
-v2.1 (not yet released)
+v2.1
 	- Added option to capture a single window. Note that the application
 	  remembers the initial window frame, it does not follow the window if
 	  it's moved or resized.
-	- it was possible to start recording from the Deskbar control when encoding was in progress.
+	- It was possible to start recording from the Deskbar control when encoding was in progress.
 	  This would have caused various problems. Fixed.
 	- An alert is shown if the user tries to quit the app and recording or encoding is in progress.
 	  The user can force quitting if needed.
 	- Added a live indicator of the number of recorded frames
 	- Added an Information view, mostly for debugging reasons
-	- Improved code which handles the case when the destination file already exists
+	- Improved code which handles the case the destination file already exists
 	- Fixed preview image ratio
 	- Fixed crash on quit when recording is in progress
 	- Fixed crash on quit when encoding is in progress
@@ -23,9 +23,9 @@ v2.0
 	- Enlarged the preview area, and hopefully improved layout
 	  
 v1.9.4
-    - Save the output file format to settings.
-    - Add automatic extension to the file name, based on the file format
-    - Fix bug where choosing some file format wouldn't work
+	- Save the output file format to settings.
+    	- Add automatic extension to the file name, based on the file format
+    	- Fix bug where choosing some file format wouldn't work
 	- Filter out non-writable file formats (Jessica Hamilton)
 	- Code cleanup
 
@@ -35,9 +35,9 @@ v1.9.3
 	- Fix Preview
 	- Improve DeskBar control
 	- Fix state detection mismatches when starting, then pausing, then stopping,
-      then starting again.
-    - Fix clip size handling
-    - Fix location of the temporary file due to changes
-      in Haiku filesystem hierarchy (noryb009)
-    - Improve GUI (John Scipione, me)
+          then starting again.
+    	- Fix clip size handling
+    	- Fix location of the temporary file due to changes
+      	  in Haiku filesystem hierarchy (noryb009)
+    	- Improve GUI (John Scipione, me)
 	
