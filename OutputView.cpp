@@ -98,8 +98,8 @@ OutputView::OutputView(Controller *controller)
 	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
 	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
-	fMinimizeOnStart = new BCheckBox("Minimize on start",
-		"Minimize on recording", new BMessage(kMinimizeOnRecording));
+	fMinimizeOnStart = new BCheckBox("HideWhenRecording",
+		"Hide window when recording", new BMessage(kMinimizeOnRecording));
 	
 	fSizeSlider = new SizeControl("size_slider", "Resize",
 		new BMessage(kScaleChanged), 25, 200, B_HORIZONTAL);
