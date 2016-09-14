@@ -76,7 +76,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	if (fPriorityControl->SelectOptionFor(priority) != B_OK)
 		fPriorityControl->SetValue(0);
 	
-	settings.SetClipDepth(B_RGB32);
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 }
