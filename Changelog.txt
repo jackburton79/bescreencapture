@@ -8,8 +8,10 @@ v2.1 (not yet released)
 	  The user can force quitting if needed.
 	- Added a live indicator of the number of recorded frames
 	- Added an Information view, mostly for debugging reasons
+	- Improved code which handles the case when the destination file already exists
 	- Fixed preview image ratio
-	- Fixed crashes on quit when encoding is in progress
+	- Fixed crash on quit when recording is in progress
+	- Fixed crash on quit when encoding is in progress
 	- Code cleanup
 
 v2.0 
