@@ -19,19 +19,15 @@ public:
 	void Cancel();
 	
 	status_t SetSource(const FileList* fileList);
-	
 	status_t SetCursorQueue(std::queue<BPoint> *queue);
-	
 	status_t SetOutputFile(const char *fileName);
 	status_t SetDestFrame(const BRect &rect);
-	
 	void SetColorSpace(const color_space &space);
-	
 	status_t SetQuality(const float &quality);
-	
 	status_t SetThreadPriority(const int32 &value);
 	status_t SetMessenger(const BMessenger &messenger);
 	
+	BView*	CodecOptionsView();
 	media_file_format	MediaFileFormat() const;
 	media_format_family MediaFormatFamily() const;
 	media_format		MediaFormat() const;
@@ -50,6 +46,14 @@ private:
 	BBitmap *GetCursorBitmap(const uint8 *data);
 	status_t PopCursorPosition(BPoint &point);
 	
+	status_t _CreateFile(const entry_ref& ref,
+						const media_file_format& mff,
+						const media_format& inputFormat,
+						const media_codec_info& mci,
+						float quality = -1);
+	status_t _WriteFrame(BBitmap* bitmap, bool isKeyFrame);
+	status_t _CloseFile();
+	
 	static int32 EncodeStarter(void *arg);		
 	status_t _EncoderThread();
 	
@@ -67,6 +71,10 @@ private:
 	
 	BRect fDestFrame;
 	color_space fColorSpace;
+	BMediaFile*			fMediaFile;
+	BMediaTrack*		fMediaTrack;
+	bool				fIsFileOpen;
+	bool				fHeaderCommitted;
 
 	media_file_format	fFileFormat;
 	media_format_family	fFamily;

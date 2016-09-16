@@ -36,7 +36,6 @@ APP_MIME_SIG=
 #	in folder names do not work well with this makefile.
 SRCS = \
 	 AdvancedOptionsView.cpp  \
-	 BitmapMovie.cpp  \
 	 BSCApp.cpp  \
 	 BSCWindow.cpp  \
 	 CamStatusView.cpp  \
@@ -68,6 +67,8 @@ RSRCS = \
 
 
 # @<-src@ 
+#%}
+
 #%}
 
 #%}
