@@ -1,3 +1,6 @@
+v2.2
+	- Got rid of BItmapMovie class, thus simplifying the code.
+
 v2.1
 	- Added option to capture a single window. Note that the application
 	  remembers the initial window frame, it does not follow the window if
