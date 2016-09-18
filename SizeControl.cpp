@@ -37,7 +37,7 @@ SizeControl::SizeControl(const char* name, const char* label,
 	BControl(name, label, message, flags),
 	fWhat(message->what)
 {
-	fSizeSlider = new SizeSlider("size_slider", "Resize",
+	fSizeSlider = new SizeSlider("size_slider", label,
 		message, minValue, maxValue, B_HORIZONTAL);
 
 	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
