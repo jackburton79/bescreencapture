@@ -101,7 +101,7 @@ OutputView::OutputView(Controller *controller)
 	fMinimizeOnStart = new BCheckBox("HideWhenRecording",
 		"Hide window when recording", new BMessage(kMinimizeOnRecording));
 	
-	fSizeSlider = new SizeControl("size_slider", "Resize",
+	fSizeSlider = new SizeControl("size_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, B_HORIZONTAL);
 				
 	BView *layoutView = BLayoutBuilder::Group<>()
