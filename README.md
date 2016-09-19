@@ -35,7 +35,7 @@ Q: I switched resolution while recording and the resulting clip is crappy!!!
 A: Switching resolution while recording isn't supported (at least at the moment).
 
 
-Q: This readme is lame!!!
+Q: This readme is lame!!!!
 
 A: You're right. Sorry.
 
