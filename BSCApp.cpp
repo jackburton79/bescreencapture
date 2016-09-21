@@ -4,6 +4,7 @@
 #include "DeskbarControlView.h"
 #include "Settings.h"
 
+#include <private/interface/AboutWindow.h>
 #include <Deskbar.h>
 
 #include <stdio.h>
@@ -94,3 +95,11 @@ BSCApp::MessageReceived(BMessage *message)
 			break;
 	}
 }
+
+
+void
+BSCApp::AboutRequested()
+{
+	(new BAboutWindow("BeScreenCapture", kAppSignature))->Show();
+}
+

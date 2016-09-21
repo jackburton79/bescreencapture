@@ -18,6 +18,7 @@ public:
 	virtual void ReadyToRun();
 	virtual bool QuitRequested();
 	virtual void MessageReceived(BMessage *message);
+	virtual void AboutRequested();
 	
 private:
 	BWindow *fWindow;
