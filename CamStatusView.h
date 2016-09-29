@@ -3,6 +3,7 @@
 
 #include <View.h>
 
+class BBitmap;
 class Controller;
 class CamStatusView : public BView {
 public:
@@ -27,6 +28,8 @@ private:
 	int32 fNumFrames;
 	bool fRecording;
 	bool fPaused;
+	BBitmap* fRecordingBitmap;
+	BBitmap* fPauseBitmap;
 };
 
 #endif

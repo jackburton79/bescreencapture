@@ -3,8 +3,12 @@
 #include "ControllerObserver.h"
 #include "messages.h"
 
+#include <Application.h>
+#include <Bitmap.h>
+#include <IconUtils.h>
 #include <LayoutUtils.h>
 #include <Message.h>
+#include <Resources.h>
 #include <Window.h>
 
 #include <stdio.h>
@@ -15,8 +19,13 @@ CamStatusView::CamStatusView(Controller* controller)
 	fController(controller),
 	fNumFrames(0),
 	fRecording(false),
-	fPaused(false)
+	fPaused(false),
+	fRecordingBitmap(NULL),
+	fPauseBitmap(NULL)
 {
+	BRect bitmapRect(0, 0, 64, 64);
+	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
+	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
 }
 
 
@@ -33,6 +42,15 @@ CamStatusView::AttachedToWindow()
 	
 	if (Parent())
 		SetViewColor(Parent()->ViewColor());
+	
+	BResources* resources = be_app->AppResources();
+	size_t size;
+	const void* buffer = resources->LoadResource('VICN', "record_icon", &size);
+	if (buffer != NULL)
+		BIconUtils::GetVectorIcon((uint8*)buffer, size, fRecordingBitmap);
+	buffer = resources->LoadResource('VICN', "pause_icon", &size);
+	if (buffer != NULL)
+		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);	
 }
 
 
@@ -44,14 +62,11 @@ CamStatusView::Draw(BRect updateRect)
 	
 	if (fRecording) {
 		if (fPaused) {
-			SetHighColor(0, 240, 0);
-			BRect one(2, 1, bounds.right / 2 - 2, bounds.bottom - 1);
-			FillRect(one);
-			one.OffsetTo(bounds.Width() - one.Width() - 2, 1);
-			FillRect(one);
-		} else {
-			SetHighColor(248, 0, 0);
-			FillEllipse(bounds);
+			SetDrawingMode(B_OP_ALPHA);
+			DrawBitmap(fPauseBitmap, bounds);
+		} else {			
+			SetDrawingMode(B_OP_ALPHA);			
+			DrawBitmap(fRecordingBitmap, bounds);
 		}
 		SetHighColor(0, 0, 0);
 		SetDrawingMode(B_OP_OVER);
