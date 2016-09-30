@@ -84,6 +84,7 @@ MovieEncoder::DisposeData()
 	if (fMediaFile && fIsFileOpen)
 		_CloseFile();
 	delete fMediaFile;		// deletes the track, too
+	fMediaFile = NULL;
 	fMediaTrack = NULL;
 	
 	fFileList = NULL;
