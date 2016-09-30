@@ -63,7 +63,6 @@ DeskbarControlView::DeskbarControlView(BMessage *data)
 DeskbarControlView::~DeskbarControlView()
 {
 	delete fBitmap;
-	delete fRecordingBitmap;
 }
 
 
@@ -103,8 +102,7 @@ DeskbarControlView::AttachedToWindow()
 		StartWatching(fControllerMessenger, kMsgControllerCaptureStarted);
 		StartWatching(fControllerMessenger, kMsgControllerCaptureStopped);
 		StartWatching(fControllerMessenger, kMsgControllerCapturePaused);	
-		StartWatching(fControllerMessenger, kMsgControllerCaptureResumed);	
-		
+		StartWatching(fControllerMessenger, kMsgControllerCaptureResumed);
 		UnlockLooper();
 	}
 }
@@ -212,14 +210,13 @@ void
 DeskbarControlView::InitData()
 {
 	fBitmap = NULL;
-	fRecordingBitmap = NULL;
 	fRecording = false;
 	fPaused = false;
 	
 	app_info info;
 	be_roster->GetAppInfo(kAppSignature, &info);
 	
-	fBitmap = new BBitmap(BRect(0, 0, 15, 15), B_COLOR_8_BIT);
+	fBitmap = new BBitmap(BRect(0, 0, 15, 15), B_RGBA32);
 	BNodeInfo::GetTrackerIcon(&info.ref, fBitmap, B_MINI_ICON);
 }
 
