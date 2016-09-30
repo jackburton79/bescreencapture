@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Your Name <your@email.address>
+ * Copyright 2015-2016 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -19,12 +19,15 @@ class SizeSlider : public BSlider {
 public:
 	SizeSlider(const char* name, const char* label,
 		BMessage* message, int32 minValue,
-		int32 maxValue, orientation posture,
+		int32 maxValue, int32 stepValue,
+		orientation posture,
 		thumb_style thumbType = B_BLOCK_THUMB,
 		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
 							| B_FRAME_EVENTS);
 
 	virtual void SetValue(int32 value);
+private:
+	int32 fStep;
 };
 
 
@@ -38,7 +41,7 @@ SizeControl::SizeControl(const char* name, const char* label,
 	fWhat(message->what)
 {
 	fSizeSlider = new SizeSlider("size_slider", label,
-		message, minValue, maxValue, B_HORIZONTAL);
+		message, minValue, maxValue, 25, B_HORIZONTAL);
 
 	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fSizeSlider->SetHashMarkCount(8);
@@ -106,17 +109,20 @@ SizeControl::SetValue(int32 value)
 	BString sizeString;
 	sizeString << (int32)fSizeSlider->Value();
 	fSizeTextControl->SetText(sizeString);
+	
+	BControl::SetValue(value);
 }
 
 
 // SizeSlider
 SizeSlider::SizeSlider(const char* name, const char* label,
 		BMessage* message, int32 minValue,
-		int32 maxValue, orientation posture,
+		int32 maxValue, int32 stepValue, orientation posture,
 		thumb_style thumbType,
 		uint32 flags)
 	:
-	BSlider(name, label, message, minValue, maxValue, posture, thumbType, flags)
+	BSlider(name, label, message, minValue, maxValue, posture, thumbType, flags),
+	fStep(stepValue)
 {
 }
 
@@ -125,15 +131,20 @@ SizeSlider::SizeSlider(const char* name, const char* label,
 void
 SizeSlider::SetValue(int32 value)
 {
-	// TODO: Not really, nice, should not have a fixed list of values
-	const int32 validValues[] = { 25, 50, 75, 100, 125, 150, 175, 200 };
-	int32 numValues = sizeof(validValues) / sizeof(int32);
+	int32 max, min;
+	GetLimits(&min, &max);
+
+	const int32 numValues = (max - min) / fStep;
+	int32 validValues[numValues];
+	for (int32 i = 0; i < numValues; i++)
+		validValues[i] = min + fStep * i;
+
 	for (int32 i = 0; i < numValues - 1; i++) {
 		if (value > validValues[i] && value < validValues[i + 1]) {
 			value = value > validValues[i] + (validValues[i + 1] - validValues[i]) / 2
 				? validValues[i + 1] : validValues[i];
 		}
 	}
-	
+
 	BSlider::SetValue(value);
 }
