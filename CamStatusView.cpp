@@ -56,17 +56,15 @@ CamStatusView::AttachedToWindow()
 
 void
 CamStatusView::Draw(BRect updateRect)
-{
-	BRect bounds = Bounds();
-	bounds.InsetBy(20, 20);
-	
+{	
 	if (fRecording) {
+		BRect destRect(0, 0, 64, 64);
 		if (fPaused) {
 			SetDrawingMode(B_OP_ALPHA);
-			DrawBitmap(fPauseBitmap, bounds);
+			DrawBitmap(fPauseBitmap, destRect);
 		} else {			
 			SetDrawingMode(B_OP_ALPHA);			
-			DrawBitmap(fRecordingBitmap, bounds);
+			DrawBitmap(fRecordingBitmap, destRect);
 		}
 		SetHighColor(0, 0, 0);
 		SetDrawingMode(B_OP_OVER);
@@ -74,9 +72,11 @@ CamStatusView::Draw(BRect updateRect)
 		string << fNumFrames;
 		float width = StringWidth(string);
 		font_height height;
-		GetFontHeight(&height);	
+		GetFontHeight(&height);
+		BRect bounds = Bounds();
+		bounds.left = bounds.left + 64;
 		BPoint point((bounds.Width() - width) / 2 + bounds.left,
-					(bounds.Height() - (height.ascent + height.descent)) + bounds.top + 1);
+					(bounds.Height() - (height.ascent + height.descent)) / 2 + height.ascent + height.descent + 1);
 		DrawString(string, point);
 	}
 }
@@ -159,15 +159,17 @@ CamStatusView::Recording() const
 BSize
 CamStatusView::MinSize()
 {
-	float width = StringWidth("999999") + 20;
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(width, width));
+	float width = 64 + StringWidth("999999") + 20;
+	float height = 64;
+	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(width, height));
 }
 
 
 BSize
 CamStatusView::MaxSize()
 {
-	float width = StringWidth("999999") + 20;
-	return BLayoutUtils::ComposeSize(ExplicitMaxSize(), BSize(width, width));
+	float width = 64 + StringWidth("999999") + 20;
+	float height = 64;
+	return BLayoutUtils::ComposeSize(ExplicitMaxSize(), BSize(width, height));
 }
 
