@@ -100,6 +100,9 @@ BSCApp::MessageReceived(BMessage *message)
 void
 BSCApp::AboutRequested()
 {
-	(new BAboutWindow("BeScreenCapture", kAppSignature))->Show();
+	BAboutWindow* aboutWindow = new BAboutWindow("BeScreenCapture", kAppSignature);
+	aboutWindow->AddDescription("BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format supported by Haiku.");
+	
+	aboutWindow->Show();
 }
 
