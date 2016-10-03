@@ -4,13 +4,13 @@ by Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture.png)
 
 
-BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format you want, as long as it's supported by Haiku.
+BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format supported by Haiku.
 
 
 ## FAQ:
 
 
-Q: I have the codec <insert your favourite codec name here> but it's not listed in BeScreenCapture!!!
+Q: The codec <insert your favourite codec name here> it's not available in BeScreenCapture!!!
 
 A: Not every codec supports every clip configuration: some codecs can only support some particular
 color depth, or certain particular sizes (i.e. 320x200): try changing the "Clip color depth" option in the
@@ -19,20 +19,18 @@ color depth, or certain particular sizes (i.e. 320x200): try changing the "Clip 
 
 Q: BeScreenCapture crashed while using the codec \<insert your favourite codec name here\> !!!
 
-A: There are many buggy codecs around. I've seen many codecs which simply refuse to record anything,
-and in some cases, codecs which simply crash (3ivx, for example). 
+A: Some codecs are buggy. Some could cause a crash, or fail to record anything. 
 
 
 Q: I tried to record a fullscreen clip but the result was crappy!!!
 
-A: Don't expect to record an area like 1024x768 with a 32 bit depth and get an incredibly snappy video
-as a result. Capturing what happens on the screen is a really slow operation. If you get too few frames
+A: Don't expect to record a full screen area on a slow computer and get an incredibly snappy video as a result. Capturing what happens on the screen is a really slow operation. If you get too few frames
 per second, try reducing the capture area or the screen depth. Or get a faster computer :)
 
 
 Q: I switched resolution while recording and the resulting clip is crappy!!!
 
-A: Switching resolution while recording isn't supported (at least at the moment).
+A: Switching resolution while recording isn't supported at the moment.
 
 
 Q: This readme is lame!!!!
@@ -45,5 +43,6 @@ Thanks to:
 * Francois Revol,
 * Andrew Bachmann for the help,
 * Marcin Konicki for the web space and support,
-* Zumi for the icons,
+* Zumi and Pete Goodeve for the icons,
+* Every Haiku contributor
 * and to anyone I forgot.
