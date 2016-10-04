@@ -11,18 +11,19 @@
 #include <ObjectList.h>
 #include <String.h>
 
-struct frame_entry {
+class BitmapEntry {
+public:
 	BString file_name;
 	bigtime_t frame_time;
 };
 
-class FileList : private BObjectList<frame_entry> {
+class FileList : private BObjectList<BitmapEntry> {
 public:
 	FileList();
 	virtual ~FileList();
 
 	void AddItem(const BString& fileName, bigtime_t frameTime);
-	frame_entry* ItemAt(int32 i) const;
+	BitmapEntry* ItemAt(int32 i) const;
 
 	int32 CountItems() const;
 };

@@ -13,7 +13,7 @@
 
 FileList::FileList()
 	:
-	BObjectList<frame_entry>(1, true)
+	BObjectList<BitmapEntry>(1, true)
 {
 }
 
@@ -30,22 +30,22 @@ FileList::~FileList()
 void
 FileList::AddItem(const BString& fileName, bigtime_t time)
 {
-	frame_entry* entry = new frame_entry;
+	BitmapEntry* entry = new BitmapEntry;
 	entry->file_name = fileName;
 	entry->frame_time = time;
-	BObjectList<frame_entry>::AddItem(entry);
+	BObjectList<BitmapEntry>::AddItem(entry);
 }
 
 
-frame_entry*
+BitmapEntry*
 FileList::ItemAt(int32 i) const
 {
-	return BObjectList<frame_entry>::ItemAt(i);
+	return BObjectList<BitmapEntry>::ItemAt(i);
 }
 
 
 int32
 FileList::CountItems() const
 {
-	return BObjectList<frame_entry>::CountItems();
+	return BObjectList<BitmapEntry>::CountItems();
 }
