@@ -260,7 +260,8 @@ BSCWindow::MessageReceived(BMessage *message)
 							"%s", strerror(status));
 						(new BAlert("yo", errorString, "Ok"))->Go();
 					}
-					
+					if (((BSCApp*)be_app)->WasLaunchedSilently())
+						be_app->PostMessage(B_QUIT_REQUESTED);
 					break;
 				}
 				default:

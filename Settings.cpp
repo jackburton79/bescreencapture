@@ -53,7 +53,7 @@ Settings::Load()
 	if (status == B_OK)
 		status = file.SetTo(path.Path(), B_READ_ONLY);
 	
-	BMessage tempMessage;	
+	BMessage tempMessage;
 	if (status == B_OK)	
 		status = tempMessage.Unflatten(&file);
 	

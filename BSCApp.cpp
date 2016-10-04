@@ -1,3 +1,4 @@
+#include "Arguments.h"
 #include "BSCApp.h"
 #include "BSCWindow.h"
 #include "Controller.h"
@@ -32,8 +33,11 @@ main()
 BSCApp::BSCApp()
 	:
 	BApplication(kAppSignature),
-	fWindow(NULL)
+	fWindow(NULL),
+	fArgs(NULL)
 {
+	fArgs = new Arguments(0, NULL);
+	
 	Settings::Load();
 
 	fShouldStartRecording = false;
@@ -48,6 +52,23 @@ BSCApp::~BSCApp()
 	
 	gControllerLooper->Lock();
 	gControllerLooper->Quit();
+	
+	delete fArgs;
+}
+
+
+void
+BSCApp::ArgvReceived(int32 argc, char** argv)
+{
+	LaunchedFromCommandline();
+	fArgs->Parse(argc, argv);
+	if (fArgs->UsageRequested()) {
+		_UsageRequested();
+		PostMessage(B_QUIT_REQUESTED);
+		return;
+	}
+	
+	fShouldStartRecording = fArgs->RecordNow();
 }
 
 
@@ -99,6 +120,7 @@ BSCApp::MessageReceived(BMessage *message)
 				fShouldStartRecording = true;
 			}
 			break;
+			
 		default:
 			BApplication::MessageReceived(message);
 			break;
@@ -150,3 +172,27 @@ BSCApp::AboutRequested()
 	aboutWindow->Show();
 }
 
+
+bool
+BSCApp::WasLaunchedSilently() const
+{
+	return fShouldStartRecording;
+}
+
+
+bool
+BSCApp::LaunchedFromCommandline() const
+{
+	team_info teamInfo;
+	get_team_info(getppid(), &teamInfo);
+
+	// TODO: Not correct, since someone could use another shell
+	std::string args = teamInfo.args;
+	return args.find("/bin/bash") != std::string::npos;
+}
+
+
+void
+BSCApp::_UsageRequested()
+{
+}
