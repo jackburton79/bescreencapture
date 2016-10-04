@@ -6,9 +6,18 @@
 
 #include <private/interface/AboutWindow.h>
 #include <Deskbar.h>
+#include <StringList.h>
 
 #include <stdio.h>
 
+
+const char kChangeLog[] = {
+#include "Changelog.h"
+};
+
+const char* kAuthors[] = {
+	"Stefano Ceccherini"
+};
 
 int
 main()
@@ -97,11 +106,46 @@ BSCApp::MessageReceived(BMessage *message)
 }
 
 
+BStringList
+SplitChangeLog(const char* changeLog)
+{
+	BStringList list;
+	char* stringStart = (char*)changeLog;
+	int i = 0;
+	char c;
+	while ((c = stringStart[i]) != '\0') {
+		if (c == '-'  && i > 2 && stringStart[i - 1] == '-' && stringStart[i - 2] == '-') {
+			BString string;
+			string.Append(stringStart, i - 2);
+			string.RemoveAll("\t");
+			string.ReplaceAll("- ", "\n- ");			
+			list.Add(string);
+			stringStart = stringStart + i + 1;
+			i = 0;
+		} else
+			i++;
+	}
+	return list;		
+}
+
+
 void
 BSCApp::AboutRequested()
 {
 	BAboutWindow* aboutWindow = new BAboutWindow("BeScreenCapture", kAppSignature);
 	aboutWindow->AddDescription("BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format supported by Haiku.");
+	aboutWindow->AddAuthors(kAuthors);
+	
+	BStringList list = SplitChangeLog(kChangeLog);
+	int32 stringCount = list.CountStrings();
+	char** charArray = new char* [stringCount + 1];
+	for (int32 i = 0; i < stringCount; i++) {
+		charArray[i] = (char*)list.StringAt(i).String();
+	}
+	charArray[stringCount] = NULL;
+	
+	aboutWindow->AddVersionHistory((const char**)charArray);
+	delete[] charArray;
 	
 	aboutWindow->Show();
 }
