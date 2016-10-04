@@ -7,10 +7,18 @@
 
 #include "FileList.h"
 
+#include <Bitmap.h>
+#include <BitmapStream.h>
 #include <Directory.h>
 #include <Entry.h>
+#include <File.h>
 #include <Path.h>
 #include <TranslationUtils.h>
+#include <TranslatorRoster.h>
+
+#include <stdio.h>
+
+static BTranslatorRoster* sTranslatorRoster = NULL;
 
 FileList::FileList()
 	:
@@ -21,10 +29,15 @@ FileList::FileList()
 
 FileList::~FileList()
 {
-	for (int32 i = CountItems() - 1; i >= 0; i--) {
-		BString fileName = ItemAt(i)->file_name;
-		BEntry(fileName).Remove();
-	}
+}
+
+
+void
+FileList::AddItem(BBitmap* bitmap, bigtime_t time)
+{
+	BitmapEntry* entry = new BitmapEntry(bitmap);
+	entry->frame_time = time;
+	BObjectList<BitmapEntry>::AddItem(entry);
 }
 
 
@@ -39,9 +52,10 @@ FileList::AddItem(const BString& fileName, bigtime_t time)
 
 
 BitmapEntry*
-FileList::ItemAt(int32 i) const
+FileList::GetNextBitmap()
 {
-	return BObjectList<BitmapEntry>::ItemAt(i);
+	BitmapEntry* entry = BObjectList<BitmapEntry>::RemoveItemAt(0);
+	return entry;
 }
 
 
@@ -53,8 +67,64 @@ FileList::CountItems() const
 
 
 // BitmapEntry
+BitmapEntry::BitmapEntry()
+	:
+	fBitmap(NULL)
+{
+}
+
+
+BitmapEntry::BitmapEntry(BBitmap* bitmap)
+	:
+	fBitmap(bitmap)
+{
+}
+
+
+BitmapEntry::~BitmapEntry()
+{	
+	if (file_name != "")
+		BEntry(file_name).Remove();
+	else if (fBitmap != NULL)
+		delete fBitmap;
+}
+
+
 BBitmap*
 BitmapEntry::Bitmap()
 {
-	return BTranslationUtils::GetBitmapFile(file_name);
+	if (fBitmap != NULL) {
+		BBitmap* bitmap = fBitmap;
+		fBitmap = NULL;
+		return bitmap;
+	}
+	if (file_name != "")
+		return BTranslationUtils::GetBitmapFile(file_name);
+	
+	return NULL;
+}
+
+
+void
+BitmapEntry::SaveToDisk(const char* path)
+{
+	if (sTranslatorRoster == NULL)
+		sTranslatorRoster = BTranslatorRoster::Default();
+
+	//Save bitmap to disk
+	translator_info translatorInfo;
+	BBitmapStream bitmapStream(fBitmap);
+	
+	sTranslatorRoster->Identify(&bitmapStream, NULL,
+			&translatorInfo, 0, NULL, 'BMP ');
+			
+	char* string = tempnam(path, "frame_");
+	BFile outFile;
+	outFile.SetTo(string, B_WRITE_ONLY|B_CREATE_FILE);
+	status_t error = sTranslatorRoster->Translate(&bitmapStream,
+		&translatorInfo, NULL, &outFile, 'BMP ');
+	
+	file_name = string;
+	
+	fBitmap = NULL;
 }

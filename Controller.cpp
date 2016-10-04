@@ -21,11 +21,6 @@
 #include <FindDirectory.h>
 #include <Screen.h>
 #include <String.h>
-#include <TranslationKit.h>
-#include <TranslatorRoster.h>
-
-
-static BTranslatorRoster* sTranslatorRoster = NULL;
 
 
 BLooper *gControllerLooper = NULL;
@@ -46,8 +41,7 @@ Controller::Controller()
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
 	
 	fEncoder = new MovieEncoder;
-	if (sTranslatorRoster == NULL)
-		sTranslatorRoster = BTranslatorRoster::Default();
+
 
 	Settings settings;	
 	BString name;
@@ -571,17 +565,15 @@ Controller::CaptureThread()
 	
 	bigtime_t waitTime = 1000000 / 10;
 	BFile outFile;
-	BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
-
+	
 	if (fFileList == NULL)
 		fFileList = new FileList();
 
-	bool firstFrame = true;
-	translator_info translatorInfo;
 	status_t error = B_ERROR;
 	while (!fKillThread) {
-		if (!fPaused) {
+		if (!fPaused) {		
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
+			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 		
 			if (fDirectWindowAvailable && useDirectWindow)		
 				error = ReadBitmap(bitmap, bounds);			
@@ -589,37 +581,20 @@ Controller::CaptureThread()
 				error = screen.ReadBitmap(bitmap, false, &bounds);
 
 			bigtime_t currentTime = system_time();
-					 
 	    	if (error == B_OK) {
-				//Save bitmap to disk
-				BBitmapStream bitmapStream(bitmap);
-				if (firstFrame) {
-					firstFrame = false;
-					sTranslatorRoster->Identify(&bitmapStream, NULL,
-						&translatorInfo, 0, NULL, 'BMP ');
-				}
-
-				char* string = tempnam(fTemporaryPath, "frame_");
-				outFile.SetTo(string, B_WRITE_ONLY|B_CREATE_FILE);
-				error = sTranslatorRoster->Translate(&bitmapStream,
-					&translatorInfo, NULL, &outFile, 'BMP ');	
-				fFileList->AddItem(string, currentTime);
+	    		// Takes ownership of the bitmap
+	    		fFileList->AddItem(bitmap, currentTime);
 				atomic_add(&fNumFrames, 1);
-				
-				// Cleanup
-				bitmapStream.DetachBitmap(&bitmap);	
-				outFile.Unset();
-				free(string);
+											
 			} else {
 				//PRINT(("Error while getting screenshot: %s\n", strerror(error)));
+				delete bitmap;
 				break;
 			}
 		} else
 			snooze(500000);
 	}
-		
-	delete bitmap;
-	
+			
 	fCaptureThread = -1;
 		
 	return B_OK;

@@ -14,10 +14,21 @@
 class BBitmap;
 class BitmapEntry {
 public:
+	BitmapEntry();
+	BitmapEntry(BBitmap* bitmap);
+	BitmapEntry(const BitmapEntry&);
+	
+	~BitmapEntry();
+	
 	BBitmap* Bitmap();
+	
+	void SaveToDisk(const char* path);
 	
 	BString file_name;
 	bigtime_t frame_time;
+
+private:
+	BBitmap* fBitmap;
 };
 
 
@@ -26,8 +37,10 @@ public:
 	FileList();
 	virtual ~FileList();
 
+	void AddItem(BBitmap* bitmap, bigtime_t frameTime);
 	void AddItem(const BString& fileName, bigtime_t frameTime);
-	BitmapEntry* ItemAt(int32 i) const;
+
+	BitmapEntry* GetNextBitmap();
 
 	int32 CountItems() const;
 };

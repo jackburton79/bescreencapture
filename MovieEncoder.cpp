@@ -274,8 +274,12 @@ MovieEncoder::_EncoderThread()
 	entry_ref movieRef;
 	get_ref_for_path(fOutputFile.Path(), &movieRef);
 		
-	BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
+	// TODO: This way we destroy the first frame	
+	// TODO: Remove the const_cast
+	BitmapEntry* entry = const_cast<FileList*>(fFileList)->GetNextBitmap();
+	BBitmap* bitmap = entry->Bitmap();
 	BRect sourceFrame = bitmap->Bounds();
+	delete entry;
 	delete bitmap;
 		
 	if (!fDestFrame.IsValid())
@@ -306,14 +310,16 @@ MovieEncoder::_EncoderThread()
 	progressMessage.AddFloat("delta", 1.0);
 	
 	status = B_OK;
-	for (int32 i = 0; i < fFileList->CountItems(); i++) {
+	while (BitmapEntry* entry = const_cast<FileList*>(fFileList)->GetNextBitmap()) {
 		if (fKillThread)
 			break;
 			
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
-		BBitmap* frame = fFileList->ItemAt(i)->Bitmap();
+		BBitmap* frame = entry->Bitmap();
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?
+			std::cerr << "Error while loading bitmap entry" << std::endl;
+			delete entry;
 			continue;
 		}
 						
@@ -326,6 +332,7 @@ MovieEncoder::_EncoderThread()
 		}
 		
 		delete frame;
+		delete entry;
 			
 		if (status == B_OK)
 			status = _WriteFrame(destBitmap, keyFrame);
