@@ -10,6 +10,7 @@
 #include <Directory.h>
 #include <Entry.h>
 #include <Path.h>
+#include <TranslationUtils.h>
 
 FileList::FileList()
 	:
@@ -48,4 +49,12 @@ int32
 FileList::CountItems() const
 {
 	return BObjectList<BitmapEntry>::CountItems();
+}
+
+
+// BitmapEntry
+BBitmap*
+BitmapEntry::Bitmap()
+{
+	return BTranslationUtils::GetBitmapFile(file_name);
 }

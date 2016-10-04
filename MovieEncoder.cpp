@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <MediaTrack.h>
 #include <Screen.h>
 #include <String.h>
-#include <TranslationUtils.h>
 #include <View.h>
 
 #include <cstring>
@@ -275,7 +274,7 @@ MovieEncoder::_EncoderThread()
 	entry_ref movieRef;
 	get_ref_for_path(fOutputFile.Path(), &movieRef);
 		
-	BBitmap* bitmap = BTranslationUtils::GetBitmapFile(fFileList->ItemAt(0)->file_name);
+	BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
 	BRect sourceFrame = bitmap->Bounds();
 	delete bitmap;
 		
@@ -312,8 +311,7 @@ MovieEncoder::_EncoderThread()
 			break;
 			
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
-		BString fileName = fFileList->ItemAt(i)->file_name;
-		BBitmap* frame = BTranslationUtils::GetBitmapFile(fileName);
+		BBitmap* frame = fFileList->ItemAt(i)->Bitmap();
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?
 			continue;

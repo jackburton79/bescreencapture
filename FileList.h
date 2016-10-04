@@ -11,11 +11,15 @@
 #include <ObjectList.h>
 #include <String.h>
 
+class BBitmap;
 class BitmapEntry {
 public:
+	BBitmap* Bitmap();
+	
 	BString file_name;
 	bigtime_t frame_time;
 };
+
 
 class FileList : private BObjectList<BitmapEntry> {
 public:
