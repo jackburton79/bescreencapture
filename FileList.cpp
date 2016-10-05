@@ -12,23 +12,39 @@
 #include <Directory.h>
 #include <Entry.h>
 #include <File.h>
+#include <FindDirectory.h>
 #include <Path.h>
 #include <TranslationUtils.h>
 #include <TranslatorRoster.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 
 static BTranslatorRoster* sTranslatorRoster = NULL;
 
 FileList::FileList()
 	:
-	BObjectList<BitmapEntry>(1, true)
+	BObjectList<BitmapEntry>(1, true),
+	fTemporaryPath(NULL)
 {
+	BPath path;
+	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
+	if (status != B_OK)
+		throw status;
+	fTemporaryPath = tempnam((char*)path.Path(), (char*)"_BSC");
+	status = create_directory(fTemporaryPath, 0777);
+	if (status != B_OK)
+		throw status;
 }
 
 
 FileList::~FileList()
 {
+	if (fTemporaryPath != NULL) {
+		BEntry(fTemporaryPath).Remove();
+		free(fTemporaryPath);
+		fTemporaryPath = NULL;
+	}
 }
 
 
@@ -37,6 +53,7 @@ FileList::AddItem(BBitmap* bitmap, bigtime_t time)
 {
 	BitmapEntry* entry = new BitmapEntry(bitmap);
 	entry->frame_time = time;
+	entry->SaveToDisk(fTemporaryPath);
 	BObjectList<BitmapEntry>::AddItem(entry);
 }
 
@@ -93,11 +110,11 @@ BitmapEntry::~BitmapEntry()
 BBitmap*
 BitmapEntry::Bitmap()
 {
-	if (fBitmap != NULL) {
+	/*if (fBitmap != NULL) {
 		BBitmap* bitmap = fBitmap;
 		fBitmap = NULL;
 		return bitmap;
-	}
+	}*/
 	if (file_name != "")
 		return BTranslationUtils::GetBitmapFile(file_name);
 	

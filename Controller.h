@@ -83,7 +83,6 @@ private:
 	thread_id			fEncoderThread;
 	
 	FileList			*fFileList;
-	char				*fTemporaryPath;
 
 	area_desc 			fAreaDesc;
 	

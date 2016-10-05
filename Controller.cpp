@@ -18,7 +18,6 @@
 #include <Directory.h>
 #include <Entry.h>
 #include <File.h>
-#include <FindDirectory.h>
 #include <Screen.h>
 #include <String.h>
 
@@ -61,12 +60,6 @@ Controller::~Controller()
 	delete fEncoder;
 	delete fCodecList;
 	delete fFileList;
-		
-	if (fTemporaryPath != NULL) {
-		BEntry(fTemporaryPath).Remove();
-		free(fTemporaryPath);
-		fTemporaryPath = NULL;
-	}
 }
 
 
@@ -118,7 +111,7 @@ Controller::MessageReceived(BMessage *message)
 bool
 Controller::QuitRequested()
 {
-	if (fCaptureThread < 0 && fTemporaryPath == NULL && fEncoderThread < 0)
+	if (fCaptureThread < 0 && fFileList == NULL && fEncoderThread < 0)
 		return BLooper::QuitRequested();
 	
 	return false;
@@ -131,10 +124,10 @@ Controller::CanQuit(BString& reason) const
 	BAutolock _((BLooper*)this);
 	if (fCaptureThread > 0)
 		reason = "Recording is in progress.";
-	else if (fTemporaryPath != NULL)
+	else if (fFileList != NULL)
 		reason = "Encoding is in progress.";
 		
-	return fCaptureThread < 0 && fTemporaryPath == NULL && fEncoderThread < 0;
+	return fCaptureThread < 0 && fFileList == NULL && fEncoderThread < 0;
 }
 
 
@@ -450,26 +443,16 @@ void
 Controller::StartCapture()
 {
 	fNumFrames = 0;
-	
-	BPath path;
-	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
-	if (status != B_OK) {
+	try {
+		if (fFileList == NULL)
+			fFileList = new FileList();
+	} catch (status_t error) { 
 		BMessage message(kMsgControllerCaptureFailed);
-		message.AddInt32("status", status);
+		message.AddInt32("status", error);
 		SendNotices(kMsgControllerCaptureFailed, &message);
 		return;
 	}
-	
-	// Create temporary path
-	fTemporaryPath = tempnam((char*)path.Path(), (char*)"_BSC");
-	status = create_directory(fTemporaryPath, 0777);
-	if (status < B_OK) {
-		BMessage message(kMsgControllerCaptureFailed);
-		message.AddInt32("status", status);
-		SendNotices(kMsgControllerCaptureFailed, &message);
-		return;
-	}
-		
+			
 	fKillThread = false;
 	fPaused = false;
 	
@@ -483,7 +466,7 @@ Controller::StartCapture()
 		return;
 	}
 		
-	status = resume_thread(fCaptureThread);
+	status_t status = resume_thread(fCaptureThread);
 	if (status < B_OK) {
 		kill_thread(fCaptureThread);
 		BMessage message(kMsgControllerCaptureFailed);
@@ -538,15 +521,10 @@ Controller::_ResumeCapture()
 void
 Controller::_EncodingFinished(const status_t status)
 {
-	// Deleting the filelist removes the files referenced by it.
+	// Deleting the filelist deletes the files referenced by it
+	// and also the temporary folder
 	delete fFileList;
 	fFileList = NULL;
-	
-	if (fTemporaryPath != NULL) {
-		BEntry(fTemporaryPath).Remove();
-		free(fTemporaryPath);
-		fTemporaryPath = NULL;
-	}
 	
 	fEncoderThread = -1;
 		
@@ -566,9 +544,6 @@ Controller::CaptureThread()
 	bigtime_t waitTime = 1000000 / 10;
 	BFile outFile;
 	
-	if (fFileList == NULL)
-		fFileList = new FileList();
-
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {		

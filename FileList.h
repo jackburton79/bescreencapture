@@ -32,6 +32,7 @@ private:
 };
 
 
+class BPath;
 class FileList : private BObjectList<BitmapEntry> {
 public:
 	FileList();
@@ -43,6 +44,9 @@ public:
 	BitmapEntry* GetNextBitmap();
 
 	int32 CountItems() const;
+
+private:
+	char* fTemporaryPath;
 };
 
 
