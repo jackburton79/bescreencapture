@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 static BTranslatorRoster* sTranslatorRoster = NULL;
 
 FileList::FileList()
@@ -54,10 +55,10 @@ FileList::AddItem(BBitmap* bitmap, bigtime_t time)
 	BitmapEntry* entry = new (nothrow) BitmapEntry(bitmap, time);
 	if (entry == NULL)
 		return false;
-	status_t status = entry->SaveToDisk(fTemporaryPath);
-	if (status == B_OK)
+	if ((CountItems() < 10)
+		|| (entry->SaveToDisk(fTemporaryPath) == B_OK)) {
 		return BObjectList<BitmapEntry>::AddItem(entry);
-	
+	}
 	return false;
 }
 
@@ -107,7 +108,7 @@ BitmapEntry::Bitmap()
 {
 	if (fBitmap != NULL)
 		return new BBitmap(fBitmap);
-		
+
 	if (fFileName != "")
 		return BTranslationUtils::GetBitmapFile(fFileName);
 	
