@@ -20,6 +20,7 @@
 #include <GroupLayoutBuilder.h>
 #include <GroupView.h>
 #include <LayoutBuilder.h>
+#include <MenuBar.h>
 #include <Screen.h>
 #include <StatusBar.h>
 #include <String.h>
@@ -45,6 +46,9 @@ BSCWindow::BSCWindow()
 	OutputView* outputView = new OutputView(fController);
 	AdvancedOptionsView* advancedView = new AdvancedOptionsView(fController);
 	InfoView* infoView = new InfoView(fController);
+	
+	fMenuBar = new BMenuBar("menubar");
+	_BuildMenu();
 	
 	fStartStopButton = new BButton("Start", "Start Recording",
 		new BMessage(kMsgGUIStartCapture)); 
@@ -73,6 +77,7 @@ BSCWindow::BSCWindow()
 	fCardLayout->AddView(statusView);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.Add(fMenuBar)
 		.AddGroup(B_VERTICAL, 1)
 		.SetInsets(B_USE_DEFAULT_SPACING, 1,
 			B_USE_DEFAULT_SPACING, 1)
@@ -174,7 +179,11 @@ BSCWindow::IsRecording()
 void
 BSCWindow::MessageReceived(BMessage *message)
 {
-	switch (message->what) {				
+	switch (message->what) {
+		case B_ABOUT_REQUESTED:
+			be_app->PostMessage(B_ABOUT_REQUESTED);
+			break;
+							
 		case kSelectArea:
 		case kSelectWindow:
 		{
@@ -298,6 +307,18 @@ BSCWindow::DirectConnected(direct_buffer_info *info)
 		default:
 			break;
 	}
+}
+
+
+void
+BSCWindow::_BuildMenu()
+{
+	BMenu* menu = new BMenu("File");
+	BMenuItem* aboutItem = new BMenuItem("About", new BMessage(B_ABOUT_REQUESTED));
+	BMenuItem* quitItem = new BMenuItem("Quit", new BMessage(B_QUIT_REQUESTED));
+	menu->AddItem(aboutItem);
+	menu->AddItem(quitItem);
+	fMenuBar->AddItem(menu);
 }
 
 

@@ -156,8 +156,8 @@ BSCApp::AboutRequested()
 {
 	BAboutWindow* aboutWindow = new BAboutWindow("BeScreenCapture", kAppSignature);
 	aboutWindow->AddDescription("BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format supported by Haiku.");
-	aboutWindow->AddAuthors(kAuthors);
-	
+	//aboutWindow->AddAuthors(kAuthors);
+	aboutWindow->AddCopyright(2013, "Stefano Ceccherini");
 	BStringList list = SplitChangeLog(kChangeLog);
 	int32 stringCount = list.CountStrings();
 	char** charArray = new char* [stringCount + 1];

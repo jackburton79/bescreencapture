@@ -10,6 +10,7 @@
 
 class BButton;
 class BCardLayout;
+class BMenuBar;
 class BStatusBar;
 class BStringView;
 class BTabView;
@@ -34,11 +35,13 @@ public:
 	BLooper* GetController();
 	
 private:
+	void _BuildMenu();
 	status_t _CaptureStarted();
 	status_t _CaptureFinished();
-		
+
 	Controller *fController;
 
+	BMenuBar* fMenuBar;
 	BTabView *fTabView;
 	BButton *fStartStopButton;
 	BStringView *fStringView;
