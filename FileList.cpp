@@ -41,6 +41,11 @@ FileList::FileList()
 
 FileList::~FileList()
 {
+	// Empty the list, which incidentally deletes the files
+	// on disk. Must be done before deleting the folder below
+	BObjectList<BitmapEntry>::MakeEmpty(true);
+
+	// Delete the folder on disk
 	if (fTemporaryPath != NULL) {
 		BEntry(fTemporaryPath).Remove();
 		free(fTemporaryPath);
