@@ -1,6 +1,8 @@
 v2.2
-	- Got rid of BItmapMovie class, thus simplifying the code.
+	- Got rid of BitmapMovie class, thus simplifying the code.
 	- Added new vector icons made by Pete Goodeve (based on the original Zumi's icon) and Zumi
+	- Added about window
+	- Store first few screenshots in memory, then to disk.
 ---
 v2.1
 	- Added option to capture a single window. Note that the application remembers the initial window frame, it does not follow the window if it's moved or resized.

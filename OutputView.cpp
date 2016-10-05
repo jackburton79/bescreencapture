@@ -511,8 +511,3 @@ MediaFileFormatMenuItem::MediaFileFormat() const
 {
 	return fFileFormat;
 }
-
-
-
-
-
