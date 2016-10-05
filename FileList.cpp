@@ -136,12 +136,13 @@ BitmapEntry::SaveToDisk(const char* path)
 			&translatorInfo, 0, NULL, 'BMP ');
 			
 	char* string = tempnam(path, "frame_");
+	file_name = string;
+	free(string);
+
 	BFile outFile;
 	outFile.SetTo(string, B_WRITE_ONLY|B_CREATE_FILE);
 	status_t error = sTranslatorRoster->Translate(&bitmapStream,
 		&translatorInfo, NULL, &outFile, 'BMP ');
-	
-	file_name = string;
 	
 	fBitmap = NULL;
 }
