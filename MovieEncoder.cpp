@@ -209,17 +209,6 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
 	if (!fIsFileOpen) 
 		return B_NO_INIT;
 
-	// verify that the bitmap is the right dimensions and that it has the right color space.
-	// The "-1" terms are to convert between the BitmapMovie's dimensions, which are
-	// numbers of pixels, with the bitmap's dimensions which are an actual *distance*
-	// rather than a pixel count.  The distance is one more than the pixel count, hence
-	// the adjustment.
-	/*
-	BRect r = bitmap->Bounds();
-	if ((r.Width() != mWidth - 1) || (r.Height() != mHeight - 1)
-		|| (bitmap->ColorSpace() != mColorSpace))
-		return B_MISMATCHED_VALUES;
-*/
 	// okay, it's the right kind of bitmap -- commit the header if necessary, and
 	// write it as one video frame.  We defer committing the header until the first
 	// frame is written in order to allow the client to adjust the image quality at
@@ -232,7 +221,7 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
 	}
 	
 	if (err == B_OK)
-		err = fMediaTrack->WriteFrames(bitmap->Bits(), 1, (isKeyFrame) ? B_MEDIA_KEY_FRAME : 0);
+		err = fMediaTrack->WriteFrames(bitmap->Bits(), 1, isKeyFrame ? B_MEDIA_KEY_FRAME : 0);
 	
 	return err;
 }
@@ -274,18 +263,34 @@ MovieEncoder::_EncoderThread()
 	entry_ref movieRef;
 	get_ref_for_path(fOutputFile.Path(), &movieRef);
 		
-	// TODO: This way we destroy the first frame	
-	// TODO: Remove the const_cast
-	BitmapEntry* entry = const_cast<FileList*>(fFileList)->GetNextBitmap();
+	BitmapEntry* entry = fFileList->ItemAt(0);
 	BBitmap* bitmap = entry->Bitmap();
 	BRect sourceFrame = bitmap->Bounds();
-	delete entry;
 	delete bitmap;
 		
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
-								
-	status_t status = _CreateFile(movieRef, fFileFormat, fFormat, fCodecInfo);
+	
+	// Calc the average time difference between the first 100 frames,
+	// and use it to calculate the framerate.
+	// TODO: Actually we could just calculate the number of frames and
+	// the time difference between the first and the last one.
+	int32 maxTimeStampNum = std::min((int32)100, fFileList->CountItems());	
+	bigtime_t previousFrameTime = entry->TimeStamp();
+	bigtime_t diffSum = 0;
+	for (int32 i = 0; i < maxTimeStampNum; i++) {
+		BitmapEntry* entry = fFileList->ItemAt(i);
+		bigtime_t currentFrameTime = entry->TimeStamp();
+		diffSum += currentFrameTime - previousFrameTime;		
+		previousFrameTime = currentFrameTime;
+	}
+	
+	float medianDiffTime = diffSum / maxTimeStampNum;
+		
+	media_format inputFormat = fFormat;
+	inputFormat.u.raw_video.field_rate = 60 / (medianDiffTime / 1000);
+	std::cout << "frame / sec: " << (int)inputFormat.u.raw_video.field_rate << std::endl;
+	status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
 	if (status < B_OK) {
 		DisposeData();
 		BMessage message(kEncodingFinished);
@@ -310,10 +315,11 @@ MovieEncoder::_EncoderThread()
 	progressMessage.AddFloat("delta", 1.0);
 	
 	status = B_OK;
-	while (BitmapEntry* entry = const_cast<FileList*>(fFileList)->GetNextBitmap()) {
+	while (BitmapEntry* entry = const_cast<FileList*>(fFileList)->Pop()) {
 		if (fKillThread)
 			break;
-			
+	
+		
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		BBitmap* frame = entry->Bitmap();
 		if (frame == NULL) {

@@ -69,10 +69,16 @@ FileList::AddItem(BBitmap* bitmap, bigtime_t time)
 
 
 BitmapEntry*
-FileList::GetNextBitmap()
+FileList::Pop()
 {
-	BitmapEntry* entry = BObjectList<BitmapEntry>::RemoveItemAt(0);
-	return entry;
+	return BObjectList<BitmapEntry>::RemoveItemAt(0);
+}
+
+
+BitmapEntry*
+FileList::ItemAt(int32 index) const
+{
+	return BObjectList<BitmapEntry>::ItemAt(index);
 }
 
 

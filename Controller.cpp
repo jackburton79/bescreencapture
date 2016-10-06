@@ -41,7 +41,6 @@ Controller::Controller()
 	
 	fEncoder = new MovieEncoder;
 
-
 	Settings settings;	
 	BString name;
 	settings.GetOutputFileName(name);
@@ -452,7 +451,7 @@ Controller::StartCapture()
 		SendNotices(kMsgControllerCaptureFailed, &message);
 		return;
 	}
-			
+	
 	fKillThread = false;
 	fPaused = false;
 	
@@ -541,9 +540,9 @@ Controller::CaptureThread()
 	BScreen screen;
 	BRect bounds = Settings().CaptureArea();
 	
-	bigtime_t waitTime = 1000000 / 10;
 	BFile outFile;
-	
+	bigtime_t waitTime = 0;
+	bigtime_t startTime = system_time();
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {		
@@ -569,7 +568,8 @@ Controller::CaptureThread()
 		} else
 			snooze(500000);
 	}
-			
+	std::cout << fFileList->CountItems() << " in ";
+	std::cout << (system_time() - startTime) / 1000 << " seconds." << std::endl;
 	fCaptureThread = -1;
 		
 	return B_OK;

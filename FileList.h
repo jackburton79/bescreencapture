@@ -41,10 +41,10 @@ public:
 
 	bool AddItem(BBitmap* bitmap, bigtime_t frameTime);
 
-	BitmapEntry* GetNextBitmap();
-
+	BitmapEntry* Pop();
+	BitmapEntry* ItemAt(int32 index) const;
 	int32 CountItems() const;
-
+	
 private:
 	char* fTemporaryPath;
 };
