@@ -165,5 +165,14 @@ APP_VERSION =
 #	/dev/video/usb when loaded. Default is "misc".
 DRIVER_PATH = 
 
+
+
 ## include the makefile-engine
 include $(BUILDHOME)/etc/makefile-engine
+
+bin2txt : bin2txt.cpp
+
+Changelog.h : bin2txt
+	bin2txt < Changelog.txt > Changelog.h
+
+
