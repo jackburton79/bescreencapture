@@ -12,8 +12,8 @@
 static void
 PrepareVariable(std::istream& inFile, std::ostream& outFile)
 {
-	std::string line;
 	try {
+		std::string line;
 		while (std::getline(inFile, line) > 0) {
 			std::string::iterator s;
 			for (s = line.begin(); s != line.end(); s++) {
@@ -22,8 +22,8 @@ PrepareVariable(std::istream& inFile, std::ostream& outFile)
 				if (c != 0x0A && c != 0x09) {
 					outFile << "'\\x" << std::hex << (unsigned)c << "'";
 					outFile << ",";
+					outFile << std::endl;
 				}
-				outFile << std::endl;
 			}
 		}
 	} catch (...) {
