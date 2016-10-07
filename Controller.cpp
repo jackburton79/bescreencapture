@@ -409,10 +409,10 @@ Controller::ReadBitmap(BBitmap* bitmap, BRect bounds)
 		return B_ERROR;
 
 	uint32 rowBytes = fDirectInfo.bytes_per_row / bytesPerPixel;
-	const uint32 offset = ((uint32)bounds.left +
+	const int32 offset = ((uint32)bounds.left +
 		 ((uint32)bounds.top * rowBytes)) * bytesPerPixel;
 
-	int32 height = bounds.IntegerHeight();
+	int32 height = bounds.IntegerHeight() + 1;
 	void* from = (void*)((uint8*)fDirectInfo.bits + offset);    		
 	void* to = bitmap->Bits();
 	int32 bytesPerRow = bitmap->BytesPerRow();
@@ -566,7 +566,7 @@ Controller::CaptureThread()
 			snooze(500000);
 	}
 	std::cout << fFileList->CountItems() << " in ";
-	std::cout << (system_time() - startTime) / 1000 << " seconds." << std::endl;
+	std::cout << (system_time() - startTime) / 1000000 << " seconds." << std::endl;
 	fCaptureThread = -1;
 		
 	return B_OK;

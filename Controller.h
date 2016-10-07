@@ -10,12 +10,6 @@
 #include <OS.h>
 
 
-struct area_desc {
-	int32 offset;
-	int32 height;
-	int32 size;
-};
-
 enum {
 	CONTROLLER_LISTEN_EVENTS = 0x1,
 	CONTROLLER_LISTEN_GUI_EVENTS = 0x2,
