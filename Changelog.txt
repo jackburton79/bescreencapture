@@ -1,4 +1,6 @@
 v2.2
+	- Finally fix clips frame rate. This was a long standing problem.
+	- Implement capturing a moving window. Won't work in case the window is resized
 	- Got rid of BitmapMovie class, thus simplifying the code.
 	- Added new vector icons made by Pete Goodeve (based on the original Zumi's icon) and Zumi
 	- Added about window
