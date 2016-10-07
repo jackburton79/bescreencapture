@@ -223,9 +223,7 @@ Controller::SetCaptureArea(const BRect& rect)
 	Settings().SetCaptureArea(rect);
 	
 	fEncoder->SetDestFrame(Settings().TargetRect());
-		
-	UpdateAreaDescription(rect);
-	
+			
 	BMessage message(kMsgControllerSourceFrameChanged);
 	message.AddRect("frame", rect);
 	SendNotices(kMsgControllerSourceFrameChanged, &message);
@@ -400,7 +398,6 @@ Controller::UpdateDirectInfo(direct_buffer_info* info)
 	if (!fDirectWindowAvailable)
 		fDirectWindowAvailable = true;
 	fDirectInfo = *info;
-	UpdateAreaDescription(Settings().CaptureArea());
 }
 
 
@@ -412,7 +409,7 @@ Controller::ReadBitmap(BBitmap* bitmap, BRect bounds)
 		return B_ERROR;
 
 	uint32 rowBytes = fDirectInfo.bytes_per_row / bytesPerPixel;
-	const uint32 offset = ((uint32)bounds.left + 
+	const uint32 offset = ((uint32)bounds.left +
 		 ((uint32)bounds.top * rowBytes)) * bytesPerPixel;
 
 	int32 height = bounds.IntegerHeight();
@@ -429,12 +426,6 @@ Controller::ReadBitmap(BBitmap* bitmap, BRect bounds)
 	return B_OK;
 }
 
-
-void
-Controller::UpdateAreaDescription(const BRect &rect)
-{
-	return;
-}
 
 
 void

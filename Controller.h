@@ -67,7 +67,6 @@ public:
 	status_t	UpdateMediaFormatAndCodecsForCurrentFamily();
 	
 	void		UpdateDirectInfo(direct_buffer_info *info);
-	void		UpdateAreaDescription(const BRect &rect);
 
 	status_t	ReadBitmap(BBitmap *bitmap, BRect bounds);
 	
@@ -83,8 +82,6 @@ private:
 	thread_id			fEncoderThread;
 	
 	FileList			*fFileList;
-
-	area_desc 			fAreaDesc;
 	
 	BObjectList<media_codec_info>* fCodecList;
 	
