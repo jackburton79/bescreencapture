@@ -201,8 +201,10 @@ OutputView::AttachedToWindow()
 	Settings().GetCaptureArea(fCustomCaptureRect);
 	if (fCustomCaptureRect == BScreen().Frame())
 		fWholeScreen->SetValue(B_CONTROL_ON);
-	else
+	else {
 		fCustomArea->SetValue(B_CONTROL_ON);
+		fSelectArea->SetEnabled(true);
+	}
 			
 	UpdatePreviewFromSettings();
 	_RebuildCodecsMenu();
