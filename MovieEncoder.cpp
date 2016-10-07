@@ -275,7 +275,7 @@ MovieEncoder::_EncoderThread()
 	// and use it to calculate the framerate.
 	// TODO: Actually we could just calculate the number of frames and
 	// the time difference between the first and the last one.
-	int32 maxTimeStampNum = std::min((int32)100, fFileList->CountItems());	
+	/*int32 maxTimeStampNum = std::min((int32)100, fFileList->CountItems());	
 	bigtime_t previousFrameTime = entry->TimeStamp();
 	bigtime_t diffSum = 0;
 	for (int32 i = 0; i < maxTimeStampNum; i++) {
@@ -286,10 +286,16 @@ MovieEncoder::_EncoderThread()
 	}
 	
 	float medianDiffTime = diffSum / maxTimeStampNum;
-		
+	*/
+	int32 numFrames = fFileList->CountItems();
+	BitmapEntry* firstEntry = fFileList->ItemAt(0);
+	BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
+
+	int frameSeconds = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
+	std::cout << "frame / sec: " << frameSeconds << std::endl;	
 	media_format inputFormat = fFormat;
-	inputFormat.u.raw_video.field_rate = 60 / (medianDiffTime / 1000);
-	std::cout << "frame / sec: " << (int)inputFormat.u.raw_video.field_rate << std::endl;
+	inputFormat.u.raw_video.field_rate = frameSeconds;
+	std::cout << "field rate:: " << (int)inputFormat.u.raw_video.field_rate << std::endl;
 	status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
 	if (status < B_OK) {
 		DisposeData();
@@ -319,7 +325,6 @@ MovieEncoder::_EncoderThread()
 		if (fKillThread)
 			break;
 	
-		
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		BBitmap* frame = entry->Bitmap();
 		if (frame == NULL) {
