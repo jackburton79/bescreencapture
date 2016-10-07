@@ -290,7 +290,6 @@ MovieEncoder::_EncoderThread()
 	int32 numFrames = fFileList->CountItems();
 	BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
-
 	int frameSeconds = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
 	media_format inputFormat = fFormat;
 	inputFormat.u.raw_video.field_rate = frameSeconds;

@@ -140,7 +140,6 @@ BitmapEntry::SaveToDisk(const char* path)
 	if (sTranslatorRoster == NULL)
 		sTranslatorRoster = BTranslatorRoster::Default();
 
-	//Save bitmap to disk
 	BBitmapStream bitmapStream(fBitmap);
 	fBitmap = NULL;
 
