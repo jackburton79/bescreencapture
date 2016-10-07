@@ -537,10 +537,8 @@ Controller::CaptureThread()
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {		
-			if (token != -1) {
+			if (token != -1)
 				bounds = GetWindowFrameForToken(token);
-				bounds.PrintToStream();
-			}
 				
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
@@ -559,13 +557,9 @@ Controller::CaptureThread()
 				delete bitmap;
 				break;
 			}
-			
-			std::cout << "token: " << token << std::endl;
 		} else
 			snooze(500000);
 	}
-	std::cout << fFileList->CountItems() << " in ";
-	std::cout << (system_time() - startTime) / 1000000 << " seconds." << std::endl;
 	fCaptureThread = -1;
 		
 	return B_OK;

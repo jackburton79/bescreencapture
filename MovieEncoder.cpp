@@ -292,10 +292,9 @@ MovieEncoder::_EncoderThread()
 	BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
 
 	int frameSeconds = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
-	std::cout << "frame / sec: " << frameSeconds << std::endl;	
 	media_format inputFormat = fFormat;
 	inputFormat.u.raw_video.field_rate = frameSeconds;
-	std::cout << "field rate:: " << (int)inputFormat.u.raw_video.field_rate << std::endl;
+	
 	status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
 	if (status < B_OK) {
 		DisposeData();
