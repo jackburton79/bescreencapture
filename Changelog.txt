@@ -1,10 +1,11 @@
 v2.2
 	- Finally fix clips frame rate. This was a long standing problem.
 	- Implement capturing a moving window. Won't work in case the window is resized
-	- Got rid of BitmapMovie class, thus simplifying the code.
+	- Added a menu bar with "About" and "Quit" menu items
 	- Added new vector icons made by Pete Goodeve (based on the original Zumi's icon) and Zumi
+	- Store first few screenshots in memory, then start saving them to disk when memory is not enough
 	- Added about window
-	- Store first few screenshots in memory, then to disk.
+	- Got rid of BitmapMovie class, thus simplifying the code.
 ---
 v2.1
 	- Added option to capture a single window. Note that the application remembers the initial window frame, it does not follow the window if it's moved or resized.
