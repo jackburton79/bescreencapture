@@ -516,6 +516,7 @@ Controller::_EncodingFinished(const status_t status)
 	fFileList = NULL;
 	
 	fEncoderThread = -1;
+	fNumFrames = 0;
 		
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
@@ -526,7 +527,8 @@ Controller::_EncodingFinished(const status_t status)
 int32
 Controller::CaptureThread()
 {
-	const bool &useDirectWindow = Settings().UseDirectWindow();
+	const bool &useDirectWindow = Settings().UseDirectWindow()
+		&& fDirectWindowAvailable;
 	BScreen screen;
 	BRect bounds = Settings().CaptureArea();
 	int32 token = GetWindowTokenForFrame(bounds);
@@ -543,23 +545,20 @@ Controller::CaptureThread()
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 		
-			if (fDirectWindowAvailable && useDirectWindow)		
+			if (useDirectWindow)		
 				error = ReadBitmap(bitmap, bounds);			
 			else 
 				error = screen.ReadBitmap(bitmap, false, &bounds);
 
 			bigtime_t currentTime = system_time();
-	    	if (error == B_OK) {
-	    		// Takes ownership of the bitmap
-	    		fFileList->AddItem(bitmap, currentTime);
+			// Takes ownership of the bitmap
+	    	if (error == B_OK && fFileList->AddItem(bitmap, currentTime))
 				atomic_add(&fNumFrames, 1);
-											
-			} else {
+			else {
 				//PRINT(("Error while getting screenshot: %s\n", strerror(error)));
 				delete bitmap;
 				break;
 			}
-			
 			
 			std::cout << "token: " << token << std::endl;
 		} else
