@@ -402,8 +402,14 @@ Controller::UpdateDirectInfo(direct_buffer_info* info)
 
 
 status_t
-Controller::ReadBitmap(BBitmap* bitmap, BRect bounds)
+Controller::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 {
+	const bool &useDirectWindow = Settings().UseDirectWindow()
+		&& fDirectWindowAvailable;
+	
+	if (!useDirectWindow)
+		return BScreen().ReadBitmap(bitmap, includeCursor, &bounds);
+		
 	int32 bytesPerPixel = fDirectInfo.bits_per_pixel >> 3;
 	if (bytesPerPixel <= 0)
 		return B_ERROR;
@@ -527,13 +533,10 @@ Controller::_EncodingFinished(const status_t status)
 int32
 Controller::CaptureThread()
 {
-	const bool &useDirectWindow = Settings().UseDirectWindow()
-		&& fDirectWindowAvailable;
 	BScreen screen;
 	BRect bounds = Settings().CaptureArea();
 	int32 token = GetWindowTokenForFrame(bounds);
 	bigtime_t waitTime = 0;
-	bigtime_t startTime = system_time();
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {		
@@ -542,12 +545,8 @@ Controller::CaptureThread()
 				
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
-		
-			if (useDirectWindow)		
-				error = ReadBitmap(bitmap, bounds);			
-			else 
-				error = screen.ReadBitmap(bitmap, false, &bounds);
-
+			error = ReadBitmap(bitmap, true, bounds);			
+			
 			bigtime_t currentTime = system_time();
 			// Takes ownership of the bitmap
 	    	if (error == B_OK && fFileList->AddItem(bitmap, currentTime))
