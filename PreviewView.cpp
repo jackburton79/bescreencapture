@@ -20,7 +20,6 @@ public:
 	virtual ~BitmapView();
 	
 	virtual void Draw(BRect update);
-	//virtual bool HasHeightForWidth() { return true; };
 	virtual void GetHeightForWidth(float width, float* min, float* max, float* preferred);
 	virtual BSize MinSize();
 };
@@ -37,31 +36,12 @@ PreviewView::PreviewView()
 	fChanged = true;
 
 	SetLayout(new BGroupLayout(B_VERTICAL));
-	//SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
-	//	B_ALIGN_VERTICAL_CENTER));
 	BLayoutBuilder::Group<>(this)
 	.AddGroup(B_VERTICAL, 0)
-		//.AddGroup(B_HORIZONTAL)
-		//	.AddGlue()
-		//	.AddGlue()
-		//.End()
 		.AddGroup(B_HORIZONTAL, 0)
-			//.AddStrut(10)
-			//.Add(fLeftTop = new BStringView("lefttop", ""))
 			.Add(fBitmapView = new BitmapView())
-			//.Add(fRightBottom = new BStringView("rightbottom", ""))
-			//.AddStrut(10)
-			.End()
-		/*.AddGroup(B_HORIZONTAL)
-			.AddGlue()
-			.AddGlue()
-		.End()*/
-		.End();
-	
-	/*fLeftTop->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT,
-		B_ALIGN_TOP));
-	fRightBottom->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT,
-		B_ALIGN_BOTTOM));*/
+		.End()
+	.End();
 }
 
 

@@ -325,6 +325,14 @@ Settings::SetOutputFileName(const char *name)
 }
 
 
+BString
+Settings::OutputFileName() const
+{
+	BString fileName;
+	GetOutputFileName(fileName);
+	return fileName;
+}
+
 
 void
 Settings::GetOutputFileName(BString &name) const

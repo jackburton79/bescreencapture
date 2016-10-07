@@ -70,8 +70,7 @@ OutputView::OutputView(Controller *controller)
 	Settings settings;
 	
 	const char *kTCLabel = "File name:"; 
-	BString fileName;
-	settings.GetOutputFileName(fileName);
+	BString fileName = settings.OutputFileName();
 	fFileName = new BTextControl("file name",
 			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
 

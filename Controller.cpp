@@ -42,12 +42,10 @@ Controller::Controller()
 	fEncoder = new MovieEncoder;
 
 	Settings settings;	
-	BString name;
-	settings.GetOutputFileName(name);
+	BString name = settings.OutputFileName();
 	fEncoder->SetOutputFile(name.String());
 
-	BRect rect;
-	settings.GetCaptureArea(rect);
+	BRect rect = settings.CaptureArea();
 	SetCaptureArea(rect);
 	
 	Run();

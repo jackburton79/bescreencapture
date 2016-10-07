@@ -47,6 +47,7 @@ public:
 	void GetMinimizeOnRecording(bool &minimize) const;
 	bool MinimizeOnRecording() const;
 	
+	BString OutputFileName() const;
 	void SetOutputFileName(const char *name);
 	void GetOutputFileName(BString &name) const;
 	
