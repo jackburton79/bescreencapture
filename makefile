@@ -171,7 +171,7 @@ include $(BUILDHOME)/etc/makefile-engine
 
 BSCApp.cpp : Changelog.h
 
-bin2txt : bin2txt.cpp
-
-Changelog.h : bin2txt
+Changelog.h : bin2txt Changelog.txt
 	bin2txt < Changelog.txt > Changelog.h
+
+bin2txt : bin2txt.cpp
