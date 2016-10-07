@@ -169,6 +169,8 @@ DRIVER_PATH =
 ## include the makefile-engine
 include $(BUILDHOME)/etc/makefile-engine
 
+BSCApp.cpp : Changelog.h
+
 bin2txt : bin2txt.cpp
 
 Changelog.h : bin2txt
