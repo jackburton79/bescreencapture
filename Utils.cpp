@@ -126,3 +126,41 @@ GetWindowsFrameList(BObjectList<BRect> &framesList)
 	}
 }
 
+
+int32
+GetWindowTokenForFrame(BRect frame)
+{
+	int32 tokenCount = 0;
+	int32 *tokenList = NULL;
+	int32 token = -1;
+	status_t status = BPrivate::get_window_order(current_workspace(), &tokenList, &tokenCount);
+	if (status == B_OK) {
+		for (int32 i = 0; i < tokenCount && token == -1; i++) {
+			client_window_info* info = get_window_info(tokenList[i]);
+			if (info != NULL && info->layer >= 3 && !info->is_mini && info->show_hide_level == 0) {
+				BRect rect(info->window_left, info->window_top, info->window_right, info->window_bottom);
+				if (rect == frame)
+					token = tokenList[i];
+				free(info);
+			}
+		}
+		free(tokenList);
+	}
+	
+	return token;
+}
+
+
+BRect
+GetWindowFrameForToken(int32 token)
+{
+	int32 tokenCount = 0;
+	BRect rect;
+	client_window_info* info = get_window_info(token);
+	if (info != NULL) {
+		rect.Set(info->window_left, info->window_top, info->window_right, info->window_bottom);
+		free(info);
+	}
+	return rect;
+}
+

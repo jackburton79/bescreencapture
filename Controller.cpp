@@ -407,13 +407,21 @@ Controller::UpdateDirectInfo(direct_buffer_info* info)
 status_t
 Controller::ReadBitmap(BBitmap* bitmap, BRect bounds)
 {
-	void* from = (void*)((uint8*)fDirectInfo.bits + fAreaDesc.offset);    		
+	int32 bytesPerPixel = fDirectInfo.bits_per_pixel >> 3;
+	if (bytesPerPixel <= 0)
+		return B_ERROR;
+
+	uint32 rowBytes = fDirectInfo.bytes_per_row / bytesPerPixel;
+	const uint32 offset = ((uint32)bounds.left + 
+		 ((uint32)bounds.top * rowBytes)) * bytesPerPixel;
+
+	int32 height = bounds.IntegerHeight();
+	void* from = (void*)((uint8*)fDirectInfo.bits + offset);    		
 	void* to = bitmap->Bits();
-	 
-	const int32& bytesPerRow = bitmap->BytesPerRow();
-	   		
-	for (int32 y = 0; y < fAreaDesc.height; y++) {  
-		memcpy(to, from, fAreaDesc.size);
+	int32 bytesPerRow = bitmap->BytesPerRow();
+	int32 areaSize = (bounds.IntegerWidth() + 1) * bytesPerPixel;
+	for (int32 y = 0; y < height; y++) {  
+		memcpy(to, from, areaSize);
 	   	to = (void*)((uint8*)to + bytesPerRow);
 		from = (void*)((uint8*)from + fDirectInfo.bytes_per_row);
 	}
@@ -425,16 +433,7 @@ Controller::ReadBitmap(BBitmap* bitmap, BRect bounds)
 void
 Controller::UpdateAreaDescription(const BRect &rect)
 {
-	int32 bytesPerPixel = fDirectInfo.bits_per_pixel >> 3;
-	if (bytesPerPixel <= 0)
-		return;
-		
-	uint32 rowBytes = fDirectInfo.bytes_per_row / bytesPerPixel;	    		
-		
-	fAreaDesc.size = (rect.IntegerWidth() + 1) * bytesPerPixel;
-	fAreaDesc.height = rect.IntegerHeight() + 1;
-	fAreaDesc.offset = ((uint32)rect.left +
-		 ((uint32)rect.top * rowBytes)) * bytesPerPixel;
+	return;
 }
 
 
@@ -539,13 +538,17 @@ Controller::CaptureThread()
 	const bool &useDirectWindow = Settings().UseDirectWindow();
 	BScreen screen;
 	BRect bounds = Settings().CaptureArea();
-	
-	BFile outFile;
+	int32 token = GetWindowTokenForFrame(bounds);
 	bigtime_t waitTime = 0;
 	bigtime_t startTime = system_time();
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {		
+			if (token != -1) {
+				bounds = GetWindowFrameForToken(token);
+				bounds.PrintToStream();
+			}
+				
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 		
@@ -565,6 +568,9 @@ Controller::CaptureThread()
 				delete bitmap;
 				break;
 			}
+			
+			
+			std::cout << "token: " << token << std::endl;
 		} else
 			snooze(500000);
 	}

@@ -17,6 +17,9 @@ status_t UpdateMediaFormat(const int32 &width, const int32 &height,
 	media_format &mediaFormat);
 
 void GetWindowsFrameList(BObjectList<BRect> &framesList);
+BRect GetWindowFrameForToken(int32 token);
+int32 GetWindowTokenForFrame(BRect rect);
+
 
 #endif
 
