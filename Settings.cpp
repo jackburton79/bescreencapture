@@ -60,8 +60,11 @@ Settings::Load()
 	
 	if (status == B_OK) {
 		// Copy the loaded fields to the real settings message
-		// TODO: Change this: if there is no default value,
-		// the setting is never saved!
+		// TODO: Since we use Replace<type> methods, if there is
+		// no default value, the setting won't be loaded.
+		// This is okay for dropping old and incompatible settings,
+		// but it's still inconvenient, since we need to add a default value
+		// (in SetDefaults() for every new setting we introduce)
 		BRect rect;
 		bool boolean;
 		int32 integer;
@@ -435,6 +438,7 @@ Settings::SetDefaults()
 	sSettings.AddBool(kMinimize, false);
 	sSettings.AddBool(kHideDeskbarIcon, false);
 	sSettings.AddString(kOutputFileFormat, "");
+	sSettings.AddInt32(kWindowFrameBorderSize, 0);
 	
 	return B_OK;
 }
