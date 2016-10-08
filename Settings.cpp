@@ -23,6 +23,7 @@ const static char *kOutputFile = "output file";
 const static char *kOutputFileFormat = "output file format";
 const static char *kThreadPriority = "thread priority";
 const static char *kHideDeskbarIcon = "hide Deskbar icon";
+const static char *kWindowFrameBorderSize = "window frame border size";
 
 
 Settings::Settings()
@@ -85,7 +86,9 @@ Settings::Load()
 		if (tempMessage.FindString(kOutputFileFormat, &string) == B_OK)
 			sSettings.ReplaceString(kOutputFileFormat, string);
 		if (tempMessage.FindInt32(kThreadPriority, &integer) == B_OK)
-			sSettings.ReplaceInt32(kThreadPriority, integer);	
+			sSettings.ReplaceInt32(kThreadPriority, integer);
+		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
+			sSettings.ReplaceInt32(kWindowFrameBorderSize, integer);
 	}	
 	
 	return status;
@@ -289,6 +292,32 @@ Settings::IncludeCursor() const
 }
 
 
+void
+Settings::SetWindowFrameBorderSize(const int32 &size)
+{
+	if (!fSettings->HasInt32(kWindowFrameBorderSize))
+		fSettings->AddInt32(kWindowFrameBorderSize, size);
+	else
+		fSettings->ReplaceInt32(kWindowFrameBorderSize, size);
+}
+
+
+void
+Settings::GetWindowFrameBorderSize(int32 &size) const
+{
+	fSettings->FindInt32(kWindowFrameBorderSize, &size);
+}
+
+
+int32
+Settings::WindowFrameBorderSize() const
+{
+	int32 size = 0;
+	fSettings->FindInt32(kWindowFrameBorderSize, &size);
+	return size;
+}	
+	
+	
 void
 Settings::SetMinimizeOnRecording(const bool &mini)
 {

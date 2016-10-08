@@ -1,4 +1,5 @@
 #include "SelectionWindow.h"
+#include "Settings.h"
 #include "Utils.h"
 
 #include <Bitmap.h>
@@ -174,7 +175,7 @@ SelectionViewWindow::SelectionViewWindow(BRect frame, const char *name)
 	:
 	SelectionView(frame, name)
 {	
-	GetWindowsFrameList(fFrameList);
+	GetWindowsFrameList(fFrameList, Settings().WindowFrameBorderSize());
 }
 
 
