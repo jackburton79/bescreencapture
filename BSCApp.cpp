@@ -60,15 +60,14 @@ BSCApp::~BSCApp()
 void
 BSCApp::ArgvReceived(int32 argc, char** argv)
 {
-	LaunchedFromCommandline();
-	fArgs->Parse(argc, argv);
+	/*fArgs->Parse(argc, argv);
 	if (fArgs->UsageRequested()) {
 		_UsageRequested();
 		PostMessage(B_QUIT_REQUESTED);
 		return;
 	}
 	
-	fShouldStartRecording = fArgs->RecordNow();
+	fShouldStartRecording = fArgs->RecordNow();*/
 }
 
 
