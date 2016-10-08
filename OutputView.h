@@ -50,7 +50,7 @@ private:
 	PreviewView *fRectView;
 	BRect fCustomCaptureRect;
 	BButton* fFilePanelButton;
-	SizeControl* fSizeSlider;
+	SizeControl* fScaleSlider;
 
 	void _BuildFileFormatsMenu();
 	void _RebuildCodecsMenu();

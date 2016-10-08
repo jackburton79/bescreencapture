@@ -100,7 +100,7 @@ OutputView::OutputView(Controller *controller)
 	fMinimizeOnStart = new BCheckBox("HideWhenRecording",
 		"Hide window when recording", new BMessage(kMinimizeOnRecording));
 	
-	fSizeSlider = new SizeControl("size_slider", "Scale",
+	fScaleSlider = new SizeControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, B_HORIZONTAL);
 				
 	BView *layoutView = BLayoutBuilder::Group<>()
@@ -130,7 +130,7 @@ OutputView::OutputView(Controller *controller)
 			.End()
 			.Add(fOutputFileType)
 			.Add(fCodecMenu)
-			.Add(fSizeSlider)
+			.Add(fScaleSlider)
 			.SetInsets(B_USE_DEFAULT_SPACING)
 			.Add(fMinimizeOnStart)
 		.End()	
@@ -138,7 +138,7 @@ OutputView::OutputView(Controller *controller)
 
 	outputBox->AddChild(layoutView);	
 	
-	fSizeSlider->SetValue(100);
+	fScaleSlider->SetValue(100);
 	
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 
@@ -192,10 +192,10 @@ OutputView::AttachedToWindow()
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
 	fWindow->SetTarget(this);
-	fSizeSlider->SetTarget(this);
+	fScaleSlider->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
 	
-	fSizeSlider->SetValue(Settings().Scale());	
+	fScaleSlider->SetValue(Settings().Scale());	
 		
 	Settings().GetCaptureArea(fCustomCaptureRect);
 	if (fCustomCaptureRect == BScreen().Frame())
