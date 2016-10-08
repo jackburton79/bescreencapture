@@ -86,6 +86,7 @@ SizeControl::MessageReceived(BMessage* message)
 		BString sizeString;
 		sizeString << (int32)fSizeSlider->Value();
 		fSizeTextControl->SetText(sizeString);
+		BControl::SetValue(fSizeSlider->Value());
 		Window()->PostMessage(message, Target());
 		return;
 	}
