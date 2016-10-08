@@ -6,6 +6,7 @@
 class BCheckBox;
 class BOptionPopUp;
 class Controller;
+class SizeControl;
 class AdvancedOptionsView : public BView {
 public:
 	AdvancedOptionsView(Controller* controller);
@@ -21,6 +22,8 @@ private:
 	BOptionPopUp* fPriorityControl;
 	
 	BCheckBox* fHideDeskbarIcon;
+	
+	SizeControl* fBorderSlider;
 };
 
 #endif

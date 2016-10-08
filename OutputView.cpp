@@ -101,7 +101,7 @@ OutputView::OutputView(Controller *controller)
 		"Hide window when recording", new BMessage(kMinimizeOnRecording));
 	
 	fScaleSlider = new SizeControl("scale_slider", "Scale",
-		new BMessage(kScaleChanged), 25, 200, B_HORIZONTAL);
+		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
 				
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,

@@ -15,7 +15,8 @@ class SizeControl : public BControl {
 public:
 	SizeControl(const char* name, const char* label,
 		BMessage* message, int32 minValue,
-		int32 maxValue, orientation posture,
+		int32 maxValue, int32 stepValue = 1,
+		const char* unit = "", orientation posture = B_HORIZONTAL,
 		thumb_style thumbType = B_BLOCK_THUMB,
 		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
 							| B_FRAME_EVENTS);

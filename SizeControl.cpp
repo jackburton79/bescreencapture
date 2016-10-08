@@ -33,7 +33,8 @@ private:
 
 SizeControl::SizeControl(const char* name, const char* label,
 		BMessage* message, int32 minValue,
-		int32 maxValue, orientation posture,
+		int32 maxValue, int32 stepValue, const char* unit,
+		orientation posture,
 		thumb_style thumbType,
 		uint32 flags)
 	:
@@ -41,18 +42,18 @@ SizeControl::SizeControl(const char* name, const char* label,
 	fWhat(message->what)
 {
 	fSizeSlider = new SizeSlider("size_slider", label,
-		message, minValue, maxValue, 25, B_HORIZONTAL);
+		message, minValue, maxValue, stepValue, B_HORIZONTAL);
 
 	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fSizeSlider->SetHashMarkCount(8);
 	
 	BString minLabel;
-	minLabel << minValue << "%";
+	minLabel << minValue << " " << unit;
 	BString maxLabel;
-	maxLabel << maxValue << "%";
+	maxLabel << maxValue << " " << unit;
 	
 	fSizeSlider->SetLimitLabels(minLabel.String(), maxLabel.String());
-	fSizeTextControl = new BTextControl("%", "", new BMessage(kTextControlMessage));
+	fSizeTextControl = new BTextControl(unit, "", new BMessage(kTextControlMessage));
 	
 	BLayoutBuilder::Group<>(this)
 	.AddGroup(B_HORIZONTAL, 1)
