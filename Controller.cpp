@@ -538,8 +538,10 @@ Controller::CaptureThread()
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {		
-			if (token != -1)
-				bounds = GetWindowFrameForToken(token);
+			if (token != -1) {
+				BRect windowBounds = GetWindowFrameForToken(token);
+				bounds.SetLeftTop(windowBounds.LeftTop());
+			}
 				
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
