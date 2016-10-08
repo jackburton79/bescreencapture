@@ -539,8 +539,10 @@ Controller::CaptureThread()
 	const int32 windowBorder = Settings().WindowFrameBorderSize();
 	while (!fKillThread) {
 		if (!fPaused) {		
-			if (token != -1)
-				bounds = GetWindowFrameForToken(token, windowBorder);
+			if (token != -1) {
+				BRect windowBounds = GetWindowFrameForToken(token, windowBorder);
+				bounds.SetLeftTop(windowBounds.LeftTop());
+			}
 				
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
