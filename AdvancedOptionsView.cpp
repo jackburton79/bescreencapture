@@ -4,6 +4,7 @@
 #include "messages.h"
 #include "PriorityControl.h"
 #include "Settings.h"
+#include "SizeControl.h"
 
 #include <Box.h>
 #include <CheckBox.h>
@@ -23,6 +24,7 @@
 const static uint32 kUseDirectWindow = 'UsDW';
 const static uint32 kDepthChanged = 'DeCh';
 const static uint32 kHideDeskbar = 'HiDe';
+const static uint32 kWindowBorderFrameChanged = 'WbFc';
 
 
 AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
@@ -53,6 +55,8 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
 					"Hide Deskbar icon (ctrl+command+shift+r to stop recording)",
 					new BMessage(kHideDeskbar)))
+			.Add(fBorderSlider = new SizeControl("border_slider", "Window border size",
+					new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL))
 		.End()
 		.View();
 	
@@ -93,6 +97,7 @@ AdvancedOptionsView::AttachedToWindow()
 	fPriorityControl->SetTarget(this);
 	
 	fHideDeskbarIcon->SetTarget(this);
+	fBorderSlider->SetTarget(this);
 	
 	fHideDeskbarIcon->SetValue(Settings().HideDeskbarIcon()
 		? B_CONTROL_ON : B_CONTROL_OFF);
@@ -141,6 +146,8 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			break;
 		}
 		
+		case kWindowBorderFrameChanged:
+			break;
 			
 		default:
 			BView::MessageReceived(message);
