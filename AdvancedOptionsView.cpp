@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <cstdlib>
 
+
 const static uint32 kUseDirectWindow = 'UsDW';
 const static uint32 kDepthChanged = 'DeCh';
 const static uint32 kHideDeskbar = 'HiDe';
@@ -149,11 +150,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		
 		case kWindowBorderFrameChanged:
 		{
-			// TODO: SizeControl::Value() doesn't return the correct value.
-			// Fix it in there
-			//Settings().SetWindowFrameBorderSize(fBorderSlider->Value());
-			int32 size;
-			message->FindInt32("be:value", &size);
+			const int32 size = fBorderSlider->Value();
 			Settings().SetWindowFrameBorderSize(size);	
 			break;
 		}	
