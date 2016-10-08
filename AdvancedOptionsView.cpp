@@ -52,11 +52,11 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 				new BMessage(kDepthChanged)))
 			.Add(fPriorityControl = new PriorityControl("PriorityControl",
 				"Encoding thread priority:"))
+			.Add(fBorderSlider = new SizeControl("border_slider", "Window border size",
+					new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
 					"Hide Deskbar icon (ctrl+command+shift+r to stop recording)",
 					new BMessage(kHideDeskbar)))
-			.Add(fBorderSlider = new SizeControl("border_slider", "Window border size",
-					new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL))
 		.End()
 		.View();
 	
@@ -99,6 +99,7 @@ AdvancedOptionsView::AttachedToWindow()
 	fHideDeskbarIcon->SetTarget(this);
 	fBorderSlider->SetTarget(this);
 	
+	fBorderSlider->SetValue(Settings().WindowFrameBorderSize());
 	fHideDeskbarIcon->SetValue(Settings().HideDeskbarIcon()
 		? B_CONTROL_ON : B_CONTROL_OFF);
 }
@@ -147,8 +148,15 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		}
 		
 		case kWindowBorderFrameChanged:
+		{
+			// TODO: SizeControl::Value() doesn't return the correct value.
+			// Fix it in there
+			//Settings().SetWindowFrameBorderSize(fBorderSlider->Value());
+			int32 size;
+			message->FindInt32("be:value", &size);
+			Settings().SetWindowFrameBorderSize(size);	
 			break;
-			
+		}	
 		default:
 			BView::MessageReceived(message);
 			break;

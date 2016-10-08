@@ -536,13 +536,14 @@ Controller::CaptureThread()
 	int32 token = GetWindowTokenForFrame(bounds);
 	bigtime_t waitTime = 0;
 	status_t error = B_ERROR;
+	const int32 windowBorder = Settings().WindowFrameBorderSize();
 	while (!fKillThread) {
-		if (!fPaused) {		
+		if (!fPaused) {
 			if (token != -1) {
 				BRect windowBounds = GetWindowFrameForToken(token);
 				bounds.OffsetTo(windowBounds.LeftTop());
 			}
-				
+
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 			error = ReadBitmap(bitmap, true, bounds);			

@@ -43,6 +43,10 @@ public:
 	void GetIncludeCursor(bool &include) const;
 	bool IncludeCursor() const;
 	
+	void SetWindowFrameBorderSize(const int32 &size);
+	void GetWindowFrameBorderSize(int32 &size) const;
+	int32 WindowFrameBorderSize() const;
+	
 	void SetMinimizeOnRecording(const bool &minimize);
 	void GetMinimizeOnRecording(bool &minimize) const;
 	bool MinimizeOnRecording() const;
