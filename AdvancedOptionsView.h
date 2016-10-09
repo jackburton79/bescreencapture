@@ -16,11 +16,7 @@ public:
 	
 private:
 	Controller* fController;
-	BCheckBox* fUseDirectWindow;
-	
-	BOptionPopUp* fDepthControl;
-	BOptionPopUp* fPriorityControl;
-	
+	BCheckBox* fUseDirectWindow;	
 	BCheckBox* fHideDeskbarIcon;
 	
 	SizeControl* fBorderSlider;

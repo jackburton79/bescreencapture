@@ -48,11 +48,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 			.Add(fUseDirectWindow = new BCheckBox("Use DW",
 					"Use BDirectWindow (allows less CPU usage)",
 					new BMessage(kUseDirectWindow)))
-	
-			.Add(fDepthControl = new BOptionPopUp("DepthControl", "Clip color depth:",
-				new BMessage(kDepthChanged)))
-			.Add(fPriorityControl = new PriorityControl("PriorityControl",
-				"Encoding thread priority:"))
 			.Add(fBorderSlider = new SizeControl("border_slider", "Window border size",
 					new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
@@ -68,19 +63,8 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 		fUseDirectWindow->SetValue(B_CONTROL_ON);
 	} else
 		fUseDirectWindow->SetEnabled(false);
-		
-	fDepthControl->AddOption("8 bit", B_CMAP8);
-	fDepthControl->AddOption("15 bit", B_RGB15);
-	fDepthControl->AddOption("16 bit", B_RGB16);
-	fDepthControl->AddOption("32 bit", B_RGB32);
-	fDepthControl->SelectOptionFor(B_RGB32);	
-	fDepthControl->SetEnabled(false);
 	
-	Settings settings;	
-	int32 priority = settings.EncodingThreadPriority();
-	if (fPriorityControl->SelectOptionFor(priority) != B_OK)
-		fPriorityControl->SetValue(0);
-	
+	Settings settings;
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 }
@@ -94,9 +78,6 @@ AdvancedOptionsView::AttachedToWindow()
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
 	fUseDirectWindow->SetTarget(this);
-	fDepthControl->SetTarget(this);
-	fPriorityControl->SetTarget(this);
-	
 	fHideDeskbarIcon->SetTarget(this);
 	fBorderSlider->SetTarget(this);
 	
@@ -114,15 +95,6 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 			break;
 		
-		case kPriorityChanged:
-		{
-			int32 value;
-			const char *name = NULL;
-			fPriorityControl->SelectedOption(&name, &value);
-			Settings().SetEncodingThreadPriority(value);
-			break;
-		}
-		
 		case kHideDeskbar:
 		{
 			Settings().SetHideDeskbarIcon(fHideDeskbarIcon->Value() == B_CONTROL_ON);
@@ -136,15 +108,6 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 					deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
 						"BSC Control"));
 			}
-			break;
-		}
-		
-		case kDepthChanged:
-		{
-			color_space depth;
-			const char *name = NULL;
-			fDepthControl->SelectedOption(&name, (int32*)&depth);
-			fController->SetVideoDepth(depth);
 			break;
 		}
 		
