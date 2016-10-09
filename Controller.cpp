@@ -540,7 +540,7 @@ Controller::CaptureThread()
 		if (!fPaused) {		
 			if (token != -1) {
 				BRect windowBounds = GetWindowFrameForToken(token);
-				bounds.SetLeftTop(windowBounds.LeftTop());
+				bounds.OffsetTo(windowBounds.LeftTop());
 			}
 				
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
