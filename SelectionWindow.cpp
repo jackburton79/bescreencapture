@@ -270,11 +270,14 @@ bool
 SelectionWindow::QuitRequested()
 {
 	Hide();
+	BScreen screen(this);
 	BMessage message(fCommand);
 	BBitmap *bitmap = NULL;	
 	BRect selection = fView->SelectionRect();
+	if (!selection.IsValid())
+		selection = screen.Frame();
 	FixRect(selection);
-	BScreen(this).GetBitmap(&bitmap, false, &selection);
+	screen.GetBitmap(&bitmap, false, &selection);
 	
 	snooze(2000);
 	message.AddRect("selection", selection);
