@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <new>
 
 static BTranslatorRoster* sTranslatorRoster = NULL;
 
@@ -57,7 +58,7 @@ FileList::~FileList()
 bool
 FileList::AddItem(BBitmap* bitmap, bigtime_t time)
 {
-	BitmapEntry* entry = new (nothrow) BitmapEntry(bitmap, time);
+	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, time);
 	if (entry == NULL)
 		return false;
 	if ((CountItems() < 10)

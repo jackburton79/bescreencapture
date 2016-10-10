@@ -10,6 +10,7 @@
 #include <StringList.h>
 
 #include <stdio.h>
+#include <string>
 
 
 const char kChangeLog[] = {

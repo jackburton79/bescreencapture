@@ -47,6 +47,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <View.h>
 
 #include <cstring>
+#include <iostream>
 
 #include "Executor.h"
 #include "FileList.h"
