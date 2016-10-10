@@ -533,15 +533,16 @@ Controller::CaptureThread()
 {
 	BScreen screen;
 	BRect bounds = Settings().CaptureArea();
-	int32 token = GetWindowTokenForFrame(bounds);
+	const int32 windowBorder = Settings().WindowFrameBorderSize();
+	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
 	bigtime_t waitTime = 0;
 	status_t error = B_ERROR;
-	const int32 windowBorder = Settings().WindowFrameBorderSize();
 	while (!fKillThread) {
 		if (!fPaused) {
 			if (token != -1) {
-				BRect windowBounds = GetWindowFrameForToken(token);
-				bounds.OffsetTo(windowBounds.LeftTop());
+				BRect windowBounds = GetWindowFrameForToken(token, windowBorder);
+				if (windowBounds.IsValid())
+					bounds.OffsetTo(windowBounds.LeftTop());
 			}
 
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
