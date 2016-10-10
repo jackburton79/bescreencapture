@@ -1,3 +1,7 @@
+v2.2.1
+	- Fix a last-minute-commit-introduced problem: if a non-zero window border was specified, windows weren't tracked correctly in single-window capture mode.
+	- If the user selected the desktop window, the application would just hang in the encoding phase.
+---
 v2.2
 	- Finally fix clips frame rate. This was a long standing problem.
 	- Implement capturing a moving window. Won't work in case the window is resized
