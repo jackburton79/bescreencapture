@@ -94,9 +94,7 @@ UpdateMediaFormat(const int32 &width, const int32 &height,
 	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
 	initialFormat.u.raw_video.display.format = colorSpace;
 	initialFormat.u.raw_video.interlace = 1;	
-	
-	// TODO: Calculate this in some way
-	initialFormat.u.raw_video.field_rate = fieldRate; //Frames per second
+	initialFormat.u.raw_video.field_rate = fieldRate; // Frames per second, overwritten later
 	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
 	initialFormat.u.raw_video.pixel_height_aspect = 1;
 	

@@ -48,7 +48,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 			.Add(fUseDirectWindow = new BCheckBox("Use DW",
 					"Use BDirectWindow (allows less CPU usage)",
 					new BMessage(kUseDirectWindow)))
-	
 			.Add(fDepthControl = new BOptionPopUp("DepthControl", "Clip color depth:",
 				new BMessage(kDepthChanged)))
 			.Add(fPriorityControl = new PriorityControl("PriorityControl",
@@ -127,14 +126,14 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		{
 			Settings().SetHideDeskbarIcon(fHideDeskbarIcon->Value() == B_CONTROL_ON);
 			BDeskbar deskbar;
-			if (deskbar.IsRunning()) { 
-				while (deskbar.HasItem("BSC Control")
-					&& fHideDeskbarIcon->Value() == B_CONTROL_ON)
-					deskbar.RemoveItem("BSC Control");
-				if(fHideDeskbarIcon->Value() != B_CONTROL_ON
-					&& !deskbar.HasItem("BSC Control"))
+			if (deskbar.IsRunning()) {
+				if (fHideDeskbarIcon->Value() == B_CONTROL_ON) { 
+					while (deskbar.HasItem("BSC Control"))
+						deskbar.RemoveItem("BSC Control");
+				} else if (!deskbar.HasItem("BSC Control")) {
 					deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
 						"BSC Control"));
+				}
 			}
 			break;
 		}
