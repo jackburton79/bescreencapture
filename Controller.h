@@ -24,7 +24,12 @@ class FileList;
 class MovieEncoder;
 class Controller : public BLooper {
 public:
-
+	enum state {
+		STATE_IDLE = 0,
+		STATE_RECORDING,
+		STATE_ENCODING
+	};
+	
 				Controller();
 	virtual		~Controller();
 	
@@ -34,6 +39,8 @@ public:
 	bool		CanQuit(BString& reason) const;
 	void		Cancel();
 	
+	int			State() const;
+		
 	void		ToggleCapture();
 	void		TogglePause();
 	

@@ -119,12 +119,20 @@ bool
 Controller::CanQuit(BString& reason) const
 {
 	BAutolock _((BLooper*)this);
-	if (fCaptureThread > 0)
-		reason = "Recording is in progress.";
-	else if (fFileList != NULL)
-		reason = "Encoding is in progress.";
-		
-	return fCaptureThread < 0 && fFileList == NULL && fEncoderThread < 0;
+	switch (State()) {
+		case STATE_RECORDING:
+			reason = "Recording is in progress.";
+			break;
+		case STATE_ENCODING:
+			reason = "Encoding is in progress.";
+			break;
+		case STATE_IDLE:
+			return true;
+		default:
+			break;
+	}
+	
+	return false;
 }
 
 
@@ -140,6 +148,19 @@ Controller::Cancel()
 		fEncoder->Cancel();
 		fEncoderThread = -1;
 	}
+}
+
+
+int
+Controller::State() const
+{
+	if (fCaptureThread > 0)
+		return STATE_RECORDING;
+	
+	if (fEncoderThread > 0 || fFileList != NULL)
+		return STATE_ENCODING;
+	
+	return STATE_IDLE;
 }
 
 
