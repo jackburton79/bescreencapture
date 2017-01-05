@@ -6,10 +6,9 @@
 
 enum {
 	kMsgControllerCaptureStarted = 5000,
-	kMsgControllerCaptureStopped,
+	kMsgControllerCaptureStopped,		// status_t status
 	kMsgControllerCapturePaused,
 	kMsgControllerCaptureResumed,
-	kMsgControllerCaptureFailed,		// status_t status
 	kMsgControllerCaptureProgress,		// int32 num_frames
 	
 	kMsgControllerEncodeStarted,		

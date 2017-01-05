@@ -124,7 +124,6 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
-		fController->StartWatching(this, kMsgControllerCaptureFailed);
 		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
 				
 		fController->UnlockLooper();
@@ -223,28 +222,36 @@ BSCWindow::MessageReceived(BMessage *message)
 			
 					break;
 				}
-				case kMsgControllerCaptureFailed:
-				{
-					status_t status;
-					message->FindInt32("status", &status);
-					char errorString[128];
-					snprintf(errorString, 128, "A problem has occurred while starting capture:\n"
-						"%s", strerror(status));
-					(new BAlert("Capture Failed", errorString, "Ok"))->Go();
-					break;
-				}
+
 				case kMsgControllerCaptureStarted:
 					_CaptureStarted();
 					break;
 	
 				case kMsgControllerCaptureStopped:
+				{
 					_CaptureFinished();
+					
+					status_t status = B_OK;
+					message->FindInt32("status", &status);
+					
+					if (status != B_OK) {
+						char errorString[128];
+						snprintf(errorString, 128, "A problem has occurred while starting capture:\n"
+							"%s", strerror(status));
+						(new BAlert("Capture Failed", errorString, "Ok"))->Go();
+						fStartStopButton->SetEnabled(true);
+					}
+										
 					break;
-	
+				}
 				case kMsgControllerEncodeStarted:
 					fStringView->SetText(kEncodingString);
 					fCardLayout->SetVisibleItem(1);
+					
+					fStartStopButton->SetEnabled(false);
+					
 					break;
+					
 				case kMsgControllerEncodeProgress:
 				{
 					int32 numFiles = 0;
@@ -347,11 +354,10 @@ status_t
 BSCWindow::_CaptureFinished()
 {
 	fCapturing = false;
-
-	fStartStopButton->SetEnabled(false);
+	
 	fStartStopButton->SetLabel("Start Recording");
-
-	SendNotices(kMsgGUIStopCapture);	
+	
+	SendNotices(kMsgGUIStopCapture);
 
 	if (IsHidden())
 		Show();

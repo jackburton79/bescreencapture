@@ -180,6 +180,13 @@ Controller::EncodeMovie()
 {
 	BAutolock _(this);
 	
+	int32 numFrames = fFileList->CountItems();
+	if (numFrames <= 0) {
+		std::cout << "Aborted" << std::endl;
+		_EncodingFinished(B_ERROR);
+		return;
+	}
+		
 	BString fileName;
 	Settings().GetOutputFileName(fileName);
 	BEntry entry(fileName.String());
@@ -193,7 +200,7 @@ Controller::EncodeMovie()
 	SendNotices(kMsgControllerEncodeStarted);
 		 
 	BMessage message(kMsgControllerEncodeProgress);
-	message.AddInt32("num_files", fFileList->CountItems());
+	message.AddInt32("num_files", numFrames);
 	
 	SendNotices(kMsgControllerEncodeProgress, &message);
 	
@@ -440,9 +447,9 @@ Controller::StartCapture()
 		if (fFileList == NULL)
 			fFileList = new FileList();
 	} catch (status_t error) { 
-		BMessage message(kMsgControllerCaptureFailed);
+		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", error);
-		SendNotices(kMsgControllerCaptureFailed, &message);
+		SendNotices(kMsgControllerCaptureStopped, &message);
 		return;
 	}
 	
@@ -453,18 +460,18 @@ Controller::StartCapture()
 		"Capture Thread", B_DISPLAY_PRIORITY, this);
 					
 	if (fCaptureThread < 0) {
-		BMessage message(kMsgControllerCaptureFailed);
+		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", fCaptureThread);
-		SendNotices(kMsgControllerCaptureFailed, &message);	
+		SendNotices(kMsgControllerCaptureStopped, &message);	
 		return;
 	}
 		
 	status_t status = resume_thread(fCaptureThread);
 	if (status < B_OK) {
 		kill_thread(fCaptureThread);
-		BMessage message(kMsgControllerCaptureFailed);
+		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", status);
-		SendNotices(kMsgControllerCaptureFailed, &message);
+		SendNotices(kMsgControllerCaptureStopped, &message);
 		return;
 	}
 
@@ -547,21 +554,31 @@ Controller::CaptureThread()
 				
 			screen.WaitForRetrace(waitTime); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
-			error = ReadBitmap(bitmap, true, bounds);			
-			
+			error = ReadBitmap(bitmap, true, bounds);
 			bigtime_t currentTime = system_time();
 			// Takes ownership of the bitmap
 	    	if (error == B_OK && fFileList->AddItem(bitmap, currentTime))
 				atomic_add(&fNumFrames, 1);
 			else {
-				//PRINT(("Error while getting screenshot: %s\n", strerror(error)));
 				delete bitmap;
 				break;
 			}
 		} else
 			snooze(500000);
 	}
+	
 	fCaptureThread = -1;
+	fKillThread = true;
+	
+	if (error != B_OK) {
+		std::cout << "CaptureThread(): error" << std::endl;
+		BMessage message(kMsgControllerCaptureStopped);
+		message.AddInt32("status", (int32)error);
+		SendNotices(kMsgControllerCaptureStopped, &message);
+		
+		delete fFileList;
+		fFileList = NULL;
+	}
 		
 	return B_OK;
 }
