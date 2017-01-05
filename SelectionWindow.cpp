@@ -5,20 +5,28 @@
 #include <Bitmap.h>
 #include <Message.h>
 #include <Screen.h>
+#include <String.h>
 #include <StringView.h>
 
 #include <cstdio>
 
-const char *kInfo = "Select the area to capture";
-const static rgb_color sWindowSelectionColor = { 0, 0, 128, 100 };
+const char *kInfoRegionMode = "Click and drag to select, release when finished";
+const char *kInfoWindowMode = "Click to select a window";
+
+
+const static rgb_color kWindowSelectionColor = { 0, 0, 128, 100 };
+const static rgb_color kRed = { 240, 0, 0, 0 };
 
 class SelectionView : public BView {
 public:
-	SelectionView(BRect frame, const char *name);
+	SelectionView(BRect frame, const char *name, const char* text = NULL);
 
 	virtual void MouseUp(BPoint where);
-	
+	virtual void Draw(BRect updateRect);
 	virtual BRect SelectionRect();
+
+protected:
+	BString fText;
 };
 
 
@@ -61,11 +69,12 @@ private:
 
 
 // SelectionView
-SelectionView::SelectionView(BRect frame, const char *name)
+SelectionView::SelectionView(BRect frame, const char *name, const char* text)
 	:
 	BView(frame, name, B_FOLLOW_NONE, B_WILL_DRAW)
 {
-	SetFontSize(20);
+	fText = text;
+	SetFontSize(30);	
 }
 
 
@@ -73,6 +82,23 @@ void
 SelectionView::MouseUp(BPoint where)
 {
 	Window()->PostMessage(B_QUIT_REQUESTED);	
+}
+
+
+void
+SelectionView::Draw(BRect updateRect)
+{
+	PushState();
+	SetDrawingMode(B_OP_OVER);
+	SetHighColor(kRed);
+	
+	float width = StringWidth(fText.String());
+	BPoint point;
+	point.x = (Bounds().Width() - width) / 2;
+	point.y = Bounds().Height() / 2;
+	DrawString(fText.String(), point);
+	
+	PopState();
 }
 
 
@@ -86,21 +112,11 @@ SelectionView::SelectionRect()
 // SelectionViewRegion
 SelectionViewRegion::SelectionViewRegion(BRect frame, const char *name)
 	:
-	SelectionView(frame, name),
+	SelectionView(frame, name, kInfoRegionMode),
 	fMouseDown(false)
 {
-	SetFontSize(20);
-	
-	float stringWidth = StringWidth(kInfo);
-	font_height height;
-	GetFontHeight(&height);
-	float stringHeight = height.ascent + height.descent + height.leading;
-	
-	fStringRect.left = (Bounds().Width() - stringWidth) / 2;
-	fStringRect.top = (Bounds().Height() - stringHeight) / 2;
-	fStringRect.right = fStringRect.left + stringWidth;
-	fStringRect.bottom = fStringRect.top + stringHeight;
 }
+
 
 void
 SelectionViewRegion::MouseDown(BPoint where)
@@ -142,6 +158,8 @@ SelectionViewRegion::MouseUp(BPoint where)
 void
 SelectionViewRegion::Draw(BRect updateRect)
 {
+	SelectionView::Draw(updateRect);
+	
 	if (fMouseDown) {
 		BRect selection;
 		MakeSelectionRect(&selection);
@@ -173,7 +191,7 @@ SelectionViewRegion::MakeSelectionRect(BRect *rect)
 // SelectionViewWindow
 SelectionViewWindow::SelectionViewWindow(BRect frame, const char *name)
 	:
-	SelectionView(frame, name)
+	SelectionView(frame, name, kInfoWindowMode)
 {	
 	GetWindowsFrameList(fFrameList, Settings().WindowFrameBorderSize());
 }
@@ -194,9 +212,11 @@ SelectionViewWindow::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 void
 SelectionViewWindow::Draw(BRect updateRect)
 {
+	SelectionView::Draw(updateRect);
+	
 	if (fHighlightFrame.IsValid()) {
 		SetDrawingMode(B_OP_ALPHA);
-		SetHighColor(sWindowSelectionColor);
+		SetHighColor(kWindowSelectionColor);
 		FillRect(fHighlightFrame);
 	}
 }
