@@ -106,7 +106,6 @@ MediaFormatView::AttachedToWindow()
 	BuildFileFormatsMenu(fOutputFileType->Menu());
 	
 	BString savedFileFormat = fController->MediaFileFormatName();
-	std::cout << savedFileFormat.String() << std::endl;
 	BMenuItem* item = NULL;
 	if (savedFileFormat != "")
 		item = fOutputFileType->Menu()->FindItem(savedFileFormat.String());
