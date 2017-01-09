@@ -346,7 +346,11 @@ SelectionWindow::SetCommand(uint32 command)
 bool
 SelectionWindow::QuitRequested()
 {
-	Hide();
+	while (!IsHidden()) {
+		Hide();
+		snooze(10000);
+	}
+
 	BScreen screen(this);
 	BMessage message(fCommand);
 	BBitmap *bitmap = NULL;	
@@ -354,15 +358,15 @@ SelectionWindow::QuitRequested()
 	if (!selection.IsValid())
 		selection = screen.Frame();
 	FixRect(selection);
-	
-	snooze(2000);
-	
+
+	snooze(10000);
+
 	screen.GetBitmap(&bitmap, false, &selection);
 	
 	message.AddRect("selection", selection);
 	message.AddPointer("bitmap", bitmap);
-	
+
 	fTarget.SendMessage(&message);
-		
+
 	return BWindow::QuitRequested();
 }
