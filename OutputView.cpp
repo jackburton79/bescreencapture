@@ -139,6 +139,7 @@ OutputView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
+		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
 		fController->UnlockLooper();
 	}
 	
@@ -205,13 +206,7 @@ OutputView::MessageReceived(BMessage *message)
 			fController->SetCaptureArea(rect);
 			break;	
 		}
-			
-		//case kFileTypeChanged:
-		/*	fController->SetMediaFileFormat(FileFormat());
-			fController->SetMediaFormatFamily(FormatFamily());
-			_SetFileNameExtension(FileFormat().file_extension);
-			RequestMediaFormatUpdate();*/
-			// Fall through
+		
 		case kFileNameChanged:
 			fController->SetOutputFileName(fFileName->Text());
 			break;
@@ -254,7 +249,10 @@ OutputView::MessageReceived(BMessage *message)
 					}
 					break;
 				}
-				
+				case kMsgControllerMediaFileFormatChanged:
+					_SetFileNameExtension(fController->MediaFileFormat().file_extension);
+					fController->SetOutputFileName(fFileName->Text());
+					break;
 				/*case kMsgControllerVideoDepthChanged:
 				case kMsgControllerTargetFrameChanged:
 					RequestMediaFormatUpdate();
