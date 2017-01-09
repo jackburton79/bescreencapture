@@ -78,12 +78,12 @@ Controller::MessageReceived(BMessage *message)
 		case kMsgGUIStartCapture:
 		case kMsgGUIStopCapture:
 			if (fEncoderThread < 0)
-				ToggleCapture();
+				ToggleCapture(message->what == kMsgGUIStartCapture);
 			break;
 		
 		case kPauseCapture:
 		case kResumeCapture:
-			TogglePause();
+			TogglePause(message->what == kPauseCapture);
 			break;
 			
 		case kEncodingFinished:
@@ -166,10 +166,10 @@ Controller::State() const
 
 
 void
-Controller::ToggleCapture()
+Controller::ToggleCapture(bool start)
 {
 	BAutolock _(this);
-	if (fCaptureThread < 0)
+	if (fCaptureThread < 0 && start)
 		StartCapture();
 	else
 		EndCapture();
@@ -177,15 +177,15 @@ Controller::ToggleCapture()
 
 
 void
-Controller::TogglePause()
+Controller::TogglePause(bool pause)
 {
 	BAutolock _(this);
 	if (fCaptureThread < 0)
 		return;
 		
-	if (fPaused)
+	if (fPaused && !pause)
 		_ResumeCapture();
-	else
+	else if (!fPaused && pause)
 		_PauseCapture();
 }
 
