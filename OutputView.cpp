@@ -168,8 +168,10 @@ OutputView::AttachedToWindow()
 void
 OutputView::WindowActivated(bool active)
 {
-	BRect rect = _CaptureRect();
-	_UpdatePreview(&rect);
+	if (fWindow->Value() != B_CONTROL_ON) {
+		BRect rect = _CaptureRect();
+		_UpdatePreview(&rect);
+	}
 }
 
 
