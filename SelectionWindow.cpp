@@ -9,8 +9,9 @@
 #include <StringView.h>
 
 #include <cstdio>
+#include <iostream>
 
-const char *kInfoRegionMode = "Click and drag to select, release when finished";
+const char *kInfoRegionMode = "Click and drag to select, press ENTER to confirm";
 const char *kInfoWindowMode = "Click to select a window";
 
 
@@ -21,7 +22,6 @@ class SelectionView : public BView {
 public:
 	SelectionView(BRect frame, const char *name, const char* text = NULL);
 
-	virtual void MouseUp(BPoint where);
 	virtual void Draw(BRect updateRect);
 	virtual BRect SelectionRect();
 
@@ -32,20 +32,29 @@ protected:
 
 class SelectionViewRegion : public SelectionView {
 public:
+	enum drag_mode {
+		DRAG_MODE_NONE = 0,
+		DRAG_MODE_SELECT = 1,
+		DRAG_MODE_MOVE = 2 
+	};
 	SelectionViewRegion(BRect frame, const char *name);
 	virtual void MouseDown(BPoint where);
 	virtual void MouseUp(BPoint where);
 	virtual void MouseMoved(BPoint where, uint32 code, const BMessage *message);
+	virtual void KeyDown(const char* bytes, int32 numBytes);
 	virtual void Draw(BRect updateRect);
 	
 	virtual BRect SelectionRect();
 		
 private:
-	bool fMouseDown;
 	BPoint fSelectionStart;
 	BPoint fSelectionEnd;
 	
+	BPoint fCurrentMousePosition;
+	
 	BRect fStringRect;
+	
+	int fDragMode;
 	
 	void MakeSelectionRect(BRect *rect);
 };
@@ -56,6 +65,7 @@ public:
 	SelectionViewWindow(BRect frame, const char* name);
 	
 	virtual void MouseMoved(BPoint where, uint32 code, const BMessage *message);
+	virtual void MouseUp(BPoint where);
 	virtual void Draw(BRect updateRect);
 	
 	virtual BRect SelectionRect();
@@ -75,13 +85,6 @@ SelectionView::SelectionView(BRect frame, const char *name, const char* text)
 {
 	fText = text;
 	SetFontSize(30);	
-}
-
-
-void
-SelectionView::MouseUp(BPoint where)
-{
-	Window()->PostMessage(B_QUIT_REQUESTED);	
 }
 
 
@@ -112,9 +115,9 @@ SelectionView::SelectionRect()
 // SelectionViewRegion
 SelectionViewRegion::SelectionViewRegion(BRect frame, const char *name)
 	:
-	SelectionView(frame, name, kInfoRegionMode),
-	fMouseDown(false)
+	SelectionView(frame, name, kInfoRegionMode)
 {
+	fDragMode = DRAG_MODE_NONE;
 }
 
 
@@ -122,36 +125,81 @@ void
 SelectionViewRegion::MouseDown(BPoint where)
 {
 	SelectionView::MouseDown(where);
-	
-	fMouseDown = true;
-	fSelectionStart = where;
+		
+	if (SelectionRect().Contains(where))
+		fDragMode = DRAG_MODE_MOVE;
+	else {
+		fDragMode = DRAG_MODE_SELECT;
+		fSelectionStart = where;
+	}
 }
 
 
 void
-SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *a_message)
+SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *message)
 {
-	if (fMouseDown && code == B_INSIDE_VIEW) {
-		BRect selectionRect;
-		MakeSelectionRect(&selectionRect);
+	switch (fDragMode) {
+		case DRAG_MODE_SELECT:
+		{
+			BRect selectionRect;
+			MakeSelectionRect(&selectionRect);
 	
-		BRect newSelection;	
-		fSelectionEnd = where;
-		MakeSelectionRect(&newSelection);
+			BRect newSelection;	
+			fSelectionEnd = where;
+			MakeSelectionRect(&newSelection);
 		
-		Invalidate(selectionRect | newSelection);
+			Invalidate(selectionRect | newSelection);
+			break;
+		}
+		case DRAG_MODE_MOVE:
+		{
+			BRect selectionRect;
+			MakeSelectionRect(&selectionRect);
+			float xOffset = where.x - fCurrentMousePosition.x;
+			float yOffset = where.y - fCurrentMousePosition.y;
+			fSelectionStart.x += xOffset;
+			fSelectionStart.y += yOffset;
+			fSelectionEnd.x += xOffset;
+			fSelectionEnd.y += yOffset;
+			BRect newSelection;
+			MakeSelectionRect(&newSelection);
+			Invalidate(selectionRect | newSelection);
+			break;
+		}	
+		case DRAG_MODE_NONE:
+		default:
+			break;
 	}
+	
+	SelectionView::MouseMoved(where, code, message);
+	
+	fCurrentMousePosition = where;
 }
 
 
 void
 SelectionViewRegion::MouseUp(BPoint where)
 {
-	fSelectionEnd = where;
-	fMouseDown = false;
+	if (fDragMode == DRAG_MODE_SELECT)
+		fSelectionEnd = where;
+		
+	fDragMode = DRAG_MODE_NONE;
 	
 	SelectionView::MouseUp(where);
-	Window()->PostMessage(B_QUIT_REQUESTED);	
+}
+
+
+void
+SelectionViewRegion::KeyDown(const char* bytes, int32 numBytes)
+{
+	switch (bytes[0]) {
+		case B_ENTER:
+			Window()->PostMessage(B_QUIT_REQUESTED);
+			break;
+		default:
+			SelectionView::KeyDown(bytes, numBytes);
+			break;
+	}
 }
 
 
@@ -160,7 +208,7 @@ SelectionViewRegion::Draw(BRect updateRect)
 {
 	SelectionView::Draw(updateRect);
 	
-	if (fMouseDown) {
+	if (SelectionRect().IsValid()) {
 		BRect selection;
 		MakeSelectionRect(&selection);
 		
@@ -206,6 +254,13 @@ SelectionViewWindow::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 	else
 		fHighlightFrame.Set(0, 0, -1, -1);
 	Invalidate();
+}
+
+
+void
+SelectionViewWindow::MouseUp(BPoint where)
+{
+	Window()->PostMessage(B_QUIT_REQUESTED);	
 }
 
 
@@ -266,6 +321,7 @@ SelectionWindow::Show()
 	BBitmap *bitmap = NULL;	
 	BScreen(this).GetBitmap(&bitmap, false);
 	fView->SetViewBitmap(bitmap);
+	fView->MakeFocus(true);
 	delete bitmap;
 	
 	BWindow::Show();	
@@ -297,9 +353,11 @@ SelectionWindow::QuitRequested()
 	if (!selection.IsValid())
 		selection = screen.Frame();
 	FixRect(selection);
-	screen.GetBitmap(&bitmap, false, &selection);
 	
 	snooze(2000);
+	
+	screen.GetBitmap(&bitmap, false, &selection);
+	
 	message.AddRect("selection", selection);
 	message.AddPointer("bitmap", bitmap);
 	
