@@ -111,9 +111,6 @@ MediaFormatView::AttachedToWindow()
 	if (savedFileFormat != "")
 		item = fOutputFileType->Menu()->FindItem(savedFileFormat.String());
 
-	if (item == NULL)
-		item = fOutputFileType->Menu()->ItemAt(0);
-
 	if (item != NULL)
 		item->SetMarked(true);
 	else {
@@ -125,7 +122,8 @@ MediaFormatView::AttachedToWindow()
 	
 	fOutputFileType->Menu()->SetTargetForItems(this);
 	
-	_RebuildCodecsMenu();
+	
+	_RebuildCodecsMenu(fController->MediaCodecName());
 }
 
 
@@ -216,15 +214,18 @@ MediaFormatView::_BuildFileFormatsMenu()
 
 
 void 
-MediaFormatView::_RebuildCodecsMenu()
+MediaFormatView::_RebuildCodecsMenu(const char* codec)
 {
 	BMenu* codecsMenu = fCodecMenu->Menu();
 	
 	BString currentCodec;
-	BMenuItem *marked = codecsMenu->FindMarked();
-	if (marked != NULL)
-		currentCodec = marked->Label();
-		
+	if (codec != NULL)
+		currentCodec = codec;
+	else {
+		BMenuItem* item = codecsMenu->FindMarked();
+		if (item != NULL)
+			currentCodec = item->Label();
+	}		
 	Window()->BeginViewTransaction();
 		
 	codecsMenu->RemoveItems(0, codecsMenu->CountItems(), true);

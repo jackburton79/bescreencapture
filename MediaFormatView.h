@@ -33,7 +33,7 @@ private:
 	BMenuField *fCodecMenu;
 	
 	void _BuildFileFormatsMenu();
-	void _RebuildCodecsMenu();
+	void _RebuildCodecsMenu(const char* currentCodec = NULL);
 
 	void _SetFileNameExtension(const char* extension);
 	
