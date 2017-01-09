@@ -63,7 +63,8 @@ BSCWindow::BSCWindow()
 	BView* cardsView = new BView("status", 0, fCardLayout);
 	cardsView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
-	fCardLayout->AddView(fCamStatus = new CamStatusView(fController));
+	fCamStatus = new CamStatusView(fController);
+	fCardLayout->AddView(fCamStatus);
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 		
 	BView* statusView = BLayoutBuilder::Group<>()
@@ -78,21 +79,19 @@ BSCWindow::BSCWindow()
 	statusView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));	
 	fStatusBar->SetExplicitMinSize(BSize(100, 20));
 	fCardLayout->AddView(statusView);
+	fCardLayout->SetVisibleItem((int32)0);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fMenuBar)
-		.AddGroup(B_VERTICAL, 1)
-		.SetInsets(B_USE_DEFAULT_SPACING, 1,
-			B_USE_DEFAULT_SPACING, 1)
+		.AddGroup(B_VERTICAL)
+		.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
 			.Add(fTabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL))
 			.AddGroup(B_HORIZONTAL)
 				.Add(cardsView)
 				.Add(fStartStopButton)
 			.End()
 		.End();
-	
-	fCardLayout->SetVisibleItem((int32)0);
-				
+
 	BGroupView* outputGroup = new BGroupView(B_HORIZONTAL);
 	outputGroup->SetName("Capture");
 	outputGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
@@ -100,7 +99,7 @@ BSCWindow::BSCWindow()
 	fTabView->AddTab(outputGroup);
 	BLayoutBuilder::Group<>(outputGroup)
 		.Add(outputView);
-								
+
 	BGroupView* advancedGroup = new BGroupView(B_HORIZONTAL);
 	advancedGroup->SetName("Options");
 	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
@@ -116,7 +115,7 @@ BSCWindow::BSCWindow()
 	fTabView->AddTab(infoGroup);
 	BLayoutBuilder::Group<>(infoGroup)
 		.Add(infoView);
-						
+
 	if (fController->LockLooper()) {
 		// watch Controller for these
 		fController->StartWatching(this, B_UPDATE_STATUS_BAR);
