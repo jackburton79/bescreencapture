@@ -148,7 +148,8 @@ DeskbarControlView::MessageReceived(BMessage *message)
 			if (fControllerMessenger.IsValid())
 				fControllerMessenger.SendMessage(message);
 			break;
-		case kPauseResumeCapture:
+		case kPauseCapture:
+		case kResumeCapture:
 			if (fControllerMessenger.IsValid())
 				fControllerMessenger.SendMessage(message->what);
 			break;
@@ -193,9 +194,9 @@ DeskbarControlView::MouseDown(BPoint where)
 	if (fRecording) {
 		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIStopCapture)));
 		if (fPaused)
-			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kPauseResumeCapture)));
+			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kResumeCapture)));
 		else
-			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kPauseResumeCapture)));
+			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kPauseCapture)));
 	} else
 		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIStartCapture)));
 	

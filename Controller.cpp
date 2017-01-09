@@ -81,7 +81,8 @@ Controller::MessageReceived(BMessage *message)
 				ToggleCapture();
 			break;
 		
-		case kPauseResumeCapture:
+		case kPauseCapture:
+		case kResumeCapture:
 			TogglePause();
 			break;
 			

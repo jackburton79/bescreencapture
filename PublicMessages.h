@@ -4,7 +4,8 @@
 enum publicMessages {
 	kMsgGUIStartCapture = 'StaC',
 	kMsgGUIStopCapture = 'StoC',
-	kPauseResumeCapture = 'PauC'
+	kPauseCapture = 'PauC',
+	kResumeCapture = 'ResC'
 };
 
 #endif
