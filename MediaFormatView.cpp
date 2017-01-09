@@ -71,7 +71,7 @@ MediaFormatView::MediaFormatView(Controller *controller)
 	
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(0, 0, 0, 0)
-		.AddGroup(B_VERTICAL, 0)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.Add(fOutputFileType)
 			.Add(fCodecMenu)
 			.SetInsets(0)
