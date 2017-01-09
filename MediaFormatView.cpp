@@ -54,7 +54,9 @@ BuildFileFormatsMenu(BMenu* menu)
 MediaFormatView::MediaFormatView(Controller *controller)
 	:
 	BView("Media Options", B_WILL_DRAW),
-	fController(controller)
+	fController(controller),
+	fOutputFileType(NULL),
+	fCodecMenu(NULL)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	
@@ -98,12 +100,14 @@ MediaFormatView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCodecListUpdated);
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
+		fController->StartWatching(this, kMsgControllerVideoDepthChanged);
 		fController->UnlockLooper();
 	}
-	
+		
 	BuildFileFormatsMenu(fOutputFileType->Menu());
 	
 	BString savedFileFormat = fController->MediaFileFormatName();
+	std::cout << savedFileFormat.String() << std::endl;
 	BMenuItem* item = NULL;
 	if (savedFileFormat != "")
 		item = fOutputFileType->Menu()->FindItem(savedFileFormat.String());
@@ -161,6 +165,9 @@ MediaFormatView::MessageReceived(BMessage *message)
 					_SelectFileFormatMenuItem(formatName);					
 					break;
 				}
+				case kMsgControllerVideoDepthChanged:
+					fController->UpdateMediaFormatAndCodecsForCurrentFamily();
+					break;
 				default:
 					break;
 			}
@@ -256,3 +263,23 @@ MediaFormatView::_SelectFileFormatMenuItem(const char* formatName)
 		}
 	}
 }
+
+
+
+
+// MediaFileFormatMenuItem
+MediaFileFormatMenuItem::MediaFileFormatMenuItem(const media_file_format& fileFormat)
+	:
+	BMenuItem(fileFormat.pretty_name, new BMessage(kLocalFileTypeChanged)),
+	fFileFormat(fileFormat)
+{
+
+}
+
+
+media_file_format
+MediaFileFormatMenuItem::MediaFileFormat() const
+{
+	return fFileFormat;
+}
+

@@ -24,17 +24,14 @@ public:
 	
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage *message);
+	
 	void RequestMediaFormatUpdate();
 								
 private:
 	Controller *fController;
-	BTextControl *fFileName;
-	BString fFileExtension;
 	BMenuField *fOutputFileType;
 	BMenuField *fCodecMenu;
 	
-	BButton* fFilePanelButton;
-
 	void _BuildFileFormatsMenu();
 	void _RebuildCodecsMenu();
 

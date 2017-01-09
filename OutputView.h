@@ -13,10 +13,11 @@ class BCheckBox;
 class BMenu;
 class BMenuField;
 class BRadioButton;
-class SizeControl;
 class BTextControl;
 class Controller;
+class MediaFormatView;
 class PreviewView;
+class SizeControl;
 class OutputView : public BView {
 public:	
 	OutputView(Controller *controller);
@@ -24,12 +25,8 @@ public:
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage *message);
 	virtual void WindowActivated(bool active);
-	void RequestMediaFormatUpdate();
 	
 	BPath OutputFileName() const;
-
-	media_file_format FileFormat() const;
-	media_format_family FormatFamily() const;
 	
 	bool MinimizeOnStart() const;
 		
@@ -39,8 +36,6 @@ private:
 	Controller *fController;
 	BTextControl *fFileName;
 	BString fFileExtension;
-	BMenuField *fOutputFileType;
-	BMenuField *fCodecMenu;
 	BCheckBox *fMinimizeOnStart;
 	
 	BButton *fSelectArea;
@@ -48,19 +43,15 @@ private:
 	BRadioButton *fCustomArea;
 	BRadioButton *fWindow;
 	PreviewView *fRectView;
+	MediaFormatView* fMediaFormatView;
 	BRect fCustomCaptureRect;
 	BButton* fFilePanelButton;
 	SizeControl* fScaleSlider;
-
-	void _BuildFileFormatsMenu();
-	void _RebuildCodecsMenu();
 
 	void _SetFileNameExtension(const char* extension);
 	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
 	
 	BRect _CaptureRect() const;
-	
-	static BMenuItem *CreateCodecMenuItem(const media_codec_info &codec);
 };
 
 

@@ -24,6 +24,23 @@
 
 BLooper *gControllerLooper = NULL;
 
+
+bool
+GetMediaFileFormat(const char* prettyName, media_file_format* outFormat)
+{
+	media_file_format mediaFileFormat;
+	int32 cookie = 0;
+	while (get_next_file_format(&cookie, &mediaFileFormat) == B_OK) {
+		if (strcmp(mediaFileFormat.pretty_name, prettyName) == 0) {
+			*outFormat = mediaFileFormat;
+			return true;
+		}
+	}
+	
+	return false;
+}
+	
+	
 Controller::Controller()
 	:
 	BLooper("Controller"),
@@ -47,6 +64,15 @@ Controller::Controller()
 
 	BRect rect = settings.CaptureArea();
 	SetCaptureArea(rect);
+	
+	BString fileFormatName;
+	settings.GetOutputFileFormat(fileFormatName);
+	
+	std::cout << fileFormatName << std::endl;
+	media_file_format fileFormat;
+	GetMediaFileFormat(fileFormatName.String(), &fileFormat);
+	
+	SetMediaFileFormat(fileFormat);
 	
 	Run();
 }
