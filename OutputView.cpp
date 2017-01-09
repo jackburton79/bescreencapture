@@ -253,10 +253,7 @@ OutputView::MessageReceived(BMessage *message)
 					_SetFileNameExtension(fController->MediaFileFormat().file_extension);
 					fController->SetOutputFileName(fFileName->Text());
 					break;
-				/*case kMsgControllerVideoDepthChanged:
-				case kMsgControllerTargetFrameChanged:
-					RequestMediaFormatUpdate();
-					break;*/
+					
 				default:
 					break;
 			}
