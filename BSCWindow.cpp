@@ -7,6 +7,7 @@
 #include "InfoView.h"
 #include "Messages.h"
 #include "OutputView.h"
+#include "OptionsWindow.h"
 #include "SelectionWindow.h"
 #include "Settings.h"
 #include "Utils.h"
@@ -36,6 +37,8 @@ const static BRect kWindowRect(0, 0, 400, 900);
 const char* kEncodingString = "Encoding movie...";
 const char* kDoneString = "Done!";
 
+const static uint32 kGUIOpenMediaWindow = 'j89d';
+
 BSCWindow::BSCWindow()
 	:
 	BDirectWindow(kWindowRect, "BeScreenCapture", B_TITLED_WINDOW,
@@ -51,7 +54,7 @@ BSCWindow::BSCWindow()
 	_BuildMenu();
 	
 	fStartStopButton = new BButton("Start", "Start Recording",
-		new BMessage(kMsgGUIStartCapture)); 
+		new BMessage(kMsgGUIStartCapture));
 	
 	fStartStopButton->SetTarget(fController);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
@@ -182,7 +185,11 @@ BSCWindow::MessageReceived(BMessage *message)
 		case B_ABOUT_REQUESTED:
 			be_app->PostMessage(B_ABOUT_REQUESTED);
 			break;
-							
+
+		case kGUIOpenMediaWindow:
+			(new OptionsWindow(fController))->Show();
+			break;
+			
 		case kSelectArea:
 		case kSelectWindow:
 		{
@@ -326,6 +333,11 @@ BSCWindow::_BuildMenu()
 	menu->AddItem(aboutItem);
 	menu->AddItem(quitItem);
 	fMenuBar->AddItem(menu);
+	
+	menu = new BMenu("Options");
+	BMenuItem* media = new BMenuItem("Media", new BMessage(kGUIOpenMediaWindow));
+	menu->AddItem(media);
+	fMenuBar->AddItem(menu);
 }
 
 
@@ -335,7 +347,6 @@ BSCWindow::_CaptureStarted()
 	fCapturing = true;
 	
 	Settings settings;
-						
 	if (settings.MinimizeOnRecording())
 		Hide();
 	

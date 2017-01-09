@@ -45,7 +45,9 @@ SRCS = \
 	 Executor.cpp  \
 	 FileList.cpp  \
 	 InfoView.cpp  \
+	 MediaFormatView.cpp \
 	 MovieEncoder.cpp  \
+	 OptionsWindow.cpp \
 	 OutputView.cpp  \
 	 PreviewView.cpp  \
 	 PriorityControl.cpp  \
