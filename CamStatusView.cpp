@@ -11,7 +11,18 @@
 #include <Resources.h>
 #include <Window.h>
 
+#include <algorithm>
 #include <stdio.h>
+
+const static float kSpacing = 10;
+const static float kBitmapSize = 48;
+
+static float
+capped_size(float size)
+{
+	return std::min(size, 12.00f);
+}
+
 
 CamStatusView::CamStatusView(Controller* controller)
 	:
@@ -23,7 +34,7 @@ CamStatusView::CamStatusView(Controller* controller)
 	fRecordingBitmap(NULL),
 	fPauseBitmap(NULL)
 {
-	BRect bitmapRect(0, 0, 64, 64);
+	BRect bitmapRect(0, 0, kBitmapSize, kBitmapSize);
 	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
 }
@@ -58,7 +69,11 @@ void
 CamStatusView::Draw(BRect updateRect)
 {	
 	if (fRecording) {
-		BRect destRect(0, 0, 64, 64);
+		BFont font;
+		GetFont(&font);
+		float scale = capped_size(font.Size()) / 12;
+		float bitmapSize = kBitmapSize * scale;
+		BRect destRect(0, 0, bitmapSize, bitmapSize);
 		if (fPaused) {
 			SetDrawingMode(B_OP_ALPHA);
 			DrawBitmap(fPauseBitmap, destRect);
@@ -74,7 +89,7 @@ CamStatusView::Draw(BRect updateRect)
 		font_height height;
 		GetFontHeight(&height);
 		BRect bounds = Bounds();
-		bounds.left = bounds.left + 64;
+		bounds.left = bounds.left + bitmapSize;
 		BPoint point((bounds.Width() - width) / 2 + bounds.left,
 					(bounds.Height() - (height.ascent + height.descent)) / 2 + height.ascent + height.descent + 1);
 		DrawString(string, point);
@@ -159,8 +174,14 @@ CamStatusView::Recording() const
 BSize
 CamStatusView::MinSize()
 {
-	float width = 64 + StringWidth("999999") + 20;
-	float height = 64;
+	BFont font;
+	GetFont(&font);
+	float scale = capped_size(font.Size()) / 12;
+	float bitmapSize = kBitmapSize * scale;
+	float spacingSize = kSpacing * scale;
+	float width = bitmapSize + StringWidth("999999") + spacingSize;
+	float height = bitmapSize;
+	
 	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(width, height));
 }
 
@@ -168,8 +189,13 @@ CamStatusView::MinSize()
 BSize
 CamStatusView::MaxSize()
 {
-	float width = 64 + StringWidth("999999") + 20;
-	float height = 64;
+	BFont font;
+	GetFont(&font);
+	float scale = capped_size(font.Size()) / 12;
+	float bitmapSize = kBitmapSize * scale;
+	float spacingSize = kSpacing * scale;
+	float width = bitmapSize + StringWidth("999999") + spacingSize;
+	float height = bitmapSize;
 	return BLayoutUtils::ComposeSize(ExplicitMaxSize(), BSize(width, height));
 }
 
