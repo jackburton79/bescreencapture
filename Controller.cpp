@@ -25,13 +25,20 @@
 BLooper *gControllerLooper = NULL;
 
 
-bool
-GetMediaFileFormat(const char* prettyName, media_file_format* outFormat)
+// If prettyName is NULL, returns the first found media_file_format,
+// otherwise returns the media_file_format with the same prettyName
+// TODO: Use the short_name instead
+static bool
+get_media_file_format(const char* prettyName, media_file_format* outFormat)
 {
+	const uint32 mediaFormatMask = media_file_format::B_KNOWS_ENCODED_VIDEO
+								| media_file_format::B_WRITABLE;								
 	media_file_format mediaFileFormat;
 	int32 cookie = 0;
 	while (get_next_file_format(&cookie, &mediaFileFormat) == B_OK) {
-		if (strcmp(mediaFileFormat.pretty_name, prettyName) == 0) {
+		if ((mediaFileFormat.capabilities & mediaFormatMask) == mediaFormatMask
+			&& (prettyName == NULL
+				|| strcmp(mediaFileFormat.pretty_name, prettyName) == 0)) {
 			*outFormat = mediaFileFormat;
 			return true;
 		}
@@ -69,9 +76,10 @@ Controller::Controller()
 	settings.GetOutputFileFormat(fileFormatName);
 	
 	media_file_format fileFormat;
-	GetMediaFileFormat(fileFormatName.String(), &fileFormat);
-	
-	// TODO: handle the case when there is no saved media file format.
+	if (!get_media_file_format(fileFormatName.String(), &fileFormat)) {
+		if (!get_media_file_format(NULL, &fileFormat))
+			throw "Unable to find a suitable media_file_format!";
+	}		
 	
 	SetMediaFileFormat(fileFormat);
 	
