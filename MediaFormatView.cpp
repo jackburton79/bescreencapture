@@ -18,8 +18,8 @@
 
 #include <iostream>
 
-const static int32 kCodecChanged = 'CdCh';
-const static int32 kFileTypeChanged = 'FtyC';
+const static int32 kLocalCodecChanged = 'CdCh';
+const static int32 kLocalFileTypeChanged = 'FtyC';
 
 class MediaFileFormatMenuItem : public BMenuItem {
 public:
@@ -117,11 +117,11 @@ MediaFormatView::AttachedToWindow()
 		// TODO: This means there is no working media encoder.;
 		// do something smart (like showing an alert and disable
 		// the "Start" button
+		// TODO: this should be done at the Controller level
 	}
 	
 	fOutputFileType->Menu()->SetTargetForItems(this);
 	
-	//_SelectFileFormatMenuItem(fController->MediaFileFormat().pretty_name);
 	_RebuildCodecsMenu();
 }
 
@@ -130,21 +130,14 @@ void
 MediaFormatView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case kFileTypeChanged:
+		case kLocalFileTypeChanged:
 		{
-			std::cout << "MediaFileFormatChanged" << std::endl;
 			fController->SetMediaFileFormat(_MediaFileFormat());
 			fController->SetMediaFormatFamily(_MediaFileFormat().family);
 			fController->UpdateMediaFormatAndCodecsForCurrentFamily();
-
-			// Fall through
 			break;
 		}
-/*		case kFileNameChanged:
-			fController->SetOutputFileName(fFileName->Text());
-			break;
-*/			
-		case kCodecChanged:
+		case kLocalCodecChanged:
 		{
 			BMenuItem* marked = fCodecMenu->Menu()->FindMarked();
 			if (marked != NULL)
@@ -220,7 +213,7 @@ MediaFormatView::_RebuildCodecsMenu()
 	if (fController->GetCodecsList(codecList) == B_OK) {
 		for (int32 i = 0; i < codecList.CountItems(); i++) {
 			media_codec_info* codec = codecList.ItemAt(i);
-			BMenuItem* item = new BMenuItem(codec->pretty_name, new BMessage(kCodecChanged));
+			BMenuItem* item = new BMenuItem(codec->pretty_name, new BMessage(kLocalCodecChanged));
 			codecsMenu->AddItem(item);
 			if (codec->pretty_name == currentCodec)
 				item->SetMarked(true);
@@ -242,6 +235,7 @@ MediaFormatView::_RebuildCodecsMenu()
 }
 
 
+// convenience method
 media_file_format
 MediaFormatView::_MediaFileFormat() const
 {
