@@ -23,7 +23,7 @@ enum {
 	kMsgControllerOutputFileNameChanged,
 	kMsgControllerCodecListUpdated,
 	kMsgControllerCodecChanged,			// const char* codec_name
-	kMsgControllerMediaFileFormatChanged	// const char* format_name
+	kMsgControllerMediaFileFormatChanged// const char* format_name
 };
 
 
