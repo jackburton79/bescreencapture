@@ -129,6 +129,7 @@ SelectionViewRegion::MouseDown(BPoint where)
 	if (SelectionRect().Contains(where))
 		fDragMode = DRAG_MODE_MOVE;
 	else {
+		Invalidate();
 		fDragMode = DRAG_MODE_SELECT;
 		fSelectionStart = where;
 	}
