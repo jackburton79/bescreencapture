@@ -1,11 +1,10 @@
 #ifndef __MESSAGES_H
 #define __MESSAGES_H
 
+#include "PublicMessages.h"
 
 enum appMessages {
-	kMsgGUIStartCapture = 2000,
-	kMsgGUIStopCapture,
-	kAddonStarted,
+	kAddonStarted = 2000,
 	kSelectArea,
 	kSelectWindow,
 	kSelectionWindowClosed,
@@ -13,8 +12,8 @@ enum appMessages {
 	kEncodingFinished,
 	kFileNameChanged,
 	kMinimizeOnRecording,
-	kPauseResumeCapture,
 	kMsgGetControllerMessenger
 };
+
 
 #endif 

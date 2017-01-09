@@ -51,7 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Executor.h"
 #include "FileList.h"
-#include "messages.h"
+#include "Messages.h"
 #include "MovieEncoder.h"
 #include "Utils.h"
 

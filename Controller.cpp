@@ -4,7 +4,7 @@
 #include "FunctionObject.h"
 #include "MovieEncoder.h"
 #include "Settings.h"
-#include "messages.h"
+#include "Messages.h"
 #include "Utils.h"
 
 #include <stdio.h>

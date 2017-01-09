@@ -1,5 +1,5 @@
 #include "ControllerObserver.h"
-#include "messages.h"
+#include "Messages.h"
 #include "OutputView.h"
 #include "PreviewView.h"
 #include "Settings.h"

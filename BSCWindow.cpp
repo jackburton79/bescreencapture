@@ -5,7 +5,7 @@
 #include "Controller.h"
 #include "ControllerObserver.h"
 #include "InfoView.h"
-#include "messages.h"
+#include "Messages.h"
 #include "OutputView.h"
 #include "SelectionWindow.h"
 #include "Settings.h"

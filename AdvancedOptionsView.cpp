@@ -1,7 +1,7 @@
 #include "AdvancedOptionsView.h"
 #include "Controller.h"
 #include "DeskbarControlView.h"
-#include "messages.h"
+#include "Messages.h"
 #include "PriorityControl.h"
 #include "Settings.h"
 #include "SizeControl.h"

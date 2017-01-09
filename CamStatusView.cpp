@@ -1,7 +1,7 @@
 #include "CamStatusView.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
-#include "messages.h"
+#include "Messages.h"
 
 #include <Application.h>
 #include <Bitmap.h>
