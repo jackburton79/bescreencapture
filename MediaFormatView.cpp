@@ -165,6 +165,7 @@ MediaFormatView::MessageReceived(BMessage *message)
 					break;
 				}
 				case kMsgControllerVideoDepthChanged:
+				case kMsgControllerTargetFrameChanged:
 					fController->UpdateMediaFormatAndCodecsForCurrentFamily();
 					break;
 				default:
