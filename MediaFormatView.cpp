@@ -100,6 +100,7 @@ MediaFormatView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerCodecListUpdated);
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
 		fController->StartWatching(this, kMsgControllerVideoDepthChanged);
+		fController->StartWatching(this, kMsgControllerCodecChanged);
 		fController->UnlockLooper();
 	}
 		
@@ -163,6 +164,19 @@ MediaFormatView::MessageReceived(BMessage *message)
 					_SelectFileFormatMenuItem(formatName);					
 					break;
 				}
+				case kMsgControllerCodecChanged:
+				{
+					const char* codecName = NULL;
+					message->FindString("codec_name", &codecName);
+					for (int32 i = 0; i < fCodecMenu->Menu()->CountItems(); i++) {
+						BMenuItem* item = fCodecMenu->Menu()->ItemAt(i);
+						if (strcmp(item->Label(), codecName) == 0) {
+							item->SetMarked(true);
+							break;
+						}
+					}
+					break;
+				}	
 				case kMsgControllerVideoDepthChanged:
 				case kMsgControllerTargetFrameChanged:
 					fController->UpdateMediaFormatAndCodecsForCurrentFamily();
