@@ -68,9 +68,10 @@ Controller::Controller()
 	BString fileFormatName;
 	settings.GetOutputFileFormat(fileFormatName);
 	
-	std::cout << fileFormatName << std::endl;
 	media_file_format fileFormat;
 	GetMediaFileFormat(fileFormatName.String(), &fileFormat);
+	
+	// TODO: handle the case when there is no saved media file format.
 	
 	SetMediaFileFormat(fileFormat);
 	

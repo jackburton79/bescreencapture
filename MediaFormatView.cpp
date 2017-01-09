@@ -70,12 +70,11 @@ MediaFormatView::MediaFormatView(Controller *controller)
 	fCodecMenu = new BMenuField("OutCodec", kCodecMenuLabel, popUpMenu);
 	
 	BView *layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.SetInsets(0, 0, 0, 0)
+		.AddGroup(B_VERTICAL, 0)
 			.Add(fOutputFileType)
 			.Add(fCodecMenu)
-			.SetInsets(B_USE_DEFAULT_SPACING)
+			.SetInsets(0)
 		.End()	
 		.View();
 
