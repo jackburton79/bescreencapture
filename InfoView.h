@@ -26,6 +26,7 @@ private:
 	BStringView* fScale;
 	BStringView* fFormat;
 	BStringView* fCodec;
+	BStringView* fCaptureFrameDelay;
 	
 };
 

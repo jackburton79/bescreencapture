@@ -12,6 +12,8 @@
 #include <LayoutBuilder.h>
 #include <StringView.h>
 
+#include <iostream>
+
 static BString
 GetFormatString(const char* formatName)
 {
@@ -59,6 +61,15 @@ GetScaleString(float scale)
 }
 
 
+static BString
+GetDelayString(int32 delay)
+{
+	BString string = "Capture frame delay: ";
+	string << delay << " milliseconds";
+	return string;
+}
+
+
 InfoView::InfoView(Controller* controller)
 	:
 	BView("Info", B_WILL_DRAW),
@@ -82,6 +93,8 @@ InfoView::InfoView(Controller* controller)
 				GetScaleString(scale)))
 			.Add(fFormat = new BStringView("format", ""))
 			.Add(fCodec = new BStringView("codec", ""))
+			.Add(fCaptureFrameDelay = new BStringView("capturedelay",
+				GetDelayString(settings.CaptureFrameDelay())))
 		.End()
 		.View();
 	AddChild(layoutView);
@@ -98,6 +111,7 @@ InfoView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCodecChanged);
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
+		fController->StartWatching(this, kMsgControllerCaptureFrameDelayChanged);
 		fController->UnlockLooper();
 	}
 	
@@ -154,6 +168,15 @@ InfoView::MessageReceived(BMessage* message)
 					}
 					break;
 				}
+				case kMsgControllerCaptureFrameDelayChanged:
+				{
+					std::cout << "framechanged" << std::endl;
+					int32 delay;
+					if (message->FindInt32("delay", &delay) == B_OK) {						
+						fCaptureFrameDelay->SetText(GetDelayString(delay));
+					}
+					break;
+				}	
 				default:
 					break;
 			}
