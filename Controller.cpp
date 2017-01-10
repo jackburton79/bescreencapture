@@ -299,9 +299,11 @@ Controller::SetCaptureArea(const BRect& rect)
 
 
 void
-Controller::SetCaptureFrameRate(const int rate)
+Controller::SetCaptureFrameDelay(const int milliSeconds)
 {
 	BAutolock _(this);
+	Settings().SetCaptureFrameDelay(milliSeconds);
+	// TODO: send notices
 }
 
 

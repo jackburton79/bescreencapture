@@ -50,7 +50,7 @@ public:
 	
 	void		SetUseDirectWindow(const bool &use);
 	void		SetCaptureArea(const BRect &rect);
-	void		SetCaptureFrameRate(const int rate);
+	void		SetCaptureFrameDelay(const int milliSeconds);
 	void		SetPlaybackFrameRate(const int rate);
 	
 	void		SetScale(const float &scale);

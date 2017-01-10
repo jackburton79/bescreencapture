@@ -77,8 +77,9 @@ FrameRateView::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case kLocalCaptureFreqChanged:
 		{
-			float rate = strtof(fCaptureFreq->Text(), NULL);
-			fController->SetCaptureFrameRate(rate);
+			float delay = strtof(fCaptureFreq->Text(), NULL);
+			fController->SetCaptureFrameDelay(delay);
+			break;
 		}
 		case kLocalFrameRateChanged:
 		{
