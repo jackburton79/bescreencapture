@@ -628,6 +628,7 @@ Controller::CaptureThread()
 		
 	std::cout << "Capture delay: " << captureDelay << std::endl;
 	// TODO: Validate captureDelay with some limits
+	bounds.PrintToStream();
 	
 	const int32 windowBorder = settings.WindowFrameBorderSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
@@ -641,7 +642,7 @@ Controller::CaptureThread()
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
 				
-			screen.WaitForRetrace(waitTime); // Wait for Vsync
+			screen.WaitForRetrace(captureDelay); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 			error = ReadBitmap(bitmap, true, bounds);
 			bigtime_t currentTime = system_time();
@@ -653,14 +654,13 @@ Controller::CaptureThread()
 				break;
 			}
 		} else
-			snooze(captureDelay);
+			snooze(500000);
 	}
 	
 	fCaptureThread = -1;
 	fKillThread = true;
 	
 	if (error != B_OK) {
-		std::cout << "CaptureThread(): error" << std::endl;
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", (int32)error);
 		SendNotices(kMsgControllerCaptureStopped, &message);
