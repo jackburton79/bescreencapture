@@ -16,12 +16,16 @@
 #include <TextControl.h>
 #include <StringView.h>
 
+#include <cstdlib>
+
 const static char* kCaptureFreqLabel = "Capture frame every";
 const static char* kFrameRateLabel = "Frame rate";
 
-const static uint32 kCaptureFreqChanged = 'CFCh';
-const static uint32 kFrameRateChanged = 'FrCh';
+const static uint32 kLocalCaptureFreqChanged = 'CFCh';
+const static uint32 kLocalFrameRateChanged = 'FrCh';
 const static uint32 kAutoAdjust = 'FrCh';
+
+
 
 FrameRateView::FrameRateView(Controller* controller)
 	:
@@ -29,10 +33,10 @@ FrameRateView::FrameRateView(Controller* controller)
 	fController(controller)
 {
 	fCaptureFreq = new BTextControl("capture freq",
-			kCaptureFreqLabel, "20" , new BMessage(kCaptureFreqChanged));
+			kCaptureFreqLabel, "20" , new BMessage(kLocalCaptureFreqChanged));
 		
 	fFrameRate = new BTextControl("frame rate",
-			kFrameRateLabel, "30" , new BMessage(kFrameRateChanged));
+			kFrameRateLabel, "30" , new BMessage(kLocalFrameRateChanged));
 			
 	fAutoAdjust = new BCheckBox("AutoAdjust",
 		"Auto Adjust", new BMessage(kAutoAdjust));			
@@ -61,4 +65,29 @@ FrameRateView::FrameRateView(Controller* controller)
 void
 FrameRateView::AttachedToWindow()
 {
+	fCaptureFreq->SetTarget(this);
+	fFrameRate->SetTarget(this);
+	fAutoAdjust->SetTarget(this);
+}
+
+
+void
+FrameRateView::MessageReceived(BMessage* message)
+{
+	switch (message->what) {
+		case kLocalCaptureFreqChanged:
+		{
+			float rate = strtof(fCaptureFreq->Text(), NULL);
+			fController->SetCaptureFrameRate(rate);
+		}
+		case kLocalFrameRateChanged:
+		{
+			float rate = strtof(fFrameRate->Text(), NULL);
+			fController->SetPlaybackFrameRate(rate);
+			break;
+		}
+		default:
+			BView::MessageReceived(message);
+			break;
+	}
 }

@@ -16,7 +16,8 @@ class FrameRateView : public BView {
 public:
 	FrameRateView(Controller* controller);
 	virtual void AttachedToWindow();
-								
+	virtual void MessageReceived(BMessage* message);
+	
 private:
 	Controller* fController;
 	BTextControl* fCaptureFreq;
