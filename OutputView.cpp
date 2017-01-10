@@ -46,86 +46,10 @@ OutputView::OutputView(Controller *controller)
 	:
 	BView("Capture Options", B_WILL_DRAW),
 	fController(controller),
-	fMediaFormatView(NULL)
+	fMediaFormatView(NULL),
+	fClassicLayout(true)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	
-	BBox *selectBox = new BBox("source");
-	selectBox->SetLabel("Source");
-	AddChild(selectBox);
-	
-	BBox *outputBox = new BBox("output");
-	outputBox->SetLabel("Output");
-	AddChild(outputBox);
-
-	Settings settings;
-	
-	const char *kTCLabel = "File name:"; 
-	BString fileName = settings.OutputFileName();
-	fFileName = new BTextControl("file name",
-			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
-	
-	fWholeScreen = new BRadioButton("screen frame", "Whole screen",
-		new BMessage(kCheckBoxAreaSelectionChanged));
-	fCustomArea = new BRadioButton("region",
-		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
-	fWindow = new BRadioButton("window", 
-		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
-		
-	fSelectArea = new BButton("select region", "Select Region", new BMessage(kSelectArea));
-	fSelectArea->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
-	fSelectArea->SetEnabled(false);
-	
-	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
-	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
-	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
-	fMinimizeOnStart = new BCheckBox("HideWhenRecording",
-		"Hide window when recording", new BMessage(kMinimizeOnRecording));
-	
-	fScaleSlider = new SizeControl("scale_slider", "Scale",
-		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
-				
-	BView *layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_VERTICAL)
-				.Add(fWholeScreen)
-				.Add(fCustomArea)
-				.Add(fWindow)
-				.Add(fSelectArea)
-				.AddStrut(20)
-			.End()
-			.Add(fRectView = new PreviewView())
-		.End()
-		.View();
-	
-	selectBox->AddChild(layoutView);
-	
-	//fMediaFormatView = new MediaFormatView(fController);
-	
-	layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_HORIZONTAL, 0)
-				.Add(fFileName)
-				.Add(fFilePanelButton)
-			.End()
-			//.Add(fMediaFormatView)
-			.Add(fScaleSlider)
-			.SetInsets(B_USE_DEFAULT_SPACING)
-			.Add(fMinimizeOnStart)
-		.End()	
-		.View();
-
-	outputBox->AddChild(layoutView);	
-	
-	fScaleSlider->SetValue(100);
-	
-	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
-
-	fFileExtension = fController->MediaFileFormat().file_extension;
+	_LayoutView(fClassicLayout);
 }
 
 
@@ -321,6 +245,90 @@ OutputView::UpdatePreviewFromSettings()
 	if (!rect.IsValid())
 		rect = BScreen().Frame();
 	fRectView->Update(&rect);
+}
+
+
+void
+OutputView::_LayoutView(bool classic)
+{
+	SetLayout(new BGroupLayout(B_VERTICAL));
+	
+	BBox *selectBox = new BBox("source");
+	selectBox->SetLabel("Source");
+	AddChild(selectBox);
+	
+	BBox *outputBox = new BBox("output");
+	outputBox->SetLabel("Output");
+	AddChild(outputBox);
+
+	Settings settings;
+	const char *kTCLabel = "File name:"; 
+	BString fileName = settings.OutputFileName();
+	fFileName = new BTextControl("file name",
+			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
+	
+	fWholeScreen = new BRadioButton("screen frame", "Whole screen",
+		new BMessage(kCheckBoxAreaSelectionChanged));
+	fCustomArea = new BRadioButton("region",
+		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
+	fWindow = new BRadioButton("window", 
+		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
+		
+	fSelectArea = new BButton("select region", "Select Region", new BMessage(kSelectArea));
+	fSelectArea->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
+	fSelectArea->SetEnabled(false);
+	
+	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
+	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
+	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	
+	fMinimizeOnStart = new BCheckBox("HideWhenRecording",
+		"Hide window when recording", new BMessage(kMinimizeOnRecording));
+
+	fScaleSlider = new SizeControl("scale_slider", "Scale",
+		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
+				
+	BView *layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+			.AddGroup(B_VERTICAL)
+				.Add(fWholeScreen)
+				.Add(fCustomArea)
+				.Add(fWindow)
+				.Add(fSelectArea)
+				.AddStrut(20)
+			.End()
+			.Add(fRectView = new PreviewView())
+		.End()
+		.View();
+	
+	selectBox->AddChild(layoutView);
+	
+	//fMediaFormatView = new MediaFormatView(fController);
+	
+	layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
+			.AddGroup(B_HORIZONTAL, 0)
+				.Add(fFileName)
+				.Add(fFilePanelButton)
+			.End()
+			//.Add(fMediaFormatView)
+			.Add(fScaleSlider)
+			.SetInsets(B_USE_DEFAULT_SPACING)
+			.Add(fMinimizeOnStart)
+		.End()	
+		.View();
+
+	outputBox->AddChild(layoutView);	
+	
+	fScaleSlider->SetValue(100);
+	
+	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
+
+	fFileExtension = fController->MediaFileFormat().file_extension;		
 }
 
 

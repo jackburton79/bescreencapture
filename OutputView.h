@@ -26,10 +26,12 @@ public:
 	virtual void MessageReceived(BMessage *message);
 	virtual void WindowActivated(bool active);
 	
+	void SetClassicLayout(bool classic);
+	
 	BPath OutputFileName() const;
 	
 	bool MinimizeOnStart() const;
-		
+
 	void UpdatePreviewFromSettings();
 			
 private:
@@ -48,6 +50,9 @@ private:
 	BButton* fFilePanelButton;
 	SizeControl* fScaleSlider;
 
+	bool fClassicLayout;
+	
+	void _LayoutView(bool classic);
 	void _SetFileNameExtension(const char* extension);
 	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
 	
