@@ -44,6 +44,7 @@ SRCS = \
 	 DeskbarControlView.cpp  \
 	 Executor.cpp  \
 	 FileList.cpp  \
+	 FrameRateView.cpp \
 	 InfoView.cpp  \
 	 MediaFormatView.cpp \
 	 MovieEncoder.cpp  \
