@@ -39,16 +39,11 @@ FrameRateView::FrameRateView(Controller* controller)
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	
 	BView *layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		//.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_VERTICAL)
-				.Add(fCaptureFreq)
-				.Add(fFrameRate)
-				.Add(fAutoAdjust)
-				//.AddStrut(20)
-			.End()
-		//.End()
+		.AddGroup(B_VERTICAL)
+			.Add(fCaptureFreq)
+			.Add(fFrameRate)
+			.Add(fAutoAdjust)
+		.End()
 		.View();
 	
 	AddChild(layoutView);
@@ -59,5 +54,4 @@ FrameRateView::FrameRateView(Controller* controller)
 void
 FrameRateView::AttachedToWindow()
 {
-
 }
