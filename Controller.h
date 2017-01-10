@@ -50,6 +50,9 @@ public:
 	
 	void		SetUseDirectWindow(const bool &use);
 	void		SetCaptureArea(const BRect &rect);
+	void		SetCaptureFrameRate(const int rate);
+	void		SetPlaybackFrameRate(const int rate);
+	
 	void		SetScale(const float &scale);
 	void		SetVideoDepth(const color_space &space);
 	void		SetOutputFileName(const char *fileName);

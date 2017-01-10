@@ -299,6 +299,20 @@ Controller::SetCaptureArea(const BRect& rect)
 
 
 void
+Controller::SetCaptureFrameRate(const int rate)
+{
+	BAutolock _(this);
+}
+
+
+void
+Controller::SetPlaybackFrameRate(const int rate)
+{
+	BAutolock _(this);
+}
+
+
+void
 Controller::SetScale(const float &scale)
 {
 	BAutolock _(this);
