@@ -83,6 +83,13 @@ Controller::Controller()
 	
 	SetMediaFileFormat(fileFormat);
 	
+	BString codecName;
+	settings.GetOutputCodec(codecName);
+	
+	if (codecName != "")
+		SetMediaCodec(codecName);
+	else
+		SetMediaCodec(fCodecList->ItemAt(0)->pretty_name);
 	Run();
 }
 
@@ -619,6 +626,7 @@ Controller::CaptureThread()
 	BRect bounds = settings.CaptureArea();
 	const int32 captureDelay = settings.CaptureFrameDelay() * 1000;
 		
+	std::cout << "Capture delay: " << captureDelay << std::endl;
 	// TODO: Validate captureDelay with some limits
 	
 	const int32 windowBorder = settings.WindowFrameBorderSize();
