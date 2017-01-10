@@ -14,6 +14,7 @@
 #include <LayoutUtils.h>
 #include <Message.h>
 #include <TextControl.h>
+#include <StringView.h>
 
 const static char* kCaptureFreqLabel = "Capture frame every";
 const static char* kFrameRateLabel = "Frame rate";
@@ -40,8 +41,14 @@ FrameRateView::FrameRateView(Controller* controller)
 	
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.AddGroup(B_VERTICAL)
-			.Add(fCaptureFreq)
-			.Add(fFrameRate)
+			.AddGroup(B_HORIZONTAL)
+				.Add(fCaptureFreq)
+				.Add(new BStringView("capturefreqlabel", "milliseconds"))
+			.End()
+			.AddGroup(B_HORIZONTAL)
+				.Add(fFrameRate)
+				.Add(new BStringView("frameratelabel", "frame/sec"))
+			.End()
 			.Add(fAutoAdjust)
 		.End()
 		.View();
