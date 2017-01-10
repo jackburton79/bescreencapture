@@ -609,9 +609,14 @@ Controller::_EncodingFinished(const status_t status)
 int32
 Controller::CaptureThread()
 {
+	Settings settings;
 	BScreen screen;
-	BRect bounds = Settings().CaptureArea();
-	const int32 windowBorder = Settings().WindowFrameBorderSize();
+	BRect bounds = settings.CaptureArea();
+	const int32 captureDelay = settings.CaptureFrameDelay() * 1000;
+		
+	// TODO: Validate captureDelay with some limits
+	
+	const int32 windowBorder = settings.WindowFrameBorderSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
 	bigtime_t waitTime = 0;
 	status_t error = B_ERROR;
@@ -635,7 +640,7 @@ Controller::CaptureThread()
 				break;
 			}
 		} else
-			snooze(500000);
+			snooze(captureDelay);
 	}
 	
 	fCaptureThread = -1;
