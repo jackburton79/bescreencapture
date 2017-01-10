@@ -45,7 +45,8 @@ const static int32 kScaleChanged = 'ScCh';
 OutputView::OutputView(Controller *controller)
 	:
 	BView("Capture Options", B_WILL_DRAW),
-	fController(controller)
+	fController(controller),
+	fMediaFormatView(NULL)
 {
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	
@@ -101,7 +102,7 @@ OutputView::OutputView(Controller *controller)
 	
 	selectBox->AddChild(layoutView);
 	
-	fMediaFormatView = new MediaFormatView(fController);
+	//fMediaFormatView = new MediaFormatView(fController);
 	
 	layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
@@ -111,7 +112,7 @@ OutputView::OutputView(Controller *controller)
 				.Add(fFileName)
 				.Add(fFilePanelButton)
 			.End()
-			.Add(fMediaFormatView)
+			//.Add(fMediaFormatView)
 			.Add(fScaleSlider)
 			.SetInsets(B_USE_DEFAULT_SPACING)
 			.Add(fMinimizeOnStart)

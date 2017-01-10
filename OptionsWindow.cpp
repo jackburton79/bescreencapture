@@ -14,10 +14,11 @@ const static BRect kWindowRect(0, 0, 300, 200);
 
 OptionsWindow::OptionsWindow(Controller* controller)
 	:
-	BWindow(kWindowRect, "Options", B_TITLED_WINDOW,
+	BWindow(kWindowRect, "Encoding Settings", B_TITLED_WINDOW,
 		B_ASYNCHRONOUS_CONTROLS|B_AUTO_UPDATE_SIZE_LIMITS)
 {
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.Add(new MediaFormatView(controller))
 		.End();
 	CenterOnScreen();
