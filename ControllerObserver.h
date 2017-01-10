@@ -6,24 +6,26 @@
 
 enum {
 	kMsgControllerCaptureStarted = 5000,
-	kMsgControllerCaptureStopped,		// status_t status
+	kMsgControllerCaptureStopped,			// status_t status
 	kMsgControllerCapturePaused,
 	kMsgControllerCaptureResumed,
-	kMsgControllerCaptureProgress,		// int32 num_frames
+	kMsgControllerCaptureProgress,			// int32 num_frames
 	
 	kMsgControllerEncodeStarted,		
-	kMsgControllerEncodeProgress,		// int32 num_files
-	kMsgControllerEncodeFinished,		// status_t status
+	kMsgControllerEncodeProgress,			// int32 num_files
+	kMsgControllerEncodeFinished,			// status_t status
 	
 	
 	kMsgControllerSelectionWindowClosed,
-	kMsgControllerSourceFrameChanged,	// BRect frame,
-	kMsgControllerTargetFrameChanged,	// BRect frame, float scale
+	kMsgControllerSourceFrameChanged,		// BRect frame,
+	kMsgControllerTargetFrameChanged,		// BRect frame, float scale
 	kMsgControllerVideoDepthChanged,
 	kMsgControllerOutputFileNameChanged,
 	kMsgControllerCodecListUpdated,
-	kMsgControllerCodecChanged,			// const char* codec_name
-	kMsgControllerMediaFileFormatChanged// const char* format_name
+	kMsgControllerCodecChanged,				// const char* codec_name
+	kMsgControllerMediaFileFormatChanged,	// const char* format_name
+	
+	kMsgControllerCaptureFrameDelayChanged // int32 delay
 };
 
 

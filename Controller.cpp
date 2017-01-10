@@ -303,7 +303,10 @@ Controller::SetCaptureFrameDelay(const int milliSeconds)
 {
 	BAutolock _(this);
 	Settings().SetCaptureFrameDelay(milliSeconds);
-	// TODO: send notices
+	
+	BMessage message(kMsgControllerCaptureFrameDelayChanged);
+	message.AddInt32("delay", milliSeconds);
+	SendNotices(kMsgControllerCaptureFrameDelayChanged, &message);
 }
 
 
