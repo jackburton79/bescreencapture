@@ -170,7 +170,6 @@ InfoView::MessageReceived(BMessage* message)
 				}
 				case kMsgControllerCaptureFrameDelayChanged:
 				{
-					std::cout << "framechanged" << std::endl;
 					int32 delay;
 					if (message->FindInt32("delay", &delay) == B_OK) {						
 						fCaptureFrameDelay->SetText(GetDelayString(delay));
