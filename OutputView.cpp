@@ -339,12 +339,13 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 	// TODO: If fFileExtension contains the wrong extension
 	// (for example if the user renamed the file manually)
 	// this will fail. For example, outputfile.avi, but 
-	// fFileExtension is mkv -> outputfileavi.mkv
+	// fFileExtension is mkv -> outputfile.avi.mkv
 	BString fileName = fFileName->Text();
-	fileName.RemoveLast(fFileExtension);
-	fileName.RemoveLast(".");
-	fileName.Append(".");
+	BString extension = ".";
+	extension.Append(fFileExtension);
+	fileName.RemoveLast(extension);
 	fFileExtension = newExtension;
+	fileName.Append(".");
 	fileName.Append(fFileExtension);
 	fFileName->SetText(fileName.String());
 }
