@@ -58,6 +58,9 @@ public:
 	void SetOutputFileFormat(const char* format);
 	void GetOutputFileFormat(BString& format) const;
 
+	int32 CaptureFrameDelay() const;
+	void SetCaptureFrameDelay(const int32& value);
+	
 	void SetEncodingThreadPriority(const int32 &value);
 	void GetEncodingThreadPriority(int32 &value) const;
 	int32 EncodingThreadPriority() const;

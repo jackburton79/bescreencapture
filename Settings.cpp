@@ -24,6 +24,7 @@ const static char *kOutputFileFormat = "output file format";
 const static char *kThreadPriority = "thread priority";
 const static char *kHideDeskbarIcon = "hide Deskbar icon";
 const static char *kWindowFrameBorderSize = "window frame border size";
+const static char *kCaptureFrameDelay = "capture frame delay";
 
 
 Settings::Settings()
@@ -92,6 +93,8 @@ Settings::Load()
 			sSettings.ReplaceInt32(kThreadPriority, integer);
 		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
 			sSettings.ReplaceInt32(kWindowFrameBorderSize, integer);
+		if (tempMessage.FindInt32(kCaptureFrameDelay, &integer) == B_OK)
+			sSettings.ReplaceInt32(kCaptureFrameDelay, integer);
 	}	
 	
 	return status;
@@ -390,6 +393,25 @@ Settings::GetOutputFileFormat(BString& string) const
 }
 
 
+int32
+Settings::CaptureFrameDelay() const
+{
+	int32 value;
+	fSettings->FindInt32(kCaptureFrameDelay, &value);
+	return value;
+}
+
+
+void
+Settings::SetCaptureFrameDelay(const int32& value)
+{
+	if (!fSettings->HasInt32(kCaptureFrameDelay))
+		fSettings->AddInt32(kCaptureFrameDelay, value);
+	else
+		fSettings->ReplaceInt32(kCaptureFrameDelay, value);
+}
+
+
 void
 Settings::SetEncodingThreadPriority(const int32 &value)
 {
@@ -439,6 +461,7 @@ Settings::SetDefaults()
 	sSettings.AddBool(kHideDeskbarIcon, false);
 	sSettings.AddString(kOutputFileFormat, "");
 	sSettings.AddInt32(kWindowFrameBorderSize, 0);
+	sSettings.AddInt32(kCaptureFrameDelay, 200);
 	
 	return B_OK;
 }
