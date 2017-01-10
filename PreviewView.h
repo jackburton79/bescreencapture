@@ -14,6 +14,7 @@ public:
 private:
 	BView *fBitmapView;
 	BRect fCoordRect;
+	bigtime_t fTimeStamp;
 	bool fChanged;
 
 	BStringView *fLeftTop;
