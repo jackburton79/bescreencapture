@@ -6,6 +6,7 @@
 #include "FrameRateView.h"
 
 #include "Controller.h"
+#include "ControllerObserver.h"
 #include "Settings.h"
 
 #include <Box.h>
@@ -94,6 +95,25 @@ FrameRateView::MessageReceived(BMessage* message)
 			fController->SetPlaybackFrameRate(rate);
 			break;
 		}
+		case B_OBSERVER_NOTICE_CHANGE:
+		{
+			int32 code;
+			message->FindInt32("be:observe_change_what", &code);
+			switch (code) {
+				case kMsgControllerCaptureFrameDelayChanged:
+				{
+					int32 delay;
+					if (message->FindInt32("delay", &delay) == B_OK) {						
+						BString text;
+						text << delay;
+						fCaptureFreq->SetText(text);
+					}
+					break;
+				}
+				default:
+					break;
+			}
+		}	
 		default:
 			BView::MessageReceived(message);
 			break;
