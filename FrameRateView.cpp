@@ -50,11 +50,11 @@ FrameRateView::FrameRateView(Controller* controller)
 				.Add(fCaptureFreq)
 				.Add(new BStringView("capturefreqlabel", "milliseconds"))
 			.End()
-			.AddGroup(B_HORIZONTAL)
+			/*.AddGroup(B_HORIZONTAL)
 				.Add(fFrameRate)
 				.Add(new BStringView("frameratelabel", "frame/sec"))
 			.End()
-			.Add(fAutoAdjust)
+			.Add(fAutoAdjust)*/
 		.End()
 		.View();
 	
@@ -67,8 +67,8 @@ void
 FrameRateView::AttachedToWindow()
 {
 	fCaptureFreq->SetTarget(this);
-	fFrameRate->SetTarget(this);
-	fAutoAdjust->SetTarget(this);
+	/*fFrameRate->SetTarget(this);
+	fAutoAdjust->SetTarget(this);*/
 	
 	int32 milliSeconds = Settings().CaptureFrameDelay();
 	BString text;
