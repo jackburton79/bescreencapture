@@ -250,7 +250,9 @@ Controller::EncodeMovie()
 		_EncodingFinished(B_ERROR);
 		return;
 	}
-		
+	
+	_DumpSettings();
+			
 	BString fileName;
 	Settings().GetOutputFileName(fileName);
 	BEntry entry(fileName.String());
@@ -617,6 +619,12 @@ Controller::_EncodingFinished(const status_t status)
 	SendNotices(kMsgControllerEncodeFinished, &message);
 }
 
+void
+Controller::_DumpSettings() const
+{
+	Settings().PrintToStream();
+}
+
 
 int32
 Controller::CaptureThread()
@@ -624,11 +632,11 @@ Controller::CaptureThread()
 	Settings settings;
 	BScreen screen;
 	BRect bounds = settings.CaptureArea();
-	const int32 captureDelay = settings.CaptureFrameDelay() * 1000;
-		
-	std::cout << "Capture delay: " << captureDelay << std::endl;
+	bigtime_t captureDelay = (bigtime_t)settings.CaptureFrameDelay() * 1000;
+	
 	// TODO: Validate captureDelay with some limits
-	bounds.PrintToStream();
+	
+	_DumpSettings();
 	
 	const int32 windowBorder = settings.WindowFrameBorderSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
@@ -679,3 +687,5 @@ Controller::CaptureStarter(void *arg)
 {
 	return static_cast<Controller *>(arg)->CaptureThread();
 }
+
+

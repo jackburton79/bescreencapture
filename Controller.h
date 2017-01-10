@@ -73,7 +73,7 @@ public:
 	void		UpdateDirectInfo(direct_buffer_info *info);
 
 	status_t	ReadBitmap(BBitmap *bitmap, bool includeCursor, BRect bounds);
-	
+		
 private:
 	thread_id			fCaptureThread;
 	int32				fNumFrames;
@@ -99,6 +99,8 @@ private:
 
 	void		_ForwardGUIMessage(BMessage *message);
 
+	void		_DumpSettings() const;
+	
 	status_t CaptureThread();
 	static int32 CaptureStarter(void *arg);
 };
