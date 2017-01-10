@@ -29,6 +29,7 @@ PreviewView::PreviewView()
 	:
 	BView("Rect View", B_WILL_DRAW),
 	fBitmapView(NULL),
+	fTimeStamp(0),
 	fLeftTop(NULL),
 	fRightBottom(NULL)
 {
