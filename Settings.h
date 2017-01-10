@@ -58,6 +58,9 @@ public:
 	void SetOutputFileFormat(const char* format);
 	void GetOutputFileFormat(BString& format) const;
 
+	void SetOutputCodec(const char* codecName);
+	void GetOutputCodec(BString& codecName) const;
+	
 	int32 CaptureFrameDelay() const;
 	void SetCaptureFrameDelay(const int32& value);
 	

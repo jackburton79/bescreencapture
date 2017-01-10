@@ -21,6 +21,7 @@ const static char *kIncludeCursor = "cursor";
 const static char *kMinimize = "minimize";
 const static char *kOutputFile = "output file";
 const static char *kOutputFileFormat = "output file format";
+const static char *kOutputCodecName = "output codec";
 const static char *kThreadPriority = "thread priority";
 const static char *kHideDeskbarIcon = "hide Deskbar icon";
 const static char *kWindowFrameBorderSize = "window frame border size";
@@ -390,6 +391,23 @@ void
 Settings::GetOutputFileFormat(BString& string) const
 {
 	fSettings->FindString(kOutputFileFormat, &string);
+}
+
+
+void
+Settings::SetOutputCodec(const char* codecName)
+{
+	if (!fSettings->HasString(kOutputCodecName))
+		fSettings->AddString(kOutputCodecName, codecName);
+	else
+		fSettings->ReplaceString(kOutputCodecName, codecName);
+}
+
+
+void
+Settings::GetOutputCodec(BString& string) const
+{
+	fSettings->FindString(kOutputCodecName, &string);
 }
 
 
