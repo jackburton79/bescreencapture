@@ -6,6 +6,7 @@
 #include "FrameRateView.h"
 
 #include "Controller.h"
+#include "Settings.h"
 
 #include <Box.h>
 #include <CheckBox.h>
@@ -68,6 +69,12 @@ FrameRateView::AttachedToWindow()
 	fCaptureFreq->SetTarget(this);
 	fFrameRate->SetTarget(this);
 	fAutoAdjust->SetTarget(this);
+	
+	int32 milliSeconds = Settings().CaptureFrameDelay();
+	BString text;
+	text << milliSeconds;
+	fCaptureFreq->SetText(text);
+	
 }
 
 
