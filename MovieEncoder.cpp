@@ -83,9 +83,6 @@ MovieEncoder::DisposeData()
 	// If the movie is still opened, close it; this also flushes all tracks
 	if (fMediaFile && fIsFileOpen)
 		_CloseFile();
-	delete fMediaFile;		// deletes the track, too
-	fMediaFile = NULL;
-	fMediaTrack = NULL;
 	
 	fFileList = NULL;
 }
@@ -239,6 +236,10 @@ MovieEncoder::_CloseFile()
 		fIsFileOpen = false;
 		fMediaFile->ReleaseAllTracks();
 		err = fMediaFile->CloseFile();
+		
+		delete fMediaFile;		// deletes the track, too
+		fMediaFile = NULL;
+		fMediaTrack = NULL;
 	}
 	return err;
 }
