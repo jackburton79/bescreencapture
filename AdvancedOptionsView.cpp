@@ -94,12 +94,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	fDepthControl->AddOption("32 bit", B_RGB32);
 	fDepthControl->SelectOptionFor(B_RGB32);	
 	fDepthControl->SetEnabled(false);
-	
-	/*Settings settings;	
-	int32 priority = settings.EncodingThreadPriority();
-	if (fPriorityControl->SelectOptionFor(priority) != B_OK)
-		fPriorityControl->SetValue(0);*/
-	
+		
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 }
@@ -114,7 +109,6 @@ AdvancedOptionsView::AttachedToWindow()
 	
 	fUseDirectWindow->SetTarget(this);
 	fDepthControl->SetTarget(this);
-	//fPriorityControl->SetTarget(this);
 	
 	fHideDeskbarIcon->SetTarget(this);
 	
@@ -130,15 +124,6 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		case kUseDirectWindow:
 			fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 			break;
-		
-/*		case kPriorityChanged:
-		{
-			int32 value;
-			const char *name = NULL;
-			fPriorityControl->SelectedOption(&name, &value);
-			Settings().SetEncodingThreadPriority(value);
-			break;
-		}*/
 		
 		case kHideDeskbar:
 		{

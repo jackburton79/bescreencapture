@@ -19,11 +19,8 @@ private:
 	BCheckBox* fUseDirectWindow;
 	
 	BOptionPopUp* fDepthControl;
-	BOptionPopUp* fPriorityControl;
 	
 	BCheckBox* fHideDeskbarIcon;
-	
-	SizeControl* fBorderSlider;
 };
 
 #endif
