@@ -1,7 +1,9 @@
 v2.2.2 (not yet released)
 	- If saving a frame fails, the application will now abort and report an error.
-	- In selection mode, add an hint to the user via a text message on the screen.
-	- Moved encoding settings to their own window
+	- In selection mode, add an hint to the user via text instructions on the screen.
+	- The selection can be moved after being selected
+	- Moved encoding settings to the options tab
+	- Added capture frame settings
 ---	 
 v2.2.1
 	- Fix a last-minute-commit-introduced problem: if a non-zero window border was specified, windows weren't tracked correctly in single-window capture mode.
