@@ -10,6 +10,8 @@
 class BPath;
 class BRect;
 
+void
+PrintMediaFormat(const media_format& format);
 BString GetUniqueFileName(const BString name, const char *extension);
 void FixRect(BRect &rect, const bool fixWidth = false, const bool fixHeight = false);
 

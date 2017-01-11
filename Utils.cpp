@@ -17,6 +17,15 @@
 #include <iostream>
 
 
+void
+PrintMediaFormat(const media_format& format)
+{
+	std::cout << "media format" << std::endl;
+	std::cout << "width: " << format.Width() << std::endl;
+	std::cout << "height: " << format.Height() << std::endl;
+}
+
+
 BString
 GetUniqueFileName(const BString fileName, const char *extension)
 {
