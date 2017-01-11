@@ -319,10 +319,7 @@ MovieEncoder::_EncoderThread()
 	
 	BMessage progressMessage(B_UPDATE_STATUS_BAR);
 	progressMessage.AddFloat("delta", 1.0);
-	
-	destBitmap->Bounds().PrintToStream();
-	//PrintMediaFormat(inputFormat);
-	
+		
 	status = B_OK;
 	while (BitmapEntry* entry = const_cast<FileList*>(fFileList)->Pop()) {
 		if (fKillThread)
