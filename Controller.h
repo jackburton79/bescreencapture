@@ -89,6 +89,8 @@ private:
 	
 	BObjectList<media_codec_info>* fCodecList;
 	
+	bool		fSupportsWaitForRetrace;
+	
 	void		StartCapture();
 	void		EndCapture();
 
@@ -99,6 +101,8 @@ private:
 
 	void		_ForwardGUIMessage(BMessage *message);
 
+	void		_TestWaitForRetrace();
+	void		_WaitForRetrace(bigtime_t time);
 	void		_DumpSettings() const;
 	
 	status_t CaptureThread();

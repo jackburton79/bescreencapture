@@ -416,6 +416,7 @@ Controller::SetMediaCodec(const char* codecName)
 		media_codec_info* codec = fCodecList->ItemAt(i);
 		if (!strcmp(codec->pretty_name, codecName)) {
 			fEncoder->SetMediaCodecInfo(*codec);
+			Settings().SetOutputCodec(codec->pretty_name);
 			BMessage message(kMsgControllerCodecChanged);
 			message.AddString("codec_name", codec->pretty_name);
 			SendNotices(kMsgControllerCodecChanged, &message);
@@ -619,6 +620,24 @@ Controller::_EncodingFinished(const status_t status)
 	SendNotices(kMsgControllerEncodeFinished, &message);
 }
 
+
+void
+Controller::_TestWaitForRetrace()
+{
+	fSupportsWaitForRetrace = BScreen().WaitForRetrace() == B_OK;
+}
+
+
+void
+Controller::_WaitForRetrace(bigtime_t time)
+{
+	if (fSupportsWaitForRetrace)
+		BScreen().WaitForRetrace(time);
+	else
+		snooze(time);		
+}
+
+
 void
 Controller::_DumpSettings() const
 {
@@ -637,6 +656,7 @@ Controller::CaptureThread()
 	// TODO: Validate captureDelay with some limits
 	
 	_DumpSettings();
+	_TestWaitForRetrace();
 	
 	const int32 windowBorder = settings.WindowFrameBorderSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
@@ -650,7 +670,7 @@ Controller::CaptureThread()
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
 				
-			screen.WaitForRetrace(captureDelay); // Wait for Vsync
+			_WaitForRetrace(captureDelay); // Wait for Vsync
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 			error = ReadBitmap(bitmap, true, bounds);
 			bigtime_t currentTime = system_time();
