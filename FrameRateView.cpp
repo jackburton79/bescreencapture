@@ -75,7 +75,6 @@ FrameRateView::AttachedToWindow()
 	BString text;
 	text << milliSeconds;
 	fCaptureFreq->SetText(text);
-	
 }
 
 
