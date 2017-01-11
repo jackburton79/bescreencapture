@@ -84,6 +84,7 @@ MovieEncoder::DisposeData()
 	if (fMediaFile && fIsFileOpen)
 		_CloseFile();
 	
+	delete fFileList;
 	fFileList = NULL;
 }
 
@@ -100,8 +101,9 @@ MovieEncoder::Cancel()
 
 
 status_t
-MovieEncoder::SetSource(const FileList *fileList)
+MovieEncoder::SetSource(FileList *fileList)
 {
+	// Takes ownership
 	fFileList = fileList;
 	return B_OK;
 }
@@ -321,10 +323,11 @@ MovieEncoder::_EncoderThread()
 	progressMessage.AddFloat("delta", 1.0);
 		
 	status = B_OK;
-	while (BitmapEntry* entry = const_cast<FileList*>(fFileList)->Pop()) {
-		if (fKillThread)
+	while (!fKillThread) {
+		BitmapEntry* entry = const_cast<FileList*>(fFileList)->Pop();
+		if (entry == NULL)
 			break;
-	
+				
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		BBitmap* frame = entry->Bitmap();
 		if (frame == NULL) {

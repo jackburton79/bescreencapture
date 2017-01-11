@@ -281,6 +281,7 @@ Controller::EncodeMovie()
 	SendNotices(kMsgControllerEncodeProgress, &message);
 	
 	fEncoder->SetSource(fFileList);
+	fFileList = NULL;
 	
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
