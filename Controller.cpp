@@ -182,6 +182,7 @@ Controller::CanQuit(BString& reason) const
 void
 Controller::Cancel()
 {
+	BAutolock _(this);
 	if (fCaptureThread > 0) {
 		fKillThread = true;
 		status_t status;
@@ -197,6 +198,7 @@ Controller::Cancel()
 int
 Controller::State() const
 {
+	BAutolock _((BLooper*)this);
 	if (fCaptureThread > 0)
 		return STATE_RECORDING;
 	
