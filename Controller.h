@@ -101,6 +101,9 @@ private:
 
 	void		_ForwardGUIMessage(BMessage *message);
 
+	media_format	_ComputeMediaFormat(const int32 &width, const int32 &height,
+							const color_space &colorSpace, const int32 &fieldRate);
+	
 	void		_TestWaitForRetrace();
 	void		_WaitForRetrace(bigtime_t time);
 	void		_DumpSettings() const;

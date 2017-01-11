@@ -443,11 +443,11 @@ Controller::GetCodecsList(BObjectList<media_codec_info>& codecList) const
 }
 
 	
-status_t
-UpdateMediaFormat(const int32 &width, const int32 &height,
-	const color_space &colorSpace, const int32 &fieldRate,
-	media_format &initialFormat)
+media_format
+Controller::_ComputeMediaFormat(const int32 &width, const int32 &height,
+	const color_space &colorSpace, const int32 &fieldRate)
 {
+	media_format initialFormat;
 	memset(&initialFormat, 0, sizeof(media_format));
 		
 	initialFormat.type = B_MEDIA_RAW_VIDEO;
@@ -463,7 +463,7 @@ UpdateMediaFormat(const int32 &width, const int32 &height,
 	status = get_pixel_size_for(colorSpace, &pixelChunk,
 			&rowAlign, &pixelPerChunk);
 	if (status != B_OK)
-		return status;
+		throw status;
 
 	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
 	initialFormat.u.raw_video.display.format = colorSpace;
@@ -472,7 +472,7 @@ UpdateMediaFormat(const int32 &width, const int32 &height,
 	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
 	initialFormat.u.raw_video.pixel_height_aspect = 1;
 	
-	return B_OK;
+	return initialFormat;
 }
 
 
@@ -489,16 +489,12 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	
 	targetRect.PrintToStream();
 	
-	media_format mediaFormat;
-	status_t status;
-	status = UpdateMediaFormat(targetRect.IntegerWidth(), targetRect.IntegerHeight(),
-		settings.ClipDepth(), 10, mediaFormat);
-	if (status != B_OK)
-		return status;
-
-	fEncoder->SetMediaFormat(mediaFormat);
+	const int32 frameRate = 10;
+	media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
+									targetRect.IntegerHeight(),
+									settings.ClipDepth(), frameRate);
 	
-	media_file_format fileFormat = fEncoder->MediaFileFormat();
+	fEncoder->SetMediaFormat(mediaFormat);
 	
 	delete fCodecList;
 	fCodecList = new BObjectList<media_codec_info> (1, true);
@@ -506,6 +502,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	int32 cookie = 0;
 	media_codec_info codec;
 	media_format dummyFormat;
+	media_file_format fileFormat = fEncoder->MediaFileFormat();
 	while (get_next_encoder(&cookie, &fileFormat, &mediaFormat,
 			&dummyFormat, &codec) == B_OK) {
 		media_codec_info* newCodec = new media_codec_info;
