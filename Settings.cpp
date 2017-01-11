@@ -478,6 +478,7 @@ Settings::SetDefaults()
 	sSettings.AddBool(kMinimize, false);
 	sSettings.AddBool(kHideDeskbarIcon, false);
 	sSettings.AddString(kOutputFileFormat, "");
+	sSettings.AddString(kOutputCodecName, "");
 	sSettings.AddInt32(kWindowFrameBorderSize, 0);
 	sSettings.AddInt32(kCaptureFrameDelay, 200);
 	
