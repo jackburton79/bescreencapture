@@ -357,7 +357,7 @@ MovieEncoder::_EncoderThread()
 		framesWritten++;
 
 		if (fMessenger.IsValid())
-			fMessenger.SendMessage(new BMessage(progressMessage));
+			fMessenger.SendMessage(&progressMessage);
 		else {
 			// BMessenger is no longer valid. This means that the application
 			// has been closed or it has crashed.
