@@ -183,14 +183,22 @@ void
 Controller::Cancel()
 {
 	BAutolock _(this);
-	if (fCaptureThread > 0) {
-		fKillThread = true;
-		status_t status;
-		wait_for_thread(fCaptureThread, &status);
-		fCaptureThread = -1;
-	} else if (fEncoderThread > 0) {
-		fEncoder->Cancel();
-		fEncoderThread = -1;
+	switch (State()) {
+		case STATE_RECORDING:
+		{
+			status_t status;
+			fKillThread = true;
+			wait_for_thread(fCaptureThread, &status);
+			fCaptureThread = -1;
+			break;
+		}
+		case STATE_ENCODING:
+			fEncoder->Cancel();
+			fEncoderThread = -1;
+			break;
+		case STATE_IDLE:
+		default:
+			break;
 	}
 }
 
