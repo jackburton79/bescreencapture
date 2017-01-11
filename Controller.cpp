@@ -441,8 +441,42 @@ Controller::GetCodecsList(BObjectList<media_codec_info>& codecList) const
 	codecList = *fCodecList;
 	return B_OK;
 }
-	
 
+	
+status_t
+UpdateMediaFormat(const int32 &width, const int32 &height,
+	const color_space &colorSpace, const int32 &fieldRate,
+	media_format &initialFormat)
+{
+	memset(&initialFormat, 0, sizeof(media_format));
+		
+	initialFormat.type = B_MEDIA_RAW_VIDEO;
+	initialFormat.u.raw_video.display.line_width = width;
+	initialFormat.u.raw_video.display.line_count = height;
+	initialFormat.u.raw_video.last_active = initialFormat.u.raw_video.display.line_count - 1;
+	
+	size_t pixelChunk;
+	size_t rowAlign;
+	size_t pixelPerChunk;
+
+	status_t status;
+	status = get_pixel_size_for(colorSpace, &pixelChunk,
+			&rowAlign, &pixelPerChunk);
+	if (status != B_OK)
+		return status;
+
+	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
+	initialFormat.u.raw_video.display.format = colorSpace;
+	initialFormat.u.raw_video.interlace = 1;	
+	initialFormat.u.raw_video.field_rate = fieldRate; // Frames per second, overwritten later
+	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
+	initialFormat.u.raw_video.pixel_height_aspect = 1;
+	
+	return B_OK;
+}
+
+
+// Should be called every time the media_format_family is changed
 status_t
 Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 {
@@ -452,6 +486,8 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	BRect targetRect = settings.TargetRect();
 	targetRect.right++;
 	targetRect.bottom++;
+	
+	targetRect.PrintToStream();
 	
 	media_format mediaFormat;
 	status_t status;
