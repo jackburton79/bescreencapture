@@ -77,7 +77,7 @@ public:
 private:
 	thread_id			fCaptureThread;
 	int32				fNumFrames;
-	bool				fKillThread;
+	bool				fKillCaptureThread;
 	bool				fPaused;
 
 	bool				fDirectWindowAvailable;	

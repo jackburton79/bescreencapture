@@ -53,7 +53,7 @@ Controller::Controller()
 	BLooper("Controller"),
 	fCaptureThread(-1),
 	fNumFrames(0),
-	fKillThread(true),
+	fKillCaptureThread(true),
 	fPaused(false),
 	fDirectWindowAvailable(false),
 	fEncoder(NULL),
@@ -187,7 +187,7 @@ Controller::Cancel()
 		case STATE_RECORDING:
 		{
 			status_t status;
-			fKillThread = true;
+			fKillCaptureThread = true;
 			wait_for_thread(fCaptureThread, &status);
 			fCaptureThread = -1;
 			break;
@@ -577,7 +577,7 @@ Controller::StartCapture()
 		return;
 	}
 	
-	fKillThread = false;
+	fKillCaptureThread = false;
 	fPaused = false;
 	
 	fCaptureThread = spawn_thread((thread_entry)CaptureStarter,
@@ -609,7 +609,7 @@ Controller::EndCapture()
 	BAutolock _(this);
 	if (fCaptureThread > 0) {
 		fPaused = false;
-		fKillThread = true;
+		fKillCaptureThread = true;
 		status_t unused;
 		wait_for_thread(fCaptureThread, &unused);
 	}
@@ -710,7 +710,7 @@ Controller::CaptureThread()
 	const int32 windowBorder = settings.WindowFrameBorderSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
 	status_t error = B_ERROR;
-	while (!fKillThread) {
+	while (!fKillCaptureThread) {
 		if (!fPaused) {		
 			if (token != -1) {
 				BRect windowBounds = GetWindowFrameForToken(token, windowBorder);
@@ -734,7 +734,7 @@ Controller::CaptureThread()
 	}
 	
 	fCaptureThread = -1;
-	fKillThread = true;
+	fKillCaptureThread = true;
 	
 	if (error != B_OK) {
 		BMessage message(kMsgControllerCaptureStopped);
