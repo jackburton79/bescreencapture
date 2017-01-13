@@ -693,7 +693,6 @@ Controller::CaptureThread()
 	
 	const int32 windowBorder = settings.WindowFrameBorderSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
-	bigtime_t waitTime = 0;
 	status_t error = B_ERROR;
 	while (!fKillThread) {
 		if (!fPaused) {		
