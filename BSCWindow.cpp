@@ -32,7 +32,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-const static BRect kWindowRect(0, 0, 400, 900);
+const static BRect kWindowRect(0, 0, 400, 600);
 
 const char* kEncodingString = "Encoding movie...";
 const char* kDoneString = "Done!";

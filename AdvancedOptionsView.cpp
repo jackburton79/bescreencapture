@@ -29,7 +29,6 @@ const static uint32 kDepthChanged = 'DeCh';
 const static uint32 kHideDeskbar = 'HiDe';
 
 
-
 AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	:
 	BView("Advanced", B_WILL_DRAW),
@@ -42,16 +41,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	BBox* frameBox = new BBox("frame rate");
 	BBox *advancedBox = new BBox("Advanced");
 	
-	/*BView* layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.Add(encodingBox)
-		.Add(frameBox)
-		.Add(advancedBox)
-		.View();
-	
-	AddChild(layoutView);
-	*/
 	encodingBox->SetLabel("Encoding options");
 	frameBox->SetLabel("Frame rate");
 	advancedBox->SetLabel("Advanced options");
@@ -72,8 +61,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	
 	frameBox->AddChild(layoutView);
 	
-	//advancedBox->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
-	//	B_ALIGN_TOP));
 	AddChild(encodingBox);
 	AddChild(frameBox);
 	AddChild(advancedBox);

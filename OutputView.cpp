@@ -329,8 +329,8 @@ OutputView::_LayoutView(bool classic)
 	//fMediaFormatView = new MediaFormatView(fController);
 	
 	layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		//.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+		//	B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.AddGroup(B_HORIZONTAL, 0)
 				.Add(fFileName)
