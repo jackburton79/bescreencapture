@@ -333,10 +333,10 @@ BSCWindow::_BuildMenu()
 	menu->AddItem(quitItem);
 	fMenuBar->AddItem(menu);
 	
-	menu = new BMenu("Settings");
+	/*menu = new BMenu("Settings");
 	BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
 	menu->AddItem(media);
-	fMenuBar->AddItem(menu);
+	fMenuBar->AddItem(menu);*/
 }
 
 
