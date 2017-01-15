@@ -246,12 +246,12 @@ Controller::EncodeMovie()
 	
 	int32 numFrames = fFileList->CountItems();
 	if (numFrames <= 0) {
-		std::cout << "Aborted" << std::endl;
+		//std::cout << "Aborted" << std::endl;
 		_EncodingFinished(B_ERROR);
 		return;
 	}
 	
-	_DumpSettings();
+	//_DumpSettings();
 			
 	BString fileName;
 	Settings().GetOutputFileName(fileName);
@@ -483,8 +483,6 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	BRect targetRect = settings.TargetRect();
 	targetRect.right++;
 	targetRect.bottom++;
-	
-	targetRect.PrintToStream();
 	
 	const int32 frameRate = 10;
 	media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),

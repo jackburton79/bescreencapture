@@ -320,7 +320,7 @@ MovieEncoder::_EncoderThread()
 	progressMessage.AddFloat("delta", 1.0);
 	
 	destBitmap->Bounds().PrintToStream();
-	PrintMediaFormat(inputFormat);
+	//PrintMediaFormat(inputFormat);
 	
 	status = B_OK;
 	while (BitmapEntry* entry = const_cast<FileList*>(fFileList)->Pop()) {
@@ -446,8 +446,7 @@ MovieEncoder::MediaFormat() const
 void
 MovieEncoder::SetMediaFormat(const media_format& format)
 {
-	std::cout << "MovieEncoder::SetMediaFormat()" << std::endl;
-	PrintMediaFormat(format);
+	//PrintMediaFormat(format);
 	fFormat = format;
 }
 
