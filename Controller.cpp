@@ -291,19 +291,16 @@ void
 Controller::SetCaptureArea(const BRect& rect)
 {
 	BAutolock _(this);
-	Settings().SetCaptureArea(rect);
+	Settings settings;
+	settings.SetCaptureArea(rect);
+	BRect targetRect = settings.TargetRect();
+	fEncoder->SetDestFrame(targetRect);
 	
-	fEncoder->SetDestFrame(Settings().TargetRect());
-			
 	BMessage message(kMsgControllerSourceFrameChanged);
 	message.AddRect("frame", rect);
 	SendNotices(kMsgControllerSourceFrameChanged, &message);
 
-	BMessage targetFrameMessage(kMsgControllerTargetFrameChanged);
-	// TODO: Move this to its own method
-	BRect targetRect = Settings().TargetRect();
-	targetFrameMessage.AddRect("frame", targetRect);
-	SendNotices(kMsgControllerTargetFrameChanged, &targetFrameMessage);
+	_HandleTargetFrameChanged(targetRect);
 }
 
 
@@ -651,6 +648,17 @@ Controller::_EncodingFinished(const status_t status)
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
 	SendNotices(kMsgControllerEncodeFinished, &message);
+}
+
+
+void
+Controller::_HandleTargetFrameChanged(const BRect& targetRect)
+{
+	UpdateMediaFormatAndCodecsForCurrentFamily();
+	
+	BMessage targetFrameMessage(kMsgControllerTargetFrameChanged);
+	targetFrameMessage.AddRect("frame", targetRect);
+	SendNotices(kMsgControllerTargetFrameChanged, &targetFrameMessage);
 }
 
 

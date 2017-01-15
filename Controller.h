@@ -98,7 +98,7 @@ private:
 	void		_ResumeCapture();
 
 	void		_EncodingFinished(const status_t status);
-
+	void		_HandleTargetFrameChanged(const BRect& rect);
 	void		_ForwardGUIMessage(BMessage *message);
 
 	media_format	_ComputeMediaFormat(const int32 &width, const int32 &height,
