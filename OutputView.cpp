@@ -34,8 +34,6 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <iostream>
-
 const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kOpenFilePanel = 'OpFp';
 const static int32 kMsgTextControlSizeChanged = 'TCSC';
@@ -46,7 +44,6 @@ OutputView::OutputView(Controller *controller)
 	:
 	BView("Capture Options", B_WILL_DRAW),
 	fController(controller),
-	fMediaFormatView(NULL),
 	fClassicLayout(true)
 {
 	_LayoutView(fClassicLayout);
@@ -68,6 +65,8 @@ OutputView::AttachedToWindow()
 		fController->UnlockLooper();
 	}
 	
+	Settings settings;
+	
 	fMinimizeOnStart->SetTarget(this);
 	fFileName->SetTarget(this);
 	fCustomArea->SetTarget(this);
@@ -77,12 +76,12 @@ OutputView::AttachedToWindow()
 	fFilePanelButton->SetTarget(this);
 	fBorderSlider->SetTarget(this);
 	
-	fBorderSlider->SetValue(Settings().WindowFrameBorderSize());
-	fScaleSlider->SetValue(Settings().Scale());	
+	fBorderSlider->SetValue(settings.WindowFrameBorderSize());
+	fScaleSlider->SetValue(settings.Scale());	
 	
 	fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);	
 	
-	Settings().GetCaptureArea(fCustomCaptureRect);
+	settings.GetCaptureArea(fCustomCaptureRect);
 	if (fCustomCaptureRect == BScreen().Frame())
 		fWholeScreen->SetValue(B_CONTROL_ON);
 	else {
@@ -326,17 +325,12 @@ OutputView::_LayoutView(bool classic)
 	
 	selectBox->AddChild(layoutView);
 	
-	//fMediaFormatView = new MediaFormatView(fController);
-	
 	layoutView = BLayoutBuilder::Group<>()
-		//.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-		//	B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.AddGroup(B_HORIZONTAL, 0)
 				.Add(fFileName)
 				.Add(fFilePanelButton)
 			.End()
-			//.Add(fMediaFormatView)
 			.Add(fScaleSlider)
 			.SetInsets(B_USE_DEFAULT_SPACING)
 			.Add(fMinimizeOnStart)

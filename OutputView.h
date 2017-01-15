@@ -36,18 +36,21 @@ public:
 			
 private:
 	Controller *fController;
+	
 	BTextControl *fFileName;
 	BString fFileExtension;
+	BButton* fFilePanelButton;
+	
 	BCheckBox *fMinimizeOnStart;
 	
 	BButton *fSelectArea;
 	BRadioButton *fWholeScreen;
 	BRadioButton *fCustomArea;
 	BRadioButton *fWindow;
+	
 	PreviewView *fRectView;
-	MediaFormatView* fMediaFormatView;
 	BRect fCustomCaptureRect;
-	BButton* fFilePanelButton;
+
 	SizeControl* fScaleSlider;
 	SizeControl* fBorderSlider;
 
