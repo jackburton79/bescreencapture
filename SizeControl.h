@@ -23,7 +23,8 @@ public:
 	
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
-	virtual void SetValue(int32 value);				
+	virtual void SetValue(int32 value);
+	virtual void SetEnabled(bool enable);
 private:
 	BSlider* fSizeSlider;
 	BTextControl* fSizeTextControl;

@@ -116,6 +116,16 @@ SizeControl::SetValue(int32 value)
 }
 
 
+/* virtual */
+void
+SizeControl::SetEnabled(bool enable)
+{
+	BControl::SetEnabled(enable);
+	fSizeSlider->SetEnabled(enable);
+	fSizeTextControl->SetEnabled(enable);
+}
+
+
 // SizeSlider
 SizeSlider::SizeSlider(const char* name, const char* label,
 		BMessage* message, int32 minValue,
