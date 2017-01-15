@@ -688,7 +688,7 @@ Controller::CaptureThread()
 	
 	// TODO: Validate captureDelay with some limits
 	
-	_DumpSettings();
+	//_DumpSettings();
 	_TestWaitForRetrace();
 	
 	const int32 windowBorder = settings.WindowFrameBorderSize();
