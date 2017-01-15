@@ -1,6 +1,8 @@
 #include "AdvancedOptionsView.h"
 #include "Controller.h"
 #include "DeskbarControlView.h"
+#include "FrameRateView.h"
+#include "MediaFormatView.h"
 #include "Messages.h"
 #include "PriorityControl.h"
 #include "Settings.h"
@@ -33,15 +35,50 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	BView("Advanced", B_WILL_DRAW),
 	fController(controller)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
+	BGroupLayout* groupLayout = new BGroupLayout(B_VERTICAL);
+	SetLayout(groupLayout);
 	
+	BBox *encodingBox = new BBox("encoding options");
+	BBox* frameBox = new BBox("frame rate");
 	BBox *advancedBox = new BBox("Advanced");
+	
+	/*BView* layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.Add(encodingBox)
+		.Add(frameBox)
+		.Add(advancedBox)
+		.View();
+	
+	AddChild(layoutView);
+	*/
+	encodingBox->SetLabel("Encoding options");
+	frameBox->SetLabel("Frame rate");
 	advancedBox->SetLabel("Advanced options");
-	advancedBox->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
-		B_ALIGN_TOP));
-	AddChild(advancedBox);
 	
 	BView* layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.Add(new MediaFormatView(controller))
+		.View();
+	
+	encodingBox->AddChild(layoutView);
+	
+	layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+			.Add(new FrameRateView(controller))
+		.View();
+	
+	frameBox->AddChild(layoutView);
+	
+	//advancedBox->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
+	//	B_ALIGN_TOP));
+	AddChild(encodingBox);
+	AddChild(frameBox);
+	AddChild(advancedBox);
+	
+	layoutView = BLayoutBuilder::Group<>()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
@@ -50,8 +87,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 					new BMessage(kUseDirectWindow)))
 			.Add(fDepthControl = new BOptionPopUp("DepthControl", "Clip color depth:",
 				new BMessage(kDepthChanged)))
-			//.Add(fPriorityControl = new PriorityControl("PriorityControl",
-			//	"Encoding thread priority:"))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
 					"Hide Deskbar icon (ctrl+command+shift+r to stop recording)",
 					new BMessage(kHideDeskbar)))
