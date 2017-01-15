@@ -136,7 +136,6 @@ OutputView::MessageReceived(BMessage *message)
 					fBorderSlider->SetEnabled(true);
 				}
 			}
-			std::cout << (fBorderSlider->IsEnabled() ? "enabled" : "disabled") << std::endl;
 			fController->SetCaptureArea(rect);
 			break;	
 		}
