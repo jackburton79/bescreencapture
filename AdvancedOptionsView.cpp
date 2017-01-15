@@ -25,7 +25,7 @@
 const static uint32 kUseDirectWindow = 'UsDW';
 const static uint32 kDepthChanged = 'DeCh';
 const static uint32 kHideDeskbar = 'HiDe';
-const static uint32 kWindowBorderFrameChanged = 'WbFc';
+
 
 
 AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
@@ -50,10 +50,8 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 					new BMessage(kUseDirectWindow)))
 			.Add(fDepthControl = new BOptionPopUp("DepthControl", "Clip color depth:",
 				new BMessage(kDepthChanged)))
-			.Add(fPriorityControl = new PriorityControl("PriorityControl",
-				"Encoding thread priority:"))
-			.Add(fBorderSlider = new SizeControl("border_slider", "Window border size",
-					new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL))
+			//.Add(fPriorityControl = new PriorityControl("PriorityControl",
+			//	"Encoding thread priority:"))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
 					"Hide Deskbar icon (ctrl+command+shift+r to stop recording)",
 					new BMessage(kHideDeskbar)))
@@ -75,10 +73,10 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	fDepthControl->SelectOptionFor(B_RGB32);	
 	fDepthControl->SetEnabled(false);
 	
-	Settings settings;	
+	/*Settings settings;	
 	int32 priority = settings.EncodingThreadPriority();
 	if (fPriorityControl->SelectOptionFor(priority) != B_OK)
-		fPriorityControl->SetValue(0);
+		fPriorityControl->SetValue(0);*/
 	
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
@@ -94,12 +92,10 @@ AdvancedOptionsView::AttachedToWindow()
 	
 	fUseDirectWindow->SetTarget(this);
 	fDepthControl->SetTarget(this);
-	fPriorityControl->SetTarget(this);
+	//fPriorityControl->SetTarget(this);
 	
 	fHideDeskbarIcon->SetTarget(this);
-	fBorderSlider->SetTarget(this);
 	
-	fBorderSlider->SetValue(Settings().WindowFrameBorderSize());
 	fHideDeskbarIcon->SetValue(Settings().HideDeskbarIcon()
 		? B_CONTROL_ON : B_CONTROL_OFF);
 }
@@ -113,14 +109,14 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 			break;
 		
-		case kPriorityChanged:
+/*		case kPriorityChanged:
 		{
 			int32 value;
 			const char *name = NULL;
 			fPriorityControl->SelectedOption(&name, &value);
 			Settings().SetEncodingThreadPriority(value);
 			break;
-		}
+		}*/
 		
 		case kHideDeskbar:
 		{
@@ -147,12 +143,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			break;
 		}
 		
-		case kWindowBorderFrameChanged:
-		{
-			const int32 size = fBorderSlider->Value();
-			Settings().SetWindowFrameBorderSize(size);	
-			break;
-		}	
+
 		default:
 			BView::MessageReceived(message);
 			break;

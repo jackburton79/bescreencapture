@@ -49,6 +49,7 @@ private:
 	BRect fCustomCaptureRect;
 	BButton* fFilePanelButton;
 	SizeControl* fScaleSlider;
+	SizeControl* fBorderSlider;
 
 	bool fClassicLayout;
 	

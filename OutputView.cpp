@@ -40,7 +40,7 @@ const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kOpenFilePanel = 'OpFp';
 const static int32 kMsgTextControlSizeChanged = 'TCSC';
 const static int32 kScaleChanged = 'ScCh';
-
+const static uint32 kWindowBorderFrameChanged = 'WbFc';
 
 OutputView::OutputView(Controller *controller)
 	:
@@ -75,9 +75,13 @@ OutputView::AttachedToWindow()
 	fWindow->SetTarget(this);
 	fScaleSlider->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
+	fBorderSlider->SetTarget(this);
 	
+	fBorderSlider->SetValue(Settings().WindowFrameBorderSize());
 	fScaleSlider->SetValue(Settings().Scale());	
-		
+	
+	fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);	
+	
 	Settings().GetCaptureArea(fCustomCaptureRect);
 	if (fCustomCaptureRect == BScreen().Frame())
 		fWholeScreen->SetValue(B_CONTROL_ON);
@@ -119,16 +123,20 @@ OutputView::MessageReceived(BMessage *message)
 			if (fWholeScreen->Value() == B_CONTROL_ON) {
 				rect = BScreen().Frame();
 				fSelectArea->SetEnabled(false);
+				fBorderSlider->SetEnabled(false);
 			} else {
 				fSelectArea->SetEnabled(true);
 				if (fCustomArea->Value() == B_CONTROL_ON) {
 					fSelectArea->SetLabel("Select Region");
 					fSelectArea->SetMessage(new BMessage(kSelectArea));
+					fBorderSlider->SetEnabled(false);
 				} else if (fWindow->Value() == B_CONTROL_ON) {
 					fSelectArea->SetLabel("Select Window");
 					fSelectArea->SetMessage(new BMessage(kSelectWindow));
+					fBorderSlider->SetEnabled(true);
 				}
 			}
+			std::cout << (fBorderSlider->IsEnabled() ? "enabled" : "disabled") << std::endl;
 			fController->SetCaptureArea(rect);
 			break;	
 		}
@@ -148,7 +156,14 @@ OutputView::MessageReceived(BMessage *message)
 			fController->SetScale((float)value);
 			break;
 		}
-				
+		
+		case kWindowBorderFrameChanged:
+		{
+			const int32 size = fBorderSlider->Value();
+			Settings().SetWindowFrameBorderSize(size);	
+			break;
+		}
+					
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -287,20 +302,27 @@ OutputView::_LayoutView(bool classic)
 
 	fScaleSlider = new SizeControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
-				
+
+	fBorderSlider = new SizeControl("border_slider", "Window border size",
+		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL);
+			
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_VERTICAL)
-				.Add(fWholeScreen)
-				.Add(fCustomArea)
-				.Add(fWindow)
-				.Add(fSelectArea)
-				.AddStrut(20)
+		.AddGroup(B_VERTICAL)
+			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+				.AddGroup(B_VERTICAL)
+					.Add(fWholeScreen)
+					.Add(fCustomArea)
+					.Add(fWindow)
+					.Add(fSelectArea)
+					.AddStrut(20)
+				.End()
+				.Add(fRectView = new PreviewView())
 			.End()
-			.Add(fRectView = new PreviewView())
+			.Add(fBorderSlider)
 		.End()
+				
 		.View();
 	
 	selectBox->AddChild(layoutView);
