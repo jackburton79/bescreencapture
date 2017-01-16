@@ -15,7 +15,6 @@ enum {
 	kMsgControllerEncodeProgress,			// int32 num_files
 	kMsgControllerEncodeFinished,			// status_t status
 	
-	
 	kMsgControllerSelectionWindowClosed,
 	kMsgControllerSourceFrameChanged,		// BRect frame,
 	kMsgControllerTargetFrameChanged,		// BRect frame, float scale
