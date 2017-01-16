@@ -198,6 +198,10 @@ SelectionViewRegion::KeyDown(const char* bytes, int32 numBytes)
 		case B_ENTER:
 			Window()->PostMessage(B_QUIT_REQUESTED);
 			break;
+		case B_ESCAPE:
+			// TODO: Set an invalid selection rect
+			Window()->PostMessage(B_QUIT_REQUESTED);
+			break;
 		default:
 			SelectionView::KeyDown(bytes, numBytes);
 			break;
