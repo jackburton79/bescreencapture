@@ -1,5 +1,4 @@
 # BeScreenCapture
-by Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 
 ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture.png)
 
@@ -7,15 +6,19 @@ by Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format supported by Haiku.
 
 
+## Authors:
+
+Stefano Ceccherini ( stefano.ceccherini@gmail.com )
+
+
+## Contributors
+
+Zumi, Pete Goodeve (icons)
+John Scipione (layout fixes)
+Jessica Hamilton (fixes)
+puckipedia ("incognito" capture mode)
+
 ## FAQ:
-
-
-Q: The codec <insert your favourite codec name here> it's not available in BeScreenCapture!!!
-
-A: Not every codec supports every clip configuration: some codecs can only support some particular
-color depth, or certain particular sizes (i.e. 320x200): try changing the "Clip color depth" option in the
-"Options" tab. The default (32 bit), though, should work for most codecs.
-
 
 Q: BeScreenCapture crashed while using the codec \<insert your favourite codec name here\> !!!
 
@@ -25,7 +28,7 @@ A: Some codecs are buggy. Some could cause a crash, or fail to record anything.
 Q: I tried to record a fullscreen clip but the result was crappy!!!
 
 A: Don't expect to record a full screen area on a slow computer and get an incredibly snappy video as a result. Capturing what happens on the screen is a really slow operation. If you get too few frames
-per second, try reducing the capture area or the screen depth. Or get a faster computer :)
+per second, try reducing the capture area, or get a faster computer :)
 
 
 Q: I switched resolution while recording and the resulting clip is crappy!!!
@@ -38,7 +41,8 @@ Q: This readme is lame!!!!
 A: You're right. Sorry.
 
 
-Thanks to:
+## Acknowledgments
+
 * Marc Flerackers,
 * Francois Revol,
 * Andrew Bachmann for the help,
