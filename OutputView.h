@@ -30,8 +30,6 @@ public:
 	
 	BPath OutputFileName() const;
 	
-	bool MinimizeOnStart() const;
-
 	void UpdatePreviewFromSettings();
 			
 private:
@@ -40,9 +38,7 @@ private:
 	BTextControl *fFileName;
 	BString fFileExtension;
 	BButton* fFilePanelButton;
-	
-	BCheckBox *fMinimizeOnStart;
-	
+		
 	BButton *fSelectArea;
 	BRadioButton *fWholeScreen;
 	BRadioButton *fCustomArea;

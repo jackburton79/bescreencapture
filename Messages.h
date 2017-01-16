@@ -11,7 +11,6 @@ enum appMessages {
 	kCaptureFinished,
 	kEncodingFinished,
 	kFileNameChanged,
-	kMinimizeOnRecording,
 	kMsgGetControllerMessenger
 };
 

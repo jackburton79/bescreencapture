@@ -67,7 +67,6 @@ OutputView::AttachedToWindow()
 	
 	Settings settings;
 	
-	fMinimizeOnStart->SetTarget(this);
 	fFileName->SetTarget(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
@@ -142,11 +141,7 @@ OutputView::MessageReceived(BMessage *message)
 		case kFileNameChanged:
 			fController->SetOutputFileName(fFileName->Text());
 			break;
-		
-		case kMinimizeOnRecording:
-			Settings().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
-			break;
-				
+						
 		case kScaleChanged:
 		{
 			int32 value;
@@ -236,13 +231,6 @@ OutputView::MessageReceived(BMessage *message)
 }
 
 
-bool
-OutputView::MinimizeOnStart() const
-{
-	return fMinimizeOnStart->Value() == B_CONTROL_ON;
-}
-
-
 BPath
 OutputView::OutputFileName() const
 {
@@ -295,9 +283,6 @@ OutputView::_LayoutView(bool classic)
 	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	
-	fMinimizeOnStart = new BCheckBox("HideWhenRecording",
-		"Hide window when recording", new BMessage(kMinimizeOnRecording));
-
 	fScaleSlider = new SizeControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
 
@@ -333,7 +318,6 @@ OutputView::_LayoutView(bool classic)
 			.End()
 			.Add(fScaleSlider)
 			.SetInsets(B_USE_DEFAULT_SPACING)
-			.Add(fMinimizeOnStart)
 		.End()	
 		.View();
 
@@ -341,8 +325,6 @@ OutputView::_LayoutView(bool classic)
 	
 	fScaleSlider->SetValue(100);
 	
-	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
-
 	fFileExtension = fController->MediaFileFormat().file_extension;		
 }
 

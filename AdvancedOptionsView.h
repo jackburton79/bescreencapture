@@ -20,6 +20,7 @@ private:
 	
 	BOptionPopUp* fDepthControl;
 	
+	BCheckBox *fMinimizeOnStart;
 	BCheckBox* fHideDeskbarIcon;
 };
 
