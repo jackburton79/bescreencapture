@@ -132,6 +132,7 @@ SelectionViewRegion::MouseDown(BPoint where)
 		Invalidate();
 		fDragMode = DRAG_MODE_SELECT;
 		fSelectionStart = where;
+		fSelectionEnd = where;
 	}
 }
 
