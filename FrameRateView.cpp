@@ -18,7 +18,9 @@
 #include <TextControl.h>
 #include <StringView.h>
 
+#include <algorithm>
 #include <cstdlib>
+#include <iostream>
 
 const static char* kCaptureFreqLabel = "Capture frame every";
 const static char* kFrameRateLabel = "Frame rate";
@@ -27,6 +29,14 @@ const static uint32 kLocalCaptureFreqChanged = 'CFCh';
 const static uint32 kLocalFrameRateChanged = 'FrCh';
 const static uint32 kAutoAdjust = 'FrCh';
 
+
+static
+void
+CapFloat(float &toLimit, const float min, const float max)
+{
+	toLimit = std::max(min, toLimit);
+	toLimit = std::min(max, toLimit);
+}
 
 
 FrameRateView::FrameRateView(Controller* controller)
@@ -85,6 +95,10 @@ FrameRateView::MessageReceived(BMessage* message)
 		case kLocalCaptureFreqChanged:
 		{
 			float delay = strtof(fCaptureFreq->Text(), NULL);
+			CapFloat(delay, 10, 1000);
+			BString text;
+			text << delay;
+			fCaptureFreq->SetText(text);
 			fController->SetCaptureFrameDelay(delay);
 			break;
 		}
