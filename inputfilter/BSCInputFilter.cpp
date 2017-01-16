@@ -6,6 +6,7 @@
 #include <syslog.h>
 
 #include "BSCApp.h"
+#include "PublicMessages.h"
 
 class BSCInputFilter : public BInputServerFilter {
 	status_t		InitCheck();
@@ -46,7 +47,7 @@ BSCInputFilter::Filter(BMessage* message, BList* outList)
 						return B_SKIP_MESSAGE;
 					}
 
-					BMessage msg(kCmdToggleRecording);
+					BMessage msg(kMsgGUIToggleCapture);
 					if (be_roster->IsRunning(kAppSignature)) {
 						BMessenger messenger(kAppSignature);
 						messenger.SendMessage(&msg);

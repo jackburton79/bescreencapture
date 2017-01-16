@@ -3,6 +3,7 @@
 #include "BSCWindow.h"
 #include "Controller.h"
 #include "DeskbarControlView.h"
+#include "PublicMessages.h"
 #include "Settings.h"
 
 #include <private/interface/AboutWindow.h>
@@ -85,7 +86,7 @@ BSCApp::ReadyToRun()
 	
 	if (fShouldStartRecording) {
 		fWindow->Run();
-		BMessenger(fWindow).SendMessage(kCmdToggleRecording);
+		BMessenger(gControllerLooper).SendMessage(kMsgGUIToggleCapture);
 	} else
 		fWindow->Show();
 
@@ -113,9 +114,10 @@ void
 BSCApp::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case kCmdToggleRecording:
-			if (fWindow != NULL)
-				BMessenger(fWindow).SendMessage(message);
+		case kMsgGUIToggleCapture:
+		case kMsgGUITogglePause:
+			if (gControllerLooper != NULL)
+				BMessenger(gControllerLooper).SendMessage(message);
 			else {
 				// Start recording as soon as a window is created
 				fShouldStartRecording = true;

@@ -2,7 +2,7 @@
 #define __PUBLIC_MESSAGES_H
 
 enum publicMessages {
-	kMsgGUIToggleCapture = 'StaC',
+	kMsgGUIToggleCapture = 'StoR',
 	kMsgGUITogglePause = 'PauC',
 };
 

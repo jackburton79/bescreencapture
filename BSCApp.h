@@ -5,10 +5,6 @@
 
 #define kAppSignature "application/x-vnd.BeScreenCapture"
 
-enum {
-	kCmdToggleRecording = 'StoR'
-};
-
 
 class Arguments;
 class BSCApp : public BApplication {

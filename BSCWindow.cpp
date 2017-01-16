@@ -202,11 +202,7 @@ BSCWindow::MessageReceived(BMessage *message)
 			window->Show();
 			break;
 		}
-				
-		case kCmdToggleRecording:
-			fStartStopButton->Invoke();
-			break;
-		
+
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;

@@ -9,7 +9,7 @@ BeScreenCapture accepts various messages  to start/stop/pause the recording proc
 Haiku includes the "Shortcuts" preflet which you can use to define some shortcut keys to be able to send these messages to the application.
 
 These are the commands  to configure in the "Shortcuts" preflet for the various actions:
-* Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StaC' "
+* Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StoR' "
 * Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
 
 Note: The command constant could change between versions
