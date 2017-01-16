@@ -55,8 +55,6 @@ private:
 	BRect fStringRect;
 	
 	int fDragMode;
-	
-	void MakeSelectionRect(BRect *rect);
 };
 
 
@@ -143,28 +141,25 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 	switch (fDragMode) {
 		case DRAG_MODE_SELECT:
 		{
-			BRect selectionRect;
-			MakeSelectionRect(&selectionRect);
+			BRect selectionRect = SelectionRect();
 	
-			BRect newSelection;	
 			fSelectionEnd = where;
-			MakeSelectionRect(&newSelection);
+			
+			BRect newSelection = SelectionRect();
 		
 			Invalidate(selectionRect | newSelection);
 			break;
 		}
 		case DRAG_MODE_MOVE:
 		{
-			BRect selectionRect;
-			MakeSelectionRect(&selectionRect);
+			BRect selectionRect = SelectionRect();
 			float xOffset = where.x - fCurrentMousePosition.x;
 			float yOffset = where.y - fCurrentMousePosition.y;
 			fSelectionStart.x += xOffset;
 			fSelectionStart.y += yOffset;
 			fSelectionEnd.x += xOffset;
 			fSelectionEnd.y += yOffset;
-			BRect newSelection;
-			MakeSelectionRect(&newSelection);
+			BRect newSelection = SelectionRect();
 			Invalidate(selectionRect | newSelection);
 			break;
 		}	
@@ -215,8 +210,7 @@ SelectionViewRegion::Draw(BRect updateRect)
 	SelectionView::Draw(updateRect);
 	
 	if (SelectionRect().IsValid()) {
-		BRect selection;
-		MakeSelectionRect(&selection);
+		BRect selection = SelectionRect();
 		
 		StrokeRect(selection, B_MIXED_COLORS);
 	}
@@ -227,18 +221,11 @@ BRect
 SelectionViewRegion::SelectionRect()
 {
 	BRect rect;
-	MakeSelectionRect(&rect);
-	return rect;
-}
-
-
-void
-SelectionViewRegion::MakeSelectionRect(BRect *rect)
-{
-	rect->SetLeftTop(BPoint(min_c(fSelectionStart.x, fSelectionEnd.x),
+	rect.SetLeftTop(BPoint(min_c(fSelectionStart.x, fSelectionEnd.x),
 					min_c(fSelectionStart.y, fSelectionEnd.y)));
-	rect->SetRightBottom(BPoint(max_c(fSelectionStart.x, fSelectionEnd.x),
+	rect.SetRightBottom(BPoint(max_c(fSelectionStart.x, fSelectionEnd.x),
 					max_c(fSelectionStart.y, fSelectionEnd.y)));
+	return rect;
 }
 
 
