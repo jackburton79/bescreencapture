@@ -95,7 +95,7 @@ BSCApp::ReadyToRun()
 	if (deskbar.IsRunning()) { 
 		while (deskbar.HasItem("BSC Control"))
 			deskbar.RemoveItem("BSC Control");
-		if (!Settings().HideDeskbarIcon()) {
+		if (!fShouldStartRecording) {
 			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
 				"BSC Control"));
 		}

@@ -75,10 +75,14 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 			.Add(fDepthControl = new BOptionPopUp("DepthControl", "Clip color depth:",
 				new BMessage(kDepthChanged)))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
-					"Hide Deskbar icon (ctrl+command+shift+r to stop recording)",
-					new BMessage(kHideDeskbar)))
+					"Incognito mode (Hide window and Deskbar icon)", new BMessage(kHideDeskbar)))
+			
 		.End()
 		.View();
+	
+	fHideDeskbarIcon->SetToolTip("Install the bescreencapture_inputfilter to be able to stop recording"
+								"with ctrl+command+shift+r, or define a shortcut key with the Shortcut preflet");
+
 	
 	advancedBox->AddChild(layoutView);
 	
@@ -112,8 +116,7 @@ AdvancedOptionsView::AttachedToWindow()
 	
 	fHideDeskbarIcon->SetTarget(this);
 	
-	fHideDeskbarIcon->SetValue(Settings().HideDeskbarIcon()
-		? B_CONTROL_ON : B_CONTROL_OFF);
+	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 }
 
 
@@ -127,7 +130,6 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		
 		case kHideDeskbar:
 		{
-			Settings().SetHideDeskbarIcon(fHideDeskbarIcon->Value() == B_CONTROL_ON);
 			BDeskbar deskbar;
 			if (deskbar.IsRunning()) {
 				if (fHideDeskbarIcon->Value() == B_CONTROL_ON) { 

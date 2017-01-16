@@ -34,11 +34,7 @@ public:
 	void SetUseDirectWindow(const bool &use);
 	void GetUseDirectWindow(bool &use) const;
 	bool UseDirectWindow() const;
-	
-	void SetHideDeskbarIcon(const bool &use);
-	void GetHideDeskbarIcon(bool &use) const;
-	bool HideDeskbarIcon() const;
-	
+		
 	void SetIncludeCursor(const bool &include);
 	void GetIncludeCursor(bool &include) const;
 	bool IncludeCursor() const;

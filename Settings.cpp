@@ -23,7 +23,6 @@ const static char *kOutputFile = "output file";
 const static char *kOutputFileFormat = "output file format";
 const static char *kOutputCodecName = "output codec";
 const static char *kThreadPriority = "thread priority";
-const static char *kHideDeskbarIcon = "hide Deskbar icon";
 const static char *kWindowFrameBorderSize = "window frame border size";
 const static char *kCaptureFrameDelay = "capture frame delay";
 
@@ -84,8 +83,6 @@ Settings::Load()
 			sSettings.ReplaceBool(kIncludeCursor, boolean);
 		if (tempMessage.FindBool(kMinimize, &boolean) == B_OK)
 			sSettings.ReplaceBool(kMinimize, boolean);
-		if (tempMessage.FindBool(kHideDeskbarIcon, &boolean) == B_OK)
-			sSettings.ReplaceBool(kHideDeskbarIcon, boolean);
 		if (tempMessage.FindString(kOutputFile, &string) == B_OK)
 			sSettings.ReplaceString(kOutputFile, string);
 		if (tempMessage.FindString(kOutputFileFormat, &string) == B_OK)
@@ -244,32 +241,6 @@ Settings::UseDirectWindow() const
 	bool useDW;
 	fSettings->FindBool(kUseDirectWindow, &useDW);
 	return useDW;
-}
-
-
-void
-Settings::SetHideDeskbarIcon(const bool &use)
-{
-	if (!fSettings->HasBool(kHideDeskbarIcon))
-		fSettings->AddBool(kHideDeskbarIcon, use);
-	else
-		fSettings->ReplaceBool(kHideDeskbarIcon, use);
-}
-
-
-void
-Settings::GetHideDeskbarIcon(bool &use) const
-{
-	fSettings->FindBool(kHideDeskbarIcon, &use);
-}
-
-
-bool
-Settings::HideDeskbarIcon() const
-{
-	bool hideDeskbar;
-	fSettings->FindBool(kHideDeskbarIcon, &hideDeskbar);
-	return hideDeskbar;
 }
 
 
@@ -476,7 +447,6 @@ Settings::SetDefaults()
 	sSettings.AddBool(kIncludeCursor, true);
 	sSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
 	sSettings.AddBool(kMinimize, false);
-	sSettings.AddBool(kHideDeskbarIcon, false);
 	sSettings.AddString(kOutputFileFormat, "");
 	sSettings.AddString(kOutputCodecName, "");
 	sSettings.AddInt32(kWindowFrameBorderSize, 0);
