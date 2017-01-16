@@ -10,6 +10,7 @@
 #include <LayoutBuilder.h>
 #include <Slider.h>
 #include <String.h>
+#include <StringView.h>
 
 #include <stdlib.h>
 
@@ -53,7 +54,8 @@ SizeControl::SizeControl(const char* name, const char* label,
 	maxLabel << maxValue << " " << unit;
 	
 	fSizeSlider->SetLimitLabels(minLabel.String(), maxLabel.String());
-	fSizeTextControl = new BTextControl(unit, "", new BMessage(kTextControlMessage));
+	fSizeTextControl = new BTextControl("", "", new BMessage(kTextControlMessage));
+	fTextLabel = new BStringView("label", unit);
 	
 	BLayoutBuilder::Group<>(this)
 	.AddGroup(B_HORIZONTAL, 1)
@@ -61,8 +63,9 @@ SizeControl::SizeControl(const char* name, const char* label,
 		.AddGroup(B_VERTICAL, 1)
 			.AddStrut(1)
 			.Add(fSizeTextControl)
-			.End()
-		.End();
+		.End()
+		.Add(fTextLabel)
+	.End();
 		
 	fSizeTextControl->SetModificationMessage(new BMessage(kTextControlMessage));
 	fSizeTextControl->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,

@@ -10,6 +10,7 @@
 #include <SupportDefs.h>
 
 class BMessage;
+class BStringView;
 class BTextControl;
 class SizeControl : public BControl {
 public:
@@ -28,6 +29,7 @@ public:
 private:
 	BSlider* fSizeSlider;
 	BTextControl* fSizeTextControl;
+	BStringView* fTextLabel;
 	uint32 fWhat;
 };
 
