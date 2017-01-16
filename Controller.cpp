@@ -117,15 +117,13 @@ Controller::MessageReceived(BMessage *message)
 			break;
 		}
 		
-		case kMsgGUIStartCapture:
-		case kMsgGUIStopCapture:
+		case kMsgGUIToggleCapture:
 			if (fEncoderThread < 0)
-				ToggleCapture(message->what == kMsgGUIStartCapture);
+				ToggleCapture();
 			break;
 		
-		case kPauseCapture:
-		case kResumeCapture:
-			TogglePause(message->what == kPauseCapture);
+		case kMsgGUITogglePause:
+			TogglePause();
 			break;
 			
 		case kEncodingFinished:
@@ -218,26 +216,31 @@ Controller::State() const
 
 
 void
-Controller::ToggleCapture(bool start)
+Controller::ToggleCapture()
 {
 	BAutolock _(this);
-	if (fCaptureThread < 0 && start)
+	int state = State();
+	if (state == STATE_IDLE)
 		StartCapture();
-	else
+	else if (state == STATE_RECORDING)
 		EndCapture();
+	else {
+		std::cerr << "Controller::ToggleCapture() called with an unexpected state: ";
+		std::cerr << state << std::endl;
+	}	
 }
 
 
 void
-Controller::TogglePause(bool pause)
+Controller::TogglePause()
 {
 	BAutolock _(this);
 	if (fCaptureThread < 0)
 		return;
 		
-	if (fPaused && !pause)
+	if (fPaused)
 		_ResumeCapture();
-	else if (!fPaused && pause)
+	else if (!fPaused)
 		_PauseCapture();
 }
 

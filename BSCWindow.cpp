@@ -54,7 +54,7 @@ BSCWindow::BSCWindow()
 	_BuildMenu();
 	
 	fStartStopButton = new BButton("Start", "Start Recording",
-		new BMessage(kMsgGUIStartCapture));
+		new BMessage(kMsgGUIToggleCapture));
 	
 	fStartStopButton->SetTarget(fController);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
@@ -353,8 +353,6 @@ BSCWindow::_CaptureStarted()
 	fStatusBar->Reset();
 	
 	fStartStopButton->SetLabel("Stop Recording");
-
-	SendNotices(kMsgGUIStartCapture);
 	
 	return B_OK;
 }
@@ -367,8 +365,6 @@ BSCWindow::_CaptureFinished()
 	
 	fStartStopButton->SetLabel("Start Recording");
 	
-	SendNotices(kMsgGUIStopCapture);
-
 	if (IsHidden())
 		Show();
 	if (IsMinimized())

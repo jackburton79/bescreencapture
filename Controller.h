@@ -41,8 +41,8 @@ public:
 	
 	int			State() const;
 		
-	void		ToggleCapture(bool start);
-	void		TogglePause(bool pause);
+	void		ToggleCapture();
+	void		TogglePause();
 	
 	int32		RecordedFrames() const;
 	

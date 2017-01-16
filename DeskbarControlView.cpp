@@ -143,13 +143,11 @@ void
 DeskbarControlView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case kMsgGUIStartCapture:
-		case kMsgGUIStopCapture:
+		case kMsgGUIToggleCapture:
 			if (fControllerMessenger.IsValid())
 				fControllerMessenger.SendMessage(message);
 			break;
-		case kPauseCapture:
-		case kResumeCapture:
+		case kMsgGUITogglePause:
 			if (fControllerMessenger.IsValid())
 				fControllerMessenger.SendMessage(message->what);
 			break;
@@ -192,13 +190,13 @@ DeskbarControlView::MouseDown(BPoint where)
 {
 	BPopUpMenu *menu = new BPopUpMenu("menu");
 	if (fRecording) {
-		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIStopCapture)));
+		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIToggleCapture)));
 		if (fPaused)
-			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kResumeCapture)));
+			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kMsgGUITogglePause)));
 		else
-			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kPauseCapture)));
+			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kMsgGUITogglePause)));
 	} else
-		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIStartCapture)));
+		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIToggleCapture)));
 	
 	menu->SetTargetForItems(this);
 	
