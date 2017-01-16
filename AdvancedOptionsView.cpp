@@ -25,9 +25,9 @@
 
 
 const static uint32 kLocalUseDirectWindow = 'UsDW';
-const static uint32 kLocalDepthChanged = 'DeCh';
 const static uint32 kLocalHideDeskbar = 'HiDe';
 const static uint32 kLocalMinimizeOnRecording = 'MiRe';
+
 
 AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	:
@@ -72,8 +72,6 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 			.Add(fUseDirectWindow = new BCheckBox("Use DW",
 					"Use BDirectWindow (allows less CPU usage)",
 					new BMessage(kLocalUseDirectWindow)))
-			//.Add(fDepthControl = new BOptionPopUp("DepthControl", "Clip color depth:",
-			//	new BMessage(kLocalDepthChanged)))
 			.Add(fMinimizeOnStart = new BCheckBox("HideWhenRecording",
 				"Hide window when recording", new BMessage(kLocalMinimizeOnRecording)))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
@@ -93,18 +91,12 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	} else
 		fUseDirectWindow->SetEnabled(false);
 		
-	/*fDepthControl->AddOption("8 bit", B_CMAP8);
-	fDepthControl->AddOption("15 bit", B_RGB15);
-	fDepthControl->AddOption("16 bit", B_RGB16);
-	fDepthControl->AddOption("32 bit", B_RGB32);
-	fDepthControl->SelectOptionFor(B_RGB32);	
-	fDepthControl->SetEnabled(false);
-	*/	
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 	
 	Settings settings;
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
+	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 }
 
 
@@ -116,11 +108,8 @@ AdvancedOptionsView::AttachedToWindow()
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
 	fUseDirectWindow->SetTarget(this);
-	//fDepthControl->SetTarget(this);
 	fMinimizeOnStart->SetTarget(this);
 	fHideDeskbarIcon->SetTarget(this);
-	
-	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 }
 
 
@@ -132,35 +121,31 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 			break;
 		
-		case kLocalMinimizeOnRecording:
-			Settings().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
-			break;
-			
 		case kLocalHideDeskbar:
 		{
+			bool hide = fHideDeskbarIcon->Value() == B_CONTROL_ON;
 			BDeskbar deskbar;
 			if (deskbar.IsRunning()) {
-				if (fHideDeskbarIcon->Value() == B_CONTROL_ON) { 
+				if (hide) {
+					fCurrentMinimizeValue = Settings().MinimizeOnRecording();
+					fMinimizeOnStart->SetValue(B_CONTROL_ON);
+					fMinimizeOnStart->SetEnabled(false);
 					while (deskbar.HasItem("BSC Control"))
 						deskbar.RemoveItem("BSC Control");
 				} else if (!deskbar.HasItem("BSC Control")) {
+					fMinimizeOnStart->SetValue(fCurrentMinimizeValue ? B_CONTROL_ON : B_CONTROL_OFF);
+					fMinimizeOnStart->SetEnabled(true);
 					deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
 						"BSC Control"));
 				}
 			}
-			break;
 		}
-		
-		case kLocalDepthChanged:
-		{
-			color_space depth;
-			const char *name = NULL;
-			fDepthControl->SelectedOption(&name, (int32*)&depth);
-			fController->SetVideoDepth(depth);
+		// Fall through
+		case kLocalMinimizeOnRecording:
+			Settings().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
 			break;
-		}
 		
-
+		
 		default:
 			BView::MessageReceived(message);
 			break;

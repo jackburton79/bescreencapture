@@ -4,7 +4,6 @@
 #include <View.h>
 
 class BCheckBox;
-class BOptionPopUp;
 class Controller;
 class SizeControl;
 class AdvancedOptionsView : public BView {
@@ -17,11 +16,9 @@ public:
 private:
 	Controller* fController;
 	BCheckBox* fUseDirectWindow;
-	
-	BOptionPopUp* fDepthControl;
-	
 	BCheckBox *fMinimizeOnStart;
 	BCheckBox* fHideDeskbarIcon;
+	bool fCurrentMinimizeValue;
 };
 
 #endif
