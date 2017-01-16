@@ -81,9 +81,6 @@ FixRect(BRect &rect, const bool fixWidth, const bool fixHeight)
 
 
 
-const int kFrameBorderSize = 10;
-
-
 void
 GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border)
 {
