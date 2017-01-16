@@ -480,7 +480,7 @@ Settings::SetDefaults()
 	sSettings.AddString(kOutputFileFormat, "");
 	sSettings.AddString(kOutputCodecName, "");
 	sSettings.AddInt32(kWindowFrameBorderSize, 0);
-	sSettings.AddInt32(kCaptureFrameDelay, 200);
+	sSettings.AddInt32(kCaptureFrameDelay, 20);
 	
 	return B_OK;
 }
