@@ -13,10 +13,10 @@ Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 
 ## Contributors
 
-Zumi, Pete Goodeve (icons)
-John Scipione (layout fixes)
-Jessica Hamilton (fixes)
-puckipedia ("incognito" capture mode)
+* Zumi, Pete Goodeve (icons)
+* John Scipione (layout fixes)
+* Jessica Hamilton (fixes)
+* puckipedia ("incognito" capture mode)
 
 ## FAQ:
 
