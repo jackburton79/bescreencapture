@@ -4,7 +4,6 @@
 #include "FrameRateView.h"
 #include "MediaFormatView.h"
 #include "Messages.h"
-#include "PriorityControl.h"
 #include "Settings.h"
 #include "SizeControl.h"
 

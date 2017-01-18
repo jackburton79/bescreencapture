@@ -44,14 +44,12 @@ SRCS = \
 	 DeskbarControlView.cpp  \
 	 Executor.cpp  \
 	 FileList.cpp  \
-	 FrameRateView.cpp \
+	 FrameRateView.cpp  \
 	 InfoView.cpp  \
-	 MediaFormatView.cpp \
+	 MediaFormatView.cpp  \
 	 MovieEncoder.cpp  \
-	 OptionsWindow.cpp \
 	 OutputView.cpp  \
 	 PreviewView.cpp  \
-	 PriorityControl.cpp  \
 	 SelectionWindow.cpp  \
 	 Settings.cpp  \
 	 SizeControl.cpp  \
@@ -71,6 +69,8 @@ RSRCS = \
 
 
 # @<-src@ 
+#%}
+
 #%}
 
 #%}

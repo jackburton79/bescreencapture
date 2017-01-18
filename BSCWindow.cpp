@@ -7,7 +7,6 @@
 #include "InfoView.h"
 #include "Messages.h"
 #include "OutputView.h"
-#include "OptionsWindow.h"
 #include "SelectionWindow.h"
 #include "Settings.h"
 #include "Utils.h"
@@ -37,7 +36,6 @@ const static BRect kWindowRect(0, 0, 400, 600);
 const char* kEncodingString = "Encoding movie...";
 const char* kDoneString = "Done!";
 
-const static uint32 kGUIOpenMediaWindow = 'j89d';
 
 BSCWindow::BSCWindow()
 	:
@@ -183,10 +181,6 @@ BSCWindow::MessageReceived(BMessage *message)
 	switch (message->what) {
 		case B_ABOUT_REQUESTED:
 			be_app->PostMessage(B_ABOUT_REQUESTED);
-			break;
-
-		case kGUIOpenMediaWindow:
-			(new OptionsWindow(fController))->Show();
 			break;
 			
 		case kSelectArea:
