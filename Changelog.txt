@@ -1,4 +1,4 @@
-v2.3 (not yet released)
+v2.3
 	- In selection mode, add an hint to the user via text instructions on the screen.
 	- The selection can be moved after being selected
 	- Added capture frame settings
