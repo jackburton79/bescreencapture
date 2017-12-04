@@ -5,10 +5,13 @@
 
 #include <Application.h>
 #include <Bitmap.h>
+#include <GroupLayoutBuilder.h>
 #include <IconUtils.h>
+#include <LayoutBuilder.h>
 #include <LayoutUtils.h>
 #include <Message.h>
 #include <Resources.h>
+#include <StringView.h>
 #include <Window.h>
 
 #include <algorithm>
@@ -28,15 +31,24 @@ CamStatusView::CamStatusView(Controller* controller)
 	:
 	BView("CamStatusView", B_WILL_DRAW|B_PULSE_NEEDED),
 	fController(controller),
+	fStringView(NULL),
 	fNumFrames(0),
 	fRecording(false),
 	fPaused(false),
 	fRecordingBitmap(NULL),
 	fPauseBitmap(NULL)
 {
+	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	BRect bitmapRect(0, 0, kBitmapSize, kBitmapSize);
 	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
+	
+	BView* layoutView = BLayoutBuilder::Group<>()
+		.Add(fStringView = new BStringView("cam string view", ""))
+	.View();
+	
+	fStringView->Hide();
+	AddChild(layoutView);
 }
 
 
@@ -67,9 +79,10 @@ CamStatusView::AttachedToWindow()
 
 void
 CamStatusView::Draw(BRect updateRect)
-{	
+{
+	BView::Draw(updateRect);
 	if (fRecording) {
-		BFont font;
+	/*	BFont font;
 		GetFont(&font);
 		float scale = capped_size(font.Size()) / 12;
 		float bitmapSize = kBitmapSize * scale;
@@ -83,8 +96,13 @@ CamStatusView::Draw(BRect updateRect)
 		}
 		SetHighColor(0, 0, 0);
 		SetDrawingMode(B_OP_OVER);
-		BString string;
-		string << fNumFrames;
+		
+		time_t t = time(NULL) - fStartTime;
+		struct tm* diffTime = localtime(&t);
+		char timeString[128];
+		strftime(timeString, sizeof(timeString), "%T", diffTime);
+		BString string(timeString);
+		string << " (" << fNumFrames << ")";
 		float width = StringWidth(string);
 		font_height height;
 		GetFontHeight(&height);
@@ -92,7 +110,7 @@ CamStatusView::Draw(BRect updateRect)
 		bounds.left = bounds.left + bitmapSize;
 		BPoint point((bounds.Width() - width) / 2 + bounds.left,
 					(bounds.Height() - (height.ascent + height.descent)) / 2 + height.ascent + height.descent + 1);
-		DrawString(string, point);
+		DrawString(string, point);*/
 	}
 }
 
@@ -137,6 +155,11 @@ void
 CamStatusView::Pulse()
 {
 	fNumFrames = fController->RecordedFrames();
+	time_t t = time(NULL) - fStartTime;
+	struct tm* diffTime = localtime(&t);
+	char timeString[128];
+	strftime(timeString, sizeof(timeString), "%T", diffTime);
+	fStringView->SetText(timeString);
 	Invalidate();
 }
 
@@ -160,6 +183,11 @@ void
 CamStatusView::SetRecording(const bool recording)
 {
 	fRecording = recording;
+	if (recording) {
+		time(&fStartTime);
+		fStringView->Show();
+	} else
+		fStringView->Hide();
 	Invalidate();
 }
 
