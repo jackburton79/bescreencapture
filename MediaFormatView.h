@@ -39,8 +39,6 @@ private:
 	
 	media_file_format _MediaFileFormat() const;
 	void _SelectFileFormatMenuItem(const char* formatName);
-	
-	static BMenuItem *CreateCodecMenuItem(const media_codec_info &codec);
 };
 
 
