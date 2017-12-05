@@ -15,7 +15,6 @@
 #include <Window.h>
 
 #include <algorithm>
-#include <stdio.h>
 
 const static float kSpacing = 10;
 const static float kBitmapSize = 48;
@@ -34,17 +33,20 @@ public:
 		BView(name, B_WILL_DRAW|B_FULL_UPDATE_ON_RESIZE),
 		fBitmap(NULL)
 	{
-		
 	}
-	
 	virtual void Draw(BRect updateRect)
 	{
 		SetDrawingMode(B_OP_ALPHA);
-		DrawBitmap(fBitmap, fBitmap->Bounds(), Bounds());	
+		if (fBitmap != NULL)
+			DrawBitmap(fBitmap, fBitmap->Bounds(), Bounds());	
 	}
-	void SetBitmap(BBitmap* bitmap) { fBitmap = bitmap; }
+	void SetBitmap(const BBitmap* bitmap)
+	{
+		fBitmap = bitmap;
+		Invalidate();
+	}
 private:
-	BBitmap* fBitmap;
+	const BBitmap* fBitmap;
 };
 
 CamStatusView::CamStatusView(Controller* controller)
@@ -194,6 +196,7 @@ CamStatusView::SetRecording(const bool recording)
 {
 	fRecording = recording;
 	if (recording) {
+		fStringView->SetText("");
 		fStringView->Show();
 		fBitmapView->Show();
 	} else {
@@ -214,15 +217,6 @@ CamStatusView::Recording() const
 BSize
 CamStatusView::MinSize()
 {
-	/*BFont font;
-	GetFont(&font);
-	float scale = capped_size(font.Size()) / 12;
-	float bitmapSize = kBitmapSize * scale;
-	float spacingSize = kSpacing * scale;
-	float width = bitmapSize + StringWidth("99999999999999") + spacingSize;
-	float height = bitmapSize;
-	
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(width, height));*/
 	return BView::MinSize();
 }
 
