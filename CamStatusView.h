@@ -27,6 +27,7 @@ public:
 private:
 	Controller* fController;
 	BStringView* fStringView;
+	BView* fBitmapView;
 	int32 fNumFrames;
 	bool fRecording;
 	bool fPaused;
