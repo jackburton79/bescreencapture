@@ -32,7 +32,7 @@ private:
 	bool fPaused;
 	BBitmap* fRecordingBitmap;
 	BBitmap* fPauseBitmap;
-	time_t fStartTime;
+	time_t fRecordTime;
 };
 
 #endif

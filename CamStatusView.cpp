@@ -155,8 +155,10 @@ void
 CamStatusView::Pulse()
 {
 	fNumFrames = fController->RecordedFrames();
-	time_t t = time(NULL) - fStartTime;
-	struct tm* diffTime = localtime(&t);
+	fRecordTime = (time_t)fController->RecordTime() / 1000000;
+	if (fRecordTime < 0)
+		fRecordTime = 0;
+	struct tm* diffTime = localtime(&fRecordTime);
 	char timeString[128];
 	strftime(timeString, sizeof(timeString), "%T", diffTime);
 	fStringView->SetText(timeString);
@@ -183,10 +185,9 @@ void
 CamStatusView::SetRecording(const bool recording)
 {
 	fRecording = recording;
-	if (recording) {
-		time(&fStartTime);
+	if (recording)
 		fStringView->Show();
-	} else
+	else
 		fStringView->Hide();
 	Invalidate();
 }
