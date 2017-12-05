@@ -53,6 +53,7 @@ Controller::Controller()
 	BLooper("Controller"),
 	fCaptureThread(-1),
 	fNumFrames(0),
+	fRecordTime("record_time", true),
 	fKillCaptureThread(true),
 	fPaused(false),
 	fDirectWindowAvailable(false),
@@ -249,6 +250,13 @@ int32
 Controller::RecordedFrames() const
 {
 	return atomic_get((int32*)&fNumFrames);
+}
+
+
+bigtime_t
+Controller::RecordTime() const
+{
+	return fRecordTime.ElapsedTime();
 }
 
 
@@ -603,6 +611,7 @@ Controller::StartCapture()
 		return;
 	}
 
+	fRecordTime.Reset();
 	SendNotices(kMsgControllerCaptureStarted);
 }
 
@@ -618,6 +627,7 @@ Controller::EndCapture()
 		wait_for_thread(fCaptureThread, &unused);
 	}
 	
+	fRecordTime.Suspend();
 	SendNotices(kMsgControllerCaptureStopped);
 	
 	EncodeMovie();
@@ -628,6 +638,7 @@ void
 Controller::_PauseCapture()
 {
 	SendNotices(kMsgControllerCapturePaused);
+	fRecordTime.Suspend();
 	
 	BAutolock _(this);
 	fPaused = true;
@@ -642,6 +653,7 @@ Controller::_ResumeCapture()
 	resume_thread(fCaptureThread);
 	fPaused = false;
 	
+	fRecordTime.Resume();
 	SendNotices(kMsgControllerCaptureResumed);
 }
 

@@ -8,6 +8,7 @@
 #include <MediaFile.h>
 #include <ObjectList.h>
 #include <OS.h>
+#include <StopWatch.h>
 
 
 enum {
@@ -45,6 +46,7 @@ public:
 	void		TogglePause();
 	
 	int32		RecordedFrames() const;
+	bigtime_t	RecordTime() const;
 	
 	void		EncodeMovie();
 	
@@ -77,6 +79,7 @@ public:
 private:
 	thread_id			fCaptureThread;
 	int32				fNumFrames;
+	BStopWatch			fRecordTime;
 	bool				fKillCaptureThread;
 	bool				fPaused;
 
