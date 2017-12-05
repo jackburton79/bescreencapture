@@ -6,6 +6,7 @@
 class BBitmap;
 class Controller;
 class BStringView;
+class SquareBitmapView;
 class CamStatusView : public BView {
 public:
 	CamStatusView(Controller* controller);
@@ -27,7 +28,7 @@ public:
 private:
 	Controller* fController;
 	BStringView* fStringView;
-	BView* fBitmapView;
+	SquareBitmapView* fBitmapView;
 	int32 fNumFrames;
 	bool fRecording;
 	bool fPaused;

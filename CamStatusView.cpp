@@ -27,6 +27,26 @@ capped_size(float size)
 }
 
 
+class SquareBitmapView : public BView {
+public:
+	SquareBitmapView(const char* name)
+		:
+		BView(name, B_WILL_DRAW|B_FULL_UPDATE_ON_RESIZE),
+		fBitmap(NULL)
+	{
+		
+	}
+	
+	virtual void Draw(BRect updateRect)
+	{
+		SetDrawingMode(B_OP_ALPHA);
+		DrawBitmap(fBitmap, fBitmap->Bounds(), Bounds());	
+	}
+	void SetBitmap(BBitmap* bitmap) { fBitmap = bitmap; }
+private:
+	BBitmap* fBitmap;
+};
+
 CamStatusView::CamStatusView(Controller* controller)
 	:
 	BView("CamStatusView", B_WILL_DRAW|B_PULSE_NEEDED),
@@ -41,12 +61,12 @@ CamStatusView::CamStatusView(Controller* controller)
 {
 	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	BRect bitmapRect(0, 0, kBitmapSize, kBitmapSize);
-	fRecordingBitmap = new BBitmap(bitmapRect, B_BITMAP_WILL_OVERLAY, B_RGBA32);
-	fPauseBitmap = new BBitmap(bitmapRect, B_BITMAP_WILL_OVERLAY, B_RGBA32);
+	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
+	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
-		.Add(fBitmapView = new BView("bitmap view", B_WILL_DRAW|B_FULL_UPDATE_ON_RESIZE))
+		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
 		.Add(fStringView = new BStringView("cam string view", ""))
 	.View();
 	
@@ -86,11 +106,7 @@ CamStatusView::AttachedToWindow()
 	if (buffer != NULL)
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);
 	
-	//fBitmapView->SetViewBitmap(fRecordingBitmap, fRecordingBitmap->Bounds(),
-	//	fBitmapView->Bounds(), B_FOLLOW_ALL, 0);
-	rgb_color black = {0, 0, 0};
-	fBitmapView->SetViewOverlay(fRecordingBitmap, fRecordingBitmap->Bounds(),
-		fBitmapView->Bounds(), &black, B_FOLLOW_ALL, 0);
+	fBitmapView->SetBitmap(fRecordingBitmap);
 }
 
 
@@ -159,11 +175,9 @@ CamStatusView::TogglePause(const bool paused)
 {
 	fPaused = paused;
 	if (fPaused)
-		fBitmapView->SetViewBitmap(fPauseBitmap, fPauseBitmap->Bounds(),
-			fBitmapView->Bounds(), B_FOLLOW_ALL, 0);
+		fBitmapView->SetBitmap(fPauseBitmap);
 	else
-		fBitmapView->SetViewBitmap(fRecordingBitmap, fRecordingBitmap->Bounds(),
-			fBitmapView->Bounds(), B_FOLLOW_ALL, 0);
+		fBitmapView->SetBitmap(fRecordingBitmap);
 	Invalidate();
 }
 
