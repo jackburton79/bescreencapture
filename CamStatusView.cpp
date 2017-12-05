@@ -5,14 +5,16 @@
 
 #include <Application.h>
 #include <Bitmap.h>
+#include <GroupLayoutBuilder.h>
 #include <IconUtils.h>
+#include <LayoutBuilder.h>
 #include <LayoutUtils.h>
 #include <Message.h>
 #include <Resources.h>
+#include <StringView.h>
 #include <Window.h>
 
 #include <algorithm>
-#include <stdio.h>
 
 const static float kSpacing = 10;
 const static float kBitmapSize = 48;
@@ -24,19 +26,62 @@ capped_size(float size)
 }
 
 
+class SquareBitmapView : public BView {
+public:
+	SquareBitmapView(const char* name)
+		:
+		BView(name, B_WILL_DRAW|B_FULL_UPDATE_ON_RESIZE),
+		fBitmap(NULL)
+	{
+	}
+	virtual void Draw(BRect updateRect)
+	{
+		SetDrawingMode(B_OP_ALPHA);
+		if (fBitmap != NULL)
+			DrawBitmap(fBitmap, fBitmap->Bounds(), Bounds());	
+	}
+	void SetBitmap(const BBitmap* bitmap)
+	{
+		fBitmap = bitmap;
+		Invalidate();
+	}
+private:
+	const BBitmap* fBitmap;
+};
+
 CamStatusView::CamStatusView(Controller* controller)
 	:
 	BView("CamStatusView", B_WILL_DRAW|B_PULSE_NEEDED),
 	fController(controller),
+	fStringView(NULL),
+	fBitmapView(NULL),
 	fNumFrames(0),
 	fRecording(false),
 	fPaused(false),
 	fRecordingBitmap(NULL),
 	fPauseBitmap(NULL)
 {
+	SetLayout(new BGroupLayout(B_HORIZONTAL));
 	BRect bitmapRect(0, 0, kBitmapSize, kBitmapSize);
 	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
+	
+	BView* layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(0)
+		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
+		.Add(fStringView = new BStringView("cam string view", ""))
+	.View();
+	
+	fStringView->Hide();
+	fBitmapView->Hide();
+	
+	BFont font;
+	GetFont(&font);
+	float scaledSize = kBitmapSize * (capped_size(font.Size()) / 12);
+	fBitmapView->SetExplicitMinSize(BSize(scaledSize, scaledSize));
+	fBitmapView->SetExplicitMaxSize(BSize(scaledSize, scaledSize));
+	fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
+	AddChild(layoutView);
 }
 
 
@@ -61,39 +106,16 @@ CamStatusView::AttachedToWindow()
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fRecordingBitmap);
 	buffer = resources->LoadResource('VICN', "pause_icon", &size);
 	if (buffer != NULL)
-		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);	
+		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);
+	
+	fBitmapView->SetBitmap(fRecordingBitmap);
 }
 
 
 void
 CamStatusView::Draw(BRect updateRect)
-{	
-	if (fRecording) {
-		BFont font;
-		GetFont(&font);
-		float scale = capped_size(font.Size()) / 12;
-		float bitmapSize = kBitmapSize * scale;
-		BRect destRect(0, 0, bitmapSize, bitmapSize);
-		if (fPaused) {
-			SetDrawingMode(B_OP_ALPHA);
-			DrawBitmap(fPauseBitmap, destRect);
-		} else {			
-			SetDrawingMode(B_OP_ALPHA);			
-			DrawBitmap(fRecordingBitmap, destRect);
-		}
-		SetHighColor(0, 0, 0);
-		SetDrawingMode(B_OP_OVER);
-		BString string;
-		string << fNumFrames;
-		float width = StringWidth(string);
-		font_height height;
-		GetFontHeight(&height);
-		BRect bounds = Bounds();
-		bounds.left = bounds.left + bitmapSize;
-		BPoint point((bounds.Width() - width) / 2 + bounds.left,
-					(bounds.Height() - (height.ascent + height.descent)) / 2 + height.ascent + height.descent + 1);
-		DrawString(string, point);
-	}
+{
+	BView::Draw(updateRect);
 }
 
 
@@ -137,6 +159,15 @@ void
 CamStatusView::Pulse()
 {
 	fNumFrames = fController->RecordedFrames();
+	fRecordTime = (time_t)fController->RecordTime() / 1000000;
+	if (fRecordTime < 0)
+		fRecordTime = 0;
+	struct tm* diffTime = localtime(&fRecordTime);
+	char timeString[128];
+	strftime(timeString, sizeof(timeString), "%T", diffTime);
+	BString str(timeString);
+	str << " (" << fNumFrames << " frames)";
+	fStringView->SetText(str.String());
 	Invalidate();
 }
 
@@ -145,6 +176,10 @@ void
 CamStatusView::TogglePause(const bool paused)
 {
 	fPaused = paused;
+	if (fPaused)
+		fBitmapView->SetBitmap(fPauseBitmap);
+	else
+		fBitmapView->SetBitmap(fRecordingBitmap);
 	Invalidate();
 }
 
@@ -160,6 +195,14 @@ void
 CamStatusView::SetRecording(const bool recording)
 {
 	fRecording = recording;
+	if (recording) {
+		fStringView->SetText("");
+		fStringView->Show();
+		fBitmapView->Show();
+	} else {
+		fStringView->Hide();
+		fBitmapView->Hide();
+	}
 	Invalidate();
 }
 
@@ -174,28 +217,13 @@ CamStatusView::Recording() const
 BSize
 CamStatusView::MinSize()
 {
-	BFont font;
-	GetFont(&font);
-	float scale = capped_size(font.Size()) / 12;
-	float bitmapSize = kBitmapSize * scale;
-	float spacingSize = kSpacing * scale;
-	float width = bitmapSize + StringWidth("999999") + spacingSize;
-	float height = bitmapSize;
-	
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(width, height));
+	return BView::MinSize();
 }
 
 
 BSize
 CamStatusView::MaxSize()
 {
-	BFont font;
-	GetFont(&font);
-	float scale = capped_size(font.Size()) / 12;
-	float bitmapSize = kBitmapSize * scale;
-	float spacingSize = kSpacing * scale;
-	float width = bitmapSize + StringWidth("999999") + spacingSize;
-	float height = bitmapSize;
-	return BLayoutUtils::ComposeSize(ExplicitMaxSize(), BSize(width, height));
+	return BView::MaxSize();
 }
 
