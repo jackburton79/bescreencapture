@@ -97,6 +97,10 @@ SizeControl::MessageReceived(BMessage* message)
 		case kTextControlMessage:
 		{
 			int32 value = atoi(fSizeTextControl->TextView()->Text());
+			BControl::SetValue(value);
+			BMessage whatMessage(fWhat);
+			whatMessage.AddInt32("be:value", value);
+			Window()->PostMessage(&whatMessage, Target());
 			fSizeSlider->SetValue(value);
 			break;
 		}
