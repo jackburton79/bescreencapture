@@ -2,6 +2,7 @@ v2.3 (not yet released)
 	- In selection mode, add an hint to the user via text instructions on the screen.
 	- The selection can be moved after being selected
 	- Added capture frame settings
+	- Added clip duration while recording
 	- If saving a frame fails, the application will now abort and report an error.
 	- Layout change: Moved most settings to the options tab
 	- Adapted code to be able to use the Shortcuts preflet to control recording
