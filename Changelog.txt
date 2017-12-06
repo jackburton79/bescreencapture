@@ -1,3 +1,6 @@
+v2.3.1
+	- Fix missing preview on application start
+---	
 v2.3
 	- In selection mode, add an hint to the user via text instructions on the screen.
 	- The selection can be moved after being selected
