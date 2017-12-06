@@ -95,19 +95,21 @@ BRectVerticalOverlap(const BRect& original, const BRect& resized)
 void
 PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 {
-	bigtime_t now = system_time();
+	if (Window() == NULL || Window()->IsHidden())
+		return;
+
 	if (rect != NULL)
 		_SetRect(*rect);
 
-	if (bitmap == NULL && Window() != NULL) {
-		if (rect != NULL && *rect == fCoordRect && fTimeStamp + 50000 >= now)
+	bigtime_t now = system_time();
+	if (bitmap == NULL) {
+		// Avoid updating preview too often
+		if (fTimeStamp + 50000 >= now)
 			return;
 		BScreen screen(Window());
 		screen.GetBitmap(&bitmap, false, &fCoordRect);
-		fTimeStamp = now;
 	}
 	if (bitmap != NULL) {
-		fTimeStamp = now;
 		BRect destRect;
 		BRect bitmapBounds = bitmap->Bounds();
 		BRect viewBounds = fBitmapView->Bounds();
@@ -119,13 +121,12 @@ PreviewView::Update(const BRect* rect, BBitmap* bitmap)
 			float overlap = BRectVerticalOverlap(viewBounds, bitmapBounds);
 			destRect.Set(0, -overlap, viewBounds.Width(), viewBounds.Height() + overlap);
 		}
-		
+		fTimeStamp = now;
 		fBitmapView->SetViewBitmap(bitmap,
 			bitmap->Bounds().OffsetToCopy(B_ORIGIN),
 			destRect,
 			B_FOLLOW_TOP|B_FOLLOW_LEFT, B_FILTER_BITMAP_BILINEAR);
-		if (Window() != NULL)
-			Invalidate();
+		Invalidate();
 	}
 }
 
