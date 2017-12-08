@@ -194,7 +194,8 @@ SelectionViewRegion::KeyDown(const char* bytes, int32 numBytes)
 			Window()->PostMessage(B_QUIT_REQUESTED);
 			break;
 		case B_ESCAPE:
-			// TODO: Set an invalid selection rect
+			fSelectionStart = BPoint(-1, -1);
+			fSelectionEnd = BPoint(-1, -1);
 			Window()->PostMessage(B_QUIT_REQUESTED);
 			break;
 		default:
@@ -220,6 +221,10 @@ SelectionViewRegion::Draw(BRect updateRect)
 BRect
 SelectionViewRegion::SelectionRect()
 {
+	if (fSelectionStart == BPoint(-1, -1)
+		&& fSelectionEnd == BPoint(-1, -1))
+		return BRect(0, 0, -1, -1);
+
 	BRect rect;
 	rect.SetLeftTop(BPoint(min_c(fSelectionStart.x, fSelectionEnd.x),
 					min_c(fSelectionStart.y, fSelectionEnd.y)));
