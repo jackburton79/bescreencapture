@@ -1,4 +1,5 @@
 v2.3.2
+	- Added a field to select the target frame rate
 	- Fix crash on recording if entering region selection mode, then hitting ESC
 ---
 v2.3.1
