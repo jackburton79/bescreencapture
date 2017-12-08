@@ -505,7 +505,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	targetRect.right++;
 	targetRect.bottom++;
 	
-	const int32 frameRate = 10;
+	const int32 frameRate =  (int32)(1000 / settings.CaptureFrameDelay());
 	media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
