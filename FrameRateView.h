@@ -23,6 +23,8 @@ private:
 	BTextControl* fCaptureFreq;
 	BTextControl* fFrameRate;
 	BCheckBox* fAutoAdjust;
+	
+	void _UpdateCaptureRate(float *delay, float *rate);
 };
 
 
