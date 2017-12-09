@@ -5,12 +5,14 @@
 
 #include <Application.h>
 #include <Bitmap.h>
+#include <CardLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <IconUtils.h>
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
 #include <Message.h>
 #include <Resources.h>
+#include <StatusBar.h>
 #include <StringView.h>
 #include <Window.h>
 
@@ -18,6 +20,8 @@
 
 const static float kSpacing = 10;
 const static float kBitmapSize = 48;
+const char* kEncodingString = "Encoding movie...";
+const char* kDoneString = "Done!";
 
 static float
 capped_size(float size)
@@ -55,22 +59,35 @@ CamStatusView::CamStatusView(Controller* controller)
 	fController(controller),
 	fStringView(NULL),
 	fBitmapView(NULL),
+	fEncodingStringView(NULL),
+	fStatusBar(NULL),
 	fNumFrames(0),
 	fRecording(false),
 	fPaused(false),
 	fRecordingBitmap(NULL),
 	fPauseBitmap(NULL)
 {
-	SetLayout(new BGroupLayout(B_HORIZONTAL));
+	BCardLayout* cardLayout = new BCardLayout();
+	SetLayout(cardLayout);
 	BRect bitmapRect(0, 0, kBitmapSize, kBitmapSize);
 	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	
+	BView* statusView = BLayoutBuilder::Group<>()
+		.SetInsets(0)
+		//.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+			.Add(fEncodingStringView = new BStringView("stringview", kEncodingString))
+			.Add(fStatusBar = new BStatusBar("", ""))
+		//.End()
+		.View();
+		
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
 		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
 		.Add(fStringView = new BStringView("cam string view", ""))
 	.View();
+	cardLayout->AddView(layoutView);
+	cardLayout->AddView(statusView);
 	
 	fStringView->Hide();
 	fBitmapView->Hide();
@@ -81,7 +98,8 @@ CamStatusView::CamStatusView(Controller* controller)
 	fBitmapView->SetExplicitMinSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitMaxSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
-	AddChild(layoutView);
+	
+	cardLayout->SetVisibleItem(int32(0));
 }
 
 
@@ -89,10 +107,15 @@ void
 CamStatusView::AttachedToWindow()
 {
 	if (fController->LockLooper()) {
+		fController->StartWatching(this, B_UPDATE_STATUS_BAR);
+		fController->StartWatching(this, B_RESET_STATUS_BAR);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
 		fController->StartWatching(this, kMsgControllerCapturePaused);
 		fController->StartWatching(this, kMsgControllerCaptureResumed);
+		fController->StartWatching(this, kMsgControllerEncodeStarted);
+		fController->StartWatching(this, kMsgControllerEncodeProgress);
+		fController->StartWatching(this, kMsgControllerEncodeFinished);
 		fController->UnlockLooper();
 	}
 	
@@ -128,6 +151,14 @@ CamStatusView::MessageReceived(BMessage *message)
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
 			switch (what) {
+				case B_UPDATE_STATUS_BAR:
+				case B_RESET_STATUS_BAR:
+				{
+					BMessage newMessage(*message);
+					message->what = what;
+					Window()->PostMessage(message, fStatusBar);
+					break;
+				}
 				case kMsgControllerCaptureStarted:
 					SetRecording(true);
 					break;
@@ -140,7 +171,25 @@ CamStatusView::MessageReceived(BMessage *message)
 				case kMsgControllerCaptureResumed:
 					TogglePause(what == kMsgControllerCapturePaused);
 					break;
-	
+				case kMsgControllerEncodeStarted:
+					fEncodingStringView->SetText(kEncodingString);
+					((BCardLayout*)GetLayout())->SetVisibleItem(1);		
+					break;
+				case kMsgControllerEncodeProgress:
+				{
+					int32 numFiles = 0;
+					message->FindInt32("num_files", &numFiles);					
+					fStatusBar->SetMaxValue(float(numFiles));
+					
+					BString string = kEncodingString;
+					string << " (" << numFiles << " frames)";
+					fEncodingStringView->SetText(string);
+					break;
+				}
+				case kMsgControllerEncodeFinished:
+				{
+					((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
+				}
 				default:
 					break;
 			}
@@ -196,6 +245,9 @@ CamStatusView::SetRecording(const bool recording)
 {
 	fRecording = recording;
 	if (recording) {
+		fBitmapView->SetBitmap(fRecordingBitmap);
+		((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
+		fStatusBar->Reset();
 		fStringView->SetText("");
 		fStringView->Show();
 		fBitmapView->Show();

@@ -4,8 +4,9 @@
 #include <View.h>
 
 class BBitmap;
-class Controller;
+class BStatusBar;
 class BStringView;
+class Controller;
 class SquareBitmapView;
 class CamStatusView : public BView {
 public:
@@ -29,6 +30,8 @@ private:
 	Controller* fController;
 	BStringView* fStringView;
 	SquareBitmapView* fBitmapView;
+	BStringView* fEncodingStringView;
+	BStatusBar* fStatusBar;
 	int32 fNumFrames;
 	bool fRecording;
 	bool fPaused;
