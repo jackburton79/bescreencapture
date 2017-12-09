@@ -85,7 +85,7 @@ CamStatusView::CamStatusView(Controller* controller)
 		.SetInsets(0)
 		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
 		.Add(fStringView = new BStringView("cam string view", ""))
-	.View();
+		.View();
 
 	cardLayout->AddView(layoutView);
 	cardLayout->AddView(statusView);
@@ -203,7 +203,6 @@ CamStatusView::MessageReceived(BMessage *message)
 			BView::MessageReceived(message);
 			break;
 	}
-	
 }
 
 

@@ -153,7 +153,7 @@ SizeSlider::SetValue(int32 value)
 	int32 max, min;
 	GetLimits(&min, &max);
 
-	const int32 numValues = (max - min) / fStep;
+	const int32 numValues = 1 + (max - min) / fStep;
 	int32 validValues[numValues];
 	for (int32 i = 0; i < numValues; i++)
 		validValues[i] = min + fStep * i;
