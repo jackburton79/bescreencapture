@@ -75,10 +75,8 @@ CamStatusView::CamStatusView(Controller* controller)
 	
 	BView* statusView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
-		//.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.Add(fEncodingStringView = new BStringView("stringview", kEncodingString))
-			.Add(fStatusBar = new BStatusBar("", ""))
-		//.End()
+		.Add(fEncodingStringView = new BStringView("stringview", kEncodingString))
+		.Add(fStatusBar = new BStatusBar("", ""))
 		.View();
 	
 	fStatusBar->SetExplicitMinSize(BSize(100, 20));
@@ -88,11 +86,11 @@ CamStatusView::CamStatusView(Controller* controller)
 		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
 		.Add(fStringView = new BStringView("cam string view", ""))
 	.View();
+
 	cardLayout->AddView(layoutView);
 	cardLayout->AddView(statusView);
 	
-	fStringView->Hide();
-	fBitmapView->Hide();
+	fBitmapView->SetBitmap(NULL);
 	
 	BFont font;
 	GetFont(&font);
@@ -100,6 +98,8 @@ CamStatusView::CamStatusView(Controller* controller)
 	fBitmapView->SetExplicitMinSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitMaxSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
+	
+	fStringView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
 	cardLayout->SetVisibleItem(int32(0));
 }
@@ -133,7 +133,7 @@ CamStatusView::AttachedToWindow()
 	if (buffer != NULL)
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);
 	
-	fBitmapView->SetBitmap(fRecordingBitmap);
+	fBitmapView->SetBitmap(NULL);
 }
 
 
@@ -210,6 +210,9 @@ CamStatusView::MessageReceived(BMessage *message)
 void
 CamStatusView::Pulse()
 {
+	if (!fRecording)
+		return;
+		
 	fNumFrames = fController->RecordedFrames();
 	fRecordTime = (time_t)fController->RecordTime() / 1000000;
 	if (fRecordTime < 0)
@@ -251,12 +254,9 @@ CamStatusView::SetRecording(const bool recording)
 		fBitmapView->SetBitmap(fRecordingBitmap);
 		((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
 		fStatusBar->Reset();
-		fStringView->SetText("");
-		fStringView->Show();
-		fBitmapView->Show();
 	} else {
-		fStringView->Hide();
-		fBitmapView->Hide();
+		fBitmapView->SetBitmap(NULL);
+		fStringView->SetText("");
 	}
 	Invalidate();
 }
