@@ -87,6 +87,8 @@ Settings::Load()
 			sSettings.ReplaceString(kOutputFile, string);
 		if (tempMessage.FindString(kOutputFileFormat, &string) == B_OK)
 			sSettings.ReplaceString(kOutputFileFormat, string);
+		if (tempMessage.FindString(kOutputCodecName, &string) == B_OK)
+			sSettings.ReplaceString(kOutputCodecName, string);
 		if (tempMessage.FindInt32(kThreadPriority, &integer) == B_OK)
 			sSettings.ReplaceInt32(kThreadPriority, integer);
 		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
