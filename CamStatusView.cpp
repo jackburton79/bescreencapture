@@ -78,9 +78,9 @@ CamStatusView::CamStatusView(Controller* controller)
 		.Add(fEncodingStringView = new BStringView("stringview", kEncodingString))
 		.Add(fStatusBar = new BStatusBar("", ""))
 		.View();
-	
+
 	fStatusBar->SetExplicitMinSize(BSize(100, 20));
-	
+
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
 		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
