@@ -80,7 +80,9 @@ CamStatusView::CamStatusView(Controller* controller)
 			.Add(fStatusBar = new BStatusBar("", ""))
 		//.End()
 		.View();
-		
+	
+	fStatusBar->SetExplicitMinSize(BSize(100, 20));
+	
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
 		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
@@ -189,6 +191,7 @@ CamStatusView::MessageReceived(BMessage *message)
 				case kMsgControllerEncodeFinished:
 				{
 					((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
+					break;
 				}
 				default:
 					break;

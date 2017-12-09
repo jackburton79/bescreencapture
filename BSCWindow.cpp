@@ -22,11 +22,9 @@
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
 #include <Screen.h>
-#include <StatusBar.h>
 #include <String.h>
 #include <StringView.h>
 #include <TabView.h>
-
 
 #include <cstdio>
 #include <cstdlib>
@@ -57,9 +55,6 @@ BSCWindow::BSCWindow()
 	
 	fCamStatus = new CamStatusView(fController);
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
-
-	//statusView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));	
-	//fStatusBar->SetExplicitMinSize(BSize(100, 20));
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fMenuBar)
@@ -216,17 +211,12 @@ BSCWindow::MessageReceived(BMessage *message)
 					break;
 				}
 				case kMsgControllerEncodeStarted:
-					//fStringView->SetText(kEncodingString);
-					//fCardLayout->SetVisibleItem(1);
-					
-					fStartStopButton->SetEnabled(false);
-					
+					fStartStopButton->SetEnabled(false);			
 					break;
 		
 				case kMsgControllerEncodeFinished:
 				{
 					fStartStopButton->SetEnabled(true);
-					//fCardLayout->SetVisibleItem((int32)0);
 					status_t status = B_OK;
 					if (message->FindInt32("status", (int32*)&status) == B_OK
 						&& status != B_OK) {
@@ -301,9 +291,6 @@ BSCWindow::_CaptureStarted()
 	Settings settings;
 	if (settings.MinimizeOnRecording())
 		Hide();
-	
-	//fCardLayout->SetVisibleItem((int32)0);
-	//fStatusBar->Reset();
 	
 	fStartStopButton->SetLabel("Stop Recording");
 	
