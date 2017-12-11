@@ -285,8 +285,9 @@ SelectionViewRegion::Draw(BRect updateRect)
 	
 	if (SelectionRect().IsValid()) {
 		BRect selection = SelectionRect();
-		
-		StrokeRect(selection, B_MIXED_COLORS);
+		SetDrawingMode(B_OP_ALPHA);
+		SetHighColor(kWindowSelectionColor);
+		FillRect(selection);
 	}
 	
 	_DrawDraggers();
@@ -324,7 +325,7 @@ SelectionViewRegion::RightTopDragger() const
 {
 	BPoint leftTop(max_c(fSelectionStart.x, fSelectionEnd.x),
 					min_c(fSelectionStart.y, fSelectionEnd.y));
-	
+					
 	return BRect(leftTop + BPoint(4, -20), leftTop + BPoint(20, -4));
 }
 
@@ -352,10 +353,13 @@ SelectionViewRegion::RightBottomDragger() const
 void
 SelectionViewRegion::_DrawDraggers()
 {
+	PushState();
+	SetHighColor(0, 0, 0);
 	StrokeRect(LeftTopDragger(), B_SOLID_HIGH);
 	StrokeRect(LeftBottomDragger(), B_SOLID_HIGH);
 	StrokeRect(RightTopDragger(), B_SOLID_HIGH);
 	StrokeRect(RightBottomDragger(), B_SOLID_HIGH);
+	PopState();
 }
 
 
