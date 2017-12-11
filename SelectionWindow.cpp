@@ -18,6 +18,9 @@ const char *kInfoWindowMode = "Click to select a window";
 const static rgb_color kWindowSelectionColor = { 0, 0, 128, 100 };
 const static rgb_color kRed = { 240, 0, 0, 0 };
 
+const static float kDraggerSize = 16;
+const static float kDraggerSpacing = 4;
+
 class SelectionView : public BView {
 public:
 	SelectionView(BRect frame, const char *name, const char* text = NULL);
@@ -35,8 +38,21 @@ public:
 	enum drag_mode {
 		DRAG_MODE_NONE = 0,
 		DRAG_MODE_SELECT = 1,
-		DRAG_MODE_MOVE = 2 
+		DRAG_MODE_MOVE = 2,
+		DRAG_MODE_RESIZE_LEFT_TOP = 3,
+		DRAG_MODE_RESIZE_RIGHT_TOP = 4,
+		DRAG_MODE_RESIZE_LEFT_BOTTOM = 5,
+		DRAG_MODE_RESIZE_RIGHT_BOTTOM = 6,
 	};
+	
+	enum which_dragger {
+		DRAGGER_NONE = -1,
+		DRAGGER_LEFT_TOP = 0,
+		DRAGGER_RIGHT_TOP = 1,
+		DRAGGER_LEFT_BOTTOM = 2,
+		DRAGGER_RIGHT_BOTTOM = 3
+	};
+	
 	SelectionViewRegion(BRect frame, const char *name);
 	virtual void MouseDown(BPoint where);
 	virtual void MouseUp(BPoint where);
@@ -45,15 +61,20 @@ public:
 	virtual void Draw(BRect updateRect);
 	
 	virtual BRect SelectionRect();
-		
+	
+	BRect LeftTopDragger() const;
+	BRect RightTopDragger() const;
+	BRect LeftBottomDragger() const;
+	BRect RightBottomDragger() const;
+	
 private:
+	void _DrawDraggers();
+	int _MouseOnDragger(BPoint where) const;
+	
 	BPoint fSelectionStart;
 	BPoint fSelectionEnd;
-	
 	BPoint fCurrentMousePosition;
-	
 	BRect fStringRect;
-	
 	int fDragMode;
 };
 
@@ -123,14 +144,30 @@ void
 SelectionViewRegion::MouseDown(BPoint where)
 {
 	SelectionView::MouseDown(where);
-		
+	
 	if (SelectionRect().Contains(where))
 		fDragMode = DRAG_MODE_MOVE;
 	else {
-		Invalidate();
-		fDragMode = DRAG_MODE_SELECT;
-		fSelectionStart = where;
-		fSelectionEnd = where;
+		switch (_MouseOnDragger(where)) {
+			case DRAGGER_LEFT_TOP:
+				fDragMode = DRAG_MODE_RESIZE_LEFT_TOP;
+				break;
+			case DRAGGER_RIGHT_TOP:
+				fDragMode = DRAG_MODE_RESIZE_RIGHT_TOP;
+				break;
+			case DRAGGER_LEFT_BOTTOM:
+				fDragMode = DRAG_MODE_RESIZE_LEFT_BOTTOM;
+				break;
+			case DRAGGER_RIGHT_BOTTOM:
+				fDragMode = DRAG_MODE_RESIZE_RIGHT_BOTTOM;
+				break;
+			default:
+				Invalidate();
+				fDragMode = DRAG_MODE_SELECT;
+				fSelectionStart = where;
+				fSelectionEnd = where;
+				break;
+		}
 	}
 }
 
@@ -138,34 +175,50 @@ SelectionViewRegion::MouseDown(BPoint where)
 void
 SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *message)
 {
-	switch (fDragMode) {
-		case DRAG_MODE_SELECT:
-		{
-			BRect selectionRect = SelectionRect();
-	
-			fSelectionEnd = where;
+	if (fDragMode != DRAG_MODE_NONE) {
+		BRect selectionRect = SelectionRect();
 			
-			BRect newSelection = SelectionRect();
-		
-			Invalidate(selectionRect | newSelection);
-			break;
+		switch (fDragMode) {
+			case DRAG_MODE_SELECT:
+			{
+				fSelectionEnd = where;
+				break;
+			}
+			case DRAG_MODE_MOVE:
+			{
+				float xOffset = where.x - fCurrentMousePosition.x;
+				float yOffset = where.y - fCurrentMousePosition.y;
+				fSelectionStart.x += xOffset;
+				fSelectionStart.y += yOffset;
+				fSelectionEnd.x += xOffset;
+				fSelectionEnd.y += yOffset;
+				break;
+			}
+			case DRAG_MODE_RESIZE_LEFT_TOP:
+			{
+				float xOffset = where.x - fCurrentMousePosition.x;
+				float yOffset = where.y - fCurrentMousePosition.y;
+				fSelectionStart.x += xOffset;
+				fSelectionStart.y += yOffset;
+				break;
+			}
+			case DRAG_MODE_RESIZE_RIGHT_BOTTOM:
+			{
+				float xOffset = where.x - fCurrentMousePosition.x;
+				float yOffset = where.y - fCurrentMousePosition.y;
+				fSelectionEnd.x += xOffset;
+				fSelectionEnd.y += yOffset;
+				break;
+			}
+			case DRAG_MODE_NONE:
+			default:
+				break;
 		}
-		case DRAG_MODE_MOVE:
-		{
-			BRect selectionRect = SelectionRect();
-			float xOffset = where.x - fCurrentMousePosition.x;
-			float yOffset = where.y - fCurrentMousePosition.y;
-			fSelectionStart.x += xOffset;
-			fSelectionStart.y += yOffset;
-			fSelectionEnd.x += xOffset;
-			fSelectionEnd.y += yOffset;
-			BRect newSelection = SelectionRect();
-			Invalidate(selectionRect | newSelection);
-			break;
-		}	
-		case DRAG_MODE_NONE:
-		default:
-			break;
+		
+		BRect newSelection = SelectionRect();
+		BRect invalidateRect = (selectionRect | newSelection);
+		invalidateRect.InsetBySelf(-(kDraggerSize + kDraggerSpacing), -(kDraggerSize + kDraggerSpacing));
+		Invalidate(invalidateRect);
 	}
 	
 	SelectionView::MouseMoved(where, code, message);
@@ -181,6 +234,10 @@ SelectionViewRegion::MouseUp(BPoint where)
 		fSelectionEnd = where;
 		
 	fDragMode = DRAG_MODE_NONE;
+	
+	BRect selectionRect = SelectionRect();
+	fSelectionStart = selectionRect.LeftTop();
+	fSelectionEnd = selectionRect.RightBottom();
 	
 	SelectionView::MouseUp(where);
 }
@@ -215,6 +272,8 @@ SelectionViewRegion::Draw(BRect updateRect)
 		
 		StrokeRect(selection, B_MIXED_COLORS);
 	}
+	
+	_DrawDraggers();
 }
 
 
@@ -231,6 +290,72 @@ SelectionViewRegion::SelectionRect()
 	rect.SetRightBottom(BPoint(max_c(fSelectionStart.x, fSelectionEnd.x),
 					max_c(fSelectionStart.y, fSelectionEnd.y)));
 	return rect;
+}
+
+
+BRect
+SelectionViewRegion::LeftTopDragger() const
+{
+	BPoint leftTop(min_c(fSelectionStart.x, fSelectionEnd.x),
+					min_c(fSelectionStart.y, fSelectionEnd.y));
+	
+	return BRect(leftTop + BPoint(-20, -20), leftTop + BPoint(-4, -4));
+}
+
+
+BRect
+SelectionViewRegion::RightTopDragger() const
+{
+	BPoint leftTop(max_c(fSelectionStart.x, fSelectionEnd.x),
+					min_c(fSelectionStart.y, fSelectionEnd.y));
+	
+	return BRect(leftTop + BPoint(4, -20), leftTop + BPoint(20, -4));
+}
+
+
+BRect
+SelectionViewRegion::LeftBottomDragger() const
+{
+	BPoint leftTop(min_c(fSelectionStart.x, fSelectionEnd.x),
+					max_c(fSelectionStart.y, fSelectionEnd.y));
+	
+	return BRect(leftTop + BPoint(-20, 20), leftTop + BPoint(-4, 4));
+}
+
+
+BRect
+SelectionViewRegion::RightBottomDragger() const
+{
+	BPoint leftTop(max_c(fSelectionStart.x, fSelectionEnd.x),
+					max_c(fSelectionStart.y, fSelectionEnd.y));
+	
+	return BRect(leftTop + BPoint(4, 4), leftTop + BPoint(20, 20));
+}
+
+
+void
+SelectionViewRegion::_DrawDraggers()
+{
+	StrokeRect(LeftTopDragger(), B_SOLID_HIGH);
+	//StrokeRect(LeftBottomDragger(), B_SOLID_HIGH);
+	//StrokeRect(RightTopDragger(), B_SOLID_HIGH);
+	StrokeRect(RightBottomDragger(), B_SOLID_HIGH);
+}
+
+
+int
+SelectionViewRegion::_MouseOnDragger(BPoint point) const
+{
+	if (LeftTopDragger().Contains(point))
+		return DRAGGER_LEFT_TOP;
+	//else if (RightTopDragger().Contains(point))
+	//	return DRAGGER_RIGHT_TOP;
+	//else if (LeftBottomDragger().Contains(point))
+	//	return DRAGGER_LEFT_BOTTOM;
+	else if (RightBottomDragger().Contains(point))
+		return DRAGGER_RIGHT_BOTTOM;
+	
+	return DRAGGER_NONE;
 }
 
 
