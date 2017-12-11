@@ -335,7 +335,7 @@ SelectionViewRegion::LeftBottomDragger() const
 	BPoint leftTop(min_c(fSelectionStart.x, fSelectionEnd.x),
 					max_c(fSelectionStart.y, fSelectionEnd.y));
 	
-	return BRect(leftTop + BPoint(-20, 20), leftTop + BPoint(-4, 4));
+	return BRect(leftTop + BPoint(-20, 4), leftTop + BPoint(-4, 20));
 }
 
 
