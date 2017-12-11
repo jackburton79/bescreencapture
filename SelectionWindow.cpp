@@ -134,7 +134,9 @@ SelectionView::SelectionRect()
 // SelectionViewRegion
 SelectionViewRegion::SelectionViewRegion(BRect frame, const char *name)
 	:
-	SelectionView(frame, name, kInfoRegionMode)
+	SelectionView(frame, name, kInfoRegionMode),
+	fSelectionStart(-1, -1),
+	fSelectionEnd(-1, -1)
 {
 	fDragMode = DRAG_MODE_NONE;
 }
@@ -177,7 +179,6 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 {
 	if (fDragMode != DRAG_MODE_NONE) {
 		BRect selectionRect = SelectionRect();
-			
 		switch (fDragMode) {
 			case DRAG_MODE_SELECT:
 			{
@@ -226,7 +227,6 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 				fSelectionEnd.y += yOffset;
 				break;
 			}
-			case DRAG_MODE_NONE:
 			default:
 				break;
 		}
@@ -251,6 +251,7 @@ SelectionViewRegion::MouseUp(BPoint where)
 		
 	fDragMode = DRAG_MODE_NONE;
 	
+	// Sanitize the selection rect (fSelectionStart < fSelectionEnd)
 	BRect selectionRect = SelectionRect();
 	fSelectionStart = selectionRect.LeftTop();
 	fSelectionEnd = selectionRect.RightBottom();
@@ -353,6 +354,10 @@ SelectionViewRegion::RightBottomDragger() const
 void
 SelectionViewRegion::_DrawDraggers()
 {
+	if (fSelectionStart == BPoint(-1, -1)
+		&& fSelectionEnd == BPoint(-1, -1))
+		return;
+		
 	PushState();
 	SetHighColor(0, 0, 0);
 	StrokeRect(LeftTopDragger(), B_SOLID_HIGH);
