@@ -290,11 +290,10 @@ OutputView::_LayoutView(bool classic)
 		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL);
 			
 	BView *layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_VERTICAL)
+		.SetInsets(B_USE_DEFAULT_SPACING)
+		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-				.AddGroup(B_VERTICAL)
+				.AddGroup(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
 					.Add(fWholeScreen)
 					.Add(fCustomArea)
 					.Add(fWindow)
@@ -305,19 +304,19 @@ OutputView::_LayoutView(bool classic)
 			.End()
 			.Add(fBorderSlider)
 		.End()
-				
+		
 		.View();
 	
 	selectBox->AddChild(layoutView);
 	
 	layoutView = BLayoutBuilder::Group<>()
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-			.AddGroup(B_HORIZONTAL, 0)
+		.SetInsets(B_USE_DEFAULT_SPACING)
+		.AddGroup(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
+			.AddGroup(B_HORIZONTAL)
 				.Add(fFileName)
 				.Add(fFilePanelButton)
 			.End()
 			.Add(fScaleSlider)
-			.SetInsets(B_USE_DEFAULT_SPACING)
 		.End()	
 		.View();
 
