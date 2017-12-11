@@ -202,6 +202,22 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 				fSelectionStart.y += yOffset;
 				break;
 			}
+			case DRAG_MODE_RESIZE_RIGHT_TOP:
+			{
+				float xOffset = where.x - fCurrentMousePosition.x;
+				float yOffset = where.y - fCurrentMousePosition.y;
+				fSelectionEnd.x += xOffset;
+				fSelectionStart.y += yOffset;
+				break;
+			}
+			case DRAG_MODE_RESIZE_LEFT_BOTTOM:
+			{
+				float xOffset = where.x - fCurrentMousePosition.x;
+				float yOffset = where.y - fCurrentMousePosition.y;
+				fSelectionStart.x += xOffset;
+				fSelectionEnd.y += yOffset;
+				break;
+			}
 			case DRAG_MODE_RESIZE_RIGHT_BOTTOM:
 			{
 				float xOffset = where.x - fCurrentMousePosition.x;
@@ -337,8 +353,8 @@ void
 SelectionViewRegion::_DrawDraggers()
 {
 	StrokeRect(LeftTopDragger(), B_SOLID_HIGH);
-	//StrokeRect(LeftBottomDragger(), B_SOLID_HIGH);
-	//StrokeRect(RightTopDragger(), B_SOLID_HIGH);
+	StrokeRect(LeftBottomDragger(), B_SOLID_HIGH);
+	StrokeRect(RightTopDragger(), B_SOLID_HIGH);
 	StrokeRect(RightBottomDragger(), B_SOLID_HIGH);
 }
 
@@ -348,10 +364,10 @@ SelectionViewRegion::_MouseOnDragger(BPoint point) const
 {
 	if (LeftTopDragger().Contains(point))
 		return DRAGGER_LEFT_TOP;
-	//else if (RightTopDragger().Contains(point))
-	//	return DRAGGER_RIGHT_TOP;
-	//else if (LeftBottomDragger().Contains(point))
-	//	return DRAGGER_LEFT_BOTTOM;
+	else if (RightTopDragger().Contains(point))
+		return DRAGGER_RIGHT_TOP;
+	else if (LeftBottomDragger().Contains(point))
+		return DRAGGER_LEFT_BOTTOM;
 	else if (RightBottomDragger().Contains(point))
 		return DRAGGER_RIGHT_BOTTOM;
 	
