@@ -15,11 +15,12 @@ const char *kInfoRegionMode = "Click and drag to select, press ENTER to confirm"
 const char *kInfoWindowMode = "Click to select a window";
 
 
-const static rgb_color kWindowSelectionColor = { 0, 0, 128, 100 };
+const static rgb_color kSelectionColor = { 0, 0, 128, 100 };
 const static rgb_color kRed = { 240, 0, 0, 0 };
 
 const static float kDraggerSize = 16;
 const static float kDraggerSpacing = 4;
+const static float kDraggerFullSize = kDraggerSize + kDraggerSpacing;
 
 class SelectionView : public BView {
 public:
@@ -287,7 +288,7 @@ SelectionViewRegion::Draw(BRect updateRect)
 	if (SelectionRect().IsValid()) {
 		BRect selection = SelectionRect();
 		SetDrawingMode(B_OP_ALPHA);
-		SetHighColor(kWindowSelectionColor);
+		SetHighColor(kSelectionColor);
 		FillRect(selection);
 	}
 	
@@ -316,8 +317,8 @@ SelectionViewRegion::LeftTopDragger() const
 {
 	BPoint leftTop(min_c(fSelectionStart.x, fSelectionEnd.x),
 					min_c(fSelectionStart.y, fSelectionEnd.y));
-	
-	return BRect(leftTop + BPoint(-20, -20), leftTop + BPoint(-4, -4));
+	return BRect(leftTop + BPoint(-kDraggerFullSize, -kDraggerFullSize),
+			leftTop + BPoint(-kDraggerSpacing, -kDraggerSpacing));
 }
 
 
@@ -326,8 +327,8 @@ SelectionViewRegion::RightTopDragger() const
 {
 	BPoint leftTop(max_c(fSelectionStart.x, fSelectionEnd.x),
 					min_c(fSelectionStart.y, fSelectionEnd.y));
-					
-	return BRect(leftTop + BPoint(4, -20), leftTop + BPoint(20, -4));
+	return BRect(leftTop + BPoint(kDraggerSpacing, -kDraggerFullSize),
+				leftTop + BPoint(kDraggerFullSize, -kDraggerSpacing));
 }
 
 
@@ -336,8 +337,8 @@ SelectionViewRegion::LeftBottomDragger() const
 {
 	BPoint leftTop(min_c(fSelectionStart.x, fSelectionEnd.x),
 					max_c(fSelectionStart.y, fSelectionEnd.y));
-	
-	return BRect(leftTop + BPoint(-20, 4), leftTop + BPoint(-4, 20));
+	return BRect(leftTop + BPoint(-kDraggerFullSize, kDraggerSpacing),
+				leftTop + BPoint(-kDraggerSpacing, kDraggerFullSize));
 }
 
 
@@ -346,8 +347,8 @@ SelectionViewRegion::RightBottomDragger() const
 {
 	BPoint leftTop(max_c(fSelectionStart.x, fSelectionEnd.x),
 					max_c(fSelectionStart.y, fSelectionEnd.y));
-	
-	return BRect(leftTop + BPoint(4, 4), leftTop + BPoint(20, 20));
+	return BRect(leftTop + BPoint(kDraggerSpacing, kDraggerSpacing),
+				leftTop + BPoint(kDraggerFullSize, kDraggerFullSize));
 }
 
 
@@ -419,7 +420,7 @@ SelectionViewWindow::Draw(BRect updateRect)
 	
 	if (fHighlightFrame.IsValid()) {
 		SetDrawingMode(B_OP_ALPHA);
-		SetHighColor(kWindowSelectionColor);
+		SetHighColor(kSelectionColor);
 		FillRect(fHighlightFrame);
 	}
 }
