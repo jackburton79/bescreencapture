@@ -319,9 +319,6 @@ MovieEncoder::_EncoderThread()
 	const uint32 keyFrameFrequency = 10;
 		// TODO: Make this tunable
 	
-	BMessage progressMessage(B_UPDATE_STATUS_BAR);
-	progressMessage.AddFloat("delta", 1.0);
-		
 	status = B_OK;
 	while (!fKillThread) {
 		BitmapEntry* entry = const_cast<FileList*>(fFileList)->Pop();
@@ -356,9 +353,11 @@ MovieEncoder::_EncoderThread()
 
 		framesWritten++;
 
-		if (fMessenger.IsValid())
+		if (fMessenger.IsValid()) {
+			BMessage progressMessage(kEncodingProgress);
+			progressMessage.AddInt32("frames_remaining", fFileList->CountItems());
 			fMessenger.SendMessage(&progressMessage);
-		else {
+		} else {
 			// BMessenger is no longer valid. This means that the application
 			// has been closed or it has crashed.
 			break;

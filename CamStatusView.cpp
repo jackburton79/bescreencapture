@@ -17,6 +17,7 @@
 #include <Window.h>
 
 #include <algorithm>
+#include <iostream>
 
 const static float kSpacing = 10;
 const static float kBitmapSize = 48;
@@ -109,8 +110,6 @@ void
 CamStatusView::AttachedToWindow()
 {
 	if (fController->LockLooper()) {
-		fController->StartWatching(this, B_UPDATE_STATUS_BAR);
-		fController->StartWatching(this, B_RESET_STATUS_BAR);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
 		fController->StartWatching(this, kMsgControllerCapturePaused);
@@ -153,14 +152,6 @@ CamStatusView::MessageReceived(BMessage *message)
 			int32 what;
 			message->FindInt32("be:observe_change_what", &what);
 			switch (what) {
-				case B_UPDATE_STATUS_BAR:
-				case B_RESET_STATUS_BAR:
-				{
-					BMessage newMessage(*message);
-					message->what = what;
-					Window()->PostMessage(message, fStatusBar);
-					break;
-				}
 				case kMsgControllerCaptureStarted:
 					SetRecording(true);
 					break;
@@ -179,13 +170,17 @@ CamStatusView::MessageReceived(BMessage *message)
 					break;
 				case kMsgControllerEncodeProgress:
 				{
-					int32 numFiles = 0;
-					message->FindInt32("num_files", &numFiles);					
-					fStatusBar->SetMaxValue(float(numFiles));
-					
-					BString string = kEncodingString;
-					string << " (" << numFiles << " frames)";
-					fEncodingStringView->SetText(string);
+					int32 totalFrames = 0;
+					if (message->FindInt32("frames_total", &totalFrames) == B_OK) {
+						fStatusBar->SetMaxValue(float(totalFrames));
+					}
+					int32 remainingFrames = 0;
+					if (message->FindInt32("frames_remaining", &remainingFrames) == B_OK) {
+						BString string = kEncodingString;
+						string << " (" << remainingFrames << " frames)";
+						fEncodingStringView->SetText(string);
+					}
+					fStatusBar->Update(1);
 					break;
 				}
 				case kMsgControllerEncodeFinished:

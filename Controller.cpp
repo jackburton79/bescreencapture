@@ -136,12 +136,15 @@ Controller::MessageReceived(BMessage *message)
 			_EncodingFinished(error);
 			break;
 		}
-		
-		case B_UPDATE_STATUS_BAR:
-		case B_RESET_STATUS_BAR:
-			SendNotices(message->what, message);
+		case kEncodingProgress:
+		{
+			BMessage progressMessage(kMsgControllerEncodeProgress);
+			int32 numFrames = 0;
+			if (message->FindInt32("frames_remaining", &numFrames) == B_OK)
+				progressMessage.AddInt32("frames_remaining", numFrames);
+			SendNotices(kMsgControllerEncodeProgress, &progressMessage);
 			break;
-				
+		}
 		default:	
 			BLooper::MessageReceived(message);
 			break;
@@ -286,7 +289,8 @@ Controller::EncodeMovie()
 	SendNotices(kMsgControllerEncodeStarted);
 		 
 	BMessage message(kMsgControllerEncodeProgress);
-	message.AddInt32("num_files", numFrames);
+	message.AddInt32("frames_total", numFrames);
+	message.AddInt32("frames_remaining", numFrames);
 	
 	SendNotices(kMsgControllerEncodeProgress, &message);
 	
