@@ -180,6 +180,8 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 {
 	if (fDragMode != DRAG_MODE_NONE) {
 		BRect selectionRect = SelectionRect();
+		float xOffset = where.x - fCurrentMousePosition.x;
+		float yOffset = where.y - fCurrentMousePosition.y;
 		switch (fDragMode) {
 			case DRAG_MODE_SELECT:
 			{
@@ -188,8 +190,6 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 			}
 			case DRAG_MODE_MOVE:
 			{
-				float xOffset = where.x - fCurrentMousePosition.x;
-				float yOffset = where.y - fCurrentMousePosition.y;
 				fSelectionStart.x += xOffset;
 				fSelectionStart.y += yOffset;
 				fSelectionEnd.x += xOffset;
@@ -198,32 +198,24 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 			}
 			case DRAG_MODE_RESIZE_LEFT_TOP:
 			{
-				float xOffset = where.x - fCurrentMousePosition.x;
-				float yOffset = where.y - fCurrentMousePosition.y;
 				fSelectionStart.x += xOffset;
 				fSelectionStart.y += yOffset;
 				break;
 			}
 			case DRAG_MODE_RESIZE_RIGHT_TOP:
 			{
-				float xOffset = where.x - fCurrentMousePosition.x;
-				float yOffset = where.y - fCurrentMousePosition.y;
 				fSelectionEnd.x += xOffset;
 				fSelectionStart.y += yOffset;
 				break;
 			}
 			case DRAG_MODE_RESIZE_LEFT_BOTTOM:
 			{
-				float xOffset = where.x - fCurrentMousePosition.x;
-				float yOffset = where.y - fCurrentMousePosition.y;
 				fSelectionStart.x += xOffset;
 				fSelectionEnd.y += yOffset;
 				break;
 			}
 			case DRAG_MODE_RESIZE_RIGHT_BOTTOM:
 			{
-				float xOffset = where.x - fCurrentMousePosition.x;
-				float yOffset = where.y - fCurrentMousePosition.y;
 				fSelectionEnd.x += xOffset;
 				fSelectionEnd.y += yOffset;
 				break;
