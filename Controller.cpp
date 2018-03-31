@@ -19,6 +19,7 @@
 #include <Entry.h>
 #include <File.h>
 #include <Screen.h>
+#include <StopWatch.h>
 #include <String.h>
 
 
@@ -53,7 +54,7 @@ Controller::Controller()
 	BLooper("Controller"),
 	fCaptureThread(-1),
 	fNumFrames(0),
-	fRecordTime("record_time", true),
+	fRecordWatch(NULL),
 	fKillCaptureThread(true),
 	fPaused(false),
 	fDirectWindowAvailable(false),
@@ -97,6 +98,7 @@ Controller::Controller()
 
 Controller::~Controller()
 {
+	delete fRecordWatch;
 	delete fEncoder;
 	delete fCodecList;
 	delete fFileList;
@@ -134,12 +136,15 @@ Controller::MessageReceived(BMessage *message)
 			_EncodingFinished(error);
 			break;
 		}
-		
-		case B_UPDATE_STATUS_BAR:
-		case B_RESET_STATUS_BAR:
-			SendNotices(message->what, message);
+		case kEncodingProgress:
+		{
+			BMessage progressMessage(kMsgControllerEncodeProgress);
+			int32 numFrames = 0;
+			if (message->FindInt32("frames_remaining", &numFrames) == B_OK)
+				progressMessage.AddInt32("frames_remaining", numFrames);
+			SendNotices(kMsgControllerEncodeProgress, &progressMessage);
 			break;
-				
+		}
 		default:	
 			BLooper::MessageReceived(message);
 			break;
@@ -256,7 +261,7 @@ Controller::RecordedFrames() const
 bigtime_t
 Controller::RecordTime() const
 {
-	return fRecordTime.ElapsedTime();
+	return fRecordWatch != NULL ? fRecordWatch->ElapsedTime() : 0;
 }
 
 
@@ -267,12 +272,9 @@ Controller::EncodeMovie()
 	
 	int32 numFrames = fFileList->CountItems();
 	if (numFrames <= 0) {
-		//std::cout << "Aborted" << std::endl;
 		_EncodingFinished(B_ERROR);
 		return;
 	}
-	
-	//_DumpSettings();
 			
 	BString fileName;
 	Settings().GetOutputFileName(fileName);
@@ -287,7 +289,8 @@ Controller::EncodeMovie()
 	SendNotices(kMsgControllerEncodeStarted);
 		 
 	BMessage message(kMsgControllerEncodeProgress);
-	message.AddInt32("num_files", numFrames);
+	message.AddInt32("frames_total", numFrames);
+	message.AddInt32("frames_remaining", numFrames);
 	
 	SendNotices(kMsgControllerEncodeProgress, &message);
 	
@@ -506,7 +509,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	targetRect.right++;
 	targetRect.bottom++;
 	
-	const int32 frameRate = 10;
+	const int32 frameRate =  (int32)(1000 / settings.CaptureFrameDelay());
 	media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
@@ -611,7 +614,9 @@ Controller::StartCapture()
 		return;
 	}
 
-	fRecordTime.Reset();
+	delete fRecordWatch;
+	fRecordWatch = new BStopWatch("record_time", true);
+
 	SendNotices(kMsgControllerCaptureStarted);
 }
 
@@ -627,7 +632,7 @@ Controller::EndCapture()
 		wait_for_thread(fCaptureThread, &unused);
 	}
 	
-	fRecordTime.Suspend();
+	fRecordWatch->Suspend();
 	SendNotices(kMsgControllerCaptureStopped);
 	
 	EncodeMovie();
@@ -638,7 +643,7 @@ void
 Controller::_PauseCapture()
 {
 	SendNotices(kMsgControllerCapturePaused);
-	fRecordTime.Suspend();
+	fRecordWatch->Suspend();
 	
 	BAutolock _(this);
 	fPaused = true;
@@ -653,7 +658,7 @@ Controller::_ResumeCapture()
 	resume_thread(fCaptureThread);
 	fPaused = false;
 	
-	fRecordTime.Resume();
+	fRecordWatch->Resume();
 	SendNotices(kMsgControllerCaptureResumed);
 }
 
@@ -719,8 +724,7 @@ Controller::CaptureThread()
 	bigtime_t captureDelay = (bigtime_t)settings.CaptureFrameDelay() * 1000;
 	
 	// TODO: Validate captureDelay with some limits
-	
-	//_DumpSettings();
+
 	_TestWaitForRetrace();
 	
 	const int32 windowBorder = settings.WindowFrameBorderSize();

@@ -13,7 +13,6 @@
 
 #include <Alert.h>
 #include <Application.h>
-#include <CardLayout.h>
 #include <Box.h>
 #include <Button.h>
 #include <Debug.h>
@@ -22,20 +21,14 @@
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
 #include <Screen.h>
-#include <StatusBar.h>
 #include <String.h>
 #include <StringView.h>
 #include <TabView.h>
-
 
 #include <cstdio>
 #include <cstdlib>
 
 const static BRect kWindowRect(0, 0, 400, 600);
-
-const char* kEncodingString = "Encoding movie...";
-const char* kDoneString = "Done!";
-
 
 BSCWindow::BSCWindow()
 	:
@@ -57,27 +50,8 @@ BSCWindow::BSCWindow()
 	fStartStopButton->SetTarget(fController);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	
-	fCardLayout = new BCardLayout();
-	BView* cardsView = new BView("status", 0, fCardLayout);
-	cardsView->SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	
 	fCamStatus = new CamStatusView(fController);
-	fCardLayout->AddView(fCamStatus);
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
-		
-	BView* statusView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-			.Add(fStringView = new BStringView("stringview", kEncodingString))
-			.Add(fStatusBar = new BStatusBar("", ""))
-		.End()
-		.View();
-	
-	statusView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));	
-	fStatusBar->SetExplicitMinSize(BSize(100, 20));
-	fCardLayout->AddView(statusView);
-	fCardLayout->SetVisibleItem((int32)0);
 	
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fMenuBar)
@@ -85,7 +59,7 @@ BSCWindow::BSCWindow()
 		.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
 			.Add(fTabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL))
 			.AddGroup(B_HORIZONTAL)
-				.Add(cardsView)
+				.Add(fCamStatus)
 				.Add(fStartStopButton)
 			.End()
 		.End();
@@ -116,8 +90,6 @@ BSCWindow::BSCWindow()
 
 	if (fController->LockLooper()) {
 		// watch Controller for these
-		fController->StartWatching(this, B_UPDATE_STATUS_BAR);
-		fController->StartWatching(this, B_RESET_STATUS_BAR);
 		fController->StartWatching(this, kMsgControllerEncodeStarted);
 		fController->StartWatching(this, kMsgControllerEncodeProgress);
 		fController->StartWatching(this, kMsgControllerEncodeFinished);
@@ -202,15 +174,6 @@ BSCWindow::MessageReceived(BMessage *message)
 			int32 code;
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {		
-				case B_UPDATE_STATUS_BAR:
-				case B_RESET_STATUS_BAR:
-				{
-					BMessage newMessage(*message);
-					message->what = code;
-					PostMessage(message, fStatusBar);
-					break;
-				}
-	
 				case kMsgControllerSelectionWindowClosed:
 				{
 					if (IsHidden())
@@ -241,29 +204,12 @@ BSCWindow::MessageReceived(BMessage *message)
 					break;
 				}
 				case kMsgControllerEncodeStarted:
-					fStringView->SetText(kEncodingString);
-					fCardLayout->SetVisibleItem(1);
-					
-					fStartStopButton->SetEnabled(false);
-					
+					fStartStopButton->SetEnabled(false);			
 					break;
-					
-				case kMsgControllerEncodeProgress:
-				{
-					int32 numFiles = 0;
-					message->FindInt32("num_files", &numFiles);					
-					fStatusBar->SetMaxValue(float(numFiles));
-					
-					BString string = kEncodingString;
-					string << " (" << numFiles << " frames)";
-					fStringView->SetText(string);
-					break;
-				}
 		
 				case kMsgControllerEncodeFinished:
 				{
 					fStartStopButton->SetEnabled(true);
-					fCardLayout->SetVisibleItem((int32)0);
 					status_t status = B_OK;
 					if (message->FindInt32("status", (int32*)&status) == B_OK
 						&& status != B_OK) {
@@ -322,11 +268,6 @@ BSCWindow::_BuildMenu()
 	menu->AddItem(aboutItem);
 	menu->AddItem(quitItem);
 	fMenuBar->AddItem(menu);
-	
-	/*menu = new BMenu("Settings");
-	BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
-	menu->AddItem(media);
-	fMenuBar->AddItem(menu);*/
 }
 
 
@@ -338,9 +279,6 @@ BSCWindow::_CaptureStarted()
 	Settings settings;
 	if (settings.MinimizeOnRecording())
 		Hide();
-	
-	fCardLayout->SetVisibleItem((int32)0);
-	fStatusBar->Reset();
 	
 	fStartStopButton->SetLabel("Stop Recording");
 	

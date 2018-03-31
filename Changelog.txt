@@ -1,7 +1,9 @@
+v2.3.2
+	- Added a field to select the target frame rate
+	- Fix crash on recording if entering region selection mode, then hitting ESC
+	- Fix displaying pause bitmap on recording in certain cases
+---
 v2.3.1
-	- Fix missing preview on application start
----	
-v2.3
 	- In selection mode, add an hint to the user via text instructions on the screen.
 	- The selection can be moved after being selected
 	- Added capture frame settings

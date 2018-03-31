@@ -10,6 +10,7 @@ enum appMessages {
 	kSelectionWindowClosed,
 	kCaptureFinished,
 	kEncodingFinished,
+	kEncodingProgress,
 	kFileNameChanged,
 	kMsgGetControllerMessenger
 };

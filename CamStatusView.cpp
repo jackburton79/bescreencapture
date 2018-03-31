@@ -5,19 +5,24 @@
 
 #include <Application.h>
 #include <Bitmap.h>
+#include <CardLayout.h>
 #include <GroupLayoutBuilder.h>
 #include <IconUtils.h>
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
 #include <Message.h>
 #include <Resources.h>
+#include <StatusBar.h>
 #include <StringView.h>
 #include <Window.h>
 
 #include <algorithm>
+#include <iostream>
 
 const static float kSpacing = 10;
 const static float kBitmapSize = 48;
+const char* kEncodingString = "Encoding movie...";
+const char* kDoneString = "Done!";
 
 static float
 capped_size(float size)
@@ -55,25 +60,38 @@ CamStatusView::CamStatusView(Controller* controller)
 	fController(controller),
 	fStringView(NULL),
 	fBitmapView(NULL),
+	fEncodingStringView(NULL),
+	fStatusBar(NULL),
 	fNumFrames(0),
 	fRecording(false),
 	fPaused(false),
 	fRecordingBitmap(NULL),
 	fPauseBitmap(NULL)
 {
-	SetLayout(new BGroupLayout(B_HORIZONTAL));
+	BCardLayout* cardLayout = new BCardLayout();
+	SetLayout(cardLayout);
 	BRect bitmapRect(0, 0, kBitmapSize, kBitmapSize);
 	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	
+	BView* statusView = BLayoutBuilder::Group<>()
+		.SetInsets(0)
+		.Add(fEncodingStringView = new BStringView("stringview", kEncodingString))
+		.Add(fStatusBar = new BStatusBar("", ""))
+		.View();
+
+	fStatusBar->SetExplicitMinSize(BSize(100, 20));
+
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
 		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
 		.Add(fStringView = new BStringView("cam string view", ""))
-	.View();
+		.View();
+
+	cardLayout->AddView(layoutView);
+	cardLayout->AddView(statusView);
 	
-	fStringView->Hide();
-	fBitmapView->Hide();
+	fBitmapView->SetBitmap(NULL);
 	
 	BFont font;
 	GetFont(&font);
@@ -81,7 +99,10 @@ CamStatusView::CamStatusView(Controller* controller)
 	fBitmapView->SetExplicitMinSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitMaxSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
-	AddChild(layoutView);
+	
+	fStringView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
+	
+	cardLayout->SetVisibleItem(int32(0));
 }
 
 
@@ -93,6 +114,9 @@ CamStatusView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
 		fController->StartWatching(this, kMsgControllerCapturePaused);
 		fController->StartWatching(this, kMsgControllerCaptureResumed);
+		fController->StartWatching(this, kMsgControllerEncodeStarted);
+		fController->StartWatching(this, kMsgControllerEncodeProgress);
+		fController->StartWatching(this, kMsgControllerEncodeFinished);
 		fController->UnlockLooper();
 	}
 	
@@ -108,7 +132,7 @@ CamStatusView::AttachedToWindow()
 	if (buffer != NULL)
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);
 	
-	fBitmapView->SetBitmap(fRecordingBitmap);
+	fBitmapView->SetBitmap(NULL);
 }
 
 
@@ -140,7 +164,30 @@ CamStatusView::MessageReceived(BMessage *message)
 				case kMsgControllerCaptureResumed:
 					TogglePause(what == kMsgControllerCapturePaused);
 					break;
-	
+				case kMsgControllerEncodeStarted:
+					fEncodingStringView->SetText(kEncodingString);
+					((BCardLayout*)GetLayout())->SetVisibleItem(1);		
+					break;
+				case kMsgControllerEncodeProgress:
+				{
+					int32 totalFrames = 0;
+					if (message->FindInt32("frames_total", &totalFrames) == B_OK) {
+						fStatusBar->SetMaxValue(float(totalFrames));
+					}
+					int32 remainingFrames = 0;
+					if (message->FindInt32("frames_remaining", &remainingFrames) == B_OK) {
+						BString string = kEncodingString;
+						string << " (" << remainingFrames << " frames)";
+						fEncodingStringView->SetText(string);
+					}
+					fStatusBar->Update(1);
+					break;
+				}
+				case kMsgControllerEncodeFinished:
+				{
+					((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
+					break;
+				}
 				default:
 					break;
 			}
@@ -151,13 +198,15 @@ CamStatusView::MessageReceived(BMessage *message)
 			BView::MessageReceived(message);
 			break;
 	}
-	
 }
 
 
 void
 CamStatusView::Pulse()
 {
+	if (!fRecording)
+		return;
+		
 	fNumFrames = fController->RecordedFrames();
 	fRecordTime = (time_t)fController->RecordTime() / 1000000;
 	if (fRecordTime < 0)
@@ -196,12 +245,12 @@ CamStatusView::SetRecording(const bool recording)
 {
 	fRecording = recording;
 	if (recording) {
-		fStringView->SetText("");
-		fStringView->Show();
-		fBitmapView->Show();
+		fBitmapView->SetBitmap(fRecordingBitmap);
+		((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
+		fStatusBar->Reset();
 	} else {
-		fStringView->Hide();
-		fBitmapView->Hide();
+		fBitmapView->SetBitmap(NULL);
+		fStringView->SetText("");
 	}
 	Invalidate();
 }

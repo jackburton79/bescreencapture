@@ -20,8 +20,6 @@ public:
 	virtual ~BitmapView();
 	
 	virtual void Draw(BRect update);
-	virtual void GetHeightForWidth(float width, float* min, float* max, float* preferred);
-	virtual BSize MinSize();
 };
 
 
@@ -158,26 +156,3 @@ BitmapView::Draw(BRect rect)
 	SetHighColor(0, 0, 0);
 	StrokeRect(Bounds());
 }
-
-
-void
-BitmapView::GetHeightForWidth(float width, float* min,
-			float* max, float* preferred)
-{
-	float preferredHeight = (width / 16) * 9;
-	float variation = preferredHeight / 5;
-	if (preferred != NULL)
-		*preferred = preferredHeight;
-	if (min != NULL)
-		*min = preferredHeight - variation;
-	if (max != NULL)
-		*max = preferredHeight;
-}
-	
-	
-BSize
-BitmapView::MinSize()
-{
-	return BLayoutUtils::ComposeSize(ExplicitMinSize(), BSize(90, 70));
-}
-

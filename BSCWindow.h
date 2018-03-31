@@ -44,10 +44,7 @@ private:
 	BMenuBar* fMenuBar;
 	BTabView *fTabView;
 	BButton *fStartStopButton;
-	BStringView *fStringView;
-	BStatusBar *fStatusBar;
 	CamStatusView *fCamStatus;
-	BCardLayout* fCardLayout;
 	
 	bool fCapturing;
 	BMessenger fAddonMessenger;

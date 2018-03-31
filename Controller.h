@@ -8,8 +8,6 @@
 #include <MediaFile.h>
 #include <ObjectList.h>
 #include <OS.h>
-#include <StopWatch.h>
-
 
 enum {
 	CONTROLLER_LISTEN_EVENTS = 0x1,
@@ -20,6 +18,7 @@ enum {
 extern BLooper *gControllerLooper;
 
 class BBitmap;
+class BStopWatch;
 class BString;
 class FileList;
 class MovieEncoder;
@@ -79,7 +78,7 @@ public:
 private:
 	thread_id			fCaptureThread;
 	int32				fNumFrames;
-	BStopWatch			fRecordTime;
+	BStopWatch*			fRecordWatch;
 	bool				fKillCaptureThread;
 	bool				fPaused;
 

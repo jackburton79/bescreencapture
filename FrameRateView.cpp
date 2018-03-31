@@ -23,7 +23,7 @@
 #include <iostream>
 
 const static char* kCaptureFreqLabel = "Capture frame every";
-const static char* kFrameRateLabel = "Frame rate";
+const static char* kFrameRateLabel = "Target frame rate";
 
 const static uint32 kLocalCaptureFreqChanged = 'CFCh';
 const static uint32 kLocalFrameRateChanged = 'FrCh';
@@ -45,10 +45,10 @@ FrameRateView::FrameRateView(Controller* controller)
 	fController(controller)
 {
 	fCaptureFreq = new BTextControl("capture freq",
-			kCaptureFreqLabel, "20" , new BMessage(kLocalCaptureFreqChanged));
+			kCaptureFreqLabel, "50" , new BMessage(kLocalCaptureFreqChanged));
 		
 	fFrameRate = new BTextControl("frame rate",
-			kFrameRateLabel, "30" , new BMessage(kLocalFrameRateChanged));
+			kFrameRateLabel, "20" , new BMessage(kLocalFrameRateChanged));
 			
 	fAutoAdjust = new BCheckBox("AutoAdjust",
 		"Auto Adjust", new BMessage(kAutoAdjust));			
@@ -58,14 +58,14 @@ FrameRateView::FrameRateView(Controller* controller)
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.AddGroup(B_VERTICAL)
 			.AddGroup(B_HORIZONTAL)
+				.Add(fFrameRate)
+				.Add(new BStringView("frameratelabel", "frames/sec"))
+			.End()
+			.AddGroup(B_HORIZONTAL)
 				.Add(fCaptureFreq)
 				.Add(new BStringView("capturefreqlabel", "milliseconds"))
 			.End()
-			/*.AddGroup(B_HORIZONTAL)
-				.Add(fFrameRate)
-				.Add(new BStringView("frameratelabel", "frame/sec"))
-			.End()
-			.Add(fAutoAdjust)*/
+			/*.Add(fAutoAdjust)*/
 		.End()
 		.View();
 	
@@ -78,13 +78,12 @@ void
 FrameRateView::AttachedToWindow()
 {
 	fCaptureFreq->SetTarget(this);
-	/*fFrameRate->SetTarget(this);
-	fAutoAdjust->SetTarget(this);*/
+	fFrameRate->SetTarget(this);
+	/*fAutoAdjust->SetTarget(this);*/
 	
-	int32 milliSeconds = Settings().CaptureFrameDelay();
-	BString text;
-	text << milliSeconds;
-	fCaptureFreq->SetText(text);
+	float milliSeconds = (float)Settings().CaptureFrameDelay();
+	
+	_UpdateCaptureRate(&milliSeconds, NULL);
 }
 
 
@@ -95,17 +94,13 @@ FrameRateView::MessageReceived(BMessage* message)
 		case kLocalCaptureFreqChanged:
 		{
 			float delay = strtof(fCaptureFreq->Text(), NULL);
-			CapFloat(delay, 10, 1000);
-			BString text;
-			text << delay;
-			fCaptureFreq->SetText(text);
-			fController->SetCaptureFrameDelay(delay);
+			_UpdateCaptureRate(&delay, NULL);
 			break;
 		}
 		case kLocalFrameRateChanged:
 		{
 			float rate = strtof(fFrameRate->Text(), NULL);
-			fController->SetPlaybackFrameRate(rate);
+			_UpdateCaptureRate(NULL, &rate);
 			break;
 		}
 		case B_OBSERVER_NOTICE_CHANGE:
@@ -116,10 +111,9 @@ FrameRateView::MessageReceived(BMessage* message)
 				case kMsgControllerCaptureFrameDelayChanged:
 				{
 					int32 delay;
-					if (message->FindInt32("delay", &delay) == B_OK) {						
-						BString text;
-						text << delay;
-						fCaptureFreq->SetText(text);
+					if (message->FindInt32("delay", &delay) == B_OK) {
+						float floatDelay = (float)delay;					
+						_UpdateCaptureRate(&floatDelay, NULL);
 					}
 					break;
 				}
@@ -131,4 +125,35 @@ FrameRateView::MessageReceived(BMessage* message)
 			BView::MessageReceived(message);
 			break;
 	}
+}
+
+
+void
+FrameRateView::_UpdateCaptureRate(float *delay, float *rate)
+{
+	BString text;
+	float targetDelay = 0;
+	if (delay != NULL) {
+		targetDelay = *delay;
+		CapFloat(targetDelay, 10, 1000);
+		text << targetDelay;
+		fCaptureFreq->SetText(text);
+		
+		text = "";
+		text << (1000/targetDelay);
+		
+		fFrameRate->SetText(text);
+	} else if (rate != NULL) {
+		float targetRate = *rate;
+		CapFloat(targetRate, 2, 60);
+		text << targetRate;
+		fFrameRate->SetText(text);
+		
+		targetDelay = 1000/targetRate;
+		text = "";
+		text << targetDelay;
+		fCaptureFreq->SetText(text);
+	}
+	
+	fController->SetCaptureFrameDelay(targetDelay);
 }
