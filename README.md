@@ -17,12 +17,15 @@ These are the commands you can configure in the "Shortcuts" preflet for the vari
 
 * Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
 
-Note: The command constant could change between versions
+Note that command constants could change between versions.
+
+It seems that the most reliable codec / format to use for encoding, in current Haiku nightlies, is AVI/Mpeg4,
+which should be the default. Other codec/format combos may cause various kinds of problems.
+
  
 ## Authors:
 
 Stefano Ceccherini ( stefano.ceccherini@gmail.com )
-
 
 ## Contributors
 
@@ -31,30 +34,7 @@ Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 * Jessica Hamilton (fixes)
 * puckipedia ("incognito" capture mode)
 
-## FAQ:
-
-Q: BeScreenCapture crashed while using the codec \<insert your favourite codec name here\> !!!
-
-A: Some codecs are buggy. Some could cause a crash, or fail to record anything. 
-
-
-Q: I tried to record a fullscreen clip but the result was crappy!!!
-
-A: Don't expect to record a full screen area on a slow computer and get an incredibly snappy video as a result. Capturing what happens on the screen is a really slow operation. If you get too few frames
-per second, try reducing the capture area, or get a faster computer :)
-
-
-Q: I switched resolution while recording and the resulting clip is crappy!!!
-
-A: Switching resolution while recording isn't supported at the moment.
-
-
-Q: This readme is lame!!!!
-
-A: You're right. Sorry.
-
-
-## Acknowledgments
+## Acknowledgements
 
 * Marc Flerackers,
 * Francois Revol,
