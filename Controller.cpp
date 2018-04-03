@@ -730,6 +730,7 @@ Controller::CaptureThread()
 	const int32 windowBorder = settings.WindowFrameBorderSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
 	status_t error = B_ERROR;
+	BBitmap *bitmap = NULL;
 	while (!fKillCaptureThread) {
 		if (!fPaused) {		
 			if (token != -1) {
@@ -742,17 +743,23 @@ Controller::CaptureThread()
 			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
 			error = ReadBitmap(bitmap, true, bounds);
 			bigtime_t currentTime = system_time();
+
+			if (error != B_OK)
+				break;
+
 			// Takes ownership of the bitmap
-	    	if (error == B_OK && fFileList->AddItem(bitmap, currentTime))
-				atomic_add(&fNumFrames, 1);
-			else {
-				delete bitmap;
+			if (!fFileList->AddItem(bitmap, currentTime)) {
+				error = B_NO_MEMORY;
 				break;
 			}
+
+			atomic_add(&fNumFrames, 1);
 		} else
 			snooze(500000);
 	}
 	
+	delete bitmap;
+
 	fCaptureThread = -1;
 	fKillCaptureThread = true;
 	
