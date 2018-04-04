@@ -32,14 +32,15 @@
 const static BRect kWindowRect(0, 0, 400, 600);
 
 const static uint32 kGUIOpenMediaWindow = 'j89d';
+const static uint32 kGUIDockWindow = 'j90d';
+
 
 BSCWindow::BSCWindow()
 	:
 	BDirectWindow(kWindowRect, "BeScreenCapture", B_TITLED_WINDOW,
-		B_ASYNCHRONOUS_CONTROLS|B_AUTO_UPDATE_SIZE_LIMITS),
+		B_ASYNCHRONOUS_CONTROLS),
 	fController(dynamic_cast<Controller*>(gControllerLooper)),
 	fMenuBar(NULL),
-	fTabView(NULL),
 	fStartStopButton(NULL),
 	fCamStatus(NULL),
 	fOutputView(NULL),
@@ -63,9 +64,7 @@ BSCWindow::BSCWindow()
 	fCamStatus = new CamStatusView(fController);
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
-	fTabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL);
-
-	_LayoutWindow();
+	_LayoutWindow(false);
 
 	if (fController->LockLooper()) {
 		// watch Controller for these
@@ -79,8 +78,6 @@ BSCWindow::BSCWindow()
 				
 		fController->UnlockLooper();
 	}
-	
-	CenterOnScreen();
 }
 
 
@@ -136,6 +133,9 @@ BSCWindow::MessageReceived(BMessage *message)
 
 		case kGUIOpenMediaWindow:
 			(new OptionsWindow(fController))->Show();
+			break;
+		case kGUIDockWindow:
+			_LayoutWindow(true);
 			break;
 			
 		case kSelectArea:
@@ -252,21 +252,51 @@ BSCWindow::_BuildMenu()
 	menu->AddItem(quitItem);
 	fMenuBar->AddItem(menu);
 	
-	/*menu = new BMenu("Settings");
-	BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
-	menu->AddItem(media);
-	fMenuBar->AddItem(menu);*/
+	menu = new BMenu("Settings");
+	/*BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
+	menu->AddItem(media);*/
+	BMenuItem* dock = new BMenuItem("Dock Window", new BMessage(kGUIDockWindow));
+	menu->AddItem(dock);
+	fMenuBar->AddItem(menu);
 }
 
 
 void
-BSCWindow::_LayoutWindow()
+BSCWindow::_LayoutWindow(bool dock)
 {
+	if (dock) {
+		SetFlags((Flags() & ~B_AUTO_UPDATE_SIZE_LIMITS) | (B_NOT_MOVABLE|B_NOT_RESIZABLE));
+
+		BScreen screen(this);
+		ResizeTo(screen.Frame().Width(), 300);
+		MoveTo(0, screen.Frame().Height() - 300);
+
+		BLayoutBuilder::Group<>(this, B_VERTICAL)
+			.AddGroup(B_VERTICAL)
+			.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
+				.Add(fOutputView)
+				.AddGroup(B_HORIZONTAL)
+					.Add(fCamStatus)
+					.Add(fStartStopButton)
+				.End()
+			.End();
+			
+		fOutputView->SetLayout(new BGroupLayout(B_HORIZONTAL));
+		
+		return;
+	}
+
+	SetFlags((Flags() | B_AUTO_UPDATE_SIZE_LIMITS) & ~(B_NOT_MOVABLE|B_NOT_RESIZABLE));
+
+	fOutputView->SetLayout(new BGroupLayout(B_VERTICAL));
+		
+	BTabView* tabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL);
+
 	BLayoutBuilder::Group<>(this, B_VERTICAL)
 		.Add(fMenuBar)
 		.AddGroup(B_VERTICAL)
 		.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
-			.Add(fTabView)
+			.Add(tabView)
 			.AddGroup(B_HORIZONTAL)
 				.Add(fCamStatus)
 				.Add(fStartStopButton)
@@ -277,7 +307,7 @@ BSCWindow::_LayoutWindow()
 	outputGroup->SetName("Capture");
 	outputGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
 		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
-	fTabView->AddTab(outputGroup);
+	tabView->AddTab(outputGroup);
 	BLayoutBuilder::Group<>(outputGroup)
 		.Add(fOutputView);
 
@@ -285,7 +315,7 @@ BSCWindow::_LayoutWindow()
 	advancedGroup->SetName("Options");
 	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
 		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
-	fTabView->AddTab(advancedGroup);
+	tabView->AddTab(advancedGroup);
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(fAdvancedOptionsView);
 
@@ -293,9 +323,11 @@ BSCWindow::_LayoutWindow()
 	infoGroup->SetName("Info");
 	infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
 		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
-	fTabView->AddTab(infoGroup);
+	tabView->AddTab(infoGroup);
 	BLayoutBuilder::Group<>(infoGroup)
 		.Add(fInfoView);
+	
+	CenterOnScreen();
 }
 
 

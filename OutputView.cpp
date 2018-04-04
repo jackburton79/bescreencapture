@@ -43,10 +43,9 @@ const static uint32 kWindowBorderFrameChanged = 'WbFc';
 OutputView::OutputView(Controller *controller)
 	:
 	BView("Capture Options", B_WILL_DRAW),
-	fController(controller),
-	fClassicLayout(true)
+	fController(controller)
 {
-	_LayoutView(fClassicLayout);
+	_LayoutView();
 }
 
 
@@ -55,7 +54,7 @@ OutputView::AttachedToWindow()
 {
 	BView::AttachedToWindow();
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	
+
 	// Watch for these from Controller
 	if (fController->LockLooper()) {
 		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
@@ -64,9 +63,9 @@ OutputView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
 		fController->UnlockLooper();
 	}
-	
+
 	Settings settings;
-	
+
 	fFileName->SetTarget(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
@@ -250,10 +249,8 @@ OutputView::UpdatePreviewFromSettings()
 
 
 void
-OutputView::_LayoutView(bool classic)
+OutputView::_LayoutView()
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	
 	BBox *selectBox = new BBox("source");
 	selectBox->SetLabel("Source");
 	AddChild(selectBox);
