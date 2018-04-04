@@ -36,6 +36,8 @@ public:
 	
 private:
 	void _BuildMenu();
+	void _LayoutWindow();
+
 	status_t _CaptureStarted();
 	status_t _CaptureFinished();
 
@@ -46,6 +48,10 @@ private:
 	BButton *fStartStopButton;
 	CamStatusView *fCamStatus;
 	
+	BView* fOutputView;
+	BView* fAdvancedOptionsView;
+	BView* fInfoView;
+
 	bool fCapturing;
 	BMessenger fAddonMessenger;
 };
