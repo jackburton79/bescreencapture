@@ -64,6 +64,9 @@ public:
 	void GetEncodingThreadPriority(int32 &value) const;
 	int32 EncodingThreadPriority() const;
 	
+	bool DockingMode() const;
+	void SetDockingMode(const bool& value);
+	
 	void PrintToStream();
 private:
 	static status_t SetDefaults();

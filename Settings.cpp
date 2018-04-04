@@ -25,6 +25,7 @@ const static char *kOutputCodecName = "output codec";
 const static char *kThreadPriority = "thread priority";
 const static char *kWindowFrameBorderSize = "window frame border size";
 const static char *kCaptureFrameDelay = "capture frame delay";
+const static char *kDockingMode = "docking mode";
 
 
 Settings::Settings()
@@ -426,6 +427,25 @@ Settings::EncodingThreadPriority() const
 	int32 prio = B_NORMAL_PRIORITY;
 	fSettings->FindInt32(kThreadPriority, &prio);
 	return prio;
+}
+
+
+bool
+Settings::DockingMode() const
+{
+	bool docking;
+	fSettings->FindBool(kDockingMode, &docking);
+	return docking;
+}
+
+
+void
+Settings::SetDockingMode(const bool& value)
+{
+	if (!fSettings->HasBool(kDockingMode))
+		fSettings->AddBool(kDockingMode, value);
+	else
+		fSettings->ReplaceBool(kDockingMode, value);	
 }
 
 
