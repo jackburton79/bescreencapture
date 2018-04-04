@@ -134,8 +134,9 @@ BSCWindow::MessageReceived(BMessage *message)
 		case kGUIOpenMediaWindow:
 			(new OptionsWindow(fController))->Show();
 			break;
+			
 		case kGUIDockWindow:
-			_LayoutWindow(true);
+			_LayoutWindow(!Settings().DockingMode());
 			break;
 			
 		case kSelectArea:
@@ -267,10 +268,6 @@ BSCWindow::_LayoutWindow(bool dock)
 	if (dock) {
 		SetFlags((Flags() & ~B_AUTO_UPDATE_SIZE_LIMITS) | (B_NOT_MOVABLE|B_NOT_RESIZABLE));
 
-		BScreen screen(this);
-		ResizeTo(screen.Frame().Width(), 300);
-		MoveTo(0, screen.Frame().Height() - 300);
-
 		BLayoutBuilder::Group<>(this, B_VERTICAL)
 			.AddGroup(B_VERTICAL)
 			.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
@@ -282,6 +279,10 @@ BSCWindow::_LayoutWindow(bool dock)
 			.End();
 			
 		fOutputView->SetLayout(new BGroupLayout(B_HORIZONTAL));
+		
+		BScreen screen(this);
+		ResizeTo(screen.Frame().Width(), 300);
+		MoveTo(0, screen.Frame().Height() - 300);
 		
 		return;
 	}
