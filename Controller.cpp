@@ -231,9 +231,8 @@ Controller::ToggleCapture()
 	else if (state == STATE_RECORDING)
 		EndCapture();
 	else {
-		std::cerr << "Controller::ToggleCapture() called with an unexpected state: ";
-		std::cerr << state << std::endl;
-	}	
+		debugger("Controller::ToggleCapture() called with an unexpected state!");
+	}
 }
 
 
@@ -464,7 +463,7 @@ Controller::GetCodecsList(BObjectList<media_codec_info>& codecList) const
 	return B_OK;
 }
 
-	
+
 media_format
 Controller::_ComputeMediaFormat(const int32 &width, const int32 &height,
 	const color_space &colorSpace, const int32 &fieldRate)
@@ -575,7 +574,6 @@ Controller::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 	 
 	return B_OK;
 }
-
 
 
 void
@@ -782,5 +780,3 @@ Controller::CaptureStarter(void *arg)
 {
 	return static_cast<Controller *>(arg)->CaptureThread();
 }
-
-

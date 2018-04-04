@@ -1,3 +1,6 @@
+v2.3.3
+	- Fix unstoppable capture thread on full-disk conditions
+---
 v2.3.2
 	- Added a field to select the target frame rate
 	- Fix crash on recording if entering region selection mode, then hitting ESC
