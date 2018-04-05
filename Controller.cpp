@@ -584,7 +584,7 @@ Controller::StartCapture()
 	fNumFrames = 0;
 	try {
 		if (fFileList == NULL)
-			fFileList = new FileList();
+			fFileList = new FramesList();
 	} catch (status_t error) { 
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", error);

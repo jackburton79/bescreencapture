@@ -34,10 +34,10 @@ private:
 
 
 class BPath;
-class FileList : private BObjectList<BitmapEntry> {
+class FramesList : private BObjectList<BitmapEntry> {
 public:
-	FileList();
-	virtual ~FileList();
+	FramesList();
+	virtual ~FramesList();
 
 	bool AddItem(BBitmap* bitmap, bigtime_t frameTime);
 

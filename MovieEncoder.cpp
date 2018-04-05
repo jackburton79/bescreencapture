@@ -103,7 +103,7 @@ MovieEncoder::Cancel()
 
 
 status_t
-MovieEncoder::SetSource(FileList *fileList)
+MovieEncoder::SetSource(FramesList *fileList)
 {
 	// Takes ownership
 	fFileList = fileList;
@@ -323,7 +323,7 @@ MovieEncoder::_EncoderThread()
 	
 	status = B_OK;
 	while (!fKillThread) {
-		BitmapEntry* entry = const_cast<FileList*>(fFileList)->Pop();
+		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
 		if (entry == NULL)
 			break;
 				

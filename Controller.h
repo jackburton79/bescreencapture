@@ -20,7 +20,7 @@ extern BLooper *gControllerLooper;
 class BBitmap;
 class BStopWatch;
 class BString;
-class FileList;
+class FramesList;
 class MovieEncoder;
 class Controller : public BLooper {
 public:
@@ -87,7 +87,7 @@ private:
 	MovieEncoder*		fEncoder;
 	thread_id			fEncoderThread;
 	
-	FileList			*fFileList;
+	FramesList			*fFileList;
 	
 	BObjectList<media_codec_info>* fCodecList;
 	

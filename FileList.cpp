@@ -1,5 +1,5 @@
 /*
- * FileList.cpp
+ * FramesList.cpp
  *
  *  Created on: 11/dic/2013
  *      Author: Stefano Ceccherini (stefano.ceccherini@gmail.com)
@@ -24,7 +24,7 @@
 
 static BTranslatorRoster* sTranslatorRoster = NULL;
 
-FileList::FileList()
+FramesList::FramesList()
 	:
 	BObjectList<BitmapEntry>(1, true),
 	fTemporaryPath(NULL)
@@ -40,7 +40,7 @@ FileList::FileList()
 }
 
 
-FileList::~FileList()
+FramesList::~FramesList()
 {
 	// Empty the list, which incidentally deletes the files
 	// on disk. Must be done before deleting the folder below
@@ -56,7 +56,7 @@ FileList::~FileList()
 
 
 bool
-FileList::AddItem(BBitmap* bitmap, bigtime_t time)
+FramesList::AddItem(BBitmap* bitmap, bigtime_t time)
 {
 	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, time);
 	if (entry == NULL)
@@ -70,21 +70,21 @@ FileList::AddItem(BBitmap* bitmap, bigtime_t time)
 
 
 BitmapEntry*
-FileList::Pop()
+FramesList::Pop()
 {
 	return BObjectList<BitmapEntry>::RemoveItemAt(0);
 }
 
 
 BitmapEntry*
-FileList::ItemAt(int32 index) const
+FramesList::ItemAt(int32 index) const
 {
 	return BObjectList<BitmapEntry>::ItemAt(index);
 }
 
 
 int32
-FileList::CountItems() const
+FramesList::CountItems() const
 {
 	return BObjectList<BitmapEntry>::CountItems();
 }

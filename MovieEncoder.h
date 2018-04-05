@@ -18,7 +18,7 @@ public:
 	
 	void Cancel();
 
-	status_t SetSource(FileList* fileList);
+	status_t SetSource(FramesList* fileList);
 	status_t SetCursorQueue(std::queue<BPoint> *queue);
 	status_t SetOutputFile(const char *fileName);
 	status_t SetDestFrame(const BRect &rect);
@@ -63,7 +63,7 @@ private:
 	int32 fPriority;
 	BMessenger fMessenger;
 		
-	FileList* fFileList;
+	FramesList* fFileList;
 	
 	std::queue<BPoint> *fCursorQueue;
 	
