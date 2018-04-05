@@ -272,6 +272,8 @@ Controller::EncodeMovie()
 	int32 numFrames = fFileList->CountItems();
 	if (numFrames <= 0) {
 		_EncodingFinished(B_ERROR);
+		delete fFileList;
+		fFileList = NULL;
 		return;
 	}
 			
@@ -664,11 +666,9 @@ Controller::_ResumeCapture()
 void
 Controller::_EncodingFinished(const status_t status)
 {
-	// Deleting the filelist deletes the files referenced by it
-	// and also the temporary folder
-	delete fFileList;
-	fFileList = NULL;
-	
+	// Reminder: fFilelist is already NULL here, since it's deleted in MovieEncoder,
+	// except when Encoder didn't start at all, where it's deleted in EncodeMovie()
+	// TODO: Review fFileList ownership policy
 	fEncoderThread = -1;
 	fNumFrames = 0;
 		
