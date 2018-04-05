@@ -96,6 +96,8 @@ Settings::Load()
 			sSettings.ReplaceInt32(kWindowFrameBorderSize, integer);
 		if (tempMessage.FindInt32(kCaptureFrameDelay, &integer) == B_OK)
 			sSettings.ReplaceInt32(kCaptureFrameDelay, integer);
+		if (tempMessage.FindBool(kDockingMode, &boolean) == B_OK)
+			sSettings.ReplaceBool(kDockingMode, boolean);
 	}	
 	
 	return status;
@@ -473,6 +475,7 @@ Settings::SetDefaults()
 	sSettings.AddString(kOutputCodecName, "");
 	sSettings.AddInt32(kWindowFrameBorderSize, 0);
 	sSettings.AddInt32(kCaptureFrameDelay, 20);
+	sSettings.AddBool(kDockingMode, false);
 	
 	return B_OK;
 }
