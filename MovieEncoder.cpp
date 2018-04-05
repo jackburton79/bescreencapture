@@ -84,6 +84,8 @@ MovieEncoder::DisposeData()
 	if (fMediaFile && fIsFileOpen)
 		_CloseFile();
 	
+	// Deleting the filelist deletes the files referenced by it
+	// and also the temporary folder
 	delete fFileList;
 	fFileList = NULL;
 }
