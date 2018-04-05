@@ -5,7 +5,7 @@
  *      Author: Stefano Ceccherini (stefano.ceccherini@gmail.com)
  */
 
-#include "FileList.h"
+#include "FramesList.h"
 
 #include <Bitmap.h>
 #include <BitmapStream.h>

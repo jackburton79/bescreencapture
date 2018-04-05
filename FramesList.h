@@ -1,12 +1,12 @@
 /*
- * FileList.h
+ * FramesList.h
  *
  *  Created on: 11/dic/2013
  *      Author: Stefano Ceccherini (stefano.ceccherini@gmail.com)
  */
 
-#ifndef __FILELIST_H_
-#define __FILELIST_H_
+#ifndef __FRAMESLIST_H_
+#define __FRAMESLIST_H_
 
 #include <ObjectList.h>
 #include <String.h>
@@ -50,4 +50,4 @@ private:
 };
 
 
-#endif /* __FILELIST_H_ */
+#endif /* __FRAMESLIST_H_ */
