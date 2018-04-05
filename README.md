@@ -19,8 +19,8 @@ These are the commands you can configure in the "Shortcuts" preflet for the vari
 
 Note that command constants could change between versions.
 
-It seems that the most reliable codec / format to use for encoding, in current Haiku nightlies, is AVI/Mpeg4,
-which should be the default. Other codec/format combos may cause various kinds of problems.
+It seems that the most reliable codec / format to use for encoding, in current Haiku nightlies, is MPEG/Mpeg4.
+Other codec/format combos may cause various kinds of problems.
 
  
 ## Authors:
