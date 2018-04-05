@@ -664,14 +664,14 @@ Controller::_ResumeCapture()
 void
 Controller::_EncodingFinished(const status_t status)
 {
-	// Deleting the filelist deletes the files referenced by it
-	// and also the temporary folder
+	// TODO: the filelist is actually deleted in MovieEncoder().
+	// Check if there are still code paths where this is not true
 	delete fFileList;
 	fFileList = NULL;
-	
+
 	fEncoderThread = -1;
 	fNumFrames = 0;
-		
+
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
 	SendNotices(kMsgControllerEncodeFinished, &message);
