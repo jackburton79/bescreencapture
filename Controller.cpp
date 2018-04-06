@@ -739,7 +739,7 @@ Controller::CaptureThread()
 			}
 				
 			_WaitForRetrace(captureDelay); // Wait for Vsync
-			BBitmap *bitmap = new BBitmap(bounds, screen.ColorSpace());
+			bitmap = new BBitmap(bounds, screen.ColorSpace());
 			error = ReadBitmap(bitmap, true, bounds);
 			bigtime_t currentTime = system_time();
 
@@ -757,12 +757,11 @@ Controller::CaptureThread()
 			snooze(500000);
 	}
 	
-	delete bitmap;
-
 	fCaptureThread = -1;
 	fKillCaptureThread = true;
 	
 	if (error != B_OK) {
+		delete bitmap;
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", (int32)error);
 		SendNotices(kMsgControllerCaptureStopped, &message);
