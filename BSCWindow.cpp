@@ -197,10 +197,10 @@ BSCWindow::MessageReceived(BMessage *message)
 					status_t status = B_OK;
 					if (message->FindInt32("status", (int32*)&status) == B_OK
 						&& status != B_OK) {
-						char errorString[128];
-						snprintf(errorString, 128, "A problem has occurred:\n"
+						BString errorString;
+						errorString.SetToFormat("Could not create clip: "
 							"%s", strerror(status));
-						(new BAlert("yo", errorString, "Ok"))->Go();
+						(new BAlert("yo", errorString.String(), "Ok"))->Go();
 					}
 					if (((BSCApp*)be_app)->WasLaunchedSilently())
 						be_app->PostMessage(B_QUIT_REQUESTED);
