@@ -19,7 +19,8 @@ const char kChangeLog[] = {
 };
 
 const char* kAuthors[] = {
-	"Stefano Ceccherini"
+	"Stefano Ceccherini (stefano.ceccherini@gmail.com)",
+	NULL
 };
 
 int
@@ -160,7 +161,7 @@ BSCApp::AboutRequested()
 {
 	BAboutWindow* aboutWindow = new BAboutWindow("BeScreenCapture", kAppSignature);
 	aboutWindow->AddDescription("BeScreenCapture is a screen recording application for Haiku");
-	//aboutWindow->AddAuthors(kAuthors);
+	aboutWindow->AddAuthors(kAuthors);
 	aboutWindow->AddCopyright(2013, "Stefano Ceccherini");
 	BStringList list = SplitChangeLog(kChangeLog);
 	int32 stringCount = list.CountStrings();
