@@ -78,9 +78,8 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 		.End()
 		.View();
 	
-	fHideDeskbarIcon->SetToolTip("Install the bescreencapture_inputfilter to be able to stop recording"
-								"with ctrl+command+shift+r, or define a shortcut key with the Shortcut preflet");
-
+	fHideDeskbarIcon->SetToolTip("Install the bescreencapture_inputfilter to be able to stop recording "
+								"with CTRL+CMD+SHIFT+R, or define a shortcut key with the Shortcut preflet");
 	
 	advancedBox->AddChild(layoutView);
 	
