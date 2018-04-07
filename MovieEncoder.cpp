@@ -215,6 +215,7 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
 	// any time up to actually writing video data.
 	status_t err = B_OK;
 	if (!fHeaderCommitted) {
+		isKeyFrame = true;
 		err = fMediaFile->CommitHeader();
 		if (err == B_OK)
 			fHeaderCommitted = true;
