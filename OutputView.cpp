@@ -61,6 +61,8 @@ OutputView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
+		fController->StartWatching(this, kMsgControllerCaptureStarted);
+		fController->StartWatching(this, kMsgControllerCaptureStopped);
 		fController->UnlockLooper();
 	}
 
@@ -186,7 +188,17 @@ OutputView::MessageReceived(BMessage *message)
 					_SetFileNameExtension(fController->MediaFileFormat().file_extension);
 					fController->SetOutputFileName(fFileName->Text());
 					break;
-					
+
+				case kMsgControllerCaptureStarted:
+					fFileName->SetEnabled(false);
+					fScaleSlider->SetEnabled(false);
+					break;
+
+				case kMsgControllerCaptureStopped:
+					fFileName->SetEnabled(true);
+					fScaleSlider->SetEnabled(true);
+					break;
+
 				default:
 					break;
 			}
