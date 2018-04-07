@@ -43,7 +43,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	
 	encodingBox->SetLabel("Encoding options");
 	frameBox->SetLabel("Frame rate");
-	advancedBox->SetLabel("Advanced options");
+	advancedBox->SetLabel("Advanced");
 	
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
