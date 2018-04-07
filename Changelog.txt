@@ -1,4 +1,6 @@
 v2.3.3
+	- Let the user choose to open the clip when encoding is completed.
+	- Disable controls when recording to avoid possible problems.
 	- Fix unstoppable capture thread on full-disk conditions.
 ---
 v2.3.2
