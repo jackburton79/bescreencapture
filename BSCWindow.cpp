@@ -17,10 +17,12 @@
 #include <Box.h>
 #include <Button.h>
 #include <Debug.h>
+#include <Entry.h>
 #include <GroupLayoutBuilder.h>
 #include <GroupView.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
+#include <Roster.h>
 #include <Screen.h>
 #include <String.h>
 #include <StringView.h>
@@ -28,6 +30,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 
 const static BRect kWindowRect(0, 0, 400, 600);
 
@@ -201,6 +204,21 @@ BSCWindow::MessageReceived(BMessage *message)
 						errorString.SetToFormat("Could not create clip: "
 							"%s", strerror(status));
 						(new BAlert("yo", errorString.String(), "Ok"))->Go();
+					} else {
+						BString successString;
+						successString.SetTo("Do you want to open the clip?");
+						// TODO: Should be asynchronous
+						int32 choice = (new BAlert("yo", successString.String(), "Yes", "No"))->Go();
+						if (choice == 0) {
+							BEntry entry(Settings().OutputFileName().String());
+							if (entry.Exists()) {
+								entry_ref ref;
+								if (entry.GetRef(&ref) == B_OK) {
+									entry_ref app;
+									be_roster->Launch(&ref);
+								}
+							}	
+						}
 					}
 					if (((BSCApp*)be_app)->WasLaunchedSilently())
 						be_app->PostMessage(B_QUIT_REQUESTED);
