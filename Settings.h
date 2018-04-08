@@ -68,9 +68,10 @@ public:
 	void SetDockingMode(const bool& value);
 	
 	void PrintToStream();
-private:
+
 	static status_t SetDefaults();
-	
+
+private:
 	BMessage *fSettings;
 	BLocker fLocker;	
 };
