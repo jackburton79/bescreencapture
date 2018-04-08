@@ -71,6 +71,7 @@ FrameRateView::FrameRateView(Controller* controller)
 	
 	AddChild(layoutView);
 
+	fController->StartWatching(this, kMsgControllerResetSettings);
 }
 
 
@@ -115,6 +116,12 @@ FrameRateView::MessageReceived(BMessage* message)
 						float floatDelay = (float)delay;					
 						_UpdateCaptureRate(&floatDelay, NULL);
 					}
+					break;
+				}
+				case kMsgControllerResetSettings:
+				{
+					float milliSeconds = (float)Settings().CaptureFrameDelay();
+					_UpdateCaptureRate(&milliSeconds, NULL);
 					break;
 				}
 				default:

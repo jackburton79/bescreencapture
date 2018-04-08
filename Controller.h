@@ -74,6 +74,8 @@ public:
 	void		UpdateDirectInfo(direct_buffer_info *info);
 
 	status_t	ReadBitmap(BBitmap *bitmap, bool includeCursor, BRect bounds);
+	
+	void		ResetSettings();
 		
 private:
 	thread_id			fCaptureThread;

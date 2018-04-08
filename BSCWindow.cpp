@@ -36,7 +36,7 @@ const static BRect kWindowRect(0, 0, 400, 600);
 
 const static uint32 kGUIOpenMediaWindow = 'j89d';
 const static uint32 kGUIDockWindow = 'j90d';
-
+const static uint32 kGUIResetSettings = 'j91d';
 
 BSCWindow::BSCWindow()
 	:
@@ -140,6 +140,10 @@ BSCWindow::MessageReceived(BMessage *message)
 			
 		case kGUIDockWindow:
 			_LayoutWindow(!Settings().DockingMode());
+			break;
+
+		case kGUIResetSettings:
+			fController->ResetSettings();
 			break;
 			
 		case kSelectArea:
@@ -272,6 +276,8 @@ BSCWindow::_BuildMenu()
 	fMenuBar->AddItem(menu);
 	
 	menu = new BMenu("Settings");
+	BMenuItem* resetSettings = new BMenuItem("Reset Settings", new BMessage(kGUIResetSettings));
+	menu->AddItem(resetSettings);
 	/*BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
 	menu->AddItem(media);*/
 	BMenuItem* dock = new BMenuItem("Dock Window", new BMessage(kGUIDockWindow));

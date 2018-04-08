@@ -640,6 +640,15 @@ Controller::EndCapture()
 
 
 void
+Controller::ResetSettings()
+{
+	Settings::SetDefaults();
+	BMessage message(kMsgControllerResetSettings);
+	SendNotices(kMsgControllerResetSettings, &message);
+}
+
+
+void
 Controller::_PauseCapture()
 {
 	SendNotices(kMsgControllerCapturePaused);

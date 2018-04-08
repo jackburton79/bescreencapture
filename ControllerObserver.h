@@ -25,7 +25,9 @@ enum {
 	kMsgControllerCodecChanged,				// const char* codec_name
 	kMsgControllerMediaFileFormatChanged,	// const char* format_name
 	
-	kMsgControllerCaptureFrameDelayChanged // int32 delay
+	kMsgControllerCaptureFrameDelayChanged, // int32 delay
+	
+	kMsgControllerResetSettings
 };
 
 
