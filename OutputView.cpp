@@ -63,6 +63,7 @@ OutputView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
+		fController->StartWatching(this, kMsgControllerResetSettings);
 		fController->UnlockLooper();
 	}
 
@@ -198,6 +199,24 @@ OutputView::MessageReceived(BMessage *message)
 					fFileName->SetEnabled(true);
 					fScaleSlider->SetEnabled(true);
 					break;
+
+				case kMsgControllerResetSettings:
+				{
+					Settings settings;
+					fBorderSlider->SetValue(settings.WindowFrameBorderSize());
+					fScaleSlider->SetValue(settings.Scale());
+					fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);
+	
+					settings.GetCaptureArea(fCustomCaptureRect);
+					if (fCustomCaptureRect == BScreen().Frame())
+						fWholeScreen->SetValue(B_CONTROL_ON);
+					else {
+						fCustomArea->SetValue(B_CONTROL_ON);
+						fSelectArea->SetEnabled(true);
+					}
+					UpdatePreviewFromSettings();
+					break;
+				}
 
 				default:
 					break;
