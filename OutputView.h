@@ -12,7 +12,9 @@ class BButton;
 class BCheckBox;
 class BMenu;
 class BMenuField;
+class BMessageRunner;
 class BRadioButton;
+class BStringView;
 class BTextControl;
 class Controller;
 class MediaFormatView;
@@ -36,7 +38,9 @@ private:
 	BTextControl *fFileName;
 	BString fFileExtension;
 	BButton* fFilePanelButton;
-		
+	BStringView* fFileExistsView;
+	BMessageRunner* fMessageRunner;
+	
 	BButton *fSelectArea;
 	BRadioButton *fWholeScreen;
 	BRadioButton *fCustomArea;

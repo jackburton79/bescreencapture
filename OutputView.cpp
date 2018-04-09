@@ -18,6 +18,7 @@
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
 #include <MenuItem.h>
+#include <MessageRunner.h>
 #include <PopUpMenu.h>
 #include <Path.h>
 #include <RadioButton.h>
@@ -40,6 +41,7 @@ const static int32 kOpenFilePanel = 'OpFp';
 const static int32 kMsgTextControlSizeChanged = 'TCSC';
 const static int32 kScaleChanged = 'ScCh';
 const static uint32 kWindowBorderFrameChanged = 'WbFc';
+const static uint32 kDimView = 'DiVw';
 
 OutputView::OutputView(Controller *controller)
 	:
@@ -159,6 +161,14 @@ OutputView::MessageReceived(BMessage *message)
 			const int32 size = fBorderSlider->Value();
 			Settings().SetWindowFrameBorderSize(size);	
 			break;
+		}
+		case kDimView:
+		{
+			std::cout << "dim view" << std::endl;
+			rgb_color color = fFileExistsView->HighColor();
+			color.alpha -= 6;
+			fFileExistsView->SetHighColor(color);
+			fFileExistsView->Invalidate();
 		}
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
@@ -310,6 +320,7 @@ OutputView::_LayoutView()
 	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
 	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	fFileExistsView = new BStringView("alertview", "Existing file, renamed automatically...");
 	
 	fScaleSlider = new SizeControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
@@ -344,10 +355,14 @@ OutputView::_LayoutView()
 				.Add(fFileName)
 				.Add(fFilePanelButton)
 			.End()
+			.Add(fFileExistsView)
 			.Add(fScaleSlider)
 		.End()	
 		.View();
 
+	fFileExistsView->SetHighColor(255, 0, 0, 0);
+	fFileExistsView->SetDrawingMode(B_OP_ALPHA);
+	
 	outputBox->AddChild(layoutView);	
 	
 	fScaleSlider->SetValue(100);
@@ -395,6 +410,15 @@ void
 OutputView::_HandleExistingFileName(const char* fileName)
 {
 	std::cout << "HandleExistingFileName" << std::endl;
+	rgb_color color = fFileExistsView->HighColor();
+	color.alpha = 255;
+	fFileExistsView->SetHighColor(color);
+	if (fMessageRunner == NULL || fMessageRunner->GetInfo(NULL, NULL)) {
+		BMessenger messenger(this);
+		fMessageRunner = new BMessageRunner(messenger, new BMessage(kDimView), 250000, 40);
+	} else
+		fMessageRunner->SetCount(40);
+		
 	BString newFileName = fileName;
 	newFileName = GetUniqueFileName(newFileName, fFileExtension);
 	fFileName->SetText(newFileName);
