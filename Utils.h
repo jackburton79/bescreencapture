@@ -13,7 +13,7 @@ class BRect;
 void
 PrintMediaFormat(const media_format& format);
 BString GetUniqueFileName(const BString name, const char *extension);
-void FixRect(BRect &rect, const bool fixWidth = false, const bool fixHeight = false);
+void FixRect(BRect &rect, const BRect maxRect, const bool fixWidth = false, const bool fixHeight = false);
 
 void GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border = 0);
 BRect GetWindowFrameForToken(int32 token, int32 border = 0);
