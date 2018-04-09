@@ -112,23 +112,22 @@ Controller::MessageReceived(BMessage *message)
 		case kSelectionWindowClosed:
 		{
 			SendNotices(kMsgControllerSelectionWindowClosed, message);
-			
 			BRect rect;
 			if (message->FindRect("selection", &rect) == B_OK) {
 				SetCaptureArea(rect);
 			}
 			break;
 		}
-		
+
 		case kMsgGUIToggleCapture:
 			if (fEncoderThread < 0)
 				ToggleCapture();
 			break;
-		
+
 		case kMsgGUITogglePause:
 			TogglePause();
 			break;
-			
+
 		case kEncodingFinished:
 		{
 			status_t error;
@@ -145,7 +144,7 @@ Controller::MessageReceived(BMessage *message)
 			SendNotices(kMsgControllerEncodeProgress, &progressMessage);
 			break;
 		}
-		default:	
+		default:
 			BLooper::MessageReceived(message);
 			break;
 	}
