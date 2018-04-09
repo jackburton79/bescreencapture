@@ -51,6 +51,7 @@ private:
 	void _LayoutView();
 	void _SetFileNameExtension(const char* extension);
 	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
+	void _HandleExistingFileName(const char* fileName);
 	
 	BRect _CaptureRect() const;
 };

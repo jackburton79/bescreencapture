@@ -33,6 +33,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 
 const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kOpenFilePanel = 'OpFp';
@@ -116,7 +117,6 @@ OutputView::MessageReceived(BMessage *message)
 			filePanel->Show();
 			break;
 		}
-		
 		case kCheckBoxAreaSelectionChanged:
 		{
 			BRect rect = fCustomCaptureRect;
@@ -139,11 +139,14 @@ OutputView::MessageReceived(BMessage *message)
 			fController->SetCaptureArea(rect);
 			break;	
 		}
-		
 		case kFileNameChanged:
+		{
+			BEntry entry(fFileName->Text());
+			if (entry.Exists())
+				_HandleExistingFileName(fFileName->Text());
 			fController->SetOutputFileName(fFileName->Text());
 			break;
-						
+		}
 		case kScaleChanged:
 		{
 			int32 value;
@@ -151,14 +154,12 @@ OutputView::MessageReceived(BMessage *message)
 			fController->SetScale((float)value);
 			break;
 		}
-		
 		case kWindowBorderFrameChanged:
 		{
 			const int32 size = fBorderSlider->Value();
 			Settings().SetWindowFrameBorderSize(size);	
 			break;
 		}
-					
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -230,11 +231,11 @@ OutputView::MessageReceived(BMessage *message)
 			const char* name = NULL;
 			message->FindRef("directory", &ref);
 			message->FindString("name", &name);
-			
+
 			BPath path(&ref);
 			path.Append(name);
 			fFileName->SetText(path.Path());
-			
+
 			BFilePanel* filePanel = NULL;
 			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
 				delete filePanel;
@@ -246,7 +247,6 @@ OutputView::MessageReceived(BMessage *message)
 			
 			break;
 		}
-		
 		case B_CANCEL:
 		{
 			BFilePanel* filePanel = NULL;
@@ -388,5 +388,16 @@ void
 OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 {
 	fRectView->Update(rect, bitmap);
+}
+
+
+void
+OutputView::_HandleExistingFileName(const char* fileName)
+{
+	std::cout << "HandleExistingFileName" << std::endl;
+	BString newFileName = fileName;
+	newFileName = GetUniqueFileName(newFileName, fFileExtension);
+	fFileName->SetText(newFileName);
+	// TODO: Give an hint to the user that the file name changed
 }
 
