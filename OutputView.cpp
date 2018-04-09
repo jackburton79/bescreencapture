@@ -164,9 +164,9 @@ OutputView::MessageReceived(BMessage *message)
 		}
 		case kDimView:
 		{
-			std::cout << "dim view" << std::endl;
 			rgb_color color = fFileExistsView->HighColor();
-			color.alpha -= 6;
+			if (color.alpha > 0)
+				color.alpha -= 6;
 			fFileExistsView->SetHighColor(color);
 			fFileExistsView->Invalidate();
 		}
@@ -320,7 +320,7 @@ OutputView::_LayoutView()
 	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
 	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
-	fFileExistsView = new BStringView("alertview", "Existing file, renamed automatically...");
+	fFileExistsView = new BStringView("alertview", "Existing file, chosen a new one automatically...");
 	
 	fScaleSlider = new SizeControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
@@ -409,7 +409,6 @@ OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 void
 OutputView::_HandleExistingFileName(const char* fileName)
 {
-	std::cout << "HandleExistingFileName" << std::endl;
 	rgb_color color = fFileExistsView->HighColor();
 	color.alpha = 255;
 	fFileExistsView->SetHighColor(color);
