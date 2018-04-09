@@ -186,7 +186,7 @@ BSCWindow::MessageReceived(BMessage *message)
 					
 					if (status != B_OK) {
 						char errorString[128];
-						snprintf(errorString, 128, "A problem has occurred while starting capture:\n"
+						snprintf(errorString, 128, "Could not record clip:\n"
 							"%s", strerror(status));
 						(new BAlert("Capture Failed", errorString, "Ok"))->Go();
 						fStartStopButton->SetEnabled(true);
@@ -207,12 +207,12 @@ BSCWindow::MessageReceived(BMessage *message)
 						BString errorString;
 						errorString.SetToFormat("Could not create clip: "
 							"%s", strerror(status));
-						(new BAlert("yo", errorString.String(), "Ok"))->Go();
+						(new BAlert("Encoding Failed", errorString.String(), "Ok"))->Go();
 					} else {
 						BString successString;
 						successString.SetTo("Do you want to open the clip?");
 						// TODO: Should be asynchronous
-						int32 choice = (new BAlert("yo", successString.String(), "Yes", "No"))->Go();
+						int32 choice = (new BAlert("Success", successString.String(), "Yes", "No"))->Go();
 						if (choice == 0) {
 							BEntry entry(Settings().OutputFileName().String());
 							if (entry.Exists()) {
