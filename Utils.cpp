@@ -46,10 +46,20 @@ GetUniqueFileName(const BString fileName, const char *extension)
 
 
 void
-FixRect(BRect &rect, const bool fixWidth, const bool fixHeight)
+FixRect(BRect &rect, const BRect maxRect,
+	const bool fixWidth, const bool fixHeight)
 {
 	const static int kAlignAmount = 16;
 	
+	if (rect.left < 0)
+		rect.left = 0;
+	if (rect.top < 0)
+		rect.top = 0;
+	if (rect.right > maxRect.right)
+		rect.right = maxRect.right;
+	if (rect.bottom > maxRect.bottom)
+		rect.bottom = maxRect.bottom;
+
 	// Adjust width and/or height to be a multiple of 16
 	// as some codecs create bad movies otherwise
 	int32 diffHorizontal = kAlignAmount - (rect.IntegerWidth() + 1) % kAlignAmount;

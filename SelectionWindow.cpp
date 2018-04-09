@@ -497,7 +497,8 @@ SelectionWindow::QuitRequested()
 	BRect selection = fView->SelectionRect();
 	if (!selection.IsValid())
 		selection = screen.Frame();
-	FixRect(selection);
+
+	FixRect(selection, screen.Frame());
 
 	snooze(10000);
 
