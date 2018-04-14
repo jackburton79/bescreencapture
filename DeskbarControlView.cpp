@@ -22,11 +22,15 @@ enum {
 	BSC_RESUME
 };
 
+const float kContentSpacingHorizontal = 5;
+const float kContentIconMinSize = 12;
+const float kContentIconPad = 4;
+
 class BSCMenuItem : public BMenuItem {
 public:
 	BSCMenuItem(uint32 action, BMessage *message);
 	virtual void DrawContent();
-
+	virtual void GetContentSize(float* width, float* height);
 private:
 	const char *ActionToString(uint32 action);
 	
@@ -230,75 +234,74 @@ BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message)
 }
 
 
+/* virtual */
+void
+BSCMenuItem::GetContentSize(float* width, float* height)
+{
+	font_height fontHeight;
+	Menu()->GetFontHeight(&fontHeight);
+	float fullHeight = fontHeight.ascent + fontHeight.descent;
+	float stringWidth = Menu()->StringWidth("Resume Recording");
+	
+	if (width != NULL)
+		*width = stringWidth + kContentSpacingHorizontal + max_c(kContentIconMinSize, fullHeight);
+	if (height != NULL)
+		*height = max_c(fullHeight + kContentIconPad, kContentIconMinSize + kContentIconPad);
+}
+
+
 void
 BSCMenuItem::DrawContent()
 {
-	Menu()->SetFontSize(10);
+	font_height fontHeight;
+	Menu()->GetFontHeight(&fontHeight);
+	float fullHeight = fontHeight.ascent + fontHeight.descent + fontHeight.leading;
+	BPoint drawPoint(ContentLocation());
+	drawPoint.x += fullHeight + kContentSpacingHorizontal;
+	drawPoint.y += ((Frame().Height() - fullHeight) / 2) - 1;
+	
+	float iconSize = max_c(kContentIconMinSize, fullHeight);
+	BRect imageRect;
+	imageRect.SetLeftTop(ContentLocation());		
+	imageRect.top += kContentIconPad / 2;
+	imageRect.right = imageRect.left + iconSize;
+	imageRect.bottom = imageRect.top + iconSize;
+			
 	switch (fAction) {
 		case BSC_START:
 		{
-			BPoint drawPoint(ContentLocation());
-			drawPoint.x += 20;
-			drawPoint.y += 2;
 			Menu()->MovePenTo(drawPoint);
 			BMenuItem::DrawContent();
-		
-			BRect imageRect;
-			imageRect.SetLeftTop(ContentLocation());
-		
-			imageRect.top += 2;
-			imageRect.right = imageRect.left + 10;
-			imageRect.bottom = Frame().bottom - 2;
-		
 			Menu()->SetHighColor(248, 0, 0);
 			Menu()->FillEllipse(imageRect);
-
 			break;
 		}
 		case BSC_STOP:
 		{
-			BPoint drawPoint(ContentLocation());
-			drawPoint.x += 20;
-			drawPoint.y += 2;
 			Menu()->MovePenTo(drawPoint);
-			BMenuItem::DrawContent();
-		
-			BRect imageRect;
-			imageRect.SetLeftTop(ContentLocation());
-			imageRect.top += 2;
-			imageRect.right = imageRect.left + 10;
-			imageRect.bottom = Frame().bottom - 2;
-		
+			BMenuItem::DrawContent();	
 			Menu()->SetHighColor(248, 0, 0);
 			Menu()->FillRect(imageRect);
 			break;
 		}
 		case BSC_PAUSE:
 		{
-			BPoint drawPoint(ContentLocation());
-			drawPoint.x += 20;
-			drawPoint.y += 2;
 			Menu()->MovePenTo(drawPoint);
 			BMenuItem::DrawContent();
-		
-			BRect imageRect;
-			imageRect.SetLeftTop(ContentLocation());
-			imageRect.top += 2;
-			imageRect.right = imageRect.left + 4;
-			imageRect.bottom = Frame().bottom - 2;
-		
-			Menu()->SetHighColor(0, 250, 0);
-			Menu()->FillRect(imageRect);
-			imageRect.OffsetBy(6, 0);
-			Menu()->FillRect(imageRect);
 			
+			float stripWidth = 4;
+			BRect stripRect = imageRect;
+			stripRect.left += 2;
+			stripRect.right = stripRect.left + stripWidth;
+			
+			Menu()->SetHighColor(0, 250, 0);
+			Menu()->FillRect(stripRect);
+			stripRect.OffsetBy(imageRect.Width() - stripWidth - 2, 0);
+			Menu()->FillRect(stripRect);
 			break;
 		}
 		case BSC_RESUME:
 		{
-			BPoint drawPoint(ContentLocation());
-			drawPoint.x += 20;
-			drawPoint.y += 2;
 			Menu()->MovePenTo(drawPoint);
 			BMenuItem::DrawContent();
 		
@@ -306,7 +309,7 @@ BSCMenuItem::DrawContent()
 			BPoint ptTwo = ptOne;
 			ptTwo.y = Frame().bottom - 2;
 			BPoint ptThree = ptOne;
-			ptThree.x += 10;
+			ptThree.x += max_c(kContentIconMinSize, fullHeight);
 			ptThree.y += (ptTwo.y - ptOne.y) / 2;			
 
 			Menu()->SetHighColor(0, 250, 0);
