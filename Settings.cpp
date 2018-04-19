@@ -66,7 +66,7 @@ Settings::Load()
 		// no default value, the setting won't be loaded.
 		// This is okay for dropping old and incompatible settings,
 		// but it's still inconvenient, since we need to add a default value
-		// (in SetDefaults() for every new setting we introduce)
+		// (in SetDefaults()) for every new setting we introduce
 		BRect rect;
 		bool boolean;
 		int32 integer;
