@@ -325,7 +325,7 @@ OutputView::_LayoutView()
 	fScaleSlider = new SizeControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
 
-	fBorderSlider = new SizeControl("border_slider", "Window margins",
+	fBorderSlider = new SizeControl("border_slider", "Window edges",
 		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL);
 			
 	BView *layoutView = BLayoutBuilder::Group<>()
