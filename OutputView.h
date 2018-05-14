@@ -38,8 +38,6 @@ private:
 	BTextControl *fFileName;
 	BString fFileExtension;
 	BButton* fFilePanelButton;
-	BStringView* fFileExistsView;
-	BMessageRunner* fMessageRunner;
 	
 	BButton *fSelectArea;
 	BRadioButton *fWholeScreen;

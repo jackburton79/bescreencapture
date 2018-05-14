@@ -284,7 +284,7 @@ Controller::EncodeMovie()
 		fileName = GetUniqueFileName(fileName, MediaFileFormat().file_extension);
 	}
 	
-	fEncoder->SetOutputFile(fileName);
+	SetOutputFileName(fileName);
 	
 	SendNotices(kMsgControllerEncodeStarted);
 		 
