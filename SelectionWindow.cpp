@@ -56,6 +56,8 @@ public:
 	};
 	
 	SelectionViewRegion(BRect frame, const char *name);
+	virtual ~SelectionViewRegion();
+	
 	virtual void MouseDown(BPoint where);
 	virtual void MouseUp(BPoint where);
 	virtual void MouseMoved(BPoint where, uint32 code, const BMessage *message);
@@ -153,6 +155,15 @@ SelectionViewRegion::SelectionViewRegion(BRect frame, const char *name)
 	fCursorNESW = new BCursor(B_CURSOR_ID_RESIZE_NORTH_EAST_SOUTH_WEST);
 	fCursorGrab = new BCursor(B_CURSOR_ID_GRABBING);
 	fCursorSelect = new BCursor(B_CURSOR_ID_CROSS_HAIR);
+}
+
+
+SelectionViewRegion::~SelectionViewRegion()
+{
+	delete fCursorNWSE;
+	delete fCursorNESW;
+	delete fCursorGrab;
+	delete fCursorSelect;
 }
 
 
