@@ -3,6 +3,7 @@
 #include "Utils.h"
 
 #include <Bitmap.h>
+#include <Cursor.h>
 #include <Message.h>
 #include <Screen.h>
 #include <String.h>
@@ -77,6 +78,10 @@ private:
 	BPoint fCurrentMousePosition;
 	BRect fStringRect;
 	int fDragMode;
+	BCursor* fCursorNWSE;
+	BCursor* fCursorNESW;
+	BCursor* fCursorGrab;
+	BCursor* fCursorSelect;
 };
 
 
@@ -137,9 +142,17 @@ SelectionViewRegion::SelectionViewRegion(BRect frame, const char *name)
 	:
 	SelectionView(frame, name, kInfoRegionMode),
 	fSelectionStart(-1, -1),
-	fSelectionEnd(-1, -1)
+	fSelectionEnd(-1, -1),
+	fCursorNWSE(NULL),
+	fCursorNESW(NULL),
+	fCursorGrab(NULL),
+	fCursorSelect(NULL)
 {
 	fDragMode = DRAG_MODE_NONE;
+	fCursorNWSE = new BCursor(B_CURSOR_ID_RESIZE_NORTH_WEST_SOUTH_EAST);
+	fCursorNESW = new BCursor(B_CURSOR_ID_RESIZE_NORTH_EAST_SOUTH_WEST);
+	fCursorGrab = new BCursor(B_CURSOR_ID_GRABBING);
+	fCursorSelect = new BCursor(B_CURSOR_ID_CROSS_HAIR);
 }
 
 
@@ -185,11 +198,13 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 		switch (fDragMode) {
 			case DRAG_MODE_SELECT:
 			{
+				SetViewCursor(fCursorSelect);
 				fSelectionEnd = where;
 				break;
 			}
 			case DRAG_MODE_MOVE:
 			{
+				SetViewCursor(fCursorGrab);
 				fSelectionStart.x += xOffset;
 				fSelectionStart.y += yOffset;
 				fSelectionEnd.x += xOffset;
@@ -198,29 +213,34 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 			}
 			case DRAG_MODE_RESIZE_LEFT_TOP:
 			{
+				SetViewCursor(fCursorNWSE);
 				fSelectionStart.x += xOffset;
 				fSelectionStart.y += yOffset;
 				break;
 			}
 			case DRAG_MODE_RESIZE_RIGHT_TOP:
 			{
+				SetViewCursor(fCursorNESW);
 				fSelectionEnd.x += xOffset;
 				fSelectionStart.y += yOffset;
 				break;
 			}
 			case DRAG_MODE_RESIZE_LEFT_BOTTOM:
 			{
+				SetViewCursor(fCursorNESW);
 				fSelectionStart.x += xOffset;
 				fSelectionEnd.y += yOffset;
 				break;
 			}
 			case DRAG_MODE_RESIZE_RIGHT_BOTTOM:
 			{
+				SetViewCursor(fCursorNWSE);
 				fSelectionEnd.x += xOffset;
 				fSelectionEnd.y += yOffset;
 				break;
 			}
 			default:
+				SetViewCursor(B_CURSOR_SYSTEM_DEFAULT);
 				break;
 		}
 		
@@ -228,7 +248,8 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 		BRect invalidateRect = (selectionRect | newSelection);
 		invalidateRect.InsetBySelf(-(kDraggerSize + kDraggerSpacing), -(kDraggerSize + kDraggerSpacing));
 		Invalidate(invalidateRect);
-	}
+	} else
+		SetViewCursor(B_CURSOR_SYSTEM_DEFAULT);
 	
 	SelectionView::MouseMoved(where, code, message);
 	
@@ -239,6 +260,8 @@ SelectionViewRegion::MouseMoved(BPoint where, uint32 code, const BMessage *messa
 void
 SelectionViewRegion::MouseUp(BPoint where)
 {
+	SetViewCursor(B_CURSOR_SYSTEM_DEFAULT);
+	
 	if (fDragMode == DRAG_MODE_SELECT)
 		fSelectionEnd = where;
 		
