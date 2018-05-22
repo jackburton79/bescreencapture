@@ -73,7 +73,6 @@ private:
 	color_space fColorSpace;
 	BMediaFile*			fMediaFile;
 	BMediaTrack*		fMediaTrack;
-	bool				fIsFileOpen;
 	bool				fHeaderCommitted;
 
 	media_file_format	fFileFormat;
