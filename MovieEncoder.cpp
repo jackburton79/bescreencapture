@@ -65,7 +65,6 @@ MovieEncoder::MovieEncoder()
 	fColorSpace(B_NO_COLOR_SPACE),
 	fMediaFile(NULL),
 	fMediaTrack(NULL),
-	fIsFileOpen(false),
 	fHeaderCommitted(false)
 {
 }
@@ -81,7 +80,7 @@ void
 MovieEncoder::DisposeData()
 {
 	// If the movie is still opened, close it; this also flushes all tracks
-	if (fMediaFile && fIsFileOpen)
+	if (fMediaFile)
 		_CloseFile();
 	
 	// Deleting the filelist deletes the files referenced by it
@@ -173,7 +172,6 @@ MovieEncoder::_CreateFile(
 	BMediaFile* file = new BMediaFile(&ref, &mff);
 	status_t err = file->InitCheck();
 	if (err == B_OK) {
-		fIsFileOpen = true;
 		fHeaderCommitted = false;
 		fMediaFile = file;
 
@@ -191,7 +189,7 @@ MovieEncoder::_CreateFile(
 
 	// clean up if we incurred an error
 	if (err < B_OK) {
-		fIsFileOpen = fHeaderCommitted = false;
+		fHeaderCommitted = false;
 		delete fMediaFile;
 		fMediaFile = NULL;
 	}
@@ -208,7 +206,7 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
 		return B_BAD_VALUE;
 
 	// if there's no track, this won't work
-	if (!fIsFileOpen) 
+	if (fMediaTrack == NULL) 
 		return B_NO_INIT;
 
 	// okay, it's the right kind of bitmap -- commit the header if necessary, and
@@ -234,11 +232,7 @@ status_t
 MovieEncoder::_CloseFile()
 {
 	status_t err = B_OK;
-	if (fIsFileOpen && fMediaFile) {
-		// keep track of whether the file is open so that we don't call
-		// _CloseFile() twice; this avoids a bug in some current (R4.5.1)
-		// file writers.
-		fIsFileOpen = false;
+	if (fMediaFile != NULL) {
 		fMediaFile->ReleaseAllTracks();
 		err = fMediaFile->CloseFile();
 		
@@ -256,7 +250,6 @@ status_t
 MovieEncoder::_EncoderThread()
 {	
 	int32 framesLeft = fFileList->CountItems();
-	int32 framesWritten = 0;
 	
 	if (framesLeft <= 0) {
 		DisposeData();
@@ -278,28 +271,12 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 	
-	// Calc the average time difference between the first 100 frames,
-	// and use it to calculate the framerate.
-	// TODO: Actually we could just calculate the number of frames and
-	// the time difference between the first and the last one.
-	/*int32 maxTimeStampNum = std::min((int32)100, fFileList->CountItems());	
-	bigtime_t previousFrameTime = entry->TimeStamp();
-	bigtime_t diffSum = 0;
-	for (int32 i = 0; i < maxTimeStampNum; i++) {
-		BitmapEntry* entry = fFileList->ItemAt(i);
-		bigtime_t currentFrameTime = entry->TimeStamp();
-		diffSum += currentFrameTime - previousFrameTime;		
-		previousFrameTime = currentFrameTime;
-	}
-	
-	float medianDiffTime = diffSum / maxTimeStampNum;
-	*/
 	int32 numFrames = fFileList->CountItems();
 	BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
-	int frameSeconds = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
+	int framesPerSecond = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
 	media_format inputFormat = fFormat;
-	inputFormat.u.raw_video.field_rate = frameSeconds;
+	inputFormat.u.raw_video.field_rate = framesPerSecond;
 	
 	status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
 	if (status < B_OK) {
@@ -322,13 +299,13 @@ MovieEncoder::_EncoderThread()
 	const uint32 keyFrameFrequency = 10;
 		// TODO: Make this tunable
 	
+	int32 framesWritten = 0;
 	status = B_OK;
 	while (!fKillThread) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
 		if (entry == NULL)
 			break;
 				
-		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		BBitmap* frame = entry->Bitmap();
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?
@@ -344,10 +321,11 @@ MovieEncoder::_EncoderThread()
 			destDrawer->Sync();
 			destBitmap->Unlock();
 		}
-		
+
 		delete frame;
 		delete entry;
-			
+
+		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		if (status == B_OK)
 			status = _WriteFrame(destBitmap, keyFrame);
 		
