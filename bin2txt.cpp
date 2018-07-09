@@ -14,7 +14,7 @@ PrepareVariable(std::istream& inFile, std::ostream& outFile)
 {
 	try {
 		std::string line;
-		while (std::getline(inFile, line) > 0) {
+		while (std::getline(inFile, line)) {
 			std::string::iterator s;
 			for (s = line.begin(); s != line.end(); s++) {
 				unsigned char c = *s;
