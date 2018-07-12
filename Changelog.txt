@@ -1,5 +1,7 @@
 v2.3.3
 	- Fix unstoppable capture thread on full-disk conditions.
+	- Disable controls when recording to avoid possible problems.
+	- Improved error messages.
 ---
 v2.3.2
 	- Added a field to select the target frame rate.
