@@ -32,34 +32,6 @@ private:
 };
 
 
-static void
-BuildFileFormatsMenu(BMenu* menu)
-{
-	const int32 numItems = menu->CountItems();
-	if (numItems > 0)
-		menu->RemoveItems(0, numItems);
-
-	const uint32 mediaFormatMask = media_file_format::B_KNOWS_ENCODED_VIDEO
-								| media_file_format::B_WRITABLE;
-	media_file_format mediaFileFormat;
-	int32 cookie = 0;
-	while (get_next_file_format(&cookie, &mediaFileFormat) == B_OK) {
-		if ((mediaFileFormat.capabilities & mediaFormatMask) == mediaFormatMask) {
-			MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(
-					mediaFileFormat);
-			menu->AddItem(item);
-		}
-	}
-	media_file_format fakeFormat;
-	strncpy(fakeFormat.pretty_name, "Export single frames as images", sizeof(fakeFormat.pretty_name));
-	strncpy(fakeFormat.short_name, FAKE_FORMAT_SHORT_NAME, sizeof(fakeFormat.short_name));
-	fakeFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	fakeFormat.file_extension[0] = '\0';
-	MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(fakeFormat);
-	menu->AddItem(item);
-}
-
-
 MediaFormatView::MediaFormatView(Controller *controller)
 	:
 	BView("Media Options", B_WILL_DRAW),
@@ -113,7 +85,7 @@ MediaFormatView::AttachedToWindow()
 		fController->UnlockLooper();
 	}
 		
-	BuildFileFormatsMenu(fOutputFileType->Menu());
+	_BuildFileFormatsMenu();
 	
 	BString savedFileFormat = fController->MediaFileFormatName();
 	BMenuItem* item = NULL;
@@ -208,9 +180,13 @@ MediaFormatView::MessageReceived(BMessage *message)
 void
 MediaFormatView::_BuildFileFormatsMenu()
 {
-	const int32 numItems = fOutputFileType->Menu()->CountItems();
+	BMenu* menu = fOutputFileType->Menu();
+	if (menu == NULL)
+		return;
+
+	const int32 numItems = menu->CountItems();
 	if (numItems > 0)
-		fOutputFileType->Menu()->RemoveItems(0, numItems);
+		menu->RemoveItems(0, numItems);
 
 	const uint32 mediaFormatMask = media_file_format::B_KNOWS_ENCODED_VIDEO
 								| media_file_format::B_WRITABLE;
@@ -220,9 +196,16 @@ MediaFormatView::_BuildFileFormatsMenu()
 		if ((mediaFileFormat.capabilities & mediaFormatMask) == mediaFormatMask) {
 			MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(
 					mediaFileFormat);
-			fOutputFileType->Menu()->AddItem(item);
+			menu->AddItem(item);
 		}
 	}
+	media_file_format fakeFormat;
+	strncpy(fakeFormat.pretty_name, "Export frames as Bitmaps", sizeof(fakeFormat.pretty_name));
+	strncpy(fakeFormat.short_name, FAKE_FORMAT_SHORT_NAME, sizeof(fakeFormat.short_name));
+	fakeFormat.capabilities = media_file_format::B_KNOWS_OTHER;
+	fakeFormat.file_extension[0] = '\0';
+	MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(fakeFormat);
+	menu->AddItem(item);
 }
 
 
