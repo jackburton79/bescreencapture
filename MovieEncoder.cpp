@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <Bitmap.h>
 #include <Debug.h>
+#include <Directory.h>
+#include <FindDirectory.h>
 #include <List.h>
 #include <MediaTrack.h>
 #include <Screen.h>
@@ -205,9 +207,20 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
 	if (!bitmap)
 		return B_BAD_VALUE;
 
-	// if there's no track, this won't work
-	if (fMediaTrack == NULL) 
-		return B_NO_INIT;
+	// if there's no track, check if output file is a path.
+	// In that case, only write bitmaps frame to disk.
+	if (fMediaTrack == NULL) {
+		BPath path(fOutputFile);
+		if (BEntry(path.Path()).IsDirectory()) {
+			std::cout << "Write to " << path.Path() << std::endl;
+			BitmapEntry bitmapEntry(bitmap, 0);
+			bitmapEntry.SaveToDisk(path.Path(), false);
+			bitmapEntry.Detach();
+			std::cout << "done" << std::endl;
+			return B_OK;
+		} else
+			return B_NO_INIT;
+	}
 
 	// okay, it's the right kind of bitmap -- commit the header if necessary, and
 	// write it as one video frame.  We defer committing the header until the first
@@ -258,10 +271,6 @@ MovieEncoder::_EncoderThread()
 		fMessenger.SendMessage(&message);
 		return B_ERROR;
 	}
-	
-	// Create movie
-	entry_ref movieRef;
-	get_ref_for_path(fOutputFile.Path(), &movieRef);
 		
 	BitmapEntry* entry = fFileList->ItemAt(0);
 	BBitmap* bitmap = entry->Bitmap();
@@ -271,22 +280,45 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 	
-	int32 numFrames = fFileList->CountItems();
-	BitmapEntry* firstEntry = fFileList->ItemAt(0);
-	BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
-	int framesPerSecond = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
-	media_format inputFormat = fFormat;
-	inputFormat.u.raw_video.field_rate = framesPerSecond;
-	
-	status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
-	if (status < B_OK) {
-		DisposeData();
-		BMessage message(kEncodingFinished);
-		message.AddInt32("status", (int32)status);
-		fMessenger.SendMessage(&message);		
-		return status;
-	}
+	if (strcmp(MediaFileFormat().short_name, "no_encoding") == 0) {
+		// TODO: Let the user select the output directory
+		BPath path;
+		status_t status = find_directory(B_USER_DIRECTORY, &path);
+		if (status == B_OK) {
+			char* tempDirectory = tempnam((char*)path.Path(), (char*)"BeScreenCapture_");
+			status = create_directory(tempDirectory, 0777);
+			if (BEntry(tempDirectory).IsDirectory()) {
+				fOutputFile = tempDirectory;
+			}
+		}
+		if (status != B_OK) {
+			DisposeData();
+			BMessage message(kEncodingFinished);
+			message.AddInt32("status", (int32)B_ERROR);
+			fMessenger.SendMessage(&message);
+			return B_ERROR;
+		}
+	} else {
+		int32 numFrames = fFileList->CountItems();
+		BitmapEntry* firstEntry = fFileList->ItemAt(0);
+		BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
+		int framesPerSecond = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
+		media_format inputFormat = fFormat;
+		inputFormat.u.raw_video.field_rate = framesPerSecond;
 		
+		// Create movie
+		entry_ref movieRef;
+		get_ref_for_path(fOutputFile.Path(), &movieRef);
+		status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
+		if (status < B_OK) {
+			DisposeData();
+			BMessage message(kEncodingFinished);
+			message.AddInt32("status", (int32)status);
+			fMessenger.SendMessage(&message);		
+			return status;
+		}
+	}
+	
 	// Bitmap and view used to convert the source bitmap
 	// to the correct size and depth	
 	BBitmap* destBitmap = new BBitmap(fDestFrame, fColorSpace, true);
@@ -300,7 +332,7 @@ MovieEncoder::_EncoderThread()
 		// TODO: Make this tunable
 	
 	int32 framesWritten = 0;
-	status = B_OK;
+	status_t status = B_OK;
 	while (!fKillThread) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
 		if (entry == NULL)

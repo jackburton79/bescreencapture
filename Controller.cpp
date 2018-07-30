@@ -519,17 +519,20 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	delete fCodecList;
 	fCodecList = new BObjectList<media_codec_info> (1, true);
 	
-	int32 cookie = 0;
-	media_codec_info codec;
-	media_format dummyFormat;
+	// Handle the fake media_file_format
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
-	while (get_next_encoder(&cookie, &fileFormat, &mediaFormat,
-			&dummyFormat, &codec) == B_OK) {
-		media_codec_info* newCodec = new media_codec_info;
-		*newCodec = codec;
-		fCodecList->AddItem(newCodec);
+	if (strcmp(fileFormat.short_name, "no_encoding") != 0) {
+		int32 cookie = 0;
+		media_codec_info codec;
+		media_format dummyFormat;
+		while (get_next_encoder(&cookie, &fileFormat, &mediaFormat,
+				&dummyFormat, &codec) == B_OK) {
+			media_codec_info* newCodec = new media_codec_info;
+			*newCodec = codec;
+			fCodecList->AddItem(newCodec);
+		}
 	}
-		
+
 	SendNotices(kMsgControllerCodecListUpdated);
 	return B_OK;
 }

@@ -18,6 +18,8 @@
 
 #include <iostream>
 
+#define FAKE_FORMAT_SHORT_NAME "no_encoding"
+
 const static int32 kLocalCodecChanged = 'CdCh';
 const static int32 kLocalFileTypeChanged = 'FtyC';
 
@@ -48,6 +50,12 @@ BuildFileFormatsMenu(BMenu* menu)
 			menu->AddItem(item);
 		}
 	}
+	media_file_format fakeFormat;
+	strncpy(fakeFormat.pretty_name, "Export single frames as images", sizeof(fakeFormat.pretty_name));
+	strncpy(fakeFormat.short_name, FAKE_FORMAT_SHORT_NAME, sizeof(fakeFormat.short_name));
+	fakeFormat.capabilities = media_file_format::B_KNOWS_OTHER;
+	MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(fakeFormat);
+	menu->AddItem(item);
 }
 
 
@@ -255,8 +263,13 @@ MediaFormatView::_RebuildCodecsMenu(const char* codec)
 	
 	Window()->EndViewTransaction();
 	
-	if (currentCodec != codecsMenu->FindMarked()->Label())
-		fController->SetMediaCodec(codecsMenu->FindMarked()->Label());
+	if (codecsMenu->FindMarked() == NULL) {
+		codecsMenu->SetEnabled(false);
+	} else {
+		if (currentCodec != codecsMenu->FindMarked()->Label())
+			fController->SetMediaCodec(codecsMenu->FindMarked()->Label());
+		codecsMenu->SetEnabled(true);
+	}
 }
 
 
