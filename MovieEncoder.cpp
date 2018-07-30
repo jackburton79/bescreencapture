@@ -212,11 +212,9 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
 	if (fMediaTrack == NULL) {
 		BPath path(fOutputFile);
 		if (BEntry(path.Path()).IsDirectory()) {
-			std::cout << "Write to " << path.Path() << std::endl;
 			BitmapEntry bitmapEntry(bitmap, 0);
 			bitmapEntry.SaveToDisk(path.Path(), false);
 			bitmapEntry.Detach();
-			std::cout << "done" << std::endl;
 			return B_OK;
 		} else
 			return B_NO_INIT;
