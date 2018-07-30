@@ -18,6 +18,7 @@ const char *kInfoWindowMode = "Click to select a window";
 
 const static rgb_color kSelectionColor = { 0, 0, 128, 100 };
 const static rgb_color kRed = { 240, 0, 0, 0 };
+const static rgb_color kBlack = { 0, 0, 0, 255 };
 
 const static float kDraggerSize = 16;
 const static float kDraggerSpacing = 4;
@@ -316,6 +317,16 @@ SelectionViewRegion::Draw(BRect updateRect)
 		SetDrawingMode(B_OP_ALPHA);
 		SetHighColor(kSelectionColor);
 		FillRect(selection);
+		BString sizeString;
+		sizeString << selection.IntegerWidth() << " x " << selection.IntegerHeight();
+		float stringWidth = StringWidth(sizeString.String());
+		BPoint position;
+		position.x = (selection.IntegerWidth() - stringWidth) / 2;
+		position.y = selection.IntegerHeight() / 2;
+		position += selection.LeftTop();
+		SetHighColor(kBlack);
+		SetLowColor(kBlack);
+		DrawString(sizeString.String(), position);
 	}
 	
 	_DrawDraggers();
