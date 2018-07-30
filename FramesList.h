@@ -23,7 +23,8 @@ public:
 	BBitmap* Bitmap();
 	bigtime_t TimeStamp() const;
 	
-	status_t SaveToDisk(const char* path);
+	status_t SaveToDisk(const char* path, bool deleteBitmap = true);
+	void Detach();
 	
 private:
 	BBitmap* fBitmap;

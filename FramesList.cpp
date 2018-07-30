@@ -136,7 +136,7 @@ BitmapEntry::TimeStamp() const
 
 
 status_t
-BitmapEntry::SaveToDisk(const char* path)
+BitmapEntry::SaveToDisk(const char* path, bool deleteBitmap)
 {
 	if (sTranslatorRoster == NULL)
 		sTranslatorRoster = BTranslatorRoster::Default();
@@ -157,10 +157,18 @@ BitmapEntry::SaveToDisk(const char* path)
 	status_t error = sTranslatorRoster->Translate(&bitmapStream,
 		&translatorInfo, NULL, &outFile, 'BMP ');
 	
-	if (error != B_OK) {
+	if (error != B_OK || !deleteBitmap) {
 		bitmapStream.DetachBitmap(&fBitmap);
 		return error;
 	}
 			
 	return B_OK;
+}
+
+
+void
+BitmapEntry::Detach()
+{
+	fBitmap = NULL;
+	fFileName = "";
 }
