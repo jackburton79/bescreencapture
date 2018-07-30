@@ -191,8 +191,9 @@ OutputView::MessageReceived(BMessage *message)
 					if (strlen(fController->MediaFileFormat().file_extension) > 0) {
 						_SetFileNameExtension(fController->MediaFileFormat().file_extension);
 						fController->SetOutputFileName(fFileName->Text());
+						fFileName->SetEnabled(true);
 					} else
-						;
+						fFileName->SetEnabled(false);
 					break;
 
 				case kMsgControllerCaptureStarted:
