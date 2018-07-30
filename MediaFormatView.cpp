@@ -54,6 +54,7 @@ BuildFileFormatsMenu(BMenu* menu)
 	strncpy(fakeFormat.pretty_name, "Export single frames as images", sizeof(fakeFormat.pretty_name));
 	strncpy(fakeFormat.short_name, FAKE_FORMAT_SHORT_NAME, sizeof(fakeFormat.short_name));
 	fakeFormat.capabilities = media_file_format::B_KNOWS_OTHER;
+	fakeFormat.file_extension[0] = '\0';
 	MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(fakeFormat);
 	menu->AddItem(item);
 }
