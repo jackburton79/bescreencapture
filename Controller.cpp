@@ -524,7 +524,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	
 	// Handle the fake media_file_format
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
-	if (strcmp(fileFormat.short_name, "no_encoding") != 0) {
+	if (strcmp(fileFormat.short_name, FAKE_FORMAT_SHORT_NAME) != 0) {
 		int32 cookie = 0;
 		media_codec_info codec;
 		media_format dummyFormat;

@@ -279,7 +279,7 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 	
-	if (strcmp(MediaFileFormat().short_name, "no_encoding") == 0) {
+	if (strcmp(MediaFileFormat().short_name, FAKE_FORMAT_SHORT_NAME) == 0) {
 		// TODO: Let the user select the output directory
 		BPath path;
 		status_t status = find_directory(B_USER_DIRECTORY, &path);

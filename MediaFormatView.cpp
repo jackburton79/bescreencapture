@@ -18,8 +18,6 @@
 
 #include <iostream>
 
-#define FAKE_FORMAT_SHORT_NAME "no_encoding"
-
 const static int32 kLocalCodecChanged = 'CdCh';
 const static int32 kLocalFileTypeChanged = 'FtyC';
 
