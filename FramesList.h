@@ -23,9 +23,9 @@ public:
 	BBitmap* Bitmap();
 	bigtime_t TimeStamp() const;
 	
-	status_t SaveToDisk(const char* path, bool deleteBitmap = true);
-	void Detach();
-	
+	status_t SaveToDisk(const char* path);
+
+	static status_t SaveToDisk(BBitmap* bitmap, const char* fileName);
 private:
 	BBitmap* fBitmap;
 	BString fFileName;

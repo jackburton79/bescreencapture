@@ -136,39 +136,42 @@ BitmapEntry::TimeStamp() const
 
 
 status_t
-BitmapEntry::SaveToDisk(const char* path, bool deleteBitmap)
+BitmapEntry::SaveToDisk(const char* path)
 {
-	if (sTranslatorRoster == NULL)
-		sTranslatorRoster = BTranslatorRoster::Default();
-
-	BBitmapStream bitmapStream(fBitmap);
-	fBitmap = NULL;
-
-	translator_info translatorInfo;
-	sTranslatorRoster->Identify(&bitmapStream, NULL,
-			&translatorInfo, 0, NULL, 'BMP ');
-			
 	char* string = tempnam(path, "frame_");
 	fFileName = string;
 	free(string);
 
-	BFile outFile;
-	outFile.SetTo(fFileName, B_WRITE_ONLY|B_CREATE_FILE);
-	status_t error = sTranslatorRoster->Translate(&bitmapStream,
-		&translatorInfo, NULL, &outFile, 'BMP ');
-	
-	if (error != B_OK || !deleteBitmap) {
-		bitmapStream.DetachBitmap(&fBitmap);
-		return error;
-	}
-			
+	status_t status = SaveToDisk(fBitmap, fFileName.String());
+
+	if (status != B_OK)
+		return status;
+
+	delete fBitmap;
+	fBitmap = NULL;
+
 	return B_OK;
 }
 
 
-void
-BitmapEntry::Detach()
+/* static */
+status_t
+BitmapEntry::SaveToDisk(BBitmap* bitmap, const char* fileName)
 {
-	fBitmap = NULL;
-	fFileName = "";
+	if (sTranslatorRoster == NULL)
+		sTranslatorRoster = BTranslatorRoster::Default();
+
+	BBitmap *tempBitmap = new BBitmap(*bitmap);
+	BBitmapStream bitmapStream(tempBitmap);
+
+	translator_info translatorInfo;
+	sTranslatorRoster->Identify(&bitmapStream, NULL,
+			&translatorInfo, 0, NULL, 'BMP ');
+
+	BFile outFile;
+	outFile.SetTo(fileName, B_WRITE_ONLY|B_CREATE_FILE);
+	status_t status = sTranslatorRoster->Translate(&bitmapStream,
+		&translatorInfo, NULL, &outFile, 'BMP ');
+
+	return status;
 }

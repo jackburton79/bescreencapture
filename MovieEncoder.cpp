@@ -201,7 +201,7 @@ MovieEncoder::_CreateFile(
 
 
 status_t 
-MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
+MovieEncoder::_WriteFrame(BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
 {
 	// NULL is not a valid bitmap pointer
 	if (!bitmap)
@@ -212,9 +212,10 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, bool isKeyFrame)
 	if (fMediaTrack == NULL) {
 		BPath path(fOutputFile);
 		if (BEntry(path.Path()).IsDirectory()) {
-			BitmapEntry bitmapEntry(bitmap, 0);
-			bitmapEntry.SaveToDisk(path.Path(), false);
-			bitmapEntry.Detach();
+			BString frameFileName; 
+			frameFileName.SetToFormat("frame_%d", frameNum);
+			path.Append(frameFileName);
+			BitmapEntry::SaveToDisk(bitmap, path.Path());
 			return B_OK;
 		} else
 			return B_NO_INIT;
@@ -357,7 +358,7 @@ MovieEncoder::_EncoderThread()
 
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		if (status == B_OK)
-			status = _WriteFrame(destBitmap, keyFrame);
+			status = _WriteFrame(destBitmap, framesWritten + 1, keyFrame);
 		
 		if (status != B_OK)
 			break;

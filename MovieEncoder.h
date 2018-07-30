@@ -51,7 +51,7 @@ private:
 						const media_format& inputFormat,
 						const media_codec_info& mci,
 						float quality = -1);
-	status_t _WriteFrame(BBitmap* bitmap, bool isKeyFrame);
+	status_t _WriteFrame(BBitmap* bitmap, int32 frameNum, bool isKeyFrame);
 	status_t _CloseFile();
 	
 	static int32 EncodeStarter(void *arg);		
