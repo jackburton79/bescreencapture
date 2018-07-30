@@ -383,6 +383,7 @@ MovieEncoder::_EncoderThread()
 		BMessage message(kEncodingFinished);
 		message.AddInt32("status", (int32)status);
 		message.AddInt32("frames", (int32)framesWritten);
+		message.AddString("file_name", fOutputFile.Path());
 		fMessenger.SendMessage(&message);
 	}
 		

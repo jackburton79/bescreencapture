@@ -15,6 +15,7 @@ enum {
 	kMsgControllerEncodeStarted,		
 	kMsgControllerEncodeProgress,			// int32 num_files
 	kMsgControllerEncodeFinished,			// status_t status
+											// const char* file_name
 	
 	kMsgControllerSelectionWindowClosed,
 	kMsgControllerSourceFrameChanged,		// BRect frame,

@@ -132,7 +132,9 @@ Controller::MessageReceived(BMessage *message)
 		{
 			status_t error;
 			message->FindInt32("status", (int32*)&error);
-			_EncodingFinished(error);
+			const char* fileName = NULL;
+			message->FindString("file_name", &fileName);
+			_EncodingFinished(error, fileName);
 			break;
 		}
 		case kEncodingProgress:
@@ -270,7 +272,7 @@ Controller::EncodeMovie()
 	
 	int32 numFrames = fFileList->CountItems();
 	if (numFrames <= 0) {
-		_EncodingFinished(B_ERROR);
+		_EncodingFinished(B_ERROR, NULL);
 		delete fFileList;
 		fFileList = NULL;
 		return;
@@ -675,7 +677,7 @@ Controller::_ResumeCapture()
 
 
 void
-Controller::_EncodingFinished(const status_t status)
+Controller::_EncodingFinished(const status_t status, const char* fileName)
 {
 	// Reminder: fFilelist is already NULL here, since it's deleted in MovieEncoder,
 	// except when Encoder didn't start at all, where it's deleted in EncodeMovie()
@@ -686,6 +688,8 @@ Controller::_EncodingFinished(const status_t status)
 
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
+	if (fileName != NULL)
+		message.AddString("file_name", fileName);
 	SendNotices(kMsgControllerEncodeFinished, &message);
 }
 

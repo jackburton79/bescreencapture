@@ -101,7 +101,7 @@ private:
 	void		_PauseCapture();
 	void		_ResumeCapture();
 
-	void		_EncodingFinished(const status_t status);
+	void		_EncodingFinished(const status_t status, const char* destName);
 	void		_HandleTargetFrameChanged(const BRect& rect);
 	void		_ForwardGUIMessage(BMessage *message);
 
