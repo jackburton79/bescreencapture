@@ -1,8 +1,8 @@
 #include "BSCApp.h"
+#include "Constants.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
 #include "DeskbarControlView.h"
-#include "Messages.h"
 
 #include <Bitmap.h>
 #include <Entry.h>

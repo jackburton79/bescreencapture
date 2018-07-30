@@ -51,9 +51,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstring>
 #include <iostream>
 
+#include "Constants.h"
 #include "Executor.h"
 #include "FramesList.h"
-#include "Messages.h"
 #include "MovieEncoder.h"
 #include "Utils.h"
 

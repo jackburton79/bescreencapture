@@ -1,6 +1,6 @@
+#include "Constants.h"
 #include "ControllerObserver.h"
 #include "MediaFormatView.h"
-#include "Messages.h"
 #include "OutputView.h"
 #include "PreviewView.h"
 #include "Settings.h"

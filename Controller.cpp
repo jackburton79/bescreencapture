@@ -1,10 +1,11 @@
 #include "Controller.h"
+
+#include "Constants.h"
 #include "ControllerObserver.h"
 #include "FramesList.h"
 #include "FunctionObject.h"
 #include "MovieEncoder.h"
 #include "Settings.h"
-#include "Messages.h"
 #include "Utils.h"
 
 #include <stdio.h>
