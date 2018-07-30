@@ -209,13 +209,19 @@ BSCWindow::MessageReceived(BMessage *message)
 							"%s", strerror(status));
 						(new BAlert("Encoding Failed", errorString.String(), "Ok"))->Go();
 					} else {
-						BString successString;
-						successString.SetTo("Do you want to open the clip?");
 						// TODO: Should be asynchronous
-						int32 choice = (new BAlert("Success", successString.String(), "Yes", "No"))->Go();
-						if (choice == 0) {
-							BEntry entry(Settings().OutputFileName().String());
-							if (entry.Exists()) {
+						BString successString;
+						const char* destName = NULL;
+						message->FindString("file_name", &destName);
+						BEntry entry(destName);
+						if (entry.Exists()) {
+							if (entry.IsDirectory()) {
+								successString.SetTo("Do you want to open the folder in Tracker?");
+							} else {
+								successString.SetTo("Do you want to open the clip?");	
+							}
+							int32 choice = (new BAlert("Success", successString.String(), "Yes", "No"))->Go();
+							if (choice == 0) {
 								entry_ref ref;
 								if (entry.GetRef(&ref) == B_OK) {
 									entry_ref app;
