@@ -473,8 +473,6 @@ Controller::_ComputeMediaFormat(const int32 &width, const int32 &height,
 	const color_space &colorSpace, const int32 &fieldRate)
 {
 	media_format initialFormat;
-	memset(&initialFormat, 0, sizeof(media_format));
-		
 	initialFormat.type = B_MEDIA_RAW_VIDEO;
 	initialFormat.u.raw_video.display.line_width = width;
 	initialFormat.u.raw_video.display.line_count = height;
