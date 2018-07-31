@@ -85,11 +85,10 @@ MediaFormatView::AttachedToWindow()
 		
 	_BuildFileFormatsMenu();
 	
-	BString savedFileFormat = fController->MediaFileFormatName();
+	BString currentFileFormat = fController->MediaFileFormatName();
 	BMenuItem* item = NULL;
-	if (savedFileFormat != "")
-		item = fOutputFileType->Menu()->FindItem(savedFileFormat.String());
-
+	if (currentFileFormat != "")
+		item = fOutputFileType->Menu()->FindItem(currentFileFormat.String());
 	if (item != NULL)
 		item->SetMarked(true);
 	else {
