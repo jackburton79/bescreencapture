@@ -42,6 +42,9 @@ const static int32 kMsgTextControlSizeChanged = 'TCSC';
 const static int32 kScaleChanged = 'ScCh';
 const static uint32 kWindowBorderFrameChanged = 'WbFc';
 
+const static char* kSelectWindowButtonText = "Select Window";
+const static char* kSelectRegionButtonText = "Select Region";
+
 OutputView::OutputView(Controller *controller)
 	:
 	BView("Capture Options", B_WILL_DRAW),
@@ -128,11 +131,11 @@ OutputView::MessageReceived(BMessage *message)
 			} else {
 				fSelectArea->SetEnabled(true);
 				if (fCustomArea->Value() == B_CONTROL_ON) {
-					fSelectArea->SetLabel("Select Region");
+					fSelectArea->SetLabel(kSelectRegionButtonText);
 					fSelectArea->SetMessage(new BMessage(kSelectArea));
 					fBorderSlider->SetEnabled(false);
 				} else if (fWindow->Value() == B_CONTROL_ON) {
-					fSelectArea->SetLabel("Select Window");
+					fSelectArea->SetLabel(kSelectWindowButtonText);
 					fSelectArea->SetMessage(new BMessage(kSelectWindow));
 					fBorderSlider->SetEnabled(true);
 				}
@@ -310,6 +313,9 @@ OutputView::_LayoutView()
 		
 	fSelectArea = new BButton("select region", "Select Region", new BMessage(kSelectArea));
 	fSelectArea->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
+	float selectAreaButtonMinWidth = std::max(fSelectArea->StringWidth(kSelectWindowButtonText),
+		fSelectArea->StringWidth(kSelectRegionButtonText));
+	fSelectArea->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, 30));
 	fSelectArea->SetEnabled(false);
 	
 	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
