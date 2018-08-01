@@ -92,7 +92,7 @@ OutputView::AttachedToWindow()
 		fWholeScreen->SetValue(B_CONTROL_ON);
 	else {
 		fCustomArea->SetValue(B_CONTROL_ON);
-		fSelectArea->SetEnabled(true);
+		fSelectAreaButton->SetEnabled(true);
 	}
 			
 	UpdatePreviewFromSettings();
@@ -126,17 +126,17 @@ OutputView::MessageReceived(BMessage *message)
 			BRect rect = fCustomCaptureRect;
 			if (fWholeScreen->Value() == B_CONTROL_ON) {
 				rect = BScreen().Frame();
-				fSelectArea->SetEnabled(false);
+				fSelectAreaButton->SetEnabled(false);
 				fBorderSlider->SetEnabled(false);
 			} else {
-				fSelectArea->SetEnabled(true);
+				fSelectAreaButton->SetEnabled(true);
 				if (fCustomArea->Value() == B_CONTROL_ON) {
-					fSelectArea->SetLabel(kSelectRegionButtonText);
-					fSelectArea->SetMessage(new BMessage(kSelectArea));
+					fSelectAreaButton->SetLabel(kSelectRegionButtonText);
+					fSelectAreaButton->SetMessage(new BMessage(kSelectArea));
 					fBorderSlider->SetEnabled(false);
 				} else if (fWindow->Value() == B_CONTROL_ON) {
-					fSelectArea->SetLabel(kSelectWindowButtonText);
-					fSelectArea->SetMessage(new BMessage(kSelectWindow));
+					fSelectAreaButton->SetLabel(kSelectWindowButtonText);
+					fSelectAreaButton->SetMessage(new BMessage(kSelectWindow));
 					fBorderSlider->SetEnabled(true);
 				}
 			}
@@ -221,7 +221,7 @@ OutputView::MessageReceived(BMessage *message)
 						fWholeScreen->SetValue(B_CONTROL_ON);
 					else {
 						fCustomArea->SetValue(B_CONTROL_ON);
-						fSelectArea->SetEnabled(true);
+						fSelectAreaButton->SetEnabled(true);
 					}
 					UpdatePreviewFromSettings();
 					break;
@@ -311,12 +311,12 @@ OutputView::_LayoutView()
 	fWindow = new BRadioButton("window", 
 		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
 		
-	fSelectArea = new BButton("select region", "Select Region", new BMessage(kSelectArea));
-	fSelectArea->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
-	float selectAreaButtonMinWidth = std::max(fSelectArea->StringWidth(kSelectWindowButtonText),
-		fSelectArea->StringWidth(kSelectRegionButtonText));
-	fSelectArea->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, 30));
-	fSelectArea->SetEnabled(false);
+	fSelectAreaButton = new BButton("select region", "Select Region", new BMessage(kSelectArea));
+	fSelectAreaButton->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
+	float selectAreaButtonMinWidth = std::max(fSelectAreaButton->StringWidth(kSelectWindowButtonText),
+		fSelectAreaButton->StringWidth(kSelectRegionButtonText));
+	fSelectAreaButton->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, 30));
+	fSelectAreaButton->SetEnabled(false);
 	
 	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
 	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
@@ -336,7 +336,7 @@ OutputView::_LayoutView()
 					.Add(fWholeScreen)
 					.Add(fCustomArea)
 					.Add(fWindow)
-					.Add(fSelectArea)
+					.Add(fSelectAreaButton)
 					.AddStrut(20)
 				.End()
 				.Add(fRectView = new PreviewView())

@@ -39,7 +39,7 @@ private:
 	BString fFileExtension;
 	BButton* fFilePanelButton;
 	
-	BButton *fSelectArea;
+	BButton *fSelectAreaButton;
 	BRadioButton *fWholeScreen;
 	BRadioButton *fCustomArea;
 	BRadioButton *fWindow;
