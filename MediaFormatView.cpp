@@ -185,6 +185,7 @@ MediaFormatView::_BuildFileFormatsMenu()
 	if (numItems > 0)
 		menu->RemoveItems(0, numItems);
 
+#if 1
 	const uint32 mediaFormatMask = media_file_format::B_KNOWS_ENCODED_VIDEO
 								| media_file_format::B_WRITABLE;
 	media_file_format mediaFileFormat;
@@ -196,11 +197,13 @@ MediaFormatView::_BuildFileFormatsMenu()
 			menu->AddItem(item);
 		}
 	}
+#endif
 	media_file_format fakeFormat;
 	strncpy(fakeFormat.pretty_name, "Export frames as Bitmaps", sizeof(fakeFormat.pretty_name));
 	strncpy(fakeFormat.short_name, FAKE_FORMAT_SHORT_NAME, sizeof(fakeFormat.short_name));
 	fakeFormat.capabilities = media_file_format::B_KNOWS_OTHER;
 	fakeFormat.file_extension[0] = '\0';
+	fakeFormat.family = B_ANY_FORMAT_FAMILY;
 	MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(fakeFormat);
 	menu->AddItem(item);
 }
