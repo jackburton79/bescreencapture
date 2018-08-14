@@ -42,6 +42,7 @@ Settings::~Settings()
 }
 
 
+/* static */
 status_t
 Settings::Load()
 {
@@ -104,6 +105,7 @@ Settings::Load()
 }
 
 
+/* static */
 status_t
 Settings::Save()
 {
