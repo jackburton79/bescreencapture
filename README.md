@@ -17,11 +17,11 @@ These are the commands you can configure in the "Shortcuts" preflet for the vari
 
 * Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
 
-Note that command constants could change between versions.
 
-It seems that the most reliable codec / format to use for encoding, in current Haiku nightlies, is MPEG/Mpeg4.
-Other codec/format combos may cause various kinds of problems.
+## Notes:
 
+* Command constants could change in the next releases.
+* It seems that the most reliable codec / format to use for encoding, in current Haiku nightlies, is MPEG/Mpeg4. Other codec/format combos may cause various kinds of problems.
  
 ## Authors:
 
