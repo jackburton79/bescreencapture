@@ -1,6 +1,6 @@
 v2.4.0
-	- Add an option to save the frames to a folder instead of encoding
-	- Add a pause button to the main window
+	- Add an option to save the frames to a folder instead of encoding.
+	- Add a pause button to the main window.
 ---
 v2.3.3
 	- Let the user choose to open the clip when encoding is completed.
