@@ -46,6 +46,7 @@ private:
 	BMenuBar* fMenuBar;
 	BTabView *fTabView;
 	BButton *fStartStopButton;
+	BButton *fPauseButton;
 	CamStatusView *fCamStatus;
 	
 	BView* fOutputView;

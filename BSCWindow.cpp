@@ -64,6 +64,12 @@ BSCWindow::BSCWindow()
 	fStartStopButton->SetTarget(fController);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	
+	fPauseButton = new BButton("Pause", "Pause",
+		new BMessage(kMsgGUITogglePause));
+	fPauseButton->SetTarget(fController);
+	fPauseButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	fPauseButton->SetEnabled(false);
+	
 	fCamStatus = new CamStatusView(fController);
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
@@ -77,6 +83,8 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCaptureStarted);
 		fController->StartWatching(this, kMsgControllerCaptureStopped);
+		fController->StartWatching(this, kMsgControllerCapturePaused);
+		fController->StartWatching(this, kMsgControllerCaptureResumed);
 		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
 				
 		fController->UnlockLooper();
@@ -192,6 +200,16 @@ BSCWindow::MessageReceived(BMessage *message)
 						fStartStopButton->SetEnabled(true);
 					}
 										
+					break;
+				}
+				case kMsgControllerCapturePaused:
+				{
+					fPauseButton->SetLabel("Resume");
+					break;
+				}
+				case kMsgControllerCaptureResumed:
+				{
+					fPauseButton->SetLabel("Pause");
 					break;
 				}
 				case kMsgControllerEncodeStarted:
@@ -330,6 +348,7 @@ BSCWindow::_LayoutWindow(bool dock)
 			.Add(tabView)
 			.AddGroup(B_HORIZONTAL)
 				.Add(fCamStatus)
+				.Add(fPauseButton)
 				.Add(fStartStopButton)
 			.End()
 		.End();
@@ -372,6 +391,7 @@ BSCWindow::_CaptureStarted()
 		Hide();
 	
 	fStartStopButton->SetLabel("Stop Recording");
+	fPauseButton->SetEnabled(true);
 	
 	return B_OK;
 }
@@ -383,6 +403,7 @@ BSCWindow::_CaptureFinished()
 	fCapturing = false;
 	
 	fStartStopButton->SetLabel("Start Recording");
+	fPauseButton->SetEnabled(false);
 	
 	if (IsHidden())
 		Show();
