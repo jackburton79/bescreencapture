@@ -391,6 +391,7 @@ BSCWindow::_CaptureStarted()
 		Hide();
 	
 	fStartStopButton->SetLabel("Stop Recording");
+	fPauseButton->SetLabel("Pause");
 	fPauseButton->SetEnabled(true);
 	
 	return B_OK;
@@ -403,6 +404,7 @@ BSCWindow::_CaptureFinished()
 	fCapturing = false;
 	
 	fStartStopButton->SetLabel("Start Recording");
+	fPauseButton->SetLabel("Pause");
 	fPauseButton->SetEnabled(false);
 	
 	if (IsHidden())
