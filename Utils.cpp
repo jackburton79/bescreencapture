@@ -102,10 +102,12 @@ GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border)
 	if (status == B_OK) {
 		for (int32 i = 0; i < tokenCount; i++) {
 			client_window_info* info = get_window_info(tokenList[i]);
-			if (info != NULL && info->layer >= 3 && !info->is_mini && info->show_hide_level == 0) {
-				BRect* rect = new BRect(info->window_left, info->window_top, info->window_right, info->window_bottom);
-				rect->InsetBy(-border, -border);
-				framesList.AddItem(rect);
+			if (info != NULL) {
+				if (info->layer >= 3 && !info->is_mini && info->show_hide_level == 0) {
+					BRect* rect = new BRect(info->window_left, info->window_top, info->window_right, info->window_bottom);
+					rect->InsetBy(-border, -border);
+					framesList.AddItem(rect);
+				}
 				free(info);
 			}
 		}
@@ -125,10 +127,12 @@ GetWindowTokenForFrame(BRect frame, int32 border)
 	if (status == B_OK) {
 		for (int32 i = 0; i < tokenCount && token == -1; i++) {
 			client_window_info* info = get_window_info(tokenList[i]);
-			if (info != NULL && info->layer >= 3 && !info->is_mini && info->show_hide_level == 0) {
-				BRect rect(info->window_left, info->window_top, info->window_right, info->window_bottom);
-				if (rect == frame)
-					token = tokenList[i];
+			if (info != NULL) {
+				if (info->layer >= 3 && !info->is_mini && info->show_hide_level == 0) {
+					BRect rect(info->window_left, info->window_top, info->window_right, info->window_bottom);
+					if (rect == frame)
+						token = tokenList[i];
+				}
 				free(info);
 			}
 		}
