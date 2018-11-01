@@ -121,8 +121,7 @@ Controller::MessageReceived(BMessage *message)
 		}
 
 		case kMsgGUIToggleCapture:
-			if (fEncoderThread < 0)
-				ToggleCapture();
+			ToggleCapture();
 			break;
 
 		case kMsgGUITogglePause:
@@ -228,12 +227,16 @@ Controller::ToggleCapture()
 {
 	BAutolock _(this);
 	int state = State();
-	if (state == STATE_IDLE)
-		StartCapture();
-	else if (state == STATE_RECORDING)
-		EndCapture();
-	else {
-		debugger("Controller::ToggleCapture() called with an unexpected state!");
+	switch (state) {
+		case STATE_IDLE:
+			StartCapture();
+			break;
+		case STATE_RECORDING:
+			EndCapture();
+			break;
+		case STATE_ENCODING:
+			// DO NOTHING
+			break;
 	}
 }
 
