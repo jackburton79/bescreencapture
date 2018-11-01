@@ -169,10 +169,10 @@ Controller::CanQuit(BString& reason) const
 	BAutolock _((BLooper*)this);
 	switch (State()) {
 		case STATE_RECORDING:
-			reason = "Recording is in progress.";
+			reason = "Recording in progress.";
 			break;
 		case STATE_ENCODING:
-			reason = "Encoding is in progress.";
+			reason = "Encoding in progress.";
 			break;
 		case STATE_IDLE:
 			return true;
