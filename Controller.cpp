@@ -743,14 +743,14 @@ Controller::CaptureThread()
 
 	_TestWaitForRetrace();
 	
-	const int32 windowBorder = settings.WindowFrameBorderSize();
-	int32 token = GetWindowTokenForFrame(bounds, windowBorder);
+	const int32 windowEdge = settings.WindowFrameBorderSize();
+	int32 token = GetWindowTokenForFrame(bounds, windowEdge);
 	status_t error = B_ERROR;
 	BBitmap *bitmap = NULL;
 	while (!fKillCaptureThread) {
 		if (!fPaused) {		
 			if (token != -1) {
-				BRect windowBounds = GetWindowFrameForToken(token, windowBorder);
+				BRect windowBounds = GetWindowFrameForToken(token, windowEdge);
 				if (windowBounds.IsValid())
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
