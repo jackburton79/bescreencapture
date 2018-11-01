@@ -38,6 +38,12 @@ const static uint32 kGUIOpenMediaWindow = 'j89d';
 const static uint32 kGUIDockWindow = 'j90d';
 const static uint32 kGUIResetSettings = 'j91d';
 
+
+const static char* LABEL_BUTTON_START = "Start Recording";
+const static char* LABEL_BUTTON_STOP = "Stop Recording";
+const static char* LABEL_BUTTON_PAUSE = "Pause";
+const static char* LABEL_BUTTON_RESUME = "Resume";
+
 BSCWindow::BSCWindow()
 	:
 	BDirectWindow(kWindowRect, "BeScreenCapture", B_TITLED_WINDOW,
@@ -58,13 +64,13 @@ BSCWindow::BSCWindow()
 	fMenuBar = new BMenuBar("menubar");
 	_BuildMenu();
 	
-	fStartStopButton = new BButton("Start", "Start Recording",
+	fStartStopButton = new BButton("Start", LABEL_BUTTON_START,
 		new BMessage(kMsgGUIToggleCapture));
 	
 	fStartStopButton->SetTarget(fController);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	
-	fPauseButton = new BButton("Pause", "Pause",
+	fPauseButton = new BButton("Pause", LABEL_BUTTON_PAUSE,
 		new BMessage(kMsgGUITogglePause));
 	fPauseButton->SetTarget(fController);
 	fPauseButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
@@ -204,12 +210,12 @@ BSCWindow::MessageReceived(BMessage *message)
 				}
 				case kMsgControllerCapturePaused:
 				{
-					fPauseButton->SetLabel("Resume");
+					fPauseButton->SetLabel(LABEL_BUTTON_RESUME);
 					break;
 				}
 				case kMsgControllerCaptureResumed:
 				{
-					fPauseButton->SetLabel("Pause");
+					fPauseButton->SetLabel(LABEL_BUTTON_PAUSE);
 					break;
 				}
 				case kMsgControllerEncodeStarted:
@@ -390,8 +396,8 @@ BSCWindow::_CaptureStarted()
 	if (settings.MinimizeOnRecording())
 		Hide();
 	
-	fStartStopButton->SetLabel("Stop Recording");
-	fPauseButton->SetLabel("Pause");
+	fStartStopButton->SetLabel(LABEL_BUTTON_STOP);
+	fPauseButton->SetLabel(LABEL_BUTTON_PAUSE);
 	fPauseButton->SetEnabled(true);
 	
 	return B_OK;
@@ -403,8 +409,8 @@ BSCWindow::_CaptureFinished()
 {
 	fCapturing = false;
 	
-	fStartStopButton->SetLabel("Start Recording");
-	fPauseButton->SetLabel("Pause");
+	fStartStopButton->SetLabel(LABEL_BUTTON_START);
+	fPauseButton->SetLabel(LABEL_BUTTON_PAUSE);
 	fPauseButton->SetEnabled(false);
 	
 	if (IsHidden())
