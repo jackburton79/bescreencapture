@@ -11,11 +11,7 @@ class BString;
 class Settings {
 public:
 	Settings();
-	Settings(BMessage* message);
 	~Settings();
-	
-	static Settings& GetCurrent();
-	static const Settings GetDefault();
 	
 	static status_t Load();
 	static status_t Save();
@@ -76,12 +72,8 @@ public:
 	static status_t SetDefaults();
 
 private:
-	static void _InitializeIfNeeded();
-	
 	BMessage *fSettings;
-	
-	static BLocker sLocker;
-	static bool sInitialized;
+	BLocker fLocker;	
 };
 
 #endif

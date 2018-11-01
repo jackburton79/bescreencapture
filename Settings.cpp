@@ -12,12 +12,6 @@
 #include <cstring>
 
 static BMessage sSettings;
-static BMessage sDefaultSettings;
-
-//static Settings* sCurrentSettings;
-
-BLocker Settings::sLocker;
-bool Settings::sInitialized = false;
 
 const static char *kCaptureRect = "capture rect";
 const static char *kClipDepth = "clip depth";
@@ -36,35 +30,15 @@ const static char *kDockingMode = "docking mode";
 
 Settings::Settings()
 {
-	_InitializeIfNeeded();
-
 	fSettings = &sSettings;
-	sLocker.Lock();
-}
-
-
-Settings::Settings(BMessage* message)
-{
-	_InitializeIfNeeded();
-
-	fSettings = message;
-	sLocker.Lock();
+	fLocker.Lock();
 }
 
 
 Settings::~Settings()
 {
-	sLocker.Unlock();
+	fLocker.Unlock();
 	fSettings = NULL;
-}
-
-
-/* static */
-const Settings
-Settings::GetDefault()
-{
-	Settings s(&sDefaultSettings);
-	return s;
 }
 
 
@@ -72,7 +46,6 @@ Settings::GetDefault()
 status_t
 Settings::Load()
 {
-	_InitializeIfNeeded();
 	SetDefaults();
 	
 	BPath path;
@@ -491,30 +464,20 @@ Settings::PrintToStream()
 status_t
 Settings::SetDefaults()
 {
-	sSettings = sDefaultSettings;
+	BRect rect = BScreen().Frame();
+	sSettings.MakeEmpty();
+	sSettings.AddRect(kCaptureRect, rect);
+	sSettings.AddString(kOutputFile, "/boot/home/outputfile.avi");
+	sSettings.AddFloat(kClipScale, 100);
+	sSettings.AddInt32(kClipDepth, B_RGB32);
+	sSettings.AddBool(kIncludeCursor, true);
+	sSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
+	sSettings.AddBool(kMinimize, false);
+	sSettings.AddString(kOutputFileFormat, "");
+	sSettings.AddString(kOutputCodecName, "");
+	sSettings.AddInt32(kWindowFrameBorderSize, 0);
+	sSettings.AddInt32(kCaptureFrameDelay, 20);
+	sSettings.AddBool(kDockingMode, false);
+	
 	return B_OK;
-}
-
-
-/* static */
-void
-Settings::_InitializeIfNeeded()
-{
-	if (!sInitialized) {
-		BRect rect = BScreen().Frame();
-		sDefaultSettings.MakeEmpty();
-		sDefaultSettings.AddRect(kCaptureRect, rect);
-		sDefaultSettings.AddString(kOutputFile, "/boot/home/outputfile.avi");
-		sDefaultSettings.AddFloat(kClipScale, 100);
-		sDefaultSettings.AddInt32(kClipDepth, B_RGB32);
-		sDefaultSettings.AddBool(kIncludeCursor, true);
-		sDefaultSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
-		sDefaultSettings.AddBool(kMinimize, false);
-		sDefaultSettings.AddString(kOutputFileFormat, "");
-		sDefaultSettings.AddString(kOutputCodecName, "");
-		sDefaultSettings.AddInt32(kWindowFrameBorderSize, 0);
-		sDefaultSettings.AddInt32(kCaptureFrameDelay, 20);
-		sDefaultSettings.AddBool(kDockingMode, false);
-		sInitialized = true;
-	}
 }
