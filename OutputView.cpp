@@ -161,7 +161,7 @@ OutputView::MessageReceived(BMessage *message)
 		case kWindowBorderFrameChanged:
 		{
 			const int32 size = fBorderSlider->Value();
-			Settings().SetWindowFrameBorderSize(size);	
+			Settings().SetWindowFrameBorderSize(size);
 			break;
 		}
 		case B_OBSERVER_NOTICE_CHANGE:
