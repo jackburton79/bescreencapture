@@ -22,7 +22,9 @@ public:
 	virtual void MessageReceived(BMessage *message);
 
 	virtual void MouseDown(BPoint where);
-	
+
+	virtual void Pulse();
+
 private:
 	void InitData();
 	

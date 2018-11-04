@@ -5,6 +5,7 @@
 #include "DeskbarControlView.h"
 
 #include <Bitmap.h>
+#include <Deskbar.h>
 #include <Entry.h>
 #include <MenuItem.h>
 #include <Message.h>
@@ -44,7 +45,7 @@ const static char* kControllerMessengerName = "controller_messenger";
 
 DeskbarControlView::DeskbarControlView(BRect rect, const char *name)
 	:
-	BView(rect, name, B_FOLLOW_LEFT|B_FOLLOW_TOP, B_WILL_DRAW)
+	BView(rect, name, B_FOLLOW_LEFT|B_FOLLOW_TOP, B_WILL_DRAW|B_PULSE_NEEDED)
 {
 	InitData();
 	
@@ -206,6 +207,18 @@ DeskbarControlView::MouseDown(BPoint where)
 	
 	ConvertToScreen(&where);
 	menu->Go(where, true, false, true);
+}
+
+
+void
+DeskbarControlView::Pulse()
+{
+	if (!fControllerMessenger.IsValid()) {
+		snooze(100000);
+		BDeskbar deskbar;
+		if (deskbar.IsRunning())
+			deskbar.RemoveItem(BSC_DESKBAR_VIEW);
+	}
 }
 
 

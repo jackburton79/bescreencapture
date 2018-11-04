@@ -1,6 +1,7 @@
 #include "Arguments.h"
 #include "BSCApp.h"
 #include "BSCWindow.h"
+#include "Constants.h"
 #include "Controller.h"
 #include "DeskbarControlView.h"
 #include "PublicMessages.h"
@@ -94,11 +95,11 @@ BSCApp::ReadyToRun()
 	
 	BDeskbar deskbar;
 	if (deskbar.IsRunning()) { 
-		while (deskbar.HasItem("BSC Control"))
-			deskbar.RemoveItem("BSC Control");
+		while (deskbar.HasItem(BSC_DESKBAR_VIEW))
+			deskbar.RemoveItem(BSC_DESKBAR_VIEW);
 		if (!fShouldStartRecording) {
 			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
-				"BSC Control"));
+				BSC_DESKBAR_VIEW));
 		}
 	}
 }
