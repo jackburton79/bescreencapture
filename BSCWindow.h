@@ -28,8 +28,6 @@ public:
 	virtual void ScreenChanged(BRect screen_size, color_space depth);
 	virtual void DirectConnected(direct_buffer_info *info);
 	
-	bool IsRecording();
-	
 	status_t ReadBitmap(BBitmap *bitmap, BRect bounds);
 
 	BLooper* GetController();
@@ -53,7 +51,6 @@ private:
 	BView* fAdvancedOptionsView;
 	BView* fInfoView;
 
-	bool fCapturing;
 	BMessenger fAddonMessenger;
 };
 

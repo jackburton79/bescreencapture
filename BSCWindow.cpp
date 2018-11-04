@@ -54,8 +54,7 @@ BSCWindow::BSCWindow()
 	fCamStatus(NULL),
 	fOutputView(NULL),
 	fAdvancedOptionsView(NULL),
-	fInfoView(NULL),
-	fCapturing(false)
+	fInfoView(NULL)
 {
 	fOutputView = new OutputView(fController);
 	fAdvancedOptionsView = new AdvancedOptionsView(fController);
@@ -130,13 +129,6 @@ BSCWindow::QuitRequested()
 		be_app->PostMessage(B_QUIT_REQUESTED);
 	
 	return canQuit && BWindow::QuitRequested();
-}
-
-
-bool
-BSCWindow::IsRecording()
-{
-	return fCapturing;
 }
 
 
@@ -390,8 +382,6 @@ BSCWindow::_LayoutWindow(bool dock)
 status_t
 BSCWindow::_CaptureStarted()
 {
-	fCapturing = true;
-	
 	Settings settings;
 	if (settings.MinimizeOnRecording())
 		Hide();
@@ -407,8 +397,6 @@ BSCWindow::_CaptureStarted()
 status_t
 BSCWindow::_CaptureFinished()
 {
-	fCapturing = false;
-	
 	fStartStopButton->SetLabel(LABEL_BUTTON_START);
 	fPauseButton->SetLabel(LABEL_BUTTON_PAUSE);
 	fPauseButton->SetEnabled(false);
