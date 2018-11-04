@@ -51,7 +51,7 @@ BSCApp::BSCApp()
 
 BSCApp::~BSCApp()
 {
-	BDeskbar().RemoveItem("BSC Control");
+	BDeskbar().RemoveItem(BSC_DESKBAR_VIEW);
 	Settings::Save();
 	
 	gControllerLooper->Lock();
