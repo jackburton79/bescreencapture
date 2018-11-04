@@ -126,6 +126,8 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			BDeskbar deskbar;
 			if (deskbar.IsRunning()) {
 				if (hide) {
+					// Save the current minimize setting, since we are going to override
+					// it when "hide deskbar" is set
 					fCurrentMinimizeValue = Settings().MinimizeOnRecording();
 					fMinimizeOnStart->SetValue(B_CONTROL_ON);
 					fMinimizeOnStart->SetEnabled(false);
