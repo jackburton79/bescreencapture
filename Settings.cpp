@@ -1,5 +1,6 @@
 #include "Settings.h"
 
+#include <Autolock.h>
 #include <Directory.h>
 #include <File.h>
 #include <FindDirectory.h>
@@ -84,6 +85,7 @@ Settings::ResetToDefaults()
 status_t
 Settings::Load()
 {
+	BAutolock _(fLocker);
 	BPath path;
 	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
 	if (status == B_OK)
@@ -144,6 +146,7 @@ Settings::Load()
 status_t
 Settings::Save()
 {
+	BAutolock _(fLocker);
 	BPath path;
 	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
 	if (status == B_OK)
@@ -163,6 +166,7 @@ Settings::Save()
 void
 Settings::SetCaptureArea(const BRect &rect)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasRect(kCaptureRect))
 		fSettings->AddRect(kCaptureRect, rect);
 	else
@@ -173,6 +177,7 @@ Settings::SetCaptureArea(const BRect &rect)
 void
 Settings::GetCaptureArea(BRect &rect) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindRect(kCaptureRect, &rect);
 }
 
@@ -180,6 +185,7 @@ Settings::GetCaptureArea(BRect &rect) const
 BRect
 Settings::CaptureArea() const
 {
+	BAutolock _(fLocker);
 	BRect rect;
 	fSettings->FindRect(kCaptureRect, &rect);
 	return rect;
@@ -189,6 +195,7 @@ Settings::CaptureArea() const
 void
 Settings::GetTargetRect(BRect& rect) const
 {
+	BAutolock _(fLocker);
 	rect = TargetRect();
 }
 
@@ -196,6 +203,7 @@ Settings::GetTargetRect(BRect& rect) const
 BRect
 Settings::TargetRect() const
 {
+	BAutolock _(fLocker);
 	const float scale = Scale();
 	BRect scaledRect = CaptureArea();
 	
@@ -210,6 +218,7 @@ Settings::TargetRect() const
 void
 Settings::SetClipDepth(const color_space &space)
 {
+	BAutolock _(fLocker);
 	const int32 &spaceInt = (int32)space;
 	if (!fSettings->HasInt32(kClipDepth))
 		fSettings->AddInt32(kClipDepth, spaceInt);
@@ -221,6 +230,7 @@ Settings::SetClipDepth(const color_space &space)
 void
 Settings::GetClipDepth(color_space &space) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindInt32(kClipDepth, (int32 *)&space);
 }
 
@@ -228,6 +238,7 @@ Settings::GetClipDepth(color_space &space) const
 color_space
 Settings::ClipDepth() const
 {
+	BAutolock _(fLocker);
 	color_space depth;
 	fSettings->FindInt32(kClipDepth, (int32 *)&depth);
 	return depth;
@@ -237,6 +248,7 @@ Settings::ClipDepth() const
 void
 Settings::SetScale(const float &scale)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasFloat(kClipScale))
 		fSettings->AddFloat(kClipScale, scale);
 	else
@@ -247,6 +259,7 @@ Settings::SetScale(const float &scale)
 void
 Settings::GetScale(float &scale) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindFloat(kClipScale, &scale);
 }
 
@@ -254,6 +267,7 @@ Settings::GetScale(float &scale) const
 float
 Settings::Scale() const
 {
+	BAutolock _(fLocker);
 	float scale;
 	fSettings->FindFloat(kClipScale, &scale);
 	return scale;
@@ -263,6 +277,7 @@ Settings::Scale() const
 void
 Settings::SetUseDirectWindow(const bool &use)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasBool(kUseDirectWindow))
 		fSettings->AddBool(kUseDirectWindow, use);
 	else
@@ -273,6 +288,7 @@ Settings::SetUseDirectWindow(const bool &use)
 void
 Settings::GetUseDirectWindow(bool &use) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindBool(kUseDirectWindow, &use);
 }
 
@@ -280,6 +296,7 @@ Settings::GetUseDirectWindow(bool &use) const
 bool
 Settings::UseDirectWindow() const
 {
+	BAutolock _(fLocker);
 	bool useDW;
 	fSettings->FindBool(kUseDirectWindow, &useDW);
 	return useDW;
@@ -289,6 +306,7 @@ Settings::UseDirectWindow() const
 void
 Settings::SetIncludeCursor(const bool &include)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasBool(kIncludeCursor))
 		fSettings->AddBool(kIncludeCursor, include);
 	else
@@ -299,6 +317,7 @@ Settings::SetIncludeCursor(const bool &include)
 void
 Settings::GetIncludeCursor(bool &include) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindBool(kIncludeCursor, &include);
 }
 
@@ -306,6 +325,7 @@ Settings::GetIncludeCursor(bool &include) const
 bool
 Settings::IncludeCursor() const
 {
+	BAutolock _(fLocker);
 	bool include;
 	fSettings->FindBool(kIncludeCursor, &include);
 	return include;
@@ -315,6 +335,7 @@ Settings::IncludeCursor() const
 void
 Settings::SetWindowFrameBorderSize(const int32 &size)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasInt32(kWindowFrameBorderSize))
 		fSettings->AddInt32(kWindowFrameBorderSize, size);
 	else
@@ -325,6 +346,7 @@ Settings::SetWindowFrameBorderSize(const int32 &size)
 void
 Settings::GetWindowFrameBorderSize(int32 &size) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindInt32(kWindowFrameBorderSize, &size);
 }
 
@@ -332,6 +354,7 @@ Settings::GetWindowFrameBorderSize(int32 &size) const
 int32
 Settings::WindowFrameBorderSize() const
 {
+	BAutolock _(fLocker);
 	int32 size = 0;
 	fSettings->FindInt32(kWindowFrameBorderSize, &size);
 	return size;
@@ -341,6 +364,7 @@ Settings::WindowFrameBorderSize() const
 void
 Settings::SetMinimizeOnRecording(const bool &mini)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasBool(kMinimize))
 		fSettings->AddBool(kMinimize, mini);
 	else
@@ -351,6 +375,7 @@ Settings::SetMinimizeOnRecording(const bool &mini)
 void
 Settings::GetMinimizeOnRecording(bool &mini) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindBool(kMinimize, &mini);
 }
 
@@ -358,6 +383,7 @@ Settings::GetMinimizeOnRecording(bool &mini) const
 bool
 Settings::MinimizeOnRecording() const
 {
+	BAutolock _(fLocker);
 	bool mini;
 	fSettings->FindBool(kMinimize, &mini);
 	return mini;
@@ -367,6 +393,7 @@ Settings::MinimizeOnRecording() const
 void
 Settings::SetOutputFileName(const char *name)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasString(kOutputFile))
 		fSettings->AddString(kOutputFile, name);
 	else
@@ -377,6 +404,7 @@ Settings::SetOutputFileName(const char *name)
 BString
 Settings::OutputFileName() const
 {
+	BAutolock _(fLocker);
 	BString fileName;
 	GetOutputFileName(fileName);
 	return fileName;
@@ -386,6 +414,7 @@ Settings::OutputFileName() const
 void
 Settings::GetOutputFileName(BString &name) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindString(kOutputFile, &name);
 }
 
@@ -393,6 +422,7 @@ Settings::GetOutputFileName(BString &name) const
 void
 Settings::SetOutputFileFormat(const char* fileFormat)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasString(kOutputFileFormat))
 		fSettings->AddString(kOutputFileFormat, fileFormat);
 	else
@@ -403,6 +433,7 @@ Settings::SetOutputFileFormat(const char* fileFormat)
 void
 Settings::GetOutputFileFormat(BString& string) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindString(kOutputFileFormat, &string);
 }
 
@@ -410,6 +441,7 @@ Settings::GetOutputFileFormat(BString& string) const
 void
 Settings::SetOutputCodec(const char* codecName)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasString(kOutputCodecName))
 		fSettings->AddString(kOutputCodecName, codecName);
 	else
@@ -420,6 +452,7 @@ Settings::SetOutputCodec(const char* codecName)
 void
 Settings::GetOutputCodec(BString& string) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindString(kOutputCodecName, &string);
 }
 
@@ -427,6 +460,7 @@ Settings::GetOutputCodec(BString& string) const
 int32
 Settings::CaptureFrameDelay() const
 {
+	BAutolock _(fLocker);
 	int32 value;
 	fSettings->FindInt32(kCaptureFrameDelay, &value);
 	return value;
@@ -436,6 +470,7 @@ Settings::CaptureFrameDelay() const
 void
 Settings::SetCaptureFrameDelay(const int32& value)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasInt32(kCaptureFrameDelay))
 		fSettings->AddInt32(kCaptureFrameDelay, value);
 	else
@@ -446,6 +481,7 @@ Settings::SetCaptureFrameDelay(const int32& value)
 void
 Settings::SetEncodingThreadPriority(const int32 &value)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasInt32(kThreadPriority))
 		fSettings->AddInt32(kThreadPriority, value);
 	else
@@ -456,6 +492,7 @@ Settings::SetEncodingThreadPriority(const int32 &value)
 void
 Settings::GetEncodingThreadPriority(int32 &value) const
 {
+	BAutolock _(fLocker);
 	fSettings->FindInt32(kThreadPriority, &value);
 }
 
@@ -463,6 +500,7 @@ Settings::GetEncodingThreadPriority(int32 &value) const
 int32
 Settings::EncodingThreadPriority() const
 {
+	BAutolock _(fLocker);
 	int32 prio = B_NORMAL_PRIORITY;
 	fSettings->FindInt32(kThreadPriority, &prio);
 	return prio;
@@ -472,6 +510,7 @@ Settings::EncodingThreadPriority() const
 bool
 Settings::DockingMode() const
 {
+	BAutolock _(fLocker);
 	bool docking;
 	fSettings->FindBool(kDockingMode, &docking);
 	return docking;
@@ -481,6 +520,7 @@ Settings::DockingMode() const
 void
 Settings::SetDockingMode(const bool& value)
 {
+	BAutolock _(fLocker);
 	if (!fSettings->HasBool(kDockingMode))
 		fSettings->AddBool(kDockingMode, value);
 	else
@@ -491,6 +531,7 @@ Settings::SetDockingMode(const bool& value)
 void
 Settings::PrintToStream()
 {
+	BAutolock _(fLocker);
 	fSettings->PrintToStream();
 	TargetRect().PrintToStream();
 }
@@ -499,6 +540,8 @@ Settings::PrintToStream()
 status_t
 Settings::_SetDefaults()
 {
+	BAutolock _(fLocker);
+
 	BRect rect = BScreen().Frame();
 	fSettings->MakeEmpty();
 	fSettings->AddRect(kCaptureRect, rect);
@@ -521,7 +564,6 @@ Settings::_SetDefaults()
 Settings::Settings()
 {
 	fSettings = new BMessage;
-	fLocker.Lock();
 }
 
 
@@ -529,12 +571,10 @@ Settings::Settings(const Settings& settings)
 {
 	fSettings = new BMessage;
 	*fSettings = *settings.fSettings;
-	fLocker.Lock();
 }
 
 
 Settings::~Settings()
 {
-	fLocker.Unlock();
 	delete fSettings;
 }

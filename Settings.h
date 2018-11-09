@@ -81,7 +81,7 @@ private:
 	status_t _SetDefaults();
 
 	BMessage *fSettings;
-	BLocker fLocker;	
+	mutable BLocker fLocker;
 };
 
 #endif
