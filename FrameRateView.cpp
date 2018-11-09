@@ -71,6 +71,8 @@ FrameRateView::FrameRateView(Controller* controller)
 	
 	AddChild(layoutView);
 
+	fController->StartWatching(this, kMsgControllerEncodeStarted);
+	fController->StartWatching(this, kMsgControllerEncodeFinished);
 	fController->StartWatching(this, kMsgControllerResetSettings);
 }
 
@@ -109,6 +111,14 @@ FrameRateView::MessageReceived(BMessage* message)
 			int32 code;
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {
+				case kMsgControllerEncodeStarted:
+					fCaptureFreq->SetEnabled(false);
+					fFrameRate->SetEnabled(false);
+					break;
+				case kMsgControllerEncodeFinished:
+					fCaptureFreq->SetEnabled(true);
+					fFrameRate->SetEnabled(true);
+					break;
 				case kMsgControllerCaptureFrameDelayChanged:
 				{
 					int32 delay;
