@@ -521,7 +521,7 @@ Settings::_SetDefaults()
 Settings::Settings()
 {
 	fSettings = new BMessage;
-	//fLocker.Lock();
+	fLocker.Lock();
 }
 
 
@@ -529,12 +529,12 @@ Settings::Settings(const Settings& settings)
 {
 	fSettings = new BMessage;
 	*fSettings = *settings.fSettings;
-	//fLocker.Lock();
+	fLocker.Lock();
 }
 
 
 Settings::~Settings()
 {
-	//fLocker.Unlock();
+	fLocker.Unlock();
 	delete fSettings;
 }
