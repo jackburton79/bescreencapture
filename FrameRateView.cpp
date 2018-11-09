@@ -77,10 +77,9 @@ void
 FrameRateView::AttachedToWindow()
 {
 	if (fController->LockLooper()) {
-		BMessenger messenger(this);
-		fController->StartWatching(messenger, kMsgControllerEncodeStarted);
-		fController->StartWatching(messenger, kMsgControllerEncodeFinished);
-		fController->StartWatching(messenger, kMsgControllerResetSettings);
+		fController->StartWatching(this, kMsgControllerCaptureStarted);
+		fController->StartWatching(this, kMsgControllerCaptureStopped);
+		fController->StartWatching(this, kMsgControllerResetSettings);
 		fController->UnlockLooper();
 	}
 	fCaptureFreq->SetTarget(this);
@@ -114,11 +113,11 @@ FrameRateView::MessageReceived(BMessage* message)
 			int32 code;
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {
-				case kMsgControllerEncodeStarted:
+				case kMsgControllerCaptureStarted:
 					fCaptureFreq->SetEnabled(false);
 					fFrameRate->SetEnabled(false);
 					break;
-				case kMsgControllerEncodeFinished:
+				case kMsgControllerCaptureStopped:
 					fCaptureFreq->SetEnabled(true);
 					fFrameRate->SetEnabled(true);
 					break;
