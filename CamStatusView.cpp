@@ -211,7 +211,7 @@ CamStatusView::Pulse()
 	fRecordTime = (time_t)fController->RecordTime() / 1000000;
 	if (fRecordTime < 0)
 		fRecordTime = 0;
-	struct tm* diffTime = localtime(&fRecordTime);
+	struct tm* diffTime = gmtime(&fRecordTime);
 	char timeString[128];
 	strftime(timeString, sizeof(timeString), "%T", diffTime);
 	BString str(timeString);
