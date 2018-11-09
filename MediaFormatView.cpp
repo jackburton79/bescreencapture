@@ -74,6 +74,8 @@ MediaFormatView::AttachedToWindow()
 	
 	// Watch for these from Controller
 	if (fController->LockLooper()) {
+		fController->StartWatching(this, kMsgControllerEncodeStarted);
+		fController->StartWatching(this, kMsgControllerEncodeFinished);
 		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCodecListUpdated);
@@ -160,6 +162,14 @@ MediaFormatView::MessageReceived(BMessage *message)
 				case kMsgControllerVideoDepthChanged:
 				case kMsgControllerTargetFrameChanged:
 					fController->UpdateMediaFormatAndCodecsForCurrentFamily();
+					break;
+				case kMsgControllerEncodeStarted:
+					fCodecMenu->SetEnabled(false);
+					fOutputFileType->SetEnabled(false);
+					break;
+				case kMsgControllerEncodeFinished:
+					fCodecMenu->SetEnabled(true);
+					fOutputFileType->SetEnabled(true);
 					break;
 				default:
 					break;
