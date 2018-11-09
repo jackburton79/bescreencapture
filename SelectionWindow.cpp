@@ -427,7 +427,7 @@ SelectionViewWindow::SelectionViewWindow(BRect frame, const char *name)
 	:
 	SelectionView(frame, name, kInfoWindowMode)
 {	
-	GetWindowsFrameList(fFrameList, Settings().WindowFrameBorderSize());
+	GetWindowsFrameList(fFrameList, Settings::Current().WindowFrameBorderSize());
 }
 
 

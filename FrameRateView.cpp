@@ -82,7 +82,7 @@ FrameRateView::AttachedToWindow()
 	fFrameRate->SetTarget(this);
 	/*fAutoAdjust->SetTarget(this);*/
 	
-	float milliSeconds = (float)Settings().CaptureFrameDelay();
+	float milliSeconds = (float)Settings::Current().CaptureFrameDelay();
 	
 	_UpdateCaptureRate(&milliSeconds, NULL);
 }
@@ -120,7 +120,7 @@ FrameRateView::MessageReceived(BMessage* message)
 				}
 				case kMsgControllerResetSettings:
 				{
-					float milliSeconds = (float)Settings().CaptureFrameDelay();
+					float milliSeconds = (float)Settings::Current().CaptureFrameDelay();
 					_UpdateCaptureRate(&milliSeconds, NULL);
 					break;
 				}

@@ -11,7 +11,8 @@
 #include <cstdio>
 #include <cstring>
 
-static BMessage sSettings;
+static Settings* sDefault;
+static Settings* sCurrent;
 
 const static char *kCaptureRect = "capture rect";
 const static char *kClipDepth = "clip depth";
@@ -28,26 +29,61 @@ const static char *kCaptureFrameDelay = "capture frame delay";
 const static char *kDockingMode = "docking mode";
 
 
-Settings::Settings()
-{
-	fSettings = &sSettings;
-	fLocker.Lock();
-}
 
-
-Settings::~Settings()
+/* static */
+status_t
+Settings::Initialize()
 {
-	fLocker.Unlock();
-	fSettings = NULL;
+	try {
+		sDefault = new Settings;
+		sDefault->_SetDefaults();
+		sCurrent = new Settings(*sDefault);
+		sCurrent->Load();
+	} catch (...) {
+		return B_ERROR;
+	}
+
+	return B_OK;
 }
 
 
 /* static */
+void
+Settings::Destroy()
+{
+	delete sDefault;
+	delete sCurrent;
+}
+
+
+/* static */
+Settings&
+Settings::Default()
+{
+	return *sDefault;
+}
+
+
+/* static */
+Settings&
+Settings::Current()
+{
+	return *sCurrent;
+}
+
+
+/* static */
+void
+Settings::ResetToDefaults()
+{
+	delete sCurrent;
+	sCurrent = new Settings(*sDefault);
+}
+
+
 status_t
 Settings::Load()
 {
-	SetDefaults();
-	
 	BPath path;
 	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
 	if (status == B_OK)
@@ -74,38 +110,37 @@ Settings::Load()
 		float decimal;
 		const char *string = NULL;
 		if (tempMessage.FindRect(kCaptureRect, &rect) == B_OK)
-			sSettings.ReplaceRect(kCaptureRect, rect);
+			fSettings->ReplaceRect(kCaptureRect, rect);
 		if (tempMessage.FindInt32(kClipDepth, &integer) == B_OK)
-			sSettings.ReplaceInt32(kClipDepth, integer);
+			fSettings->ReplaceInt32(kClipDepth, integer);
 		if (tempMessage.FindFloat(kClipScale, &decimal) == B_OK)
-			sSettings.ReplaceFloat(kClipScale, decimal);
+			fSettings->ReplaceFloat(kClipScale, decimal);
 		if (tempMessage.FindBool(kUseDirectWindow, &boolean) == B_OK)
-			sSettings.ReplaceBool(kUseDirectWindow, boolean);
+			fSettings->ReplaceBool(kUseDirectWindow, boolean);
 		if (tempMessage.FindBool(kIncludeCursor, &boolean) == B_OK)
-			sSettings.ReplaceBool(kIncludeCursor, boolean);
+			fSettings->ReplaceBool(kIncludeCursor, boolean);
 		if (tempMessage.FindBool(kMinimize, &boolean) == B_OK)
-			sSettings.ReplaceBool(kMinimize, boolean);
+			fSettings->ReplaceBool(kMinimize, boolean);
 		if (tempMessage.FindString(kOutputFile, &string) == B_OK)
-			sSettings.ReplaceString(kOutputFile, string);
+			fSettings->ReplaceString(kOutputFile, string);
 		if (tempMessage.FindString(kOutputFileFormat, &string) == B_OK)
-			sSettings.ReplaceString(kOutputFileFormat, string);
+			fSettings->ReplaceString(kOutputFileFormat, string);
 		if (tempMessage.FindString(kOutputCodecName, &string) == B_OK)
-			sSettings.ReplaceString(kOutputCodecName, string);
+			fSettings->ReplaceString(kOutputCodecName, string);
 		if (tempMessage.FindInt32(kThreadPriority, &integer) == B_OK)
-			sSettings.ReplaceInt32(kThreadPriority, integer);
+			fSettings->ReplaceInt32(kThreadPriority, integer);
 		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
-			sSettings.ReplaceInt32(kWindowFrameBorderSize, integer);
+			fSettings->ReplaceInt32(kWindowFrameBorderSize, integer);
 		if (tempMessage.FindInt32(kCaptureFrameDelay, &integer) == B_OK)
-			sSettings.ReplaceInt32(kCaptureFrameDelay, integer);
+			fSettings->ReplaceInt32(kCaptureFrameDelay, integer);
 		if (tempMessage.FindBool(kDockingMode, &boolean) == B_OK)
-			sSettings.ReplaceBool(kDockingMode, boolean);
+			fSettings->ReplaceBool(kDockingMode, boolean);
 	}	
 	
 	return status;
 }
 
 
-/* static */
 status_t
 Settings::Save()
 {
@@ -119,7 +154,7 @@ Settings::Save()
 		status = file.SetTo(path.Path(), B_WRITE_ONLY|B_CREATE_FILE);
 		
 	if (status == B_OK)	
-		status = sSettings.Flatten(&file);
+		status = fSettings->Flatten(&file);
 	
 	return status;
 }
@@ -462,22 +497,44 @@ Settings::PrintToStream()
 
 
 status_t
-Settings::SetDefaults()
+Settings::_SetDefaults()
 {
 	BRect rect = BScreen().Frame();
-	sSettings.MakeEmpty();
-	sSettings.AddRect(kCaptureRect, rect);
-	sSettings.AddString(kOutputFile, "/boot/home/outputfile.avi");
-	sSettings.AddFloat(kClipScale, 100);
-	sSettings.AddInt32(kClipDepth, B_RGB32);
-	sSettings.AddBool(kIncludeCursor, true);
-	sSettings.AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
-	sSettings.AddBool(kMinimize, false);
-	sSettings.AddString(kOutputFileFormat, "");
-	sSettings.AddString(kOutputCodecName, "");
-	sSettings.AddInt32(kWindowFrameBorderSize, 0);
-	sSettings.AddInt32(kCaptureFrameDelay, 20);
-	sSettings.AddBool(kDockingMode, false);
+	fSettings->MakeEmpty();
+	fSettings->AddRect(kCaptureRect, rect);
+	fSettings->AddString(kOutputFile, "/boot/home/outputfile.avi");
+	fSettings->AddFloat(kClipScale, 100);
+	fSettings->AddInt32(kClipDepth, B_RGB32);
+	fSettings->AddBool(kIncludeCursor, true);
+	fSettings->AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
+	fSettings->AddBool(kMinimize, false);
+	fSettings->AddString(kOutputFileFormat, "");
+	fSettings->AddString(kOutputCodecName, "");
+	fSettings->AddInt32(kWindowFrameBorderSize, 0);
+	fSettings->AddInt32(kCaptureFrameDelay, 20);
+	fSettings->AddBool(kDockingMode, false);
 	
 	return B_OK;
+}
+
+
+Settings::Settings()
+{
+	fSettings = new BMessage;
+	//fLocker.Lock();
+}
+
+
+Settings::Settings(const Settings& settings)
+{
+	fSettings = new BMessage;
+	*fSettings = *settings.fSettings;
+	//fLocker.Lock();
+}
+
+
+Settings::~Settings()
+{
+	//fLocker.Unlock();
+	delete fSettings;
 }

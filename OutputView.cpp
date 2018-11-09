@@ -72,7 +72,7 @@ OutputView::AttachedToWindow()
 		fController->UnlockLooper();
 	}
 
-	Settings settings;
+	Settings& settings = Settings::Current();
 
 	fFileName->SetTarget(this);
 	fCustomArea->SetTarget(this);
@@ -161,7 +161,7 @@ OutputView::MessageReceived(BMessage *message)
 		case kWindowBorderFrameChanged:
 		{
 			const int32 size = fBorderSlider->Value();
-			Settings().SetWindowFrameBorderSize(size);
+			Settings::Current().SetWindowFrameBorderSize(size);
 			break;
 		}
 		case B_OBSERVER_NOTICE_CHANGE:
@@ -211,7 +211,7 @@ OutputView::MessageReceived(BMessage *message)
 
 				case kMsgControllerResetSettings:
 				{
-					Settings settings;
+					Settings& settings = Settings::Current();
 					fBorderSlider->SetValue(settings.WindowFrameBorderSize());
 					fScaleSlider->SetValue(settings.Scale());
 					fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);
@@ -280,7 +280,7 @@ OutputView::OutputFileName() const
 void
 OutputView::UpdatePreviewFromSettings()
 {
-	BRect rect = Settings().CaptureArea();
+	BRect rect = Settings::Current().CaptureArea();
 	if (!rect.IsValid())
 		rect = BScreen().Frame();
 	fRectView->Update(&rect);
@@ -298,7 +298,7 @@ OutputView::_LayoutView()
 	outputBox->SetLabel("Output");
 	AddChild(outputBox);
 
-	Settings settings;
+	Settings& settings = Settings::Current();
 	const char *kTCLabel = "File name:"; 
 	BString fileName = settings.OutputFileName();
 	fFileName = new BTextControl("file name",

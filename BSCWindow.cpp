@@ -145,7 +145,7 @@ BSCWindow::MessageReceived(BMessage *message)
 			break;
 			
 		case kGUIDockWindow:
-			_LayoutWindow(!Settings().DockingMode());
+			_LayoutWindow(!Settings::Current().DockingMode());
 			break;
 
 		case kGUIResetSettings:
@@ -382,7 +382,7 @@ BSCWindow::_LayoutWindow(bool dock)
 status_t
 BSCWindow::_CaptureStarted()
 {
-	Settings settings;
+	Settings& settings = Settings::Current();
 	if (settings.MinimizeOnRecording())
 		Hide();
 	

@@ -42,7 +42,7 @@ BSCApp::BSCApp()
 {
 	fArgs = new Arguments(0, NULL);
 	
-	Settings::Load();
+	Settings::Initialize();
 
 	fShouldStartRecording = false;
 	gControllerLooper = new Controller();
@@ -52,8 +52,10 @@ BSCApp::BSCApp()
 BSCApp::~BSCApp()
 {
 	BDeskbar().RemoveItem(BSC_DESKBAR_VIEW);
-	Settings::Save();
-	
+
+	Settings::Current().Save();
+	Settings::Destroy();
+
 	gControllerLooper->Lock();
 	gControllerLooper->Quit();
 	

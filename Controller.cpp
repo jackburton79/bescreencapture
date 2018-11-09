@@ -68,7 +68,7 @@ Controller::Controller()
 	
 	fEncoder = new MovieEncoder;
 
-	Settings settings;	
+	Settings& settings = Settings::Current();
 	BString name = settings.OutputFileName();
 	fEncoder->SetOutputFile(name.String());
 
@@ -283,7 +283,7 @@ Controller::EncodeMovie()
 	}
 			
 	BString fileName;
-	Settings().GetOutputFileName(fileName);
+	Settings::Current().GetOutputFileName(fileName);
 	BEntry entry(fileName.String());
 	if (entry.Exists()) {
 		// file exists.
@@ -314,7 +314,7 @@ void
 Controller::SetUseDirectWindow(const bool& use)
 {
 	BAutolock _(this);
-	Settings().SetUseDirectWindow(use);
+	Settings::Current().SetUseDirectWindow(use);
 }
 
 
@@ -322,7 +322,7 @@ void
 Controller::SetCaptureArea(const BRect& rect)
 {
 	BAutolock _(this);
-	Settings settings;
+	Settings& settings = Settings::Current();
 	settings.SetCaptureArea(rect);
 	BRect targetRect = settings.TargetRect();
 	fEncoder->SetDestFrame(targetRect);
@@ -339,7 +339,7 @@ void
 Controller::SetCaptureFrameDelay(const int milliSeconds)
 {
 	BAutolock _(this);
-	Settings().SetCaptureFrameDelay(milliSeconds);
+	Settings::Current().SetCaptureFrameDelay(milliSeconds);
 	
 	BMessage message(kMsgControllerCaptureFrameDelayChanged);
 	message.AddInt32("delay", milliSeconds);
@@ -358,8 +358,9 @@ void
 Controller::SetScale(const float &scale)
 {
 	BAutolock _(this);
-	Settings().SetScale(scale);
-	BRect rect(Settings().TargetRect());
+	Settings& settings = Settings::Current();
+	settings.SetScale(scale);
+	BRect rect(settings.TargetRect());
 	fEncoder->SetDestFrame(rect);
 	BMessage message(kMsgControllerTargetFrameChanged);
 	message.AddRect("frame", rect);
@@ -373,7 +374,7 @@ Controller::SetVideoDepth(const color_space &space)
 {
 	BAutolock _(this);
 	fEncoder->SetColorSpace(space);
-	Settings().SetClipDepth(space);
+	Settings::Current().SetClipDepth(space);
 	SendNotices(kMsgControllerVideoDepthChanged);
 }
 
@@ -382,7 +383,7 @@ void
 Controller::SetOutputFileName(const char *name)
 {
 	BAutolock _(this);
-	Settings().SetOutputFileName(name);
+	Settings::Current().SetOutputFileName(name);
 	fEncoder->SetOutputFile(name);
 }
 
@@ -426,7 +427,7 @@ Controller::SetMediaFileFormat(const media_file_format& fileFormat)
 	BAutolock _(this);
 	fEncoder->SetMediaFileFormat(fileFormat);
 
-	Settings().SetOutputFileFormat(fileFormat.pretty_name);
+	Settings::Current().SetOutputFileFormat(fileFormat.pretty_name);
 	
 	BMessage message(kMsgControllerMediaFileFormatChanged);
 	message.AddString("format_name", fileFormat.pretty_name);
@@ -444,7 +445,7 @@ Controller::SetMediaCodec(const char* codecName)
 		media_codec_info* codec = fCodecList->ItemAt(i);
 		if (!strcmp(codec->pretty_name, codecName)) {
 			fEncoder->SetMediaCodecInfo(*codec);
-			Settings().SetOutputCodec(codec->pretty_name);
+			Settings::Current().SetOutputCodec(codec->pretty_name);
 			BMessage message(kMsgControllerCodecChanged);
 			message.AddString("codec_name", codec->pretty_name);
 			SendNotices(kMsgControllerCodecChanged, &message);
@@ -508,7 +509,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 {
 	BAutolock _(this);
 	
-	Settings settings;
+	Settings& settings = Settings::Current();
 	BRect targetRect = settings.TargetRect();
 	targetRect.right++;
 	targetRect.bottom++;
@@ -555,7 +556,7 @@ Controller::UpdateDirectInfo(direct_buffer_info* info)
 status_t
 Controller::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 {
-	const bool &useDirectWindow = Settings().UseDirectWindow()
+	const bool &useDirectWindow = Settings::Current().UseDirectWindow()
 		&& fDirectWindowAvailable;
 	
 	if (!useDirectWindow)
@@ -648,7 +649,7 @@ Controller::EndCapture()
 void
 Controller::ResetSettings()
 {
-	Settings::SetDefaults();
+	Settings::ResetToDefaults();
 	BMessage message(kMsgControllerResetSettings);
 	SendNotices(kMsgControllerResetSettings, &message);
 }
@@ -727,14 +728,14 @@ Controller::_WaitForRetrace(bigtime_t time)
 void
 Controller::_DumpSettings() const
 {
-	Settings().PrintToStream();
+	Settings::Current().PrintToStream();
 }
 
 
 int32
 Controller::CaptureThread()
 {
-	Settings settings;
+	Settings& settings = Settings::Current();
 	BScreen screen;
 	BRect bounds = settings.CaptureArea();
 	bigtime_t captureDelay = (bigtime_t)settings.CaptureFrameDelay() * 1000;

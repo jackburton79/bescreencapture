@@ -93,7 +93,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 	
-	Settings settings;
+	Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 }
@@ -128,7 +128,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 				if (hide) {
 					// Save the current minimize setting, since we are going to override
 					// it when "hide deskbar" is set
-					fCurrentMinimizeValue = Settings().MinimizeOnRecording();
+					fCurrentMinimizeValue = Settings::Current().MinimizeOnRecording();
 					fMinimizeOnStart->SetValue(B_CONTROL_ON);
 					fMinimizeOnStart->SetEnabled(false);
 					while (deskbar.HasItem(BSC_DESKBAR_VIEW))
@@ -143,7 +143,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		}
 		// Fall through
 		case kLocalMinimizeOnRecording:
-			Settings().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
+			Settings::Current().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
 			break;
 		
 		
