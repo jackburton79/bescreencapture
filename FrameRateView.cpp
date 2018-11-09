@@ -70,16 +70,19 @@ FrameRateView::FrameRateView(Controller* controller)
 		.View();
 	
 	AddChild(layoutView);
-
-	fController->StartWatching(this, kMsgControllerEncodeStarted);
-	fController->StartWatching(this, kMsgControllerEncodeFinished);
-	fController->StartWatching(this, kMsgControllerResetSettings);
 }
 
 
 void
 FrameRateView::AttachedToWindow()
 {
+	if (fController->LockLooper()) {
+		BMessenger messenger(this);
+		fController->StartWatching(messenger, kMsgControllerEncodeStarted);
+		fController->StartWatching(messenger, kMsgControllerEncodeFinished);
+		fController->StartWatching(messenger, kMsgControllerResetSettings);
+		fController->UnlockLooper();
+	}
 	fCaptureFreq->SetTarget(this);
 	fFrameRate->SetTarget(this);
 	/*fAutoAdjust->SetTarget(this);*/
