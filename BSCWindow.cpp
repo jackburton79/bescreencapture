@@ -139,11 +139,11 @@ BSCWindow::MessageReceived(BMessage *message)
 		case B_ABOUT_REQUESTED:
 			be_app->PostMessage(B_ABOUT_REQUESTED);
 			break;
-
+#if 0
 		case kGUIOpenMediaWindow:
 			(new OptionsWindow(fController))->Show();
 			break;
-			
+
 		case kGUIDockWindow:
 			_LayoutWindow(!Settings::Current().DockingMode());
 			break;
@@ -151,7 +151,7 @@ BSCWindow::MessageReceived(BMessage *message)
 		case kGUIResetSettings:
 			fController->ResetSettings();
 			break;
-			
+#endif
 		case kSelectArea:
 		case kSelectWindow:
 		{
@@ -296,15 +296,16 @@ BSCWindow::_BuildMenu()
 	menu->AddItem(aboutItem);
 	menu->AddItem(quitItem);
 	fMenuBar->AddItem(menu);
-	
+#if 0
 	menu = new BMenu("Settings");
 	BMenuItem* resetSettings = new BMenuItem("Reset Settings", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
-	/*BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
-	menu->AddItem(media);*/
+	BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
+	menu->AddItem(media);
 	BMenuItem* dock = new BMenuItem("Dock Window", new BMessage(kGUIDockWindow));
 	menu->AddItem(dock);
 	fMenuBar->AddItem(menu);
+#endif
 }
 
 
