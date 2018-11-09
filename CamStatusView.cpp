@@ -272,7 +272,7 @@ CamStatusView::MaxSize()
 
 
 BString
-CamStatusView::_GetRecordingTimeString()
+CamStatusView::_GetRecordingTimeString() const
 {
 	time_t recordTime = (time_t)fController->RecordTime() / 1000000;
 	if (recordTime < 0)
