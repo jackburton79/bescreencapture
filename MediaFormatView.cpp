@@ -8,6 +8,7 @@
 #include "Constants.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
+#include "Utils.h"
 
 #include <Button.h>
 #include <LayoutBuilder.h>
@@ -195,19 +196,16 @@ MediaFormatView::_BuildFileFormatsMenu()
 	if (numItems > 0)
 		menu->RemoveItems(0, numItems);
 
-#if 1
-	const uint32 mediaFormatMask = media_file_format::B_KNOWS_ENCODED_VIDEO
-								| media_file_format::B_WRITABLE;
 	media_file_format mediaFileFormat;
 	int32 cookie = 0;
 	while (get_next_file_format(&cookie, &mediaFileFormat) == B_OK) {
-		if ((mediaFileFormat.capabilities & mediaFormatMask) == mediaFormatMask) {
+		if (IsFileFormatUsable(mediaFileFormat)) {
 			MediaFileFormatMenuItem* item = new MediaFileFormatMenuItem(
 					mediaFileFormat);
 			menu->AddItem(item);
 		}
 	}
-#endif
+
 	media_file_format fakeFormat;
 	strncpy(fakeFormat.pretty_name, "Export frames as Bitmaps", sizeof(fakeFormat.pretty_name));
 	strncpy(fakeFormat.short_name, FAKE_FORMAT_SHORT_NAME, sizeof(fakeFormat.short_name));

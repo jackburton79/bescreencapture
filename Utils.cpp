@@ -26,6 +26,56 @@ PrintMediaFormat(const media_format& format)
 }
 
 
+bool
+IsFileFormatUsable(const media_file_format& format)
+{
+	const uint32 neededMask = media_file_format::B_KNOWS_ENCODED_VIDEO
+								| media_file_format::B_WRITABLE;
+
+	if ((format.capabilities & neededMask) != neededMask)
+		return false;
+
+	// Check if this format is broken in Haiku
+	static const char* brokenFileFormats[] = {
+		"DV Movie",
+		"Ogg Audio",
+		"Ogg Video",
+		NULL
+	};
+
+	int i = 0;
+	while (brokenFileFormats[i] != NULL) {
+		if (strncmp(brokenFileFormats[i], format.pretty_name, strlen(brokenFileFormats[i])) == 0)
+			return false;
+		i++;
+	};
+
+	return true;
+}
+
+
+// If prettyName is NULL, returns the first found media_file_format,
+// otherwise returns the media_file_format with the same prettyName
+// TODO: Use the short_name instead
+bool
+GetMediaFileFormat(const char* prettyName, media_file_format* outFormat)
+{
+	media_file_format mediaFileFormat;
+	int32 cookie = 0;
+	while (get_next_file_format(&cookie, &mediaFileFormat) == B_OK) {
+		if (!IsFileFormatUsable(mediaFileFormat))
+			continue;
+		if (prettyName == NULL
+				|| strcmp(mediaFileFormat.pretty_name, prettyName) == 0) {
+			*outFormat = mediaFileFormat;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
 BString
 GetUniqueFileName(const BString fileName, const char *extension)
 {
