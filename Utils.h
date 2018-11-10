@@ -12,6 +12,8 @@ class BRect;
 
 void
 PrintMediaFormat(const media_format& format);
+bool IsFileFormatUsable(const media_file_format&);
+bool GetMediaFileFormat(const char* prettyName, media_file_format* outFormat);
 BString GetUniqueFileName(const BString name, const char *extension);
 void FixRect(BRect &rect, const BRect maxRect, const bool fixWidth = false, const bool fixHeight = false);
 
