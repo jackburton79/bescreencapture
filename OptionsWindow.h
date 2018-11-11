@@ -12,9 +12,6 @@ class Controller;
 class OptionsWindow : public BWindow {
 public:
 	OptionsWindow(Controller* controller);
-										
-private:
-
 };
 
 

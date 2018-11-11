@@ -27,7 +27,6 @@ PrepareVariable(std::istream& inFile, std::ostream& outFile)
 			}
 		}
 	} catch (...) {
-
 	}
 	
 	outFile << "'\\0'";

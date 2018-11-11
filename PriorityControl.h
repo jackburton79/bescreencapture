@@ -9,7 +9,6 @@ class PriorityControl : public BOptionPopUp {
 public:
 	PriorityControl(const char *name, const char *label,
 		uint32 = B_WILL_DRAW);
-
 };
 
 
