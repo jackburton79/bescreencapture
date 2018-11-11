@@ -74,8 +74,6 @@ OutputView::AttachedToWindow()
 		fController->UnlockLooper();
 	}
 
-	Settings& settings = Settings::Current();
-
 	fFileName->SetTarget(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);
@@ -84,19 +82,7 @@ OutputView::AttachedToWindow()
 	fFilePanelButton->SetTarget(this);
 	fBorderSlider->SetTarget(this);
 	
-	fBorderSlider->SetValue(settings.WindowFrameEdgeSize());
-	fScaleSlider->SetValue(settings.Scale());	
-	
-	fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);	
-	
-	fCustomCaptureRect = settings.CaptureArea();
-	if (fCustomCaptureRect == BScreen().Frame())
-		fWholeScreen->SetValue(B_CONTROL_ON);
-	else {
-		fCustomArea->SetValue(B_CONTROL_ON);
-		fSelectAreaButton->SetEnabled(true);
-	}
-			
+	_InitControlsFromSettings();
 	UpdatePreviewFromSettings();
 }
 
@@ -219,18 +205,7 @@ OutputView::MessageReceived(BMessage *message)
 
 				case kMsgControllerResetSettings:
 				{
-					Settings& settings = Settings::Current();
-					fBorderSlider->SetValue(settings.WindowFrameEdgeSize());
-					fScaleSlider->SetValue(settings.Scale());
-					fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);
-	
-					fCustomCaptureRect = settings.CaptureArea();
-					if (fCustomCaptureRect == BScreen().Frame())
-						fWholeScreen->SetValue(B_CONTROL_ON);
-					else {
-						fCustomArea->SetValue(B_CONTROL_ON);
-						fSelectAreaButton->SetEnabled(true);
-					}
+					_InitControlsFromSettings();
 					UpdatePreviewFromSettings();
 					break;
 				}
@@ -372,6 +347,23 @@ OutputView::_LayoutView()
 	fScaleSlider->SetValue(100);
 	
 	fFileExtension = fController->MediaFileFormat().file_extension;		
+}
+
+
+void
+OutputView::_InitControlsFromSettings()
+{
+	Settings& settings = Settings::Current();
+	fBorderSlider->SetValue(settings.WindowFrameEdgeSize());
+	fScaleSlider->SetValue(settings.Scale());	
+	fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);
+	fCustomCaptureRect = settings.CaptureArea();
+	if (fCustomCaptureRect == BScreen().Frame())
+		fWholeScreen->SetValue(B_CONTROL_ON);
+	else {
+		fCustomArea->SetValue(B_CONTROL_ON);
+		fSelectAreaButton->SetEnabled(true);
+	}
 }
 
 
