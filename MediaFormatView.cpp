@@ -130,7 +130,6 @@ MediaFormatView::MessageReceived(BMessage *message)
 				fController->SetMediaCodec(marked->Label());
 			break;				
 		}
-					
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -139,7 +138,6 @@ MediaFormatView::MessageReceived(BMessage *message)
 				case kMsgControllerCodecListUpdated:
 					_RebuildCodecsMenu();
 					break;
-				
 				case kMsgControllerMediaFileFormatChanged:
 				{
 					const char* formatName = NULL;
@@ -177,7 +175,6 @@ MediaFormatView::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -296,7 +293,6 @@ MediaFileFormatMenuItem::MediaFileFormatMenuItem(const media_file_format& fileFo
 	BMenuItem(fileFormat.pretty_name, new BMessage(kLocalFileTypeChanged)),
 	fFileFormat(fileFormat)
 {
-
 }
 
 
