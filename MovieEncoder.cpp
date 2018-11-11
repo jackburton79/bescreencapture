@@ -265,9 +265,7 @@ MovieEncoder::_EncoderThread()
 	
 	if (framesLeft <= 0) {
 		DisposeData();
-		BMessage message(kEncodingFinished);
-		message.AddInt32("status", (int32)B_ERROR);
-		fMessenger.SendMessage(&message);
+		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
 		
@@ -292,9 +290,7 @@ MovieEncoder::_EncoderThread()
 		}
 		if (status != B_OK) {
 			DisposeData();
-			BMessage message(kEncodingFinished);
-			message.AddInt32("status", (int32)B_ERROR);
-			fMessenger.SendMessage(&message);
+			_HandleEncodingFinished(B_ERROR);
 			return B_ERROR;
 		}
 	} else {
@@ -311,9 +307,7 @@ MovieEncoder::_EncoderThread()
 		status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
 		if (status < B_OK) {
 			DisposeData();
-			BMessage message(kEncodingFinished);
-			message.AddInt32("status", (int32)status);
-			fMessenger.SendMessage(&message);		
+			_HandleEncodingFinished(status);
 			return status;
 		}
 	}
@@ -379,15 +373,9 @@ MovieEncoder::_EncoderThread()
 	delete destBitmap;
 	
 	DisposeData();
-	
-	if (fMessenger.IsValid()) {
-		BMessage message(kEncodingFinished);
-		message.AddInt32("status", (int32)status);
-		message.AddInt32("frames", (int32)framesWritten);
-		message.AddString("file_name", fOutputFile.Path());
-		fMessenger.SendMessage(&message);
-	}
-		
+
+	_HandleEncodingFinished(status, framesWritten);
+
 	return status;
 }
 
@@ -459,7 +447,6 @@ MovieEncoder::MediaFormat() const
 void
 MovieEncoder::SetMediaFormat(const media_format& format)
 {
-	//PrintMediaFormat(format);
 	fFormat = format;
 }
 
@@ -509,7 +496,6 @@ MovieEncoder::GetCursorBitmap(const uint8* cursor)
 			maskVal = maskFlip & posVal;
 			bits[column] = (cursorVal != 0 ? black : white) &
 							(maskVal > 0 ? white : 0x00FFFFFF);
-							
 		}
 	}
 		
@@ -534,3 +520,18 @@ MovieEncoder::EncodeStarter(void* arg)
 	return static_cast<MovieEncoder*>(arg)->_EncoderThread();
 }
 
+
+void
+MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFrames)
+{
+	if (!fMessenger.IsValid())
+		return;
+
+	BMessage message(kEncodingFinished);
+	message.AddInt32("status", (int32)status);
+	if (numFrames > 0) {
+		message.AddInt32("frames", (int32)numFrames);
+		message.AddString("file_name", fOutputFile.Path());
+	}
+	fMessenger.SendMessage(&message);
+}

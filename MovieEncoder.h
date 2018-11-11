@@ -57,6 +57,9 @@ private:
 	static int32 EncodeStarter(void *arg);		
 	status_t _EncoderThread();
 	
+	void _HandleEncodingFinished(const status_t& status,
+								const int32& numFrames = 0);
+
 	thread_id	fEncoderThread;
 	bool		fKillThread;
 	
