@@ -30,7 +30,6 @@ private:
 	BBitmap* fBitmap;
 	BString fFileName;
 	bigtime_t fFrameTime;
-
 };
 
 

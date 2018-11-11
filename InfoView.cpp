@@ -184,5 +184,4 @@ InfoView::MessageReceived(BMessage* message)
 			BView::MessageReceived(message);
 			break;
 	}
-	
 }
