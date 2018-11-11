@@ -17,9 +17,7 @@ public:
 	InfoView(Controller* controller);
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
-									
 private:
-	
 	Controller* fController;
 	BStringView* fSourceSize;
 	BStringView* fClipSize;
@@ -27,7 +25,6 @@ private:
 	BStringView* fFormat;
 	BStringView* fCodec;
 	BStringView* fCaptureFrameDelay;
-	
 };
 
 
