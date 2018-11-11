@@ -91,7 +91,7 @@ BSCWindow::BSCWindow()
 		fController->StartWatching(this, kMsgControllerCapturePaused);
 		fController->StartWatching(this, kMsgControllerCaptureResumed);
 		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
-				
+
 		fController->UnlockLooper();
 	}
 }
@@ -139,19 +139,15 @@ BSCWindow::MessageReceived(BMessage *message)
 		case B_ABOUT_REQUESTED:
 			be_app->PostMessage(B_ABOUT_REQUESTED);
 			break;
-
 		case kGUIOpenMediaWindow:
 			(new OptionsWindow(fController))->Show();
 			break;
-			
 		case kGUIDockWindow:
 			_LayoutWindow(!Settings::Current().DockingMode());
 			break;
-
 		case kGUIResetSettings:
 			fController->ResetSettings();
 			break;
-			
 		case kSelectArea:
 		case kSelectWindow:
 		{
@@ -165,7 +161,6 @@ BSCWindow::MessageReceived(BMessage *message)
 			window->Show();
 			break;
 		}
-
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -175,14 +170,11 @@ BSCWindow::MessageReceived(BMessage *message)
 				{
 					if (IsHidden())
 						Show();
-			
 					break;
 				}
-
 				case kMsgControllerCaptureStarted:
 					_CaptureStarted();
 					break;
-	
 				case kMsgControllerCaptureStopped:
 				{
 					_CaptureFinished();
@@ -197,7 +189,6 @@ BSCWindow::MessageReceived(BMessage *message)
 						(new BAlert("Capture Failed", errorString, "Ok"))->Go();
 						fStartStopButton->SetEnabled(true);
 					}
-										
 					break;
 				}
 				case kMsgControllerCapturePaused:
@@ -213,7 +204,6 @@ BSCWindow::MessageReceived(BMessage *message)
 				case kMsgControllerEncodeStarted:
 					fStartStopButton->SetEnabled(false);			
 					break;
-		
 				case kMsgControllerEncodeFinished:
 				{
 					fStartStopButton->SetEnabled(true);
@@ -255,8 +245,6 @@ BSCWindow::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-		
-
 		default:
 			BWindow::MessageReceived(message);
 			break;
@@ -267,7 +255,6 @@ BSCWindow::MessageReceived(BMessage *message)
 void
 BSCWindow::ScreenChanged(BRect screen_size, color_space depth)
 {
-	
 }
 
 
