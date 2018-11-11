@@ -84,12 +84,12 @@ OutputView::AttachedToWindow()
 	fFilePanelButton->SetTarget(this);
 	fBorderSlider->SetTarget(this);
 	
-	fBorderSlider->SetValue(settings.WindowFrameBorderSize());
+	fBorderSlider->SetValue(settings.WindowFrameEdgeSize());
 	fScaleSlider->SetValue(settings.Scale());	
 	
 	fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);	
 	
-	settings.GetCaptureArea(fCustomCaptureRect);
+	fCustomCaptureRect = settings.CaptureArea();
 	if (fCustomCaptureRect == BScreen().Frame())
 		fWholeScreen->SetValue(B_CONTROL_ON);
 	else {
@@ -163,7 +163,7 @@ OutputView::MessageReceived(BMessage *message)
 		case kWindowBorderFrameChanged:
 		{
 			const int32 size = fBorderSlider->Value();
-			Settings::Current().SetWindowFrameBorderSize(size);
+			Settings::Current().SetWindowFrameEdgeSize(size);
 			break;
 		}
 		case B_OBSERVER_NOTICE_CHANGE:
@@ -220,11 +220,11 @@ OutputView::MessageReceived(BMessage *message)
 				case kMsgControllerResetSettings:
 				{
 					Settings& settings = Settings::Current();
-					fBorderSlider->SetValue(settings.WindowFrameBorderSize());
+					fBorderSlider->SetValue(settings.WindowFrameEdgeSize());
 					fScaleSlider->SetValue(settings.Scale());
 					fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);
 	
-					settings.GetCaptureArea(fCustomCaptureRect);
+					fCustomCaptureRect = settings.CaptureArea();
 					if (fCustomCaptureRect == BScreen().Frame())
 						fWholeScreen->SetValue(B_CONTROL_ON);
 					else {

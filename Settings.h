@@ -20,53 +20,44 @@ public:
 	status_t Load();
 	status_t Save();
 
-	void SetCaptureArea(const BRect &rect);
-	void GetCaptureArea(BRect &rect) const;
 	BRect CaptureArea() const;
+	void SetCaptureArea(const BRect &rect);
 
-	void GetTargetRect(BRect& rect) const;
 	BRect TargetRect() const;
+	void SetTargetRect(const BRect& rect) const;
 
-	void SetClipDepth(const color_space &space);
-	void GetClipDepth(color_space &space) const;
 	color_space ClipDepth() const;
+	void SetClipDepth(const color_space &space);
 
-	void SetScale(const float &scale);
-	void GetScale(float &scale) const;
 	float Scale() const;
+	void SetScale(const float &scale);
 
-	void SetUseDirectWindow(const bool &use);
-	void GetUseDirectWindow(bool &use) const;
 	bool UseDirectWindow() const;
+	void SetUseDirectWindow(const bool &use);
 
-	void SetIncludeCursor(const bool &include);
-	void GetIncludeCursor(bool &include) const;
 	bool IncludeCursor() const;
+	void SetIncludeCursor(const bool &include);
 
-	void SetWindowFrameBorderSize(const int32 &size);
-	void GetWindowFrameBorderSize(int32 &size) const;
-	int32 WindowFrameBorderSize() const;
+	int32 WindowFrameEdgeSize() const;
+	void SetWindowFrameEdgeSize(const int32 &size);
 
-	void SetMinimizeOnRecording(const bool &minimize);
-	void GetMinimizeOnRecording(bool &minimize) const;
 	bool MinimizeOnRecording() const;
+	void SetMinimizeOnRecording(const bool &minimize);
 
 	BString OutputFileName() const;
 	void SetOutputFileName(const char *name);
-	void GetOutputFileName(BString &name) const;
 
+	BString OutputFileFormat() const;
 	void SetOutputFileFormat(const char* format);
-	void GetOutputFileFormat(BString& format) const;
 
+	BString OutputCodec() const;
 	void SetOutputCodec(const char* codecName);
-	void GetOutputCodec(BString& codecName) const;
 
 	int32 CaptureFrameDelay() const;
 	void SetCaptureFrameDelay(const int32& value);
 
-	void SetEncodingThreadPriority(const int32 &value);
-	void GetEncodingThreadPriority(int32 &value) const;
 	int32 EncodingThreadPriority() const;
+	void SetEncodingThreadPriority(const int32 &value);
 
 	bool DockingMode() const;
 	void SetDockingMode(const bool& value);

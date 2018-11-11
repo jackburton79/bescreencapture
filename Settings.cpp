@@ -174,14 +174,6 @@ Settings::SetCaptureArea(const BRect &rect)
 }
 
 
-void
-Settings::GetCaptureArea(BRect &rect) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindRect(kCaptureRect, &rect);
-}
-
-
 BRect
 Settings::CaptureArea() const
 {
@@ -189,14 +181,6 @@ Settings::CaptureArea() const
 	BRect rect;
 	fSettings->FindRect(kCaptureRect, &rect);
 	return rect;
-}
-
-
-void
-Settings::GetTargetRect(BRect& rect) const
-{
-	BAutolock _(fLocker);
-	rect = TargetRect();
 }
 
 
@@ -227,14 +211,6 @@ Settings::SetClipDepth(const color_space &space)
 }
 
 
-void
-Settings::GetClipDepth(color_space &space) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindInt32(kClipDepth, (int32 *)&space);
-}
-
-
 color_space
 Settings::ClipDepth() const
 {
@@ -253,14 +229,6 @@ Settings::SetScale(const float &scale)
 		fSettings->AddFloat(kClipScale, scale);
 	else
 		fSettings->ReplaceFloat(kClipScale, scale);
-}
-
-
-void
-Settings::GetScale(float &scale) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindFloat(kClipScale, &scale);
 }
 
 
@@ -285,14 +253,6 @@ Settings::SetUseDirectWindow(const bool &use)
 }
 
 
-void
-Settings::GetUseDirectWindow(bool &use) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindBool(kUseDirectWindow, &use);
-}
-
-
 bool
 Settings::UseDirectWindow() const
 {
@@ -314,14 +274,6 @@ Settings::SetIncludeCursor(const bool &include)
 }
 
 
-void
-Settings::GetIncludeCursor(bool &include) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindBool(kIncludeCursor, &include);
-}
-
-
 bool
 Settings::IncludeCursor() const
 {
@@ -333,7 +285,7 @@ Settings::IncludeCursor() const
 
 
 void
-Settings::SetWindowFrameBorderSize(const int32 &size)
+Settings::SetWindowFrameEdgeSize(const int32 &size)
 {
 	BAutolock _(fLocker);
 	if (!fSettings->HasInt32(kWindowFrameBorderSize))
@@ -343,16 +295,8 @@ Settings::SetWindowFrameBorderSize(const int32 &size)
 }
 
 
-void
-Settings::GetWindowFrameBorderSize(int32 &size) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindInt32(kWindowFrameBorderSize, &size);
-}
-
-
 int32
-Settings::WindowFrameBorderSize() const
+Settings::WindowFrameEdgeSize() const
 {
 	BAutolock _(fLocker);
 	int32 size = 0;
@@ -369,14 +313,6 @@ Settings::SetMinimizeOnRecording(const bool &mini)
 		fSettings->AddBool(kMinimize, mini);
 	else
 		fSettings->ReplaceBool(kMinimize, mini);
-}
-
-
-void
-Settings::GetMinimizeOnRecording(bool &mini) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindBool(kMinimize, &mini);
 }
 
 
@@ -405,17 +341,19 @@ BString
 Settings::OutputFileName() const
 {
 	BAutolock _(fLocker);
-	BString fileName;
-	GetOutputFileName(fileName);
-	return fileName;
+	BString name;
+	fSettings->FindString(kOutputFile, &name);
+	return name;
 }
 
 
-void
-Settings::GetOutputFileName(BString &name) const
+BString
+Settings::OutputFileFormat() const
 {
 	BAutolock _(fLocker);
-	fSettings->FindString(kOutputFile, &name);
+	BString format;
+	fSettings->FindString(kOutputFileFormat, &format);
+	return format;
 }
 
 
@@ -430,11 +368,13 @@ Settings::SetOutputFileFormat(const char* fileFormat)
 }
 
 
-void
-Settings::GetOutputFileFormat(BString& string) const
+BString
+Settings::OutputCodec() const
 {
 	BAutolock _(fLocker);
-	fSettings->FindString(kOutputFileFormat, &string);
+	BString codec;
+	fSettings->FindString(kOutputCodecName, &codec);
+	return codec;
 }
 
 
@@ -446,14 +386,6 @@ Settings::SetOutputCodec(const char* codecName)
 		fSettings->AddString(kOutputCodecName, codecName);
 	else
 		fSettings->ReplaceString(kOutputCodecName, codecName);
-}
-
-
-void
-Settings::GetOutputCodec(BString& string) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindString(kOutputCodecName, &string);
 }
 
 
@@ -486,14 +418,6 @@ Settings::SetEncodingThreadPriority(const int32 &value)
 		fSettings->AddInt32(kThreadPriority, value);
 	else
 		fSettings->ReplaceInt32(kThreadPriority, value);
-}
-
-
-void
-Settings::GetEncodingThreadPriority(int32 &value) const
-{
-	BAutolock _(fLocker);
-	fSettings->FindInt32(kThreadPriority, &value);
 }
 
 

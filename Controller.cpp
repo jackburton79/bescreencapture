@@ -52,9 +52,7 @@ Controller::Controller()
 	BRect rect = settings.CaptureArea();
 	SetCaptureArea(rect);
 	
-	BString fileFormatName;
-	settings.GetOutputFileFormat(fileFormatName);
-	
+	BString fileFormatName = settings.OutputFileFormat();
 	media_file_format fileFormat;
 	if (!GetMediaFileFormat(fileFormatName.String(), &fileFormat)) {
 		if (!GetMediaFileFormat(NULL, &fileFormat))
@@ -63,9 +61,7 @@ Controller::Controller()
 	
 	SetMediaFileFormat(fileFormat);
 	
-	BString codecName;
-	settings.GetOutputCodec(codecName);
-	
+	BString codecName = settings.OutputCodec();
 	if (codecName != "")
 		SetMediaCodec(codecName);
 	else
@@ -259,8 +255,7 @@ Controller::EncodeMovie()
 		return;
 	}
 			
-	BString fileName;
-	Settings::Current().GetOutputFileName(fileName);
+	BString fileName = Settings::Current().OutputFileName();
 	BEntry entry(fileName.String());
 	if (entry.Exists()) {
 		// file exists.
@@ -721,7 +716,7 @@ Controller::CaptureThread()
 
 	_TestWaitForRetrace();
 	
-	const int32 windowEdge = settings.WindowFrameBorderSize();
+	const int32 windowEdge = settings.WindowFrameEdgeSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowEdge);
 	status_t error = B_ERROR;
 	BBitmap *bitmap = NULL;
