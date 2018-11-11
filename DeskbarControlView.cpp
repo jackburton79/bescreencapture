@@ -23,7 +23,7 @@ enum {
 	BSC_RESUME
 };
 
-const float kContentSpacingHorizontal = 5;
+const float kContentSpacingHorizontal = 8;
 const float kContentIconMinSize = 12;
 const float kContentIconPad = 4;
 
@@ -243,7 +243,6 @@ BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message)
 	fAction(action),
 	fMenuIcon(NULL)
 {
-	
 }
 
 
