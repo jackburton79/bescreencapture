@@ -77,7 +77,7 @@ GetMediaFileFormat(const char* prettyName, media_file_format* outFormat)
 
 
 BString
-GetUniqueFileName(const BString fileName, const char *extension)
+GetUniqueFileName(const BString& fileName, const char *extension)
 {
 	BString newName = fileName;
 	int32 suffix = 1;
@@ -96,7 +96,7 @@ GetUniqueFileName(const BString fileName, const char *extension)
 
 
 void
-FixRect(BRect &rect, const BRect maxRect,
+FixRect(BRect &rect, const BRect& maxRect,
 	const bool fixWidth, const bool fixHeight)
 {
 	const static int kAlignAmount = 16;
