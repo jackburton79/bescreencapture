@@ -69,6 +69,8 @@ private:
 	Settings(const Settings& settings);
 	~Settings();
 
+	Settings& operator=(const Settings& settings);
+
 	status_t _SetDefaults();
 
 	BMessage *fSettings;

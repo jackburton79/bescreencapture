@@ -486,14 +486,18 @@ Settings::_SetDefaults()
 
 
 Settings::Settings()
+	:
+	fSettings(new BMessage),
+	fLocker("settings locker")
 {
-	fSettings = new BMessage;
 }
 
 
 Settings::Settings(const Settings& settings)
+	:
+	fSettings(new BMessage),
+	fLocker("settings locker")
 {
-	fSettings = new BMessage;
 	*fSettings = *settings.fSettings;
 }
 
