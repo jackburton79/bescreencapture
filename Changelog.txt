@@ -4,6 +4,7 @@ v2.4.0
 	- Fix memory leak.
 	- Fix recording time string with non default locales.
 	- In case of crash (should not happen!!!) the deskbar replicant is removed automatically.
+	- Disable nonworking file formats.
 	- Disable more controls when they cannot be used.
 ---
 v2.3.3
