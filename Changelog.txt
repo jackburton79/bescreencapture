@@ -3,6 +3,7 @@ v2.4.0
 	- Add a pause button to the main window.
 	- Fix recording time string with non default locales.
 	- In case of crash (should not happen!!!) the deskbar replicant is removed automatically.
+	- Disable nonworking file formats.
 	- Disable more controls when they cannot be used.
 ---
 v2.3.3
