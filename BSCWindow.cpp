@@ -175,7 +175,6 @@ BSCWindow::MessageReceived(BMessage *message)
 				{
 					if (IsHidden())
 						Show();
-			
 					break;
 				}
 
@@ -196,8 +195,7 @@ BSCWindow::MessageReceived(BMessage *message)
 							"%s", strerror(status));
 						(new BAlert("Capture Failed", errorString, "Ok"))->Go();
 						fStartStopButton->SetEnabled(true);
-					}
-										
+					}		
 					break;
 				}
 				case kMsgControllerCapturePaused:
@@ -255,7 +253,6 @@ BSCWindow::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-		
 
 		default:
 			BWindow::MessageReceived(message);
@@ -267,7 +264,7 @@ BSCWindow::MessageReceived(BMessage *message)
 void
 BSCWindow::ScreenChanged(BRect screen_size, color_space depth)
 {
-	
+	// TODO: Implement.
 }
 
 
