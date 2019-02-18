@@ -54,6 +54,7 @@ private:
 	const BBitmap* fBitmap;
 };
 
+
 CamStatusView::CamStatusView(Controller* controller)
 	:
 	BView("CamStatusView", B_WILL_DRAW|B_PULSE_NEEDED),
@@ -277,9 +278,10 @@ CamStatusView::_GetRecordingTimeString() const
 	time_t recordTime = (time_t)fController->RecordTime() / 1000000;
 	if (recordTime < 0)
 		recordTime = 0;
-	struct tm* diffTime = gmtime(&recordTime);
-	char timeString[128];
-	strftime(timeString, sizeof(timeString), "%T", diffTime);
+	struct tm timeStruct;
+	struct tm* diffTime = gmtime_r(&recordTime, &timeStruct);
+	BString timeString;
+	strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
 
 	return timeString;
 }
