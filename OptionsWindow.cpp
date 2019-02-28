@@ -51,5 +51,3 @@ OptionsWindow::OptionsWindow(Controller* controller)
 	
 	CenterOnScreen();
 }
-
-

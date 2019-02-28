@@ -1,18 +1,11 @@
 #include "PreviewView.h"
 
-#include <cstdio>
-
-#include <AbstractLayout.h>
-#include <Alignment.h>
 #include <Bitmap.h>
 #include <GroupLayout.h>
-#include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
-#include <LayoutUtils.h>
 #include <Screen.h>
-#include <StringView.h>
+#include <String.h>
 
-#include <iostream>
 
 class BitmapView : public BView {
 public:

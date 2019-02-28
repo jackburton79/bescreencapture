@@ -1,8 +1,6 @@
 #ifndef __CONTROLLEROBSERVER_H
 #define __CONTROLLEROBSERVER_H
 
-#include "Controller.h"
-
 
 enum {
 	kMsgControllerCaptureStarted = 5000,

@@ -9,14 +9,11 @@
 
 
 class BButton;
-class BCardLayout;
 class BMenuBar;
-class BStatusBar;
 class BStringView;
 class BTabView;
-class Controller;
-class ControllerObserver;
 class CamStatusView;
+class Controller;
 class BSCWindow : public BDirectWindow {
 public:
 	BSCWindow();

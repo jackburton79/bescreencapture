@@ -3,13 +3,15 @@
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
-
-#include "ControllerObserver.h"
 #include "InfoView.h"
+
+#include "Controller.h"
+#include "ControllerObserver.h"
 #include "Settings.h"
 
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
+#include <String.h>
 #include <StringView.h>
 
 #include <iostream>

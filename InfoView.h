@@ -6,11 +6,9 @@
 #define INFOVIEW_H
 
 
-#include <String.h>
 #include <View.h>
 
 class Controller;
-class BRect;
 class BStringView;
 class InfoView : public BView {
 public:

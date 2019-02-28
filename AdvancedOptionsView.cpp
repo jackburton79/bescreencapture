@@ -1,27 +1,16 @@
 #include "AdvancedOptionsView.h"
+
 #include "Constants.h"
 #include "Controller.h"
 #include "DeskbarControlView.h"
 #include "FrameRateView.h"
 #include "MediaFormatView.h"
-#include "PriorityControl.h"
 #include "Settings.h"
-#include "SizeControl.h"
 
 #include <Box.h>
 #include <CheckBox.h>
 #include <Deskbar.h>
-#include <DirectWindow.h>
-#include <GroupLayout.h>
-#include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
-#include <LayoutUtils.h>
-#include <Screen.h>
-#include <String.h>
-#include <StringView.h>
-
-#include <cstdio>
-#include <cstdlib>
 
 
 const static uint32 kLocalUseDirectWindow = 'UsDW';

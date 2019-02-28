@@ -6,16 +6,12 @@
 #define __MEDIAFORMATVIEW_H
 
 
+#include <MediaFormats.h>
 #include <String.h>
 #include <View.h>
-#include <MediaFormats.h>
+
 
 class BMenuField;
-class BTextControl;
-class BMenuField;
-class BMenuItem;
-class BButton;
-
 class Controller;
 class MediaFormatView : public BView {
 public:

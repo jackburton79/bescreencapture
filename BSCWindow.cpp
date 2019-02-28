@@ -2,35 +2,27 @@
 #include "BSCApp.h"
 #include "BSCWindow.h"
 #include "CamStatusView.h"
-#include "Constants.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
+#include "Constants.h"
 #include "InfoView.h"
-#include "OutputView.h"
 #include "OptionsWindow.h"
+#include "OutputView.h"
 #include "SelectionWindow.h"
 #include "Settings.h"
-#include "Utils.h"
 
 #include <Alert.h>
-#include <Application.h>
-#include <Box.h>
 #include <Button.h>
-#include <Debug.h>
-#include <Entry.h>
 #include <GroupLayoutBuilder.h>
-#include <GroupView.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
 #include <Roster.h>
 #include <Screen.h>
 #include <String.h>
-#include <StringView.h>
 #include <TabView.h>
 
 #include <cstdio>
-#include <cstdlib>
-#include <iostream>
+
 
 const static BRect kWindowRect(0, 0, 400, 600);
 

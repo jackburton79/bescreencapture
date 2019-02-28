@@ -8,7 +8,7 @@
 #include <queue>
 
 class BBitmap;
-class FileList;
+class FramesList;
 class MovieEncoder {
 public:
 	MovieEncoder();

@@ -38,24 +38,21 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.    
 */
 
+
+#include "MovieEncoder.h"
+
+#include "Constants.h"
+#include "FramesList.h"
+
 #include <Bitmap.h>
 #include <Debug.h>
 #include <Directory.h>
+#include <Entry.h>
 #include <FindDirectory.h>
-#include <List.h>
 #include <MediaTrack.h>
-#include <Screen.h>
-#include <String.h>
 #include <View.h>
 
-#include <cstring>
 #include <iostream>
-
-#include "Constants.h"
-#include "Executor.h"
-#include "FramesList.h"
-#include "MovieEncoder.h"
-#include "Utils.h"
 
 
 MovieEncoder::MovieEncoder()

@@ -1,40 +1,23 @@
-#include "Constants.h"
-#include "ControllerObserver.h"
-#include "MediaFormatView.h"
 #include "OutputView.h"
+
+#include "Constants.h"
+#include "Controller.h"
+#include "ControllerObserver.h"
 #include "PreviewView.h"
 #include "Settings.h"
 #include "SizeControl.h"
 #include "Utils.h"
 
-#include <Alignment.h>
-#include <Bitmap.h>
 #include <Box.h>
 #include <Button.h>
-#include <CheckBox.h>
 #include <FilePanel.h>
-#include <GridLayoutBuilder.h>
-#include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
-#include <LayoutUtils.h>
-#include <MenuItem.h>
-#include <MessageRunner.h>
-#include <PopUpMenu.h>
-#include <Path.h>
 #include <RadioButton.h>
 #include <Screen.h>
-#include <Slider.h>
-#include <SplitView.h>
-#include <SplitLayoutBuilder.h>
-#include <String.h>
-#include <StringView.h>
 #include <TextControl.h>
-#include <Window.h>
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 #include <iostream>
+
 
 const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static int32 kOpenFilePanel = 'OpFp';

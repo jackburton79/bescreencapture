@@ -4,17 +4,12 @@
 
 #include <Bitmap.h>
 #include <Cursor.h>
-#include <Message.h>
 #include <Screen.h>
 #include <String.h>
-#include <StringView.h>
 
-#include <cstdio>
-#include <iostream>
 
 const char *kInfoRegionMode = "Click and drag to select, press ENTER to confirm";
 const char *kInfoWindowMode = "Click to select a window";
-
 
 const static rgb_color kSelectionColor = { 0, 0, 128, 100 };
 const static rgb_color kRed = { 240, 0, 0, 0 };
