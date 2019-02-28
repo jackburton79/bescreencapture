@@ -1,12 +1,10 @@
-#include <Alert.h>
 #include <InputServerFilter.h>
-#include <List.h>
-#include <Message.h>
-#include <Roster.h>
-#include <syslog.h>
 
 #include "BSCApp.h"
 #include "PublicMessages.h"
+
+#include <Roster.h>
+
 
 class BSCInputFilter : public BInputServerFilter {
 	status_t		InitCheck();
