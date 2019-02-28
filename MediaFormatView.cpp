@@ -285,8 +285,6 @@ MediaFormatView::_SelectFileFormatMenuItem(const char* formatName)
 }
 
 
-
-
 // MediaFileFormatMenuItem
 MediaFileFormatMenuItem::MediaFileFormatMenuItem(const media_file_format& fileFormat)
 	:
@@ -301,4 +299,3 @@ MediaFileFormatMenuItem::MediaFileFormat() const
 {
 	return fFileFormat;
 }
-

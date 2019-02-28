@@ -104,7 +104,7 @@ MovieEncoder::Cancel()
 
 
 status_t
-MovieEncoder::SetSource(FramesList *fileList)
+MovieEncoder::SetSource(FramesList* fileList)
 {
 	// Takes ownership
 	fFileList = fileList;
@@ -113,7 +113,7 @@ MovieEncoder::SetSource(FramesList *fileList)
 
 
 status_t
-MovieEncoder::SetOutputFile(const char *fileName)
+MovieEncoder::SetOutputFile(const char* fileName)
 {
 	fOutputFile.SetTo(fileName);
 	return B_OK;
@@ -121,7 +121,7 @@ MovieEncoder::SetOutputFile(const char *fileName)
 
 
 status_t
-MovieEncoder::SetDestFrame(const BRect &rect)
+MovieEncoder::SetDestFrame(const BRect& rect)
 {
 	fDestFrame = rect;
 	fDestFrame.OffsetTo(B_ORIGIN);
@@ -131,14 +131,14 @@ MovieEncoder::SetDestFrame(const BRect &rect)
 
 
 void
-MovieEncoder::SetColorSpace(const color_space &space)
+MovieEncoder::SetColorSpace(const color_space& space)
 {
 	fColorSpace = space;
 }
 
 
 status_t
-MovieEncoder::SetQuality(const float &quality)
+MovieEncoder::SetQuality(const float& quality)
 {
 	return B_OK;
 }
@@ -153,7 +153,7 @@ MovieEncoder::SetCursorQueue(std::queue<BPoint> *queue)
 
 
 status_t
-MovieEncoder::SetMessenger(const BMessenger &messenger)
+MovieEncoder::SetMessenger(const BMessenger& messenger)
 {
 	if (!messenger.IsValid())
 		return B_BAD_VALUE;
@@ -399,7 +399,6 @@ MovieEncoder::EncodeThreaded()
 	
 	return fEncoderThread;
 }
-
 
 
 void
