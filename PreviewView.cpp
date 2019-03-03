@@ -20,13 +20,12 @@ PreviewView::PreviewView()
 	:
 	BView("Rect View", B_WILL_DRAW),
 	fBitmapView(NULL),
+	fCoordRect(BScreen().Frame()),
 	fTimeStamp(0),
+	fChanged(true),
 	fLeftTop(NULL),
 	fRightBottom(NULL)
 {
-	fCoordRect = BScreen().Frame();
-	fChanged = true;
-
 	SetLayout(new BGroupLayout(B_VERTICAL));
 	BLayoutBuilder::Group<>(this)
 	.AddGroup(B_VERTICAL, 0)
