@@ -266,14 +266,13 @@ MovieEncoder::_EncoderThread()
 		return B_ERROR;
 	}
 		
-	BitmapEntry* entry = fFileList->ItemAt(0);
-	BBitmap* bitmap = entry->Bitmap();
+	BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
 	BRect sourceFrame = bitmap->Bounds();
 	delete bitmap;
-		
+
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
-	
+
 	if (strcmp(MediaFileFormat().short_name, FAKE_FORMAT_SHORT_NAME) == 0) {
 		// TODO: Let the user select the output directory
 		BPath path;
@@ -297,7 +296,7 @@ MovieEncoder::_EncoderThread()
 		int framesPerSecond = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
 		media_format inputFormat = fFormat;
 		inputFormat.u.raw_video.field_rate = framesPerSecond;
-		
+
 		// Create movie
 		entry_ref movieRef;
 		get_ref_for_path(fOutputFile.Path(), &movieRef);
@@ -308,7 +307,7 @@ MovieEncoder::_EncoderThread()
 			return status;
 		}
 	}
-	
+
 	// Bitmap and view used to convert the source bitmap
 	// to the correct size and depth	
 	BBitmap* destBitmap = new BBitmap(fDestFrame, fColorSpace, true);
@@ -317,17 +316,17 @@ MovieEncoder::_EncoderThread()
 		destBitmap->AddChild(destDrawer);
 		destBitmap->Unlock();
 	}
-	
+
 	const uint32 keyFrameFrequency = 10;
 		// TODO: Make this tunable
-	
+
 	int32 framesWritten = 0;
 	status_t status = B_OK;
 	while (!fKillThread) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
 		if (entry == NULL)
 			break;
-				
+
 		BBitmap* frame = entry->Bitmap();
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?
@@ -335,7 +334,7 @@ MovieEncoder::_EncoderThread()
 			delete entry;
 			continue;
 		}
-						
+
 		// Draw scaled
 		if (status == B_OK) {
 			destBitmap->Lock();
@@ -350,7 +349,7 @@ MovieEncoder::_EncoderThread()
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		if (status == B_OK)
 			status = _WriteFrame(destBitmap, framesWritten + 1, keyFrame);
-		
+
 		if (status != B_OK)
 			break;
 
@@ -368,7 +367,7 @@ MovieEncoder::_EncoderThread()
 	}
 
 	delete destBitmap;
-	
+
 	DisposeData();
 
 	_HandleEncodingFinished(status, framesWritten);
