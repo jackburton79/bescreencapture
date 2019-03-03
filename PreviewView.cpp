@@ -12,7 +12,7 @@ public:
 	BitmapView();
 	virtual ~BitmapView();
 	
-	virtual void Draw(BRect update);
+	virtual void Draw(BRect rect);
 };
 
 
