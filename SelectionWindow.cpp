@@ -24,7 +24,7 @@ public:
 	SelectionView(BRect frame, const char *name, const char* text = NULL);
 
 	virtual void Draw(BRect updateRect);
-	virtual BRect SelectionRect();
+	virtual BRect SelectionRect() const;
 
 protected:
 	BString fText;
@@ -60,7 +60,7 @@ public:
 	virtual void KeyDown(const char* bytes, int32 numBytes);
 	virtual void Draw(BRect updateRect);
 	
-	virtual BRect SelectionRect();
+	virtual BRect SelectionRect() const;
 	
 	BRect LeftTopDragger() const;
 	BRect RightTopDragger() const;
@@ -91,7 +91,7 @@ public:
 	virtual void MouseUp(BPoint where);
 	virtual void Draw(BRect updateRect);
 	
-	virtual BRect SelectionRect();
+	virtual BRect SelectionRect() const;
 	
 private:
 	BObjectList<BRect> fFrameList;
@@ -104,9 +104,9 @@ private:
 // SelectionView
 SelectionView::SelectionView(BRect frame, const char *name, const char* text)
 	:
-	BView(frame, name, B_FOLLOW_NONE, B_WILL_DRAW)
+	BView(frame, name, B_FOLLOW_NONE, B_WILL_DRAW),
+	fText(text)	
 {
-	fText = text;
 	SetFontSize(30);	
 }
 
@@ -129,7 +129,7 @@ SelectionView::Draw(BRect updateRect)
 
 
 BRect
-SelectionView::SelectionRect()
+SelectionView::SelectionRect() const
 {
 	return BRect(0, 0, -1, -1);
 }
@@ -329,7 +329,7 @@ SelectionViewRegion::Draw(BRect updateRect)
 
 
 BRect
-SelectionViewRegion::SelectionRect()
+SelectionViewRegion::SelectionRect() const
 {
 	if (fSelectionStart == BPoint(-1, -1)
 		&& fSelectionEnd == BPoint(-1, -1))
@@ -459,7 +459,7 @@ SelectionViewWindow::Draw(BRect updateRect)
 
 
 BRect
-SelectionViewWindow::SelectionRect()
+SelectionViewWindow::SelectionRect() const
 {
 	return fHighlightFrame;
 }
