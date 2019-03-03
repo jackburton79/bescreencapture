@@ -30,7 +30,6 @@ const static uint32 kGUIOpenMediaWindow = 'j89d';
 const static uint32 kGUIDockWindow = 'j90d';
 const static uint32 kGUIResetSettings = 'j91d';
 
-
 const static char* LABEL_BUTTON_START = "Start Recording";
 const static char* LABEL_BUTTON_STOP = "Stop Recording";
 const static char* LABEL_BUTTON_PAUSE = "Pause";
@@ -228,7 +227,7 @@ BSCWindow::MessageReceived(BMessage *message)
 							}	
 						}
 					}
-					if (((BSCApp*)be_app)->WasLaunchedSilently())
+					if (dynamic_cast<BSCApp*>(be_app)->WasLaunchedSilently())
 						be_app->PostMessage(B_QUIT_REQUESTED);
 					break;
 				}
