@@ -104,9 +104,9 @@ MediaFormatView::AttachedToWindow()
 	fOutputFileType->Menu()->SetTargetForItems(this);
 	BString codecName = fController->MediaCodecName();
 	if (codecName != "") {
-		BMenuItem* item = fCodecMenu->Menu()->FindItem(codecName);
-		if (item != NULL)
-			item->SetMarked(true);
+		BMenuItem* codecItem = fCodecMenu->Menu()->FindItem(codecName);
+		if (codecItem != NULL)
+			codecItem->SetMarked(true);
 	}
 	_RebuildCodecsMenu(fController->MediaCodecName());
 }
