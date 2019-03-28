@@ -36,7 +36,7 @@ FramesList::FramesList()
 	char* pathName = (char*)malloc(B_PATH_NAME_LENGTH);
 	if (pathName == NULL)
 		throw B_NO_MEMORY;
-	::snprintf(pathName, B_PATH_NAME_LENGTH, "%s_BSCXXXXXX", path.Path());
+	::snprintf(pathName, B_PATH_NAME_LENGTH, "%s/_BSCXXXXXX", path.Path());
 	fTemporaryPath = ::mkdtemp(pathName);
 	if (fTemporaryPath == NULL)
 		throw B_ERROR;
@@ -141,9 +141,14 @@ BitmapEntry::TimeStamp() const
 status_t
 BitmapEntry::SaveToDisk(const char* path)
 {
-	char* string = tempnam(path, "frame_");
-	fFileName = string;
-	free(string);
+	char tempFileName[B_PATH_NAME_LENGTH];
+	::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
+
+	// use mkstemp, but then we close the fd immediately,
+	// because we need only the file name.
+	int tempFile = ::mkstemp(tempFileName);
+	fFileName = tempFileName;
+	close(tempFile);
 
 	status_t status = SaveToDisk(fBitmap, fFileName.String());
 
