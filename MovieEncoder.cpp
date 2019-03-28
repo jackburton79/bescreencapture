@@ -209,7 +209,7 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
 	if (fMediaTrack == NULL) {
 		BPath path(fOutputFile);
 		if (BEntry(path.Path()).IsDirectory()) {
-			BString frameFileName; 
+			BString frameFileName;
 			frameFileName.SetToFormat("frame_%05d", frameNum);
 			path.Append(frameFileName);
 			BitmapEntry::SaveToDisk(bitmap, path.Path());
