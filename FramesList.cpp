@@ -33,10 +33,13 @@ FramesList::FramesList()
 	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
 	if (status != B_OK)
 		throw status;
-	fTemporaryPath = tempnam((char*)path.Path(), (char*)"_BSC");
-	status = create_directory(fTemporaryPath, 0777);
-	if (status != B_OK)
-		throw status;
+	char* pathName = (char*)malloc(B_PATH_NAME_LENGTH);
+	if (pathName == NULL)
+		throw B_NO_MEMORY;
+	::snprintf(pathName, B_PATH_NAME_LENGTH, "%s_BSCXXXXXX", path.Path());
+	fTemporaryPath = ::mkdtemp(pathName);
+	if (fTemporaryPath == NULL)
+		throw B_ERROR;
 }
 
 
