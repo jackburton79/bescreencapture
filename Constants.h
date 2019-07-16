@@ -3,7 +3,8 @@
 
 #include "PublicMessages.h"
 
-#define FAKE_FORMAT_SHORT_NAME "no_encoding"
+#define NULL_FORMAT_SHORT_NAME "no_encoding"
+#define GIF_FORMAT_SHORT_NAME "gif"
 #define BSC_DESKBAR_VIEW "BSC Control"
 
 enum appMessages {

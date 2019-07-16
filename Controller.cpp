@@ -496,9 +496,10 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	delete fCodecList;
 	fCodecList = new BObjectList<media_codec_info> (1, true);
 	
-	// Handle the fake media_file_format
+	// Handle the NULL/GIF media_file_formats
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
-	if (strcmp(fileFormat.short_name, FAKE_FORMAT_SHORT_NAME) != 0) {
+	if ((strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) &&
+		(strcmp(fileFormat.short_name, GIF_FORMAT_SHORT_NAME) != 0)) {
 		int32 cookie = 0;
 		media_codec_info codec;
 		media_format dummyFormat;

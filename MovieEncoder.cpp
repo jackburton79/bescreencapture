@@ -279,7 +279,8 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 
-	if (strcmp(MediaFileFormat().short_name, FAKE_FORMAT_SHORT_NAME) == 0) {
+	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
+		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
 		// TODO: Let the user select the output directory
 		BPath path;
 		status_t status = find_directory(B_USER_DIRECTORY, &path);
@@ -375,6 +376,9 @@ MovieEncoder::_EncoderThread()
 	delete destBitmap;
 
 	DisposeData();
+
+	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)
+		_PostEncodingAction(fOutputFile);
 
 	_HandleEncodingFinished(status, framesWritten);
 
@@ -519,6 +523,13 @@ int32
 MovieEncoder::EncodeStarter(void* arg)
 {
 	return static_cast<MovieEncoder*>(arg)->_EncoderThread();
+}
+
+
+void
+MovieEncoder::_PostEncodingAction(BPath& path)
+{
+	// TODO: support more actions ?	
 }
 
 
