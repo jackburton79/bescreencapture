@@ -205,18 +205,9 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
 		return B_BAD_VALUE;
 
 	// if there's no track, check if output file is a path.
-	// In that case, only write bitmaps frame to disk.
-	if (fMediaTrack == NULL) {
-		BPath path(fOutputFile);
-		if (BEntry(path.Path()).IsDirectory()) {
-			BString frameFileName;
-			frameFileName.SetToFormat("frame_%05d", frameNum);
-			path.Append(frameFileName);
-			BitmapEntry::SaveToDisk(bitmap, path.Path());
-			return B_OK;
-		} else
-			return B_NO_INIT;
-	}
+	// In that case, only write frame to disk as a bitmap file
+	if (fMediaTrack == NULL)
+		return _WriteFrameNoEncoding(bitmap, frameNum);
 
 	// okay, it's the right kind of bitmap -- commit the header if necessary, and
 	// write it as one video frame.  We defer committing the header until the first
@@ -234,6 +225,21 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
 		err = fMediaTrack->WriteFrames(bitmap->Bits(), 1, isKeyFrame ? B_MEDIA_KEY_FRAME : 0);
 	
 	return err;
+}
+
+
+status_t
+MovieEncoder::_WriteFrameNoEncoding(BBitmap* bitmap, int32 frameNum)
+{
+	BPath path(fOutputFile);
+	if (!BEntry(path.Path()).IsDirectory())
+		return B_NO_INIT;
+
+	BString frameFileName;
+	frameFileName.SetToFormat("frame_%05d", frameNum);
+	path.Append(frameFileName);
+	BitmapEntry::SaveToDisk(bitmap, path.Path());
+	return B_OK;
 }
 
 
