@@ -43,6 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Constants.h"
 #include "FramesList.h"
+#include "ImageFilter.h"
 
 #include <Bitmap.h>
 #include <Debug.h>
@@ -198,7 +199,7 @@ MovieEncoder::_CreateFile(
 
 
 status_t 
-MovieEncoder::_WriteFrame(BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
+MovieEncoder::_WriteFrame(const BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
 {
 	// NULL is not a valid bitmap pointer
 	if (!bitmap)
@@ -229,7 +230,7 @@ MovieEncoder::_WriteFrame(BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
 
 
 status_t
-MovieEncoder::_WriteFrameNoEncoding(BBitmap* bitmap, int32 frameNum)
+MovieEncoder::_WriteFrameNoEncoding(const BBitmap* bitmap, int32 frameNum)
 {
 	BPath path(fOutputFile);
 	if (!BEntry(path.Path()).IsDirectory())
@@ -238,7 +239,7 @@ MovieEncoder::_WriteFrameNoEncoding(BBitmap* bitmap, int32 frameNum)
 	BString frameFileName;
 	frameFileName.SetToFormat("frame_%05d", frameNum);
 	path.Append(frameFileName);
-	BitmapEntry::SaveToDisk(bitmap, path.Path());
+	BitmapEntry::SaveToDisk(const_cast<BBitmap*>(bitmap), path.Path());
 	return B_OK;
 }
 
@@ -315,15 +316,9 @@ MovieEncoder::_EncoderThread()
 		}
 	}
 
-	// Bitmap and view used to convert the source bitmap
-	// to the correct size and depth	
-	BBitmap* destBitmap = new BBitmap(fDestFrame, fColorSpace, true);
-	BView* destDrawer = new BView(fDestFrame, "drawing view", B_FOLLOW_NONE, 0);
-	if (destBitmap->Lock()) {
-		destBitmap->AddChild(destDrawer);
-		destBitmap->Unlock();
-	}
 
+	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
+	
 	const uint32 keyFrameFrequency = 10;
 		// TODO: Make this tunable
 
@@ -342,15 +337,8 @@ MovieEncoder::_EncoderThread()
 			continue;
 		}
 
-		// Draw scaled
-		if (status == B_OK) {
-			destBitmap->Lock();
-			destDrawer->DrawBitmap(frame, frame->Bounds(), destDrawer->Bounds());
-			destDrawer->Sync();
-			destBitmap->Unlock();
-		}
-
-		delete frame;
+		const BBitmap* destBitmap = filter->ApplyFilter(frame);
+		
 		delete entry;
 
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
@@ -373,7 +361,7 @@ MovieEncoder::_EncoderThread()
 		}
 	}
 
-	delete destBitmap;
+	delete filter;
 
 	DisposeData();
 
