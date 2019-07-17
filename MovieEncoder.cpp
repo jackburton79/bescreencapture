@@ -282,22 +282,18 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 
+	status_t status = B_ERROR;
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
 		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
 		// TODO: Let the user select the output directory
 		BPath path;
-		status_t status = find_directory(B_USER_DIRECTORY, &path);
+		status = find_directory(B_USER_DIRECTORY, &path);
 		if (status == B_OK) {
 			char* tempDirectory = tempnam((char*)path.Path(), (char*)"BeScreenCapture_");
 			status = create_directory(tempDirectory, 0777);
 			if (BEntry(tempDirectory).IsDirectory()) {
 				fOutputFile = tempDirectory;
 			}
-		}
-		if (status != B_OK) {
-			DisposeData();
-			_HandleEncodingFinished(B_ERROR);
-			return B_ERROR;
 		}
 	} else {
 		int32 numFrames = fFileList->CountItems();
@@ -308,14 +304,14 @@ MovieEncoder::_EncoderThread()
 		inputFormat.u.raw_video.field_rate = framesPerSecond;
 
 		// Create movie
-		status_t status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
-		if (status < B_OK) {
-			DisposeData();
-			_HandleEncodingFinished(status);
-			return status;
-		}
+		status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
 	}
 
+	if (status != B_OK) {
+		DisposeData();
+		_HandleEncodingFinished(status);
+		return status;
+	}
 
 	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
 	
@@ -323,7 +319,6 @@ MovieEncoder::_EncoderThread()
 		// TODO: Make this tunable
 
 	int32 framesWritten = 0;
-	status_t status = B_OK;
 	while (!fKillThread) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
 		if (entry == NULL)
