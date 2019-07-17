@@ -163,12 +163,14 @@ MovieEncoder::SetMessenger(const BMessenger& messenger)
 
 status_t 
 MovieEncoder::_CreateFile(
-	const entry_ref& ref,
+	const char* path,
 	const media_file_format& mff,
 	const media_format& inputFormat,
 	const media_codec_info& mci,
 	float quality)
 {
+	entry_ref ref;
+	get_ref_for_path(path, &ref);
 	BMediaFile* file = new BMediaFile(&ref, &mff);
 	status_t err = file->InitCheck();
 	if (err == B_OK) {
@@ -306,9 +308,7 @@ MovieEncoder::_EncoderThread()
 		inputFormat.u.raw_video.field_rate = framesPerSecond;
 
 		// Create movie
-		entry_ref movieRef;
-		get_ref_for_path(fOutputFile.Path(), &movieRef);
-		status_t status = _CreateFile(movieRef, fFileFormat, inputFormat, fCodecInfo);
+		status_t status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
 		if (status < B_OK) {
 			DisposeData();
 			_HandleEncodingFinished(status);

@@ -46,7 +46,7 @@ private:
 	BBitmap *GetCursorBitmap(const uint8 *data);
 	status_t PopCursorPosition(BPoint &point);
 	
-	status_t _CreateFile(const entry_ref& ref,
+	status_t _CreateFile(const char* path,
 						const media_file_format& mff,
 						const media_format& inputFormat,
 						const media_codec_info& mci,
