@@ -107,7 +107,6 @@ status_t
 FramesList::SaveToDisk(const char* path)
 {
 	for (int32 i = 0; i < CountItems(); i++) {
-		std::cout << "num: " << i << " of " << CountItems() << std::endl;
 		BString fileName;
 		fileName.SetToFormat("frame_%05d.bmp", i + 1);
 		BitmapEntry* entry = ItemAt(i);
@@ -177,7 +176,10 @@ BitmapEntry::TimeStamp() const
 status_t
 BitmapEntry::SaveToDisk(const char* path, const char* name)
 {
-	ASSERT((fBitmap != NULL));
+	if (fBitmap == NULL && fFileName != "") {
+		fBitmap = BTranslationUtils::GetBitmapFile(fFileName);
+		fFileName = "";
+	}
 
 	char tempFileName[B_PATH_NAME_LENGTH];
 	if (name == NULL) {
