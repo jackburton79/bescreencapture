@@ -45,6 +45,7 @@ public:
 	BitmapEntry* ItemAt(int32 index) const;
 	BitmapEntry* ItemAt(int32 index);
 	int32 CountItems() const;
+	const char* Path() const;
 
 	status_t SaveToDisk(const char* path);
 private:

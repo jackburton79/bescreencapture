@@ -275,6 +275,7 @@ MovieEncoder::_EncoderThread()
 
 	int32 framesWritten = 0;
 
+	BPath tempPath;
 	status_t status = B_ERROR;
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
 		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
@@ -285,6 +286,7 @@ MovieEncoder::_EncoderThread()
 			char* tempDirectory = tempnam((char*)path.Path(), (char*)"BeScreenCapture_");
 			status = create_directory(tempDirectory, 0777);
 			if (BEntry(tempDirectory).IsDirectory()) {
+				tempPath = tempDirectory;
 				fFileList->SaveToDisk(tempDirectory);
 				framesWritten = framesLeft;
 				framesLeft = 0;
@@ -299,6 +301,7 @@ MovieEncoder::_EncoderThread()
 
 		// Create movie
 		status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
+		tempPath = fFileList->Path();
 	}
 
 	if (status != B_OK) {
@@ -348,10 +351,10 @@ MovieEncoder::_EncoderThread()
 		}
 	}
 
-	DisposeData();
-
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)
-		_PostEncodingAction(fOutputFile);
+		_PostEncodingAction(tempPath);
+
+	DisposeData();
 
 	_HandleEncodingFinished(status, framesWritten);
 

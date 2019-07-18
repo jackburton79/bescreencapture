@@ -103,6 +103,13 @@ FramesList::CountItems() const
 }
 
 
+const char*
+FramesList::Path() const
+{
+	return fTemporaryPath;
+}
+
+
 status_t
 FramesList::SaveToDisk(const char* path)
 {
