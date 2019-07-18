@@ -207,11 +207,8 @@ MovieEncoder::_WriteFrame(const BBitmap* bitmap, int32 frameNum, bool isKeyFrame
 	if (!bitmap)
 		return B_BAD_VALUE;
 
-	// if there's no track, check if output file is a path.
-	// In that case, only write frame to disk as a bitmap file
-	if (fMediaTrack == NULL)
-		return _WriteFrameNoEncoding(bitmap, frameNum);
-
+	ASSERT((fMediaTrack != NULL));
+		
 	// okay, it's the right kind of bitmap -- commit the header if necessary, and
 	// write it as one video frame.  We defer committing the header until the first
 	// frame is written in order to allow the client to adjust the image quality at
@@ -228,21 +225,6 @@ MovieEncoder::_WriteFrame(const BBitmap* bitmap, int32 frameNum, bool isKeyFrame
 		err = fMediaTrack->WriteFrames(bitmap->Bits(), 1, isKeyFrame ? B_MEDIA_KEY_FRAME : 0);
 	
 	return err;
-}
-
-
-status_t
-MovieEncoder::_WriteFrameNoEncoding(const BBitmap* bitmap, int32 frameNum)
-{
-	BPath path(fOutputFile);
-	if (!BEntry(path.Path()).IsDirectory())
-		return B_NO_INIT;
-
-	BString frameFileName;
-	frameFileName.SetToFormat("frame_%05d.bmp", frameNum);
-	path.Append(frameFileName);
-	BitmapEntry::SaveToDisk(bitmap, path.Path());
-	return B_OK;
 }
 
 
@@ -268,8 +250,7 @@ status_t
 MovieEncoder::_EncoderThread()
 {	
 	int32 framesLeft = fFileList->CountItems();
-	
-	if (framesLeft <= 0) {
+	if (framesLeft <= 1) {
 		DisposeData();
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
@@ -284,14 +265,16 @@ MovieEncoder::_EncoderThread()
 
 	// First pass: apply filter to frames
 	// TODO: update progress
-	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);	
-	for (int32 c = 0; c < fFileList->CountItems(); c++) {
+/*	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);	
+	for (int32 c = 0; c < framesLeft; c++) {
 		BitmapEntry* entry = fFileList->ItemAt(c);
 		BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
 		entry->Replace(filtered);
 	}
 	delete filter;
-	
+*/
+	int32 framesWritten = 0;
+
 	status_t status = B_ERROR;
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
 		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
@@ -302,14 +285,15 @@ MovieEncoder::_EncoderThread()
 			char* tempDirectory = tempnam((char*)path.Path(), (char*)"BeScreenCapture_");
 			status = create_directory(tempDirectory, 0777);
 			if (BEntry(tempDirectory).IsDirectory()) {
-				fOutputFile = tempDirectory;
+				fFileList->SaveToDisk(tempDirectory);
+				framesWritten = framesLeft;
+				framesLeft = 0;
 			}
 		}
 	} else {
-		int32 numFrames = fFileList->CountItems();
 		BitmapEntry* firstEntry = fFileList->ItemAt(0);
-		BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
-		int framesPerSecond = (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
+		BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
+		int framesPerSecond = (1000000 * framesLeft) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
 		media_format inputFormat = fFormat;
 		inputFormat.u.raw_video.field_rate = framesPerSecond;
 
@@ -326,8 +310,7 @@ MovieEncoder::_EncoderThread()
 	const uint32 keyFrameFrequency = 10;
 	// TODO: Make this tunable
 
-	int32 framesWritten = 0;
-	while (!fKillThread) {
+	while (!fKillThread && framesLeft > 0) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
 		if (entry == NULL)
 			break;
@@ -352,6 +335,7 @@ MovieEncoder::_EncoderThread()
 			break;
 
 		framesWritten++;
+		framesLeft--;
 
 		if (fMessenger.IsValid()) {
 			BMessage progressMessage(kEncodingProgress);

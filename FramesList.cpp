@@ -7,8 +7,10 @@
 
 #include "FramesList.h"
 
+#define DEBUG 1
 #include <Bitmap.h>
 #include <BitmapStream.h>
+#include <Debug.h>
 #include <Directory.h>
 #include <Entry.h>
 #include <File.h>
@@ -20,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <new>
 
 static BTranslatorRoster* sTranslatorRoster = NULL;
@@ -103,6 +106,14 @@ FramesList::CountItems() const
 status_t
 FramesList::SaveToDisk(const char* path)
 {
+	for (int32 i = 0; i < CountItems(); i++) {
+		std::cout << "num: " << i << " of " << CountItems() << std::endl;
+		BString fileName;
+		fileName.SetToFormat("frame_%05d.bmp", i + 1);
+		BitmapEntry* entry = ItemAt(i);
+		entry->SaveToDisk(path, fileName.String());
+		delete entry;
+	}
 	return B_OK;
 }
 
@@ -166,6 +177,8 @@ BitmapEntry::TimeStamp() const
 status_t
 BitmapEntry::SaveToDisk(const char* path, const char* name)
 {
+	ASSERT((fBitmap != NULL));
+
 	char tempFileName[B_PATH_NAME_LENGTH];
 	if (name == NULL) {
 		::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
@@ -175,7 +188,7 @@ BitmapEntry::SaveToDisk(const char* path, const char* name)
 		fFileName = tempFileName;
 		close(tempFile);
 	} else {
-		::snprintf(tempFileName, sizeof(tempFileName), "%s/name", path);
+		::snprintf(tempFileName, sizeof(tempFileName), "%s/%s", path, name);
 		fFileName = tempFileName;
 	}
 
