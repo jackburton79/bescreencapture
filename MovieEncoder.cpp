@@ -505,8 +505,15 @@ MovieEncoder::EncodeStarter(void* arg)
 void
 MovieEncoder::_PostEncodingAction(BPath& path)
 {
+	BString command;
+	command.Append("ffmpeg -i ");
+	command.Append(path.Path()).Append("/frame_%05d.bmp ");
+	command.Append(path.Path()).Append("/output.gif");
+	
+	std::cout << command.String() << std::endl;
+	system(command.String());
 	// TODO: Check if ffmpeg tools are installed
-	//ffmpeg -i frames_%05d output.gif
+	//
 
 	// TODO: support more actions ?	
 }
