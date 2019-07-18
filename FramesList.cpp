@@ -109,8 +109,12 @@ FramesList::SaveToDisk(const char* path)
 	for (int32 i = 0; i < CountItems(); i++) {
 		BString fileName;
 		fileName.SetToFormat("frame_%05d.bmp", i + 1);
-		BitmapEntry* entry = ItemAt(i);
-		entry->SaveToDisk(path, fileName.String());
+		BitmapEntry* entry = Pop();
+		BString fullPath(path);
+		fullPath.Append("/").Append(fileName.String());
+		BBitmap* bitmap = entry->Bitmap();
+		BitmapEntry::SaveToDisk(bitmap, fullPath.String());
+		delete bitmap;
 		delete entry;
 	}
 	return B_OK;
@@ -174,7 +178,7 @@ BitmapEntry::TimeStamp() const
 
 
 status_t
-BitmapEntry::SaveToDisk(const char* path, const char* name)
+BitmapEntry::SaveToDisk(const char* path)
 {
 	if (fBitmap == NULL && fFileName != "") {
 		fBitmap = BTranslationUtils::GetBitmapFile(fFileName);
@@ -182,17 +186,12 @@ BitmapEntry::SaveToDisk(const char* path, const char* name)
 	}
 
 	char tempFileName[B_PATH_NAME_LENGTH];
-	if (name == NULL) {
-		::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
-		// use mkstemp, but then we close the fd immediately,
-		// because we need only the file name.
-		int tempFile = ::mkstemp(tempFileName);
-		fFileName = tempFileName;
-		close(tempFile);
-	} else {
-		::snprintf(tempFileName, sizeof(tempFileName), "%s/%s", path, name);
-		fFileName = tempFileName;
-	}
+	::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
+	// use mkstemp, but then we close the fd immediately,
+	// because we need only the file name.
+	int tempFile = ::mkstemp(tempFileName);
+	fFileName = tempFileName;
+	close(tempFile);
 
 	status_t status = SaveToDisk(fBitmap, fFileName.String());
 

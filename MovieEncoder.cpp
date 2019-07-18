@@ -208,7 +208,7 @@ MovieEncoder::_WriteFrame(const BBitmap* bitmap, int32 frameNum, bool isKeyFrame
 		return B_BAD_VALUE;
 
 	ASSERT((fMediaTrack != NULL));
-		
+
 	// okay, it's the right kind of bitmap -- commit the header if necessary, and
 	// write it as one video frame.  We defer committing the header until the first
 	// frame is written in order to allow the client to adjust the image quality at
@@ -220,7 +220,7 @@ MovieEncoder::_WriteFrame(const BBitmap* bitmap, int32 frameNum, bool isKeyFrame
 		if (err == B_OK)
 			fHeaderCommitted = true;
 	}
-	
+
 	if (err == B_OK)
 		err = fMediaTrack->WriteFrames(bitmap->Bits(), 1, isKeyFrame ? B_MEDIA_KEY_FRAME : 0);
 	
@@ -265,14 +265,14 @@ MovieEncoder::_EncoderThread()
 
 	// First pass: apply filter to frames
 	// TODO: update progress
-/*	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);	
+	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);	
 	for (int32 c = 0; c < framesLeft; c++) {
 		BitmapEntry* entry = fFileList->ItemAt(c);
 		BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
 		entry->Replace(filtered);
 	}
 	delete filter;
-*/
+
 	int32 framesWritten = 0;
 
 	status_t status = B_ERROR;

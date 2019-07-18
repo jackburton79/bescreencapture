@@ -23,7 +23,7 @@ public:
 	void Replace(BBitmap* bitmap);
 	bigtime_t TimeStamp() const;
 	
-	status_t SaveToDisk(const char* path, const char* name = NULL);
+	status_t SaveToDisk(const char* path);
 
 	static status_t SaveToDisk(const BBitmap* bitmap, const char* fileName);
 private:
