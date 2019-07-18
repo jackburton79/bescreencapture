@@ -164,7 +164,7 @@ BitmapEntry::SaveToDisk(const char* path)
 
 /* static */
 status_t
-BitmapEntry::SaveToDisk(BBitmap* bitmap, const char* fileName)
+BitmapEntry::SaveToDisk(const BBitmap* bitmap, const char* fileName)
 {
 	if (sTranslatorRoster == NULL)
 		sTranslatorRoster = BTranslatorRoster::Default();

@@ -25,7 +25,7 @@ public:
 	
 	status_t SaveToDisk(const char* path);
 
-	static status_t SaveToDisk(BBitmap* bitmap, const char* fileName);
+	static status_t SaveToDisk(const BBitmap* bitmap, const char* fileName);
 private:
 	BBitmap* fBitmap;
 	BString fFileName;

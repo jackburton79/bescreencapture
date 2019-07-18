@@ -241,7 +241,7 @@ MovieEncoder::_WriteFrameNoEncoding(const BBitmap* bitmap, int32 frameNum)
 	BString frameFileName;
 	frameFileName.SetToFormat("frame_%05d", frameNum);
 	path.Append(frameFileName);
-	BitmapEntry::SaveToDisk(const_cast<BBitmap*>(bitmap), path.Path());
+	BitmapEntry::SaveToDisk(bitmap, path.Path());
 	return B_OK;
 }
 
