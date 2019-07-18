@@ -282,6 +282,16 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 
+	// First pass: apply filter to frames
+	// TODO: update progress
+	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);	
+	for (int32 c = 0; c < fFileList->CountItems(); c++) {
+		BitmapEntry* entry = fFileList->ItemAt(c);
+		BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
+		entry->Replace(filtered);
+	}
+	delete filter;
+	
 	status_t status = B_ERROR;
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
 		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
@@ -313,10 +323,8 @@ MovieEncoder::_EncoderThread()
 		return status;
 	}
 
-	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
-	
 	const uint32 keyFrameFrequency = 10;
-		// TODO: Make this tunable
+	// TODO: Make this tunable
 
 	int32 framesWritten = 0;
 	while (!fKillThread) {
@@ -331,14 +339,14 @@ MovieEncoder::_EncoderThread()
 			delete entry;
 			continue;
 		}
-
-		const BBitmap* destBitmap = filter->ApplyFilter(frame);
 		
 		delete entry;
 
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		if (status == B_OK)
-			status = _WriteFrame(destBitmap, framesWritten + 1, keyFrame);
+			status = _WriteFrame(frame, framesWritten + 1, keyFrame);
+
+		delete frame;
 
 		if (status != B_OK)
 			break;
@@ -355,8 +363,6 @@ MovieEncoder::_EncoderThread()
 			break;
 		}
 	}
-
-	delete filter;
 
 	DisposeData();
 

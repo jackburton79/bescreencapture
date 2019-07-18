@@ -42,7 +42,7 @@ ImageFilterScale::~ImageFilterScale()
 
 
 /* virtual */
-const BBitmap*
+BBitmap*
 ImageFilterScale::ApplyFilter(BBitmap* bitmap)
 {
 	// Draw scaled
@@ -55,5 +55,5 @@ ImageFilterScale::ApplyFilter(BBitmap* bitmap)
 
 	delete bitmap;
 	
-	return fBitmap;
+	return new BBitmap(*fBitmap);
 }

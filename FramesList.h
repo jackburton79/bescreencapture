@@ -20,6 +20,7 @@ public:
 	~BitmapEntry();
 	
 	BBitmap* Bitmap();
+	void Replace(BBitmap* bitmap);
 	bigtime_t TimeStamp() const;
 	
 	status_t SaveToDisk(const char* path, const char* name = NULL);
@@ -42,6 +43,7 @@ public:
 
 	BitmapEntry* Pop();
 	BitmapEntry* ItemAt(int32 index) const;
+	BitmapEntry* ItemAt(int32 index);
 	int32 CountItems() const;
 
 	status_t SaveToDisk(const char* path);

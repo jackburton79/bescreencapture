@@ -86,6 +86,13 @@ FramesList::ItemAt(int32 index) const
 }
 
 
+BitmapEntry*
+FramesList::ItemAt(int32 index)
+{
+	return BObjectList<BitmapEntry>::ItemAt(index);
+}
+
+
 int32
 FramesList::CountItems() const
 {
@@ -135,6 +142,17 @@ BitmapEntry::Bitmap()
 		return BTranslationUtils::GetBitmapFile(fFileName);
 	
 	return NULL;
+}
+
+
+void
+BitmapEntry::Replace(BBitmap* bitmap)
+{
+	if (fBitmap != NULL) {
+		delete fBitmap;
+		fBitmap = bitmap;
+	} else if (fFileName != "")
+		SaveToDisk(bitmap, fFileName);
 }
 
 

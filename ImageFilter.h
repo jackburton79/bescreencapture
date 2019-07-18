@@ -18,7 +18,7 @@ public:
 	ImageFilter(BRect frame, color_space colorSpace);
 	virtual ~ImageFilter();
 
-	virtual const BBitmap* ApplyFilter(BBitmap* bitmap) = 0;
+	virtual BBitmap* ApplyFilter(BBitmap* bitmap) = 0;
 
 protected:
 	BBitmap* fBitmap;
@@ -31,7 +31,7 @@ public:
 	ImageFilterScale(BRect frame, color_space colorSpace);
 	virtual ~ImageFilterScale();
 
-	virtual const BBitmap* ApplyFilter(BBitmap* bitmap);
+	virtual BBitmap* ApplyFilter(BBitmap* bitmap);
 private:
 
 };
