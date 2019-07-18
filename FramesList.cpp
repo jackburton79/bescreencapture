@@ -93,6 +93,13 @@ FramesList::CountItems() const
 }
 
 
+status_t
+FramesList::SaveToDisk(const char* path)
+{
+	return B_OK;
+}
+
+
 // BitmapEntry
 BitmapEntry::BitmapEntry()
 	:
@@ -139,16 +146,20 @@ BitmapEntry::TimeStamp() const
 
 
 status_t
-BitmapEntry::SaveToDisk(const char* path)
+BitmapEntry::SaveToDisk(const char* path, const char* name)
 {
 	char tempFileName[B_PATH_NAME_LENGTH];
-	::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
-
-	// use mkstemp, but then we close the fd immediately,
-	// because we need only the file name.
-	int tempFile = ::mkstemp(tempFileName);
-	fFileName = tempFileName;
-	close(tempFile);
+	if (name == NULL) {
+		::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
+		// use mkstemp, but then we close the fd immediately,
+		// because we need only the file name.
+		int tempFile = ::mkstemp(tempFileName);
+		fFileName = tempFileName;
+		close(tempFile);
+	} else {
+		::snprintf(tempFileName, sizeof(tempFileName), "%s/name", path);
+		fFileName = tempFileName;
+	}
 
 	status_t status = SaveToDisk(fBitmap, fFileName.String());
 

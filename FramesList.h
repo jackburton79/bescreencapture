@@ -17,13 +17,12 @@ public:
 	BitmapEntry();
 	BitmapEntry(BBitmap* bitmap, bigtime_t time);
 	BitmapEntry(const BitmapEntry&);
-	
 	~BitmapEntry();
 	
 	BBitmap* Bitmap();
 	bigtime_t TimeStamp() const;
 	
-	status_t SaveToDisk(const char* path);
+	status_t SaveToDisk(const char* path, const char* name = NULL);
 
 	static status_t SaveToDisk(const BBitmap* bitmap, const char* fileName);
 private:
@@ -44,7 +43,8 @@ public:
 	BitmapEntry* Pop();
 	BitmapEntry* ItemAt(int32 index) const;
 	int32 CountItems() const;
-	
+
+	status_t SaveToDisk(const char* path);
 private:
 	char* fTemporaryPath;
 };

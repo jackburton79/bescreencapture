@@ -213,7 +213,7 @@ MediaFormatView::_BuildFileFormatsMenu()
 	menu->AddItem(nullItem);
 	
 	// TODO: Maybe Haiku could support this by enabling this in ffmpeg ?
-#if 0
+#if 1
 	media_file_format gifFormat;
 	strncpy(gifFormat.pretty_name, "GIF", sizeof(gifFormat.pretty_name));
 	strncpy(gifFormat.short_name, GIF_FORMAT_SHORT_NAME, sizeof(gifFormat.short_name));

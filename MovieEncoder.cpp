@@ -239,7 +239,7 @@ MovieEncoder::_WriteFrameNoEncoding(const BBitmap* bitmap, int32 frameNum)
 		return B_NO_INIT;
 
 	BString frameFileName;
-	frameFileName.SetToFormat("frame_%05d", frameNum);
+	frameFileName.SetToFormat("frame_%05d.bmp", frameNum);
 	path.Append(frameFileName);
 	BitmapEntry::SaveToDisk(bitmap, path.Path());
 	return B_OK;
@@ -512,6 +512,9 @@ MovieEncoder::EncodeStarter(void* arg)
 void
 MovieEncoder::_PostEncodingAction(BPath& path)
 {
+	// TODO: Check if ffmpeg tools are installed
+	//ffmpeg -i frames_%05d output.gif
+
 	// TODO: support more actions ?	
 }
 
