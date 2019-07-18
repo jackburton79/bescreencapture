@@ -7,10 +7,8 @@
 
 #include "FramesList.h"
 
-#define DEBUG 1
 #include <Bitmap.h>
 #include <BitmapStream.h>
-#include <Debug.h>
 #include <Directory.h>
 #include <Entry.h>
 #include <File.h>
