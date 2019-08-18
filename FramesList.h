@@ -16,6 +16,7 @@ class BitmapEntry {
 public:
 	BitmapEntry();
 	BitmapEntry(BBitmap* bitmap, bigtime_t time);
+	BitmapEntry(BitmapEntry*);
 	BitmapEntry(const BitmapEntry&);
 	~BitmapEntry();
 	
@@ -25,7 +26,8 @@ public:
 	
 	status_t SaveToDisk(const char* path);
 
-	static status_t SaveToDisk(const BBitmap* bitmap, const char* fileName);
+	static status_t WriteFrame(const BBitmap* bitmap, const char* fileName);
+	
 private:
 	BBitmap* fBitmap;
 	BString fFileName;
@@ -47,7 +49,7 @@ public:
 	int32 CountItems() const;
 	const char* Path() const;
 
-	status_t SaveToDisk(const char* path);
+	status_t WriteFrames(const char* path);
 private:
 	char* fTemporaryPath;
 };

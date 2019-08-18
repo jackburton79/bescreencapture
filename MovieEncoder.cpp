@@ -287,7 +287,7 @@ MovieEncoder::_EncoderThread()
 			status = create_directory(tempDirectory, 0777);
 			if (BEntry(tempDirectory).IsDirectory()) {
 				tempPath = tempDirectory;
-				fFileList->SaveToDisk(tempDirectory);
+				fFileList->WriteFrames(tempDirectory);
 				framesWritten = framesLeft;
 				framesLeft = 0;
 			}

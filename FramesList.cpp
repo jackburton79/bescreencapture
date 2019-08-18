@@ -65,18 +65,21 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t time)
 	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, time);
 	if (entry == NULL)
 		return false;
-	if ((CountItems() < 10)
-		|| (entry->SaveToDisk(fTemporaryPath) == B_OK)) {
-		return BObjectList<BitmapEntry>::AddItem(entry);
+	if (CountItems() > 10) {
+		if (entry->SaveToDisk(fTemporaryPath) != B_OK) {
+			delete entry;
+			return false;
+		}
 	}
-	return false;
+
+	return BObjectList<BitmapEntry>::AddItem(entry);
 }
 
 
 BitmapEntry*
 FramesList::Pop()
 {
-	return BObjectList<BitmapEntry>::RemoveItemAt(0);
+	return BObjectList<BitmapEntry>::RemoveItemAt(int32(0));
 }
 
 
@@ -109,7 +112,7 @@ FramesList::Path() const
 
 
 status_t
-FramesList::SaveToDisk(const char* path)
+FramesList::WriteFrames(const char* path)
 {
 	for (int32 i = 0; i < CountItems(); i++) {
 		BString fileName;
@@ -118,7 +121,7 @@ FramesList::SaveToDisk(const char* path)
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());
 		BBitmap* bitmap = entry->Bitmap();
-		BitmapEntry::SaveToDisk(bitmap, fullPath.String());
+		BitmapEntry::WriteFrame(bitmap, fullPath.String());
 		delete bitmap;
 		delete entry;
 	}
@@ -171,7 +174,7 @@ BitmapEntry::Replace(BBitmap* bitmap)
 		delete fBitmap;
 		fBitmap = bitmap;
 	} else if (fFileName != "")
-		SaveToDisk(bitmap, fFileName);
+		WriteFrame(bitmap, fFileName);
 }
 
 
@@ -195,10 +198,13 @@ BitmapEntry::SaveToDisk(const char* path)
 	// use mkstemp, but then we close the fd immediately,
 	// because we need only the file name.
 	int tempFile = ::mkstemp(tempFileName);
+	if (tempFile < 0)
+		return tempFile;
+
 	fFileName = tempFileName;
 	close(tempFile);
 
-	status_t status = SaveToDisk(fBitmap, fFileName.String());
+	status_t status = WriteFrame(fBitmap, fFileName.String());
 
 	if (status != B_OK)
 		return status;
@@ -212,7 +218,7 @@ BitmapEntry::SaveToDisk(const char* path)
 
 /* static */
 status_t
-BitmapEntry::SaveToDisk(const BBitmap* bitmap, const char* fileName)
+BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 {
 	if (sTranslatorRoster == NULL)
 		sTranslatorRoster = BTranslatorRoster::Default();
