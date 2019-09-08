@@ -1,5 +1,9 @@
 v2.5
 	- Add an option to export to animated GIF.
+	- Fixed saving/restoring selected file format (was broken for GIF and Export to Bitmap)
+---
+v2.4.1
+	- Fix wrong region on first 10 frames.
 ---
 v2.4.0
 	- Add an option to save the frames to a folder instead of encoding.
