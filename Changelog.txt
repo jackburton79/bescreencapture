@@ -1,3 +1,6 @@
+v2.4.1
+	- Fix wrong region on first 10 frames.
+---
 v2.4.0
 	- Add an option to save the frames to a folder instead of creating a clip.
 	- Add a pause button to the main window.
