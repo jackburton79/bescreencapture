@@ -348,7 +348,7 @@ MovieEncoder::_EncoderThread()
 		// Draw scaled
 		if (status == B_OK) {
 			destBitmap->Lock();
-			destDrawer->DrawBitmap(frame, frame->Bounds(), destDrawer->Bounds());
+			destDrawer->DrawBitmap(frame, frame->Bounds().OffsetToCopy(B_ORIGIN), destDrawer->Bounds());
 			destDrawer->Sync();
 			destBitmap->Unlock();
 		}
