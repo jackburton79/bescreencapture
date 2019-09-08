@@ -12,7 +12,7 @@
 ImageFilter::ImageFilter(BRect frame, color_space colorSpace)
 {
 	// Bitmap and view used to convert the source bitmap
-	// to the correct size and depth	
+	// to the correct size and depth
 	fBitmap = new BBitmap(frame, colorSpace, true);
 	fView = new BView(frame, "drawing view", B_FOLLOW_NONE, 0);
 	if (fBitmap->Lock()) {
@@ -48,7 +48,7 @@ ImageFilterScale::ApplyFilter(BBitmap* bitmap)
 	// Draw scaled
 	if (bitmap != NULL) {
 		fBitmap->Lock();
-		fView->DrawBitmap(bitmap, bitmap->Bounds(), fView->Bounds());
+		fView->DrawBitmap(bitmap, bitmap->Bounds().OffsetToCopy(B_ORIGIN), fView->Bounds());
 		fView->Sync();
 		fBitmap->Unlock();
 	}
