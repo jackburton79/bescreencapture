@@ -65,7 +65,7 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t time)
 	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, time);
 	if (entry == NULL)
 		return false;
-	if (CountItems() > 10) {
+	if (CountItems() > 40) {
 		if (entry->SaveToDisk(fTemporaryPath) != B_OK) {
 			delete entry;
 			return false;
@@ -173,8 +173,10 @@ BitmapEntry::Replace(BBitmap* bitmap)
 	if (fBitmap != NULL) {
 		delete fBitmap;
 		fBitmap = bitmap;
-	} else if (fFileName != "")
+	} else if (fFileName != "") {
 		WriteFrame(bitmap, fFileName);
+		delete bitmap;
+	}
 }
 
 
@@ -196,7 +198,7 @@ BitmapEntry::SaveToDisk(const char* path)
 	char tempFileName[B_PATH_NAME_LENGTH];
 	::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
 	// use mkstemp, but then we close the fd immediately,
-	// because we need only the file name.
+	// because we only need the file name.
 	int tempFile = ::mkstemp(tempFileName);
 	if (tempFile < 0)
 		return tempFile;
@@ -220,6 +222,7 @@ BitmapEntry::SaveToDisk(const char* path)
 status_t
 BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 {
+	// Does not take ownership of the passed BBitmap.
 	if (sTranslatorRoster == NULL)
 		sTranslatorRoster = BTranslatorRoster::Default();
 
