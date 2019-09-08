@@ -7,7 +7,7 @@
 
 class Executor {
 public:
-		Executor(FunctionObjectWithResult<status_t> *function);
+	Executor(FunctionObjectWithResult<status_t> *function);
 	virtual	~Executor();
 
 	virtual void Run();
