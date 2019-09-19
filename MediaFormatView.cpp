@@ -204,22 +204,14 @@ MediaFormatView::_BuildFileFormatsMenu()
 	}
 
 	media_file_format nullFormat;
-	strncpy(nullFormat.pretty_name, "Export frames as Bitmaps", sizeof(nullFormat.pretty_name));
-	strncpy(nullFormat.short_name, NULL_FORMAT_SHORT_NAME, sizeof(nullFormat.short_name));
-	nullFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	nullFormat.file_extension[0] = '\0';
-	nullFormat.family = B_ANY_FORMAT_FAMILY;
+	MakeNULLMediaFileFormat(nullFormat);
 	MediaFileFormatMenuItem* nullItem = new MediaFileFormatMenuItem(nullFormat);
 	menu->AddItem(nullItem);
 	
 	// TODO: Maybe Haiku could support this by enabling this in ffmpeg ?
 #if 1
 	media_file_format gifFormat;
-	strncpy(gifFormat.pretty_name, "GIF", sizeof(gifFormat.pretty_name));
-	strncpy(gifFormat.short_name, GIF_FORMAT_SHORT_NAME, sizeof(gifFormat.short_name));
-	gifFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	strncpy(gifFormat.file_extension, "gif", sizeof(gifFormat.file_extension));
-	gifFormat.family = B_ANY_FORMAT_FAMILY;
+	MakeGIFMediaFileFormat(gifFormat);
 	MediaFileFormatMenuItem* gifItem = new MediaFileFormatMenuItem(gifFormat);
 	menu->AddItem(gifItem);
 #endif

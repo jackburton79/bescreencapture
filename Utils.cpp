@@ -1,5 +1,7 @@
-#include "Settings.h"
 #include "Utils.h"
+
+#include "Constants.h"
+#include "Settings.h"
 
 // Private Haiku header
 #include "WindowInfo.h"
@@ -71,8 +73,37 @@ GetMediaFileFormat(const char* prettyName, media_file_format* outFormat)
 			return true;
 		}
 	}
-
+	
+	if (strcmp(prettyName, NULL_FORMAT_PRETTY_NAME) == 0) {
+		MakeNULLMediaFileFormat(*outFormat);
+		return true;
+	} else if (strcmp(prettyName, GIF_FORMAT_PRETTY_NAME) == 0) {
+		MakeGIFMediaFileFormat(*outFormat);
+		return true;
+	}
 	return false;
+}
+
+
+void
+MakeGIFMediaFileFormat(media_file_format& outFormat)
+{
+	strncpy(outFormat.pretty_name, "GIF", sizeof(outFormat.pretty_name));
+	strncpy(outFormat.short_name, GIF_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
+	outFormat.capabilities = media_file_format::B_KNOWS_OTHER;
+	strncpy(outFormat.file_extension, "gif", sizeof(outFormat.file_extension));
+	outFormat.family = B_ANY_FORMAT_FAMILY;
+}
+
+
+void
+MakeNULLMediaFileFormat(media_file_format& outFormat)
+{
+	strncpy(outFormat.pretty_name, "Export frames as Bitmaps", sizeof(outFormat.pretty_name));
+	strncpy(outFormat.short_name, NULL_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
+	outFormat.capabilities = media_file_format::B_KNOWS_OTHER;
+	outFormat.file_extension[0] = '\0';
+	outFormat.family = B_ANY_FORMAT_FAMILY;
 }
 
 
