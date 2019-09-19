@@ -32,8 +32,6 @@ public:
 	virtual ~ImageFilterScale();
 
 	virtual BBitmap* ApplyFilter(BBitmap* bitmap);
-private:
-
 };
 
 #endif // IMAGEFILTER_H
