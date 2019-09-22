@@ -12,7 +12,8 @@
 #include <String.h>
 #include <StringView.h>
 
-#include <stdlib.h>
+#include <cstdlib>
+#include <iostream>
 
 const int32 kTextControlMessage = '9TCM';
 
@@ -88,8 +89,10 @@ SliderTextControl::MessageReceived(BMessage* message)
 	if (message->what == fWhat) {
 		BString sizeString;
 		sizeString << (int32)fSizeSlider->Value();
+		fSizeTextControl->SetModificationMessage(NULL);
 		fSizeTextControl->SetText(sizeString);
 		BControl::SetValue(fSizeSlider->Value());
+		fSizeTextControl->SetModificationMessage(new BMessage(kTextControlMessage));
 		Window()->PostMessage(message, Target());
 		return;
 	}
@@ -102,6 +105,14 @@ SliderTextControl::MessageReceived(BMessage* message)
 			whatMessage.AddInt32("be:value", value);
 			Window()->PostMessage(&whatMessage, Target());
 			fSizeSlider->SetValue(value);
+			BString text;
+			text << fSizeSlider->Value();
+			if (::strcmp(text, fSizeTextControl->Text()) != 0) {
+				fSizeTextControl->SetModificationMessage(NULL);
+				fSizeTextControl->SetText(text.String());
+				fSizeTextControl->SetModificationMessage(new BMessage(kTextControlMessage));
+			}
+			Window()->PostMessage(message, Target());
 			break;
 		}
 		default:
