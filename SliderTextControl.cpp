@@ -4,7 +4,7 @@
  */
 
 
-#include "SizeControl.h"
+#include "SliderTextControl.h"
 
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
@@ -32,7 +32,7 @@ private:
 };
 
 
-SizeControl::SizeControl(const char* name, const char* label,
+SliderTextControl::SliderTextControl(const char* name, const char* label,
 		BMessage* message, int32 minValue,
 		int32 maxValue, int32 stepValue, const char* unit,
 		orientation posture,
@@ -75,7 +75,7 @@ SizeControl::SizeControl(const char* name, const char* label,
 
 
 void
-SizeControl::AttachedToWindow()
+SliderTextControl::AttachedToWindow()
 {
 	fSizeTextControl->SetTarget(this);
 	fSizeSlider->SetTarget(this);
@@ -83,7 +83,7 @@ SizeControl::AttachedToWindow()
 
 
 void
-SizeControl::MessageReceived(BMessage* message)
+SliderTextControl::MessageReceived(BMessage* message)
 {
 	if (message->what == fWhat) {
 		BString sizeString;
@@ -112,7 +112,7 @@ SizeControl::MessageReceived(BMessage* message)
 	
 
 void
-SizeControl::SetValue(int32 value)
+SliderTextControl::SetValue(int32 value)
 {
 	fSizeSlider->SetValue(value);
 	BString sizeString;
@@ -125,7 +125,7 @@ SizeControl::SetValue(int32 value)
 
 /* virtual */
 void
-SizeControl::SetEnabled(bool enable)
+SliderTextControl::SetEnabled(bool enable)
 {
 	BControl::SetEnabled(enable);
 	fSizeSlider->SetEnabled(enable);

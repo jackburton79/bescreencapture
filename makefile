@@ -55,7 +55,7 @@ SRCS = \
 	 PriorityControl.cpp  \
 	 SelectionWindow.cpp  \
 	 Settings.cpp  \
-	 SizeControl.cpp  \
+	 SliderTextControl.cpp  \
 	 Utils.cpp  \
 
 

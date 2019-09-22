@@ -5,7 +5,7 @@
 #include "ControllerObserver.h"
 #include "PreviewView.h"
 #include "Settings.h"
-#include "SizeControl.h"
+#include "SliderTextControl.h"
 #include "Utils.h"
 
 #include <Box.h>
@@ -288,10 +288,10 @@ OutputView::_LayoutView()
 	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	
-	fScaleSlider = new SizeControl("scale_slider", "Scale",
+	fScaleSlider = new SliderTextControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
 
-	fBorderSlider = new SizeControl("border_slider", "Window edges",
+	fBorderSlider = new SliderTextControl("border_slider", "Window edges",
 		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL);
 			
 	BView *layoutView = BLayoutBuilder::Group<>()

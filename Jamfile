@@ -23,7 +23,7 @@ Application BeScreenCapture :
 	PriorityControl.cpp
 	SelectionWindow.cpp
 	Settings.cpp
-	SizeControl.cpp
+	SliderTextControl.cpp
 	Utils.cpp
 
 	: be media game tracker translation $(TARGET_LIBSTDC++)

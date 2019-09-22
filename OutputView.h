@@ -13,7 +13,7 @@ class BRadioButton;
 class BTextControl;
 class Controller;
 class PreviewView;
-class SizeControl;
+class SliderTextControl;
 class OutputView : public BView {
 public:	
 	OutputView(Controller *controller);
@@ -41,8 +41,8 @@ private:
 	PreviewView *fRectView;
 	BRect fCustomCaptureRect;
 
-	SizeControl* fScaleSlider;
-	SizeControl* fBorderSlider;
+	SliderTextControl* fScaleSlider;
+	SliderTextControl* fBorderSlider;
 
 	void _LayoutView();
 	void _InitControlsFromSettings();

@@ -2,8 +2,8 @@
  * Copyright 2015 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
-#ifndef SIZECONTROL_H
-#define SIZECONTROL_H
+#ifndef SLIDERTEXTCONTROL_H
+#define SLIDERTEXTCONTROL_H
 
 
 #include <Slider.h>
@@ -12,9 +12,9 @@
 class BMessage;
 class BStringView;
 class BTextControl;
-class SizeControl : public BControl {
+class SliderTextControl : public BControl {
 public:
-	SizeControl(const char* name, const char* label,
+	SliderTextControl(const char* name, const char* label,
 		BMessage* message, int32 minValue,
 		int32 maxValue, int32 stepValue = 1,
 		const char* unit = "", orientation posture = B_HORIZONTAL,
@@ -34,4 +34,4 @@ private:
 };
 
 
-#endif // _H
+#endif // SLIDERTEXTCONTROL_H
