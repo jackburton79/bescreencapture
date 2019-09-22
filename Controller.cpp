@@ -308,14 +308,14 @@ Controller::SetCaptureArea(const BRect& rect)
 
 
 void
-Controller::SetCaptureFrameDelay(const int milliSeconds)
+Controller::SetCaptureFrameRate(const int fps)
 {
 	BAutolock _(this);
-	Settings::Current().SetCaptureFrameDelay(milliSeconds);
+	Settings::Current().SetCaptureFrameRate(fps);
 	
-	BMessage message(kMsgControllerCaptureFrameDelayChanged);
-	message.AddInt32("delay", milliSeconds);
-	SendNotices(kMsgControllerCaptureFrameDelayChanged, &message);
+	BMessage message(kMsgControllerCaptureFrameRateChanged);
+	message.AddInt32("frame_rate", fps);
+	SendNotices(kMsgControllerCaptureFrameRateChanged, &message);
 }
 
 
@@ -486,7 +486,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	targetRect.right++;
 	targetRect.bottom++;
 	
-	const int32 frameRate =  (int32)(1000 / settings.CaptureFrameDelay());
+	const int32 frameRate =  settings.CaptureFrameRate();
 	media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
@@ -711,10 +711,11 @@ Controller::CaptureThread()
 	Settings& settings = Settings::Current();
 	BScreen screen;
 	BRect bounds = settings.CaptureArea();
-	bigtime_t captureDelay = (bigtime_t)settings.CaptureFrameDelay() * 1000;
+	int32 frameRate = settings.CaptureFrameRate();
+	if (frameRate <= 0)
+		frameRate = 10;
+	bigtime_t captureDelay = (1000 / frameRate) * 1000;
 	
-	// TODO: Validate captureDelay with some limits
-
 	_TestWaitForRetrace();
 	
 	const int32 windowEdge = settings.WindowFrameEdgeSize();

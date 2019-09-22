@@ -23,21 +23,10 @@
 #include <cstdlib>
 #include <iostream>
 
-const static char* kCaptureFreqLabel = "Capture frame every";
 const static char* kFrameRateLabel = "Target frame rate";
 
-const static uint32 kLocalCaptureFreqChanged = 'CFCh';
 const static uint32 kLocalFrameRateChanged = 'FrCh';
 const static uint32 kAutoAdjust = 'FrCh';
-
-
-static
-void
-CapFloat(float &toLimit, const float min, const float max)
-{
-	toLimit = std::max(min, toLimit);
-	toLimit = std::min(max, toLimit);
-}
 
 
 FrameRateView::FrameRateView(Controller* controller)
@@ -75,12 +64,9 @@ FrameRateView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerResetSettings);
 		fController->UnlockLooper();
 	}
+	fFrameRateSlider->SetValue(Settings::Current().CaptureFrameRate());
 	fFrameRateSlider->SetTarget(this);
-	/*fAutoAdjust->SetTarget(this);*/
-	
-	float milliSeconds = (float)Settings::Current().CaptureFrameDelay();
-	
-	_UpdateCaptureRate(&milliSeconds, NULL);
+	/*fAutoAdjust->SetTarget(this);*/	
 }
 
 
@@ -88,16 +74,10 @@ void
 FrameRateView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
-		case kLocalCaptureFreqChanged:
-		{
-			//float delay = strtof(fCaptureFreq->Text(), NULL);
-			//_UpdateCaptureRate(&delay, NULL);
-			break;
-		}
 		case kLocalFrameRateChanged:
 		{
-			float rate = fFrameRateSlider->Value();
-			_UpdateCaptureRate(NULL, &rate);
+			int32 rate = fFrameRateSlider->Value();
+			fController->SetCaptureFrameRate(rate);
 			break;
 		}
 		case B_OBSERVER_NOTICE_CHANGE:
@@ -106,26 +86,22 @@ FrameRateView::MessageReceived(BMessage* message)
 			message->FindInt32("be:observe_change_what", &code);
 			switch (code) {
 				case kMsgControllerCaptureStarted:
-					//fCaptureFreq->SetEnabled(false);
 					fFrameRateSlider->SetEnabled(false);
 					break;
 				case kMsgControllerCaptureStopped:
-					//fCaptureFreq->SetEnabled(true);
 					fFrameRateSlider->SetEnabled(true);
 					break;
-				case kMsgControllerCaptureFrameDelayChanged:
+				case kMsgControllerCaptureFrameRateChanged:
 				{
-					int32 delay;
-					if (message->FindInt32("delay", &delay) == B_OK) {
-						float floatDelay = (float)delay;					
-						_UpdateCaptureRate(&floatDelay, NULL);
-					}
+					int32 fps;
+					if (message->FindInt32("frame_rate", &fps) == B_OK)
+						fFrameRateSlider->SetValue(fps);
 					break;
 				}
 				case kMsgControllerResetSettings:
 				{
-					float milliSeconds = (float)Settings::Current().CaptureFrameDelay();
-					_UpdateCaptureRate(&milliSeconds, NULL);
+					int32 fps = Settings::Current().CaptureFrameRate();
+					fFrameRateSlider->SetValue(fps);
 					break;
 				}
 				default:
@@ -136,25 +112,4 @@ FrameRateView::MessageReceived(BMessage* message)
 			BView::MessageReceived(message);
 			break;
 	}
-}
-
-
-void
-FrameRateView::_UpdateCaptureRate(float *delay, float *rate)
-{
-	BString text;
-	float targetDelay = 0;
-	if (delay != NULL) {
-		targetDelay = *delay;
-		CapFloat(targetDelay, 10, 1000);
-		
-		float targetRate = (1000 / targetDelay);
-		fFrameRateSlider->SetValue(targetRate);
-	} else if (rate != NULL) {
-		float targetRate = *rate;		
-		targetDelay = 1000 / targetRate;
-		//fCaptureFreq->SetText(text);
-	}
-	
-	fController->SetCaptureFrameDelay(targetDelay);
 }

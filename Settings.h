@@ -53,8 +53,8 @@ public:
 	BString OutputCodec() const;
 	void SetOutputCodec(const char* codecName);
 
-	int32 CaptureFrameDelay() const;
-	void SetCaptureFrameDelay(const int32& value);
+	int32 CaptureFrameRate() const;
+	void SetCaptureFrameRate(const int32& value);
 
 	int32 EncodingThreadPriority() const;
 	void SetEncodingThreadPriority(const int32 &value);

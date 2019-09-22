@@ -26,7 +26,7 @@ const static char *kOutputFileFormat = "output file format";
 const static char *kOutputCodecName = "output codec";
 const static char *kThreadPriority = "thread priority";
 const static char *kWindowFrameBorderSize = "window frame border size";
-const static char *kCaptureFrameDelay = "capture frame delay";
+const static char *kCaptureFrameRate = "capture frame rate";
 const static char *kDockingMode = "docking mode";
 
 
@@ -133,8 +133,8 @@ Settings::Load()
 			fSettings->ReplaceInt32(kThreadPriority, integer);
 		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
 			fSettings->ReplaceInt32(kWindowFrameBorderSize, integer);
-		if (tempMessage.FindInt32(kCaptureFrameDelay, &integer) == B_OK)
-			fSettings->ReplaceInt32(kCaptureFrameDelay, integer);
+		if (tempMessage.FindInt32(kCaptureFrameRate, &integer) == B_OK)
+			fSettings->ReplaceInt32(kCaptureFrameRate, integer);
 		if (tempMessage.FindBool(kDockingMode, &boolean) == B_OK)
 			fSettings->ReplaceBool(kDockingMode, boolean);
 	}	
@@ -390,23 +390,23 @@ Settings::SetOutputCodec(const char* codecName)
 
 
 int32
-Settings::CaptureFrameDelay() const
+Settings::CaptureFrameRate() const
 {
 	BAutolock _(fLocker);
 	int32 value;
-	fSettings->FindInt32(kCaptureFrameDelay, &value);
+	fSettings->FindInt32(kCaptureFrameRate, &value);
 	return value;
 }
 
 
 void
-Settings::SetCaptureFrameDelay(const int32& value)
+Settings::SetCaptureFrameRate(const int32& value)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasInt32(kCaptureFrameDelay))
-		fSettings->AddInt32(kCaptureFrameDelay, value);
+	if (!fSettings->HasInt32(kCaptureFrameRate))
+		fSettings->AddInt32(kCaptureFrameRate, value);
 	else
-		fSettings->ReplaceInt32(kCaptureFrameDelay, value);
+		fSettings->ReplaceInt32(kCaptureFrameRate, value);
 }
 
 
@@ -478,7 +478,7 @@ Settings::_SetDefaults()
 	fSettings->AddString(kOutputFileFormat, "");
 	fSettings->AddString(kOutputCodecName, "");
 	fSettings->AddInt32(kWindowFrameBorderSize, 0);
-	fSettings->AddInt32(kCaptureFrameDelay, 20);
+	fSettings->AddInt32(kCaptureFrameRate, 20);
 	fSettings->AddBool(kDockingMode, false);
 	
 	return B_OK;

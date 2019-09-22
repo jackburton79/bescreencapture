@@ -22,8 +22,6 @@ private:
 	Controller* fController;
 	SliderTextControl* fFrameRateSlider;
 	BCheckBox* fAutoAdjust;
-	
-	void _UpdateCaptureRate(float *delay, float *rate);
 };
 
 

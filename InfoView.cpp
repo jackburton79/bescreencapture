@@ -64,10 +64,10 @@ GetScaleString(float scale)
 
 
 static BString
-GetDelayString(int32 delay)
+GetFrameRateString(int32 fps)
 {
-	BString string = "Capture frame delay: ";
-	string << delay << " milliseconds";
+	BString string = "Capture frame rate: ";
+	string << fps << " frames per second";
 	return string;
 }
 
@@ -95,8 +95,8 @@ InfoView::InfoView(Controller* controller)
 				GetScaleString(scale)))
 			.Add(fFormat = new BStringView("format", ""))
 			.Add(fCodec = new BStringView("codec", ""))
-			.Add(fCaptureFrameDelay = new BStringView("capturedelay",
-				GetDelayString(settings.CaptureFrameDelay())))
+			.Add(fCaptureFrameRate = new BStringView("frame_rate",
+				GetFrameRateString(settings.CaptureFrameRate())))
 		.End()
 		.View();
 	AddChild(layoutView);
@@ -113,7 +113,7 @@ InfoView::AttachedToWindow()
 		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
 		fController->StartWatching(this, kMsgControllerCodecChanged);
 		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
-		fController->StartWatching(this, kMsgControllerCaptureFrameDelayChanged);
+		fController->StartWatching(this, kMsgControllerCaptureFrameRateChanged);
 		fController->UnlockLooper();
 	}
 	
@@ -170,11 +170,11 @@ InfoView::MessageReceived(BMessage* message)
 					}
 					break;
 				}
-				case kMsgControllerCaptureFrameDelayChanged:
+				case kMsgControllerCaptureFrameRateChanged:
 				{
-					int32 delay;
-					if (message->FindInt32("delay", &delay) == B_OK) {						
-						fCaptureFrameDelay->SetText(GetDelayString(delay));
+					int32 fps;
+					if (message->FindInt32("frame_rate", &fps) == B_OK) {						
+						fCaptureFrameRate->SetText(GetFrameRateString(fps));
 					}
 					break;
 				}	
