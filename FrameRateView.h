@@ -9,9 +9,9 @@
 
 #include <View.h>
 
-class Controller;
 class BCheckBox;
-class BTextControl;
+class Controller;
+class SliderTextControl;
 class FrameRateView : public BView {
 public:
 	FrameRateView(Controller* controller);
@@ -20,8 +20,7 @@ public:
 	
 private:
 	Controller* fController;
-	BTextControl* fCaptureFreq;
-	BTextControl* fFrameRate;
+	SliderTextControl* fFrameRateSlider;
 	BCheckBox* fAutoAdjust;
 	
 	void _UpdateCaptureRate(float *delay, float *rate);
