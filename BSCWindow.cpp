@@ -278,10 +278,14 @@ BSCWindow::_BuildMenu()
 	menu = new BMenu("Settings");
 	BMenuItem* resetSettings = new BMenuItem("Reset Settings", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
-	/*BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
-	menu->AddItem(media);*/
+#if 0
+	BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
+	menu->AddItem(media);
+#endif
+#if 0
 	BMenuItem* dock = new BMenuItem("Dock Window", new BMessage(kGUIDockWindow));
 	menu->AddItem(dock);
+#endif
 	fMenuBar->AddItem(menu);
 }
 

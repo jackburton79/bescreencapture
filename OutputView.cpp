@@ -346,7 +346,7 @@ OutputView::_InitControlsFromSettings()
 		fCustomArea->SetValue(B_CONTROL_ON);
 		fSelectAreaButton->SetEnabled(true);
 	}
-	_InitControlsFromSettings();
+	_UpdateFileNameControlState();
 }
 
 
