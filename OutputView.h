@@ -45,6 +45,7 @@ private:
 
 	void _LayoutView();
 	void _InitControlsFromSettings();
+	void _UpdateFileNameControlState();
 	void _SetFileNameExtension(const char* extension);
 	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
 	void _HandleExistingFileName(const char* fileName);

@@ -165,9 +165,8 @@ OutputView::MessageReceived(BMessage *message)
 					_SetFileNameExtension(fController->MediaFileFormat().file_extension);
 					if (strcmp(fController->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0) {
 						fController->SetOutputFileName(fFileName->Text());
-						fFileName->SetEnabled(true);
-					} else
-						fFileName->SetEnabled(false);
+					}
+					_UpdateFileNameControlState();
 					break;
 
 				case kMsgControllerCaptureStarted:
@@ -347,9 +346,15 @@ OutputView::_InitControlsFromSettings()
 		fCustomArea->SetValue(B_CONTROL_ON);
 		fSelectAreaButton->SetEnabled(true);
 	}
+	_InitControlsFromSettings();
+}
 
-	if (strcmp(fController->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0)
-		fFileName->SetEnabled(false);
+
+void
+OutputView::_UpdateFileNameControlState()
+{
+	bool enabled = strcmp(fController->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0;
+	fFileName->SetEnabled(enabled);
 }
 
 

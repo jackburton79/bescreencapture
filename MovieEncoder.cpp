@@ -277,6 +277,7 @@ MovieEncoder::_EncoderThread()
 
 	BPath tempPath;
 	status_t status = B_ERROR;
+	// TODO: Improve this: we are using the name of the media format to see if it's a fake format
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
 		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
 		// TODO: Let the user select the output directory
