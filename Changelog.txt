@@ -1,6 +1,8 @@
-v2.5
+v2.5.0-beta
 	- Add an option to export to animated GIF.
-	- Fixed saving/restoring selected file format (was broken for GIF and Export to Bitmap)
+	- Fixed saving/restoring selected file format (was broken for Export to Bitmap).
+	- Improve interface for selecting frame rate.
+	- Various improvements and cleanups.
 ---
 v2.4.1
 	- Fix wrong region on first 10 frames.
