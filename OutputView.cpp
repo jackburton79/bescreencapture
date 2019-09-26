@@ -179,7 +179,7 @@ OutputView::MessageReceived(BMessage *message)
 					break;
 
 				case kMsgControllerEncodeFinished:
-					fFileName->SetEnabled(true);
+					_UpdateFileNameControlState();
 					fScaleSlider->SetEnabled(true);
 					break;
 
