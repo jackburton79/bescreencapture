@@ -8,6 +8,7 @@
 
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
+#include <MessageRunner.h>
 #include <Slider.h>
 #include <String.h>
 #include <StringView.h>
@@ -16,6 +17,7 @@
 #include <iostream>
 
 const int32 kTextControlMessage = '9TCM';
+const int32 kTextControlRunnerMessage = '9RTC';
 
 class SizeSlider : public BSlider {
 public:
@@ -41,6 +43,9 @@ SliderTextControl::SliderTextControl(const char* name, const char* label,
 		uint32 flags)
 	:
 	BControl(name, label, message, flags),
+	fSizeSlider(NULL),
+	fSizeTextControl(NULL),
+	fTextModificationRunner(NULL),
 	fWhat(message->what)
 {
 	fSizeSlider = new SizeSlider("size_slider", label,
@@ -98,6 +103,16 @@ SliderTextControl::MessageReceived(BMessage* message)
 	}
 	switch (message->what) {
 		case kTextControlMessage:
+		{
+			if (fTextModificationRunner != NULL)
+				fTextModificationRunner->SetInterval(1000000);
+			
+			BMessenger thisMessenger(this);
+			fTextModificationRunner = new BMessageRunner(thisMessenger,
+				new BMessage(kTextControlRunnerMessage), 1000000, 1);
+			break;
+		}
+		case kTextControlRunnerMessage:
 		{
 			int32 value = atoi(fSizeTextControl->TextView()->Text());
 			BControl::SetValue(value);
