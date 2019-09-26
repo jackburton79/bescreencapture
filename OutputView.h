@@ -25,7 +25,6 @@ public:
 	BPath OutputFileName() const;
 
 	void UpdatePreviewFromSettings();
-			
 private:
 	Controller *fController;
 

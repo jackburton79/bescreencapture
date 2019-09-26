@@ -102,7 +102,7 @@ MakeNULLMediaFileFormat(media_file_format& outFormat)
 	strncpy(outFormat.pretty_name, "Export frames as Bitmaps", sizeof(outFormat.pretty_name));
 	strncpy(outFormat.short_name, NULL_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
 	outFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	outFormat.file_extension[0] = '\0';
+	strncpy(outFormat.file_extension, "bmp", sizeof(outFormat.file_extension));
 	outFormat.family = B_ANY_FORMAT_FAMILY;
 }
 
