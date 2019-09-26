@@ -515,7 +515,16 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 	// TODO: Check if ffmpeg tools are installed
 	//
 
-	// TODO: support more actions ?	
+	std::cout << "path: " << fTempPath.Path() << std::endl;
+
+	BEntry pathEntry(fTempPath.Path());
+	if (pathEntry.Exists()) {
+		BDirectory dir(fTempPath.Path());
+		BEntry fileEntry;
+		while (dir.GetNextEntry(&fileEntry) == B_OK)
+			fileEntry.Remove();
+		pathEntry.Remove();
+	}
 }
 
 
