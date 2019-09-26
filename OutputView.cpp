@@ -163,9 +163,7 @@ OutputView::MessageReceived(BMessage *message)
 				}
 				case kMsgControllerMediaFileFormatChanged:
 					_SetFileNameExtension(fController->MediaFileFormat().file_extension);
-					if (strcmp(fController->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0) {
-						fController->SetOutputFileName(fFileName->Text());
-					}
+					fController->SetOutputFileName(fFileName->Text());
 					_UpdateFileNameControlState();
 					break;
 

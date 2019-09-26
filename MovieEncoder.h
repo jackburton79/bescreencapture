@@ -72,6 +72,7 @@ private:
 	std::queue<BPoint> *fCursorQueue;
 	
 	BPath fOutputFile;
+	BPath fTempPath;
 	
 	BRect fDestFrame;
 	color_space fColorSpace;

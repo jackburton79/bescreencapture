@@ -275,7 +275,6 @@ MovieEncoder::_EncoderThread()
 
 	int32 framesWritten = 0;
 
-	BPath tempPath;
 	status_t status = B_ERROR;
 	// TODO: Improve this: we are using the name of the media format to see if it's a fake format
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
@@ -287,7 +286,7 @@ MovieEncoder::_EncoderThread()
 			char* tempDirectory = tempnam((char*)path.Path(), (char*)"BeScreenCapture_");
 			status = create_directory(tempDirectory, 0777);
 			if (BEntry(tempDirectory).IsDirectory()) {
-				tempPath = tempDirectory;
+				fTempPath = tempDirectory;
 				fFileList->WriteFrames(tempDirectory);
 				framesWritten = framesLeft;
 				framesLeft = 0;
@@ -302,7 +301,7 @@ MovieEncoder::_EncoderThread()
 
 		// Create movie
 		status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
-		tempPath = fFileList->Path();
+		fTempPath = fFileList->Path();
 	}
 
 	if (status != B_OK) {
@@ -353,7 +352,7 @@ MovieEncoder::_EncoderThread()
 	}
 
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)
-		_PostEncodingAction(tempPath);
+		_PostEncodingAction(fTempPath);
 
 	DisposeData();
 
@@ -530,7 +529,10 @@ MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFr
 	message.AddInt32("status", (int32)status);
 	if (numFrames > 0) {
 		message.AddInt32("frames", (int32)numFrames);
-		message.AddString("file_name", fOutputFile.Path());
+		if (strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0)
+			message.AddString("file_name", fTempPath.Path());
+		else
+			message.AddString("file_name", fOutputFile.Path());
 	}
 	fMessenger.SendMessage(&message);
 }
