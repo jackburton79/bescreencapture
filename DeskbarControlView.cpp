@@ -303,7 +303,7 @@ BSCMenuItem::DrawContent()
 			
 			float stripWidth = 4;
 			BRect stripRect = imageRect;
-			stripRect.left += 2;
+			stripRect.left += 1;
 			stripRect.right = stripRect.left + stripWidth;
 			
 			Menu()->SetHighColor(kBlack);
