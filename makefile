@@ -40,6 +40,7 @@ SRCS = \
 	 BSCApp.cpp  \
 	 BSCWindow.cpp  \
 	 CamStatusView.cpp  \
+	 Constants.cpp  \
 	 Controller.cpp  \
 	 DeskbarControlView.cpp  \
 	 Executor.cpp  \
@@ -72,6 +73,8 @@ RSRCS = \
 
 
 # @<-src@ 
+#%}
+
 #%}
 
 #%}
