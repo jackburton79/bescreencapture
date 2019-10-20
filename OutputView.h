@@ -9,6 +9,7 @@
 #include <View.h>
 
 class BButton;
+class BMessageRunner;
 class BRadioButton;
 class BTextControl;
 class Controller;
@@ -43,6 +44,9 @@ private:
 	SliderTextControl* fScaleSlider;
 	SliderTextControl* fBorderSlider;
 
+	BMessageRunner* fWarningRunner;
+	int32 fWarningCount;
+	
 	void _LayoutView();
 	void _InitControlsFromSettings();
 	void _UpdateFileNameControlState();

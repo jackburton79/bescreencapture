@@ -12,18 +12,21 @@
 #include <Button.h>
 #include <FilePanel.h>
 #include <LayoutBuilder.h>
+#include <MessageRunner.h>
 #include <RadioButton.h>
 #include <Screen.h>
 #include <TextControl.h>
 
 #include <iostream>
 
+const static int32 kInitialWarningCount = 20;
 
-const static int32 kCheckBoxAreaSelectionChanged = 'CaCh';
-const static int32 kOpenFilePanel = 'OpFp';
-const static int32 kMsgTextControlSizeChanged = 'TCSC';
-const static int32 kScaleChanged = 'ScCh';
+const static uint32 kCheckBoxAreaSelectionChanged = 'CaCh';
+const static uint32 kOpenFilePanel = 'OpFp';
+const static uint32 kMsgTextControlSizeChanged = 'TCSC';
+const static uint32 kScaleChanged = 'ScCh';
 const static uint32 kWindowBorderFrameChanged = 'WbFc';
+const static uint32 kWarningRunnerMessage = 'WaRm';
 
 const static char* kSelectWindowButtonText = "Select Window";
 const static char* kSelectRegionButtonText = "Select Region";
@@ -31,7 +34,9 @@ const static char* kSelectRegionButtonText = "Select Region";
 OutputView::OutputView(Controller *controller)
 	:
 	BView("Capture Options", B_WILL_DRAW),
-	fController(controller)
+	fController(controller),
+	fWarningRunner(NULL),
+	fWarningCount(0)
 {
 	_LayoutView();
 }
@@ -135,6 +140,26 @@ OutputView::MessageReceived(BMessage *message)
 			Settings::Current().SetWindowFrameEdgeSize(size);
 			break;
 		}
+		case kWarningRunnerMessage:
+		{
+			if (--fWarningCount == 0) {
+				// Invalidate so it reverts to the default color
+				fFileName->Invalidate();
+				break;
+			}
+			rgb_color color = kRed;
+			color.red = kRed.red + (fWarningCount - kInitialWarningCount) * 6;
+			color.green = kRed.green - (fWarningCount - kInitialWarningCount) * 6;
+			color.blue = kRed.blue - (fWarningCount - kInitialWarningCount) * 6;
+
+			fFileName->PushState();
+			fFileName->SetHighColor(color);
+			BRect rect(fFileName->Bounds());
+			rect.left += fFileName->Divider();
+			fFileName->StrokeRect(rect, B_SOLID_HIGH);
+			fFileName->PopState();
+			break;
+		}
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -195,7 +220,6 @@ OutputView::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-		
 		case B_SAVE_REQUESTED:
 		{
 			entry_ref ref;
@@ -397,6 +421,15 @@ OutputView::_HandleExistingFileName(const char* fileName)
 	BString newFileName = fileName;
 	newFileName = GetUniqueFileName(newFileName, fFileExtension);
 	fFileName->SetText(newFileName);
-	// TODO: Give an hint to the user that the file name changed
+
+	BMessenger thisMessenger(this);
+	if (fWarningCount > 0) {
+		// Re-start runner
+		fWarningRunner->SetCount(kInitialWarningCount);
+	} else
+		fWarningRunner = new BMessageRunner(thisMessenger,
+				new BMessage(kWarningRunnerMessage), 200000, kInitialWarningCount);
+
+	fWarningCount = kInitialWarningCount;
 }
 
