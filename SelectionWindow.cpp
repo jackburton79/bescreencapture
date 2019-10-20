@@ -1,3 +1,4 @@
+#include "Constants.h"
 #include "SelectionWindow.h"
 #include "Settings.h"
 #include "Utils.h"
@@ -12,8 +13,6 @@ const char *kInfoRegionMode = "Click and drag to select, press ENTER to confirm"
 const char *kInfoWindowMode = "Click to select a window";
 
 const static rgb_color kSelectionColor = { 0, 0, 128, 100 };
-const static rgb_color kRed = { 240, 0, 0, 0 };
-const static rgb_color kBlack = { 0, 0, 0, 255 };
 
 const static float kDraggerSize = 16;
 const static float kDraggerSpacing = 4;

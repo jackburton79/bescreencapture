@@ -134,11 +134,11 @@ DeskbarControlView::Draw(BRect rect)
 	
 	if (fPaused) {
 		SetDrawingMode(B_OP_COPY);
-		SetHighColor(0, 240, 0);
+		SetHighColor(kGreen);
 		FillRect(BRect(2, 12, 5, 15));
 	} else if (fRecording) {
 		SetDrawingMode(B_OP_COPY);
-		SetHighColor(250, 0, 0);
+		SetHighColor(kRed);
 		FillRect(BRect(2, 12, 5, 15));
 	}
 }
@@ -284,7 +284,7 @@ BSCMenuItem::DrawContent()
 		{
 			Menu()->MovePenTo(drawPoint);
 			BMenuItem::DrawContent();
-			Menu()->SetHighColor(248, 0, 0);
+			Menu()->SetHighColor(kRed);
 			Menu()->FillEllipse(imageRect);
 			break;
 		}
@@ -292,7 +292,7 @@ BSCMenuItem::DrawContent()
 		{
 			Menu()->MovePenTo(drawPoint);
 			BMenuItem::DrawContent();	
-			Menu()->SetHighColor(248, 0, 0);
+			Menu()->SetHighColor(kRed);
 			Menu()->FillRect(imageRect);
 			break;
 		}
@@ -306,7 +306,7 @@ BSCMenuItem::DrawContent()
 			stripRect.left += 2;
 			stripRect.right = stripRect.left + stripWidth;
 			
-			Menu()->SetHighColor(0, 250, 0);
+			Menu()->SetHighColor(kGreen);
 			Menu()->FillRect(stripRect);
 			stripRect.OffsetBy(imageRect.Width() - stripWidth - 2, 0);
 			Menu()->FillRect(stripRect);
@@ -324,7 +324,7 @@ BSCMenuItem::DrawContent()
 			ptThree.x += max_c(kContentIconMinSize, fullHeight);
 			ptThree.y += (ptTwo.y - ptOne.y) / 2;			
 
-			Menu()->SetHighColor(0, 250, 0);
+			Menu()->SetHighColor(kGreen);
 			Menu()->FillTriangle(ptOne, ptTwo, ptThree);
 			break;
 		}	
