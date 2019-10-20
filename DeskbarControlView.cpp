@@ -134,7 +134,7 @@ DeskbarControlView::Draw(BRect rect)
 	
 	if (fPaused) {
 		SetDrawingMode(B_OP_COPY);
-		SetHighColor(kGreen);
+		SetHighColor(kBlack);
 		FillRect(BRect(2, 12, 5, 15));
 	} else if (fRecording) {
 		SetDrawingMode(B_OP_COPY);
@@ -306,7 +306,7 @@ BSCMenuItem::DrawContent()
 			stripRect.left += 2;
 			stripRect.right = stripRect.left + stripWidth;
 			
-			Menu()->SetHighColor(kGreen);
+			Menu()->SetHighColor(kBlack);
 			Menu()->FillRect(stripRect);
 			stripRect.OffsetBy(imageRect.Width() - stripWidth - 2, 0);
 			Menu()->FillRect(stripRect);
@@ -324,7 +324,7 @@ BSCMenuItem::DrawContent()
 			ptThree.x += max_c(kContentIconMinSize, fullHeight);
 			ptThree.y += (ptTwo.y - ptOne.y) / 2;			
 
-			Menu()->SetHighColor(kGreen);
+			Menu()->SetHighColor(kBlack);
 			Menu()->FillTriangle(ptOne, ptTwo, ptThree);
 			break;
 		}	
