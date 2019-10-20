@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Constants.h"
 #include "FramesList.h"
 #include "ImageFilter.h"
+#include "Utils.h"
 
 #include <Bitmap.h>
 #include <Debug.h>
@@ -352,7 +353,7 @@ MovieEncoder::_EncoderThread()
 	}
 
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)
-		_PostEncodingAction(fTempPath);
+		status = _PostEncodingAction(fTempPath);
 
 	DisposeData();
 
@@ -502,20 +503,18 @@ MovieEncoder::EncodeStarter(void* arg)
 }
 
 
-void
+status_t
 MovieEncoder::_PostEncodingAction(BPath& path)
 {
+	if (!IsFFMPEGAvailable())
+		return B_ERROR;
+
 	BString command;
 	command.Append("ffmpeg -i ");
 	command.Append(path.Path()).Append("/frame_%05d.bmp ");
 	command.Append(fOutputFile.Path());
-	
-	std::cout << command.String() << std::endl;
-	system(command.String());
-	// TODO: Check if ffmpeg tools are installed
-	//
-
-	std::cout << "path: " << fTempPath.Path() << std::endl;
+	command.Append (" > /dev/null 2>&1");
+	int result = system(command.String());
 
 	BEntry pathEntry(fTempPath.Path());
 	if (pathEntry.Exists()) {
@@ -525,6 +524,11 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 			fileEntry.Remove();
 		pathEntry.Remove();
 	}
+
+	if (WEXITSTATUS(result) != 0)
+		return B_ERROR;
+
+	return B_OK;
 }
 
 

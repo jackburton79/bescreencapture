@@ -208,13 +208,13 @@ MediaFormatView::_BuildFileFormatsMenu()
 	MediaFileFormatMenuItem* nullItem = new MediaFileFormatMenuItem(nullFormat);
 	menu->AddItem(nullItem);
 	
-	// TODO: Maybe Haiku could support this by enabling this in ffmpeg ?
-#if 1
-	media_file_format gifFormat;
-	MakeGIFMediaFileFormat(gifFormat);
-	MediaFileFormatMenuItem* gifItem = new MediaFileFormatMenuItem(gifFormat);
-	menu->AddItem(gifItem);
-#endif
+	// TODO: Maybe Haiku could support this by enabling this in the ffmpeg addon ?
+	if (IsFFMPEGAvailable()) {
+		media_file_format gifFormat;
+		MakeGIFMediaFileFormat(gifFormat);
+		MediaFileFormatMenuItem* gifItem = new MediaFileFormatMenuItem(gifFormat);
+		menu->AddItem(gifItem);
+	}
 }
 
 

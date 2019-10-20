@@ -56,6 +56,14 @@ IsFileFormatUsable(const media_file_format& format)
 }
 
 
+bool
+IsFFMPEGAvailable()
+{
+	int result = system("type ffmpeg > /dev/null 2>&1");
+	return WEXITSTATUS(result) == 0;
+}
+
+
 // If prettyName is NULL, returns the first found media_file_format,
 // otherwise returns the media_file_format with the same prettyName
 // TODO: Use the short_name instead
