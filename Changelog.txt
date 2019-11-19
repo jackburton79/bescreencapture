@@ -1,7 +1,8 @@
 v2.5.0
 	- Add an option to export to animated GIF.
 	- Fixed saving/restoring selected file format (was broken for Export to Bitmap).
-	- Improve interface for selecting frame rate.
+	- Improved interface for frame rate selection.
+	- Fixed deskbar replicant menu drawing and changed colors.
 	- Various improvements and cleanups.
 ---
 v2.4.1
