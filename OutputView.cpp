@@ -26,8 +26,8 @@ const static int32 kMsgTextControlSizeChanged = 'TCSC';
 const static int32 kScaleChanged = 'ScCh';
 const static uint32 kWindowBorderFrameChanged = 'WbFc';
 
-const static char* kSelectWindowButtonText = "Select Window";
-const static char* kSelectRegionButtonText = "Select Region";
+const static char* kSelectWindowButtonText = "Select window";
+const static char* kSelectRegionButtonText = "Select region";
 
 OutputView::OutputView(Controller *controller)
 	:
@@ -275,7 +275,7 @@ OutputView::_LayoutView()
 	fWindow = new BRadioButton("window", 
 		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
 		
-	fSelectAreaButton = new BButton("select region", "Select Region", new BMessage(kSelectArea));
+	fSelectAreaButton = new BButton("select region", "Select region", new BMessage(kSelectArea));
 	fSelectAreaButton->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	float selectAreaButtonMinWidth = std::max(fSelectAreaButton->StringWidth(kSelectWindowButtonText),
 		fSelectAreaButton->StringWidth(kSelectRegionButtonText));

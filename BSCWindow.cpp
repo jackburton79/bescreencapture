@@ -30,8 +30,8 @@ const static uint32 kGUIOpenMediaWindow = 'j89d';
 const static uint32 kGUIDockWindow = 'j90d';
 const static uint32 kGUIResetSettings = 'j91d';
 
-const static char* LABEL_BUTTON_START = "Start Recording";
-const static char* LABEL_BUTTON_STOP = "Stop Recording";
+const static char* LABEL_BUTTON_START = "Start recording";
+const static char* LABEL_BUTTON_STOP = "Stop recording";
 const static char* LABEL_BUTTON_PAUSE = "Pause";
 const static char* LABEL_BUTTON_RESUME = "Resume";
 
@@ -106,10 +106,10 @@ BSCWindow::QuitRequested()
 	BString reason;
 	bool canQuit = fController->CanQuit(reason);
 	if (!canQuit) {
-		BString text = "Really Quit?";
+		BString text = "Do you really want to quit?\n";
 		text.Append(" ");
 		text.Append(reason);
-		BAlert* alert = new BAlert("Really Quit?", text, "Yes", "No");
+		BAlert* alert = new BAlert("Really quit?", text, "Quit", "Continue");
 		int32 result = alert->Go();
 		if (result == 0) {
 			fController->Cancel();
@@ -177,7 +177,7 @@ BSCWindow::MessageReceived(BMessage *message)
 						char errorString[128];
 						snprintf(errorString, 128, "Could not record clip:\n"
 							"%s", strerror(status));
-						(new BAlert("Capture Failed", errorString, "Ok"))->Go();
+						(new BAlert("Capture failed", errorString, "OK"))->Go();
 						fStartStopButton->SetEnabled(true);
 					}
 					break;
@@ -204,7 +204,7 @@ BSCWindow::MessageReceived(BMessage *message)
 						BString errorString;
 						errorString.SetToFormat("Could not create clip: "
 							"%s", strerror(status));
-						(new BAlert("Encoding Failed", errorString.String(), "Ok"))->Go();
+						(new BAlert("Encoding failed", errorString.String(), "OK"))->Go();
 					} else {
 						// TODO: Should be asynchronous
 						BString successString;
@@ -276,14 +276,14 @@ BSCWindow::_BuildMenu()
 	fMenuBar->AddItem(menu);
 	
 	menu = new BMenu("Settings");
-	BMenuItem* resetSettings = new BMenuItem("Reset Settings", new BMessage(kGUIResetSettings));
+	BMenuItem* resetSettings = new BMenuItem("Reset settings", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
 #if 0
-	BMenuItem* media = new BMenuItem("Encoding Settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
+	BMenuItem* media = new BMenuItem("Encoding settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
 	menu->AddItem(media);
 #endif
 #if 0
-	BMenuItem* dock = new BMenuItem("Dock Window", new BMessage(kGUIDockWindow));
+	BMenuItem* dock = new BMenuItem("Dock window", new BMessage(kGUIDockWindow));
 	menu->AddItem(dock);
 #endif
 	fMenuBar->AddItem(menu);
@@ -321,16 +321,17 @@ BSCWindow::_LayoutWindow(bool dock)
 		
 	BTabView* tabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL);
 
-	BLayoutBuilder::Group<>(this, B_VERTICAL)
+	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
 		.AddGroup(B_VERTICAL)
-		.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
+			.SetInsets(-2, B_USE_DEFAULT_SPACING, -2, 0)
 			.Add(tabView)
-			.AddGroup(B_HORIZONTAL)
-				.Add(fCamStatus)
-				.Add(fPauseButton)
-				.Add(fStartStopButton)
 			.End()
+		.AddGroup(B_HORIZONTAL)
+		.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
+			.Add(fCamStatus)
+			.Add(fPauseButton)
+			.Add(fStartStopButton)
 		.End();
 
 	BGroupView* outputGroup = new BGroupView(B_HORIZONTAL);
