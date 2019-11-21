@@ -97,6 +97,7 @@ InfoView::InfoView(Controller* controller)
 			.Add(fCodec = new BStringView("codec", ""))
 			.Add(fCaptureFrameRate = new BStringView("frame_rate",
 				GetFrameRateString(settings.CaptureFrameRate())))
+			.AddGlue()
 		.End()
 		.View();
 	AddChild(layoutView);

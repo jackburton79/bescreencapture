@@ -59,17 +59,17 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(fUseDirectWindow = new BCheckBox("Use DW",
-					"Use BDirectWindow (allows less CPU usage)",
+					"Use less CPU (BDirectWindow)",
 					new BMessage(kLocalUseDirectWindow)))
 			.Add(fMinimizeOnStart = new BCheckBox("HideWhenRecording",
 				"Hide window when recording", new BMessage(kLocalMinimizeOnRecording)))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
-					"Incognito mode (Hide window and Deskbar icon)", new BMessage(kLocalHideDeskbar)))
+					"Incognito mode: Hide window and Deskbar icon", new BMessage(kLocalHideDeskbar)))
 		.End()
 		.View();
 	
-	fHideDeskbarIcon->SetToolTip("Install the bescreencapture_inputfilter to be able to stop recording "
-								"with CTRL+CMD+SHIFT+R, or define a shortcut key with the Shortcut preflet");
+	fHideDeskbarIcon->SetToolTip("Stop recording with with CTRL+ALT+SHIFT+R,\n"
+								"or define a key combination with the Shortcuts preferences");
 	
 	advancedBox->AddChild(layoutView);
 	
