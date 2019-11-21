@@ -17,6 +17,7 @@
 #include <Screen.h>
 #include <TextControl.h>
 
+#include <algorithm>
 #include <iostream>
 
 const static int32 kInitialWarningCount = 20;
