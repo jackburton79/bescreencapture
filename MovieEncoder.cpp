@@ -284,11 +284,14 @@ MovieEncoder::_EncoderThread()
 		BPath path;
 		status = find_directory(B_USER_DIRECTORY, &path);
 		if (status == B_OK) {
-			char* tempDirectory = tempnam((char*)path.Path(), (char*)"BeScreenCapture_");
-			status = create_directory(tempDirectory, 0777);
-			if (BEntry(tempDirectory).IsDirectory()) {
-				fTempPath = tempDirectory;
-				fFileList->WriteFrames(tempDirectory);
+			char tempDirectoryTemplate[PATH_MAX];
+			snprintf(tempDirectoryTemplate, PATH_MAX, "%s/BeScreenCapture_XXXXXX", path.Path());
+			char* tempDirectoryName = ::mkdtemp(tempDirectoryTemplate);
+			if (tempDirectoryName == NULL)
+				status = B_ERROR;
+			else if (BEntry(tempDirectoryName).IsDirectory()) {
+				fTempPath = tempDirectoryName;
+				fFileList->WriteFrames(tempDirectoryName);
 				framesWritten = framesLeft;
 				framesLeft = 0;
 			}
