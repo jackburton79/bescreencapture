@@ -16,6 +16,7 @@
 #include <Screen.h>
 #include <TextControl.h>
 
+#include <algorithm>
 #include <iostream>
 
 
