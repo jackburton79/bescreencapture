@@ -511,7 +511,7 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 
 	BString command;
 	command.Append("ffmpeg -i ");
-	command.Append(path.Path()).Append("/frame_%05d.bmp ");
+	command.Append(path.Path()).Append("/frame_%5d.bmp ");
 	command.Append(fOutputFile.Path());
 	command.Append (" > /dev/null 2>&1");
 	int result = system(command.String());
