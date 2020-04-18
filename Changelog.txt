@@ -1,3 +1,6 @@
+v2.5.1
+	- Fixed GIF export only exporting a few frames.
+---
 v2.5.0
 	- Add an option to export to animated GIF.
 	- Fixed saving/restoring selected file format (was broken for Export to Bitmap).
