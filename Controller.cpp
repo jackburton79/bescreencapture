@@ -694,7 +694,7 @@ Controller::_WaitForRetrace(bigtime_t time)
 	if (fSupportsWaitForRetrace)
 		BScreen().WaitForRetrace(time);
 	else
-		snooze(time);		
+		snooze(time);
 }
 
 
@@ -714,7 +714,7 @@ Controller::CaptureThread()
 	int32 frameRate = settings.CaptureFrameRate();
 	if (frameRate <= 0)
 		frameRate = 10;
-	bigtime_t captureDelay = (1000 / frameRate) * 1000;
+	bigtime_t captureDelay = 1000 * (1000 / frameRate);
 	
 	_TestWaitForRetrace();
 	
