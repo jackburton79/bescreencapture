@@ -7,6 +7,8 @@
 
 #include "FramesList.h"
 
+#include "Utils.h"
+
 #include <Bitmap.h>
 #include <BitmapStream.h>
 #include <Directory.h>
@@ -24,6 +26,8 @@
 #include <new>
 
 static BTranslatorRoster* sTranslatorRoster = NULL;
+
+const uint64 kMinFreeMemory = (1 * 1024 * 1024 * 1024); // 1GB
 
 FramesList::FramesList()
 	:
@@ -65,7 +69,9 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t time)
 	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, time);
 	if (entry == NULL)
 		return false;
-	if (CountItems() > 40) {
+
+	// TODO: Use a smarter check
+	if (GetFreeMemory() < kMinFreeMemory) {
 		if (entry->SaveToDisk(fTemporaryPath) != B_OK) {
 			delete entry;
 			return false;

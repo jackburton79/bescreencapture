@@ -19,6 +19,8 @@
 #include <iostream>
 
 
+// TODO: Refactor
+
 void
 PrintMediaFormat(const media_format& format)
 {
@@ -245,3 +247,13 @@ GetWindowFrameForToken(int32 token, int32 border)
 	return rect;
 }
 
+
+uint64
+GetFreeMemory()
+{
+	system_info info;
+	if (get_system_info(&info) != B_OK)
+		return 0;
+
+	return info.free_memory;
+}
