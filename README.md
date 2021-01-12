@@ -13,7 +13,6 @@ You can do that by installing the bescreencapture_inputfilter and using the ctrl
 These are the commands you can configure in the "Shortcuts" preflet for the various actions:
 
 * Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StoR' "
-
 * Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
 
 ## Notes
