@@ -9,11 +9,11 @@
 
 class BPath;
 class BRect;
-
+class BString;
 void PrintMediaFormat(const media_format& format);
 bool IsFileFormatUsable(const media_file_format&);
 bool IsFFMPEGAvailable();
-bool GetMediaFileFormat(const char* prettyName, media_file_format* outFormat);
+bool GetMediaFileFormat(const BString& prettyName, media_file_format* outFormat);
 void MakeGIFMediaFileFormat(media_file_format& outFormat);
 void MakeNULLMediaFileFormat(media_file_format& outFormat);
 

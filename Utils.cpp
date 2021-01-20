@@ -39,19 +39,17 @@ IsFileFormatUsable(const media_file_format& format)
 	if ((format.capabilities & neededMask) != neededMask)
 		return false;
 
-	// Check if this format is broken in Haiku
-	static const char* brokenFileFormats[] = {
+	// Known broken file formats in Haiku
+	static BString brokenFileFormats[] = {
 		"DV Movie",
 		"Ogg Audio",
-		"Ogg Video",
-		NULL
+		"Ogg Video"
 	};
-
-	int i = 0;
-	while (brokenFileFormats[i] != NULL) {
-		if (strncmp(brokenFileFormats[i], format.pretty_name, strlen(brokenFileFormats[i])) == 0)
+	
+	BString formatString = format.pretty_name;
+	for (size_t i = 0; i < sizeof(brokenFileFormats) / sizeof(brokenFileFormats[i]); i++) {
+		if (formatString.StartsWith(brokenFileFormats[i]))
 			return false;
-		i++;
 	};
 
 	return true;
@@ -70,24 +68,23 @@ IsFFMPEGAvailable()
 // otherwise returns the media_file_format with the same prettyName
 // TODO: Use the short_name instead
 bool
-GetMediaFileFormat(const char* prettyName, media_file_format* outFormat)
+GetMediaFileFormat(const BString& prettyName, media_file_format* outFormat)
 {
 	media_file_format mediaFileFormat;
 	int32 cookie = 0;
 	while (get_next_file_format(&cookie, &mediaFileFormat) == B_OK) {
 		if (!IsFileFormatUsable(mediaFileFormat))
 			continue;
-		if (prettyName == NULL
-				|| strcmp(mediaFileFormat.pretty_name, prettyName) == 0) {
+		if (prettyName == "" || prettyName == mediaFileFormat.pretty_name) {
 			*outFormat = mediaFileFormat;
 			return true;
 		}
 	}
 	
-	if (strcmp(prettyName, NULL_FORMAT_PRETTY_NAME) == 0) {
+	if (prettyName == NULL_FORMAT_PRETTY_NAME) {
 		MakeNULLMediaFileFormat(*outFormat);
 		return true;
-	} else if (strcmp(prettyName, GIF_FORMAT_PRETTY_NAME) == 0) {
+	} else if (prettyName == GIF_FORMAT_PRETTY_NAME) {
 		MakeGIFMediaFileFormat(*outFormat);
 		return true;
 	}
@@ -98,10 +95,10 @@ GetMediaFileFormat(const char* prettyName, media_file_format* outFormat)
 void
 MakeGIFMediaFileFormat(media_file_format& outFormat)
 {
-	strncpy(outFormat.pretty_name, "GIF", sizeof(outFormat.pretty_name));
-	strncpy(outFormat.short_name, GIF_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
+	::strncpy(outFormat.pretty_name, "GIF", sizeof(outFormat.pretty_name));
+	::strncpy(outFormat.short_name, GIF_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
 	outFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	strncpy(outFormat.file_extension, "gif", sizeof(outFormat.file_extension));
+	::strncpy(outFormat.file_extension, "gif", sizeof(outFormat.file_extension));
 	outFormat.family = B_ANY_FORMAT_FAMILY;
 }
 
@@ -109,10 +106,10 @@ MakeGIFMediaFileFormat(media_file_format& outFormat)
 void
 MakeNULLMediaFileFormat(media_file_format& outFormat)
 {
-	strncpy(outFormat.pretty_name, "Export frames as Bitmaps", sizeof(outFormat.pretty_name));
-	strncpy(outFormat.short_name, NULL_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
+	::strncpy(outFormat.pretty_name, "Export frames as Bitmaps", sizeof(outFormat.pretty_name));
+	::strncpy(outFormat.short_name, NULL_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
 	outFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	strncpy(outFormat.file_extension, "bmp", sizeof(outFormat.file_extension));
+	::strncpy(outFormat.file_extension, "bmp", sizeof(outFormat.file_extension));
 	outFormat.family = B_ANY_FORMAT_FAMILY;
 }
 
@@ -161,11 +158,10 @@ FixRect(BRect &rect, const BRect& maxRect,
 		} else {
 			rect.left -= diffHorizontal;
 			diffHorizontal = 0;
-		}	
-			
+		}
 		rect.right += diffHorizontal;
 	}
-	
+
 	int32 diffVertical = kAlignAmount - (rect.IntegerHeight() + 1) % kAlignAmount;
 	if (fixHeight && diffVertical != kAlignAmount) { 
 		if (rect.top < diffVertical) {
@@ -175,7 +171,7 @@ FixRect(BRect &rect, const BRect& maxRect,
 			rect.top -= diffVertical;
 			diffVertical = 0;
 		}	
-			
+
 		rect.bottom += diffVertical;
 	}
 }
@@ -199,10 +195,10 @@ GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border)
 					rect->InsetBy(-border, -border);
 					framesList.AddItem(rect);
 				}
-				free(info);
+				::free(info);
 			}
 		}
-		free(tokenList);
+		::free(tokenList);
 	}
 }
 
@@ -224,12 +220,12 @@ GetWindowTokenForFrame(BRect frame, int32 border)
 					if (rect == frame)
 						token = tokenList[i];
 				}
-				free(info);
+				::free(info);
 			}
 		}
-		free(tokenList);
+		::free(tokenList);
 	}
-	
+
 	return token;
 }
 
@@ -242,7 +238,7 @@ GetWindowFrameForToken(int32 token, int32 border)
 	if (info != NULL) {
 		rect.Set(info->window_left, info->window_top, info->window_right, info->window_bottom);
 		rect.InsetBy(-border, -border);
-		free(info);
+		::free(info);
 	}
 	return rect;
 }

@@ -54,8 +54,8 @@ Controller::Controller()
 	
 	BString fileFormatName = settings.OutputFileFormat();
 	media_file_format fileFormat;
-	if (!GetMediaFileFormat(fileFormatName.String(), &fileFormat)) {
-		if (!GetMediaFileFormat(NULL, &fileFormat))
+	if (!GetMediaFileFormat(fileFormatName, &fileFormat)) {
+		if (!GetMediaFileFormat("", &fileFormat))
 			throw "Unable to find a suitable media_file_format!";
 	}		
 	
