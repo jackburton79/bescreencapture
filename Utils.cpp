@@ -177,7 +177,6 @@ FixRect(BRect &rect, const BRect& maxRect,
 }
 
 
-
 void
 GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border)
 {
