@@ -77,7 +77,7 @@ InfoView::InfoView(Controller* controller)
 	BView("Info", B_WILL_DRAW),
 	fController(controller)
 {
-	Settings& settings = Settings::Current();
+	const Settings& settings = Settings::Current();
 	BRect sourceArea = settings.CaptureArea();
 	BRect targetRect = settings.TargetRect();
 	float scale = settings.Scale();

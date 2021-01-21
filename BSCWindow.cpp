@@ -365,7 +365,7 @@ BSCWindow::_LayoutWindow(bool dock)
 status_t
 BSCWindow::_CaptureStarted()
 {
-	Settings& settings = Settings::Current();
+	const Settings& settings = Settings::Current();
 	if (settings.MinimizeOnRecording())
 		Hide();
 	

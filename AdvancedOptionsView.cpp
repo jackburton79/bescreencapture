@@ -82,7 +82,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 	
-	Settings& settings = Settings::Current();
+	const Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 }
