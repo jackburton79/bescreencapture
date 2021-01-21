@@ -19,9 +19,8 @@
 #include <TranslationUtils.h>
 #include <TranslatorRoster.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-
+#include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <new>
 
@@ -203,14 +202,16 @@ BitmapEntry::SaveToDisk(const char* path)
 
 	char tempFileName[B_PATH_NAME_LENGTH];
 	::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
-	// use mkstemp, but then we close the fd immediately,
-	// because we only need the file name.
+	// mkstemp creates a fd with an unique file name.
+	// We then close the fd immediately, because we only need an unique file name.
+	// In theory, it's possible that between this and WriteFrame() someone
+	// creates a file with this exact name, but it's not likely to happen.
 	int tempFile = ::mkstemp(tempFileName);
 	if (tempFile < 0)
 		return tempFile;
 
 	fFileName = tempFileName;
-	close(tempFile);
+	::close(tempFile);
 
 	status_t status = WriteFrame(fBitmap, fFileName.String());
 
