@@ -8,9 +8,9 @@
 #include "Settings.h"
 #include "Utils.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include <iostream>
 
@@ -45,7 +45,7 @@ Controller::Controller()
 	
 	fEncoder = new MovieEncoder;
 
-	Settings& settings = Settings::Current();
+	const Settings& settings = Settings::Current();
 	BString name = settings.OutputFileName();
 	fEncoder->SetOutputFile(name.String());
 
@@ -61,7 +61,7 @@ Controller::Controller()
 	
 	SetMediaFileFormat(fileFormat);
 	
-	BString codecName = settings.OutputCodec();
+	const BString codecName = settings.OutputCodec();
 	if (codecName != "")
 		SetMediaCodec(codecName);
 	else
@@ -458,8 +458,7 @@ Controller::_ComputeMediaFormat(const int32 &width, const int32 &height,
 	size_t rowAlign;
 	size_t pixelPerChunk;
 
-	status_t status;
-	status = get_pixel_size_for(colorSpace, &pixelChunk,
+	status_t status = get_pixel_size_for(colorSpace, &pixelChunk,
 			&rowAlign, &pixelPerChunk);
 	if (status != B_OK)
 		throw status;
@@ -481,13 +480,13 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 {
 	BAutolock _(this);
 	
-	Settings& settings = Settings::Current();
+	const Settings& settings = Settings::Current();
 	BRect targetRect = settings.TargetRect();
 	targetRect.right++;
 	targetRect.bottom++;
 	
 	const int32 frameRate =  settings.CaptureFrameRate();
-	media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
+	const media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
 	
@@ -498,8 +497,8 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	
 	// Handle the NULL/GIF media_file_formats
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
-	if ((strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) &&
-		(strcmp(fileFormat.short_name, GIF_FORMAT_SHORT_NAME) != 0)) {
+	if ((::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) &&
+		(::strcmp(fileFormat.short_name, GIF_FORMAT_SHORT_NAME) != 0)) {
 		int32 cookie = 0;
 		media_codec_info codec;
 		media_format dummyFormat;
@@ -611,10 +610,10 @@ Controller::EndCapture()
 		status_t unused;
 		wait_for_thread(fCaptureThread, &unused);
 	}
-	
+
 	fRecordWatch->Suspend();
 	SendNotices(kMsgControllerCaptureStopped);
-	
+
 	EncodeMovie();
 }
 
@@ -633,7 +632,7 @@ Controller::_PauseCapture()
 {
 	SendNotices(kMsgControllerCapturePaused);
 	fRecordWatch->Suspend();
-	
+
 	BAutolock _(this);
 	fPaused = true;
 	suspend_thread(fCaptureThread);
@@ -646,7 +645,7 @@ Controller::_ResumeCapture()
 	BAutolock _(this);
 	resume_thread(fCaptureThread);
 	fPaused = false;
-	
+
 	fRecordWatch->Resume();
 	SendNotices(kMsgControllerCaptureResumed);
 }
@@ -674,7 +673,7 @@ void
 Controller::_HandleTargetFrameChanged(const BRect& targetRect)
 {
 	UpdateMediaFormatAndCodecsForCurrentFamily();
-	
+
 	BMessage targetFrameMessage(kMsgControllerTargetFrameChanged);
 	targetFrameMessage.AddRect("frame", targetRect);
 	SendNotices(kMsgControllerTargetFrameChanged, &targetFrameMessage);
@@ -708,8 +707,7 @@ Controller::_DumpSettings() const
 int32
 Controller::CaptureThread()
 {
-	Settings& settings = Settings::Current();
-	BScreen screen;
+	const Settings& settings = Settings::Current();
 	BRect bounds = settings.CaptureArea();
 	int32 frameRate = settings.CaptureFrameRate();
 	if (frameRate <= 0)
@@ -722,6 +720,7 @@ Controller::CaptureThread()
 	int32 token = GetWindowTokenForFrame(bounds, windowEdge);
 	status_t error = B_ERROR;
 	BBitmap *bitmap = NULL;
+	const color_space colorSpace = BScreen().ColorSpace();
 	while (!fKillCaptureThread) {
 		if (!fPaused) {		
 			if (token != -1) {
@@ -731,7 +730,7 @@ Controller::CaptureThread()
 			}
 				
 			_WaitForRetrace(captureDelay); // Wait for Vsync
-			bitmap = new BBitmap(bounds, screen.ColorSpace());
+			bitmap = new BBitmap(bounds, colorSpace);
 			error = ReadBitmap(bitmap, true, bounds);
 			bigtime_t currentTime = system_time();
 
