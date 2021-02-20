@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "Controller.h"
+#include "ControllerObserver.h"
 #include "DeskbarControlView.h"
 #include "FrameRateView.h"
 #include "MediaFormatView.h"
@@ -72,13 +73,9 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 								"or define a key combination with the Shortcuts preferences");
 	
 	advancedBox->AddChild(layoutView);
-	
-	if (static_cast<BDirectWindow *>(Window())->SupportsWindowMode()) {
-		fUseDirectWindow->SetEnabled(true);
-		fUseDirectWindow->SetValue(B_CONTROL_ON);
-	} else
-		fUseDirectWindow->SetEnabled(false);
-		
+
+	_EnableDirectWindowIfSupported();
+
 	fController->SetVideoDepth(B_RGB32);
 	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 	
@@ -135,9 +132,38 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			Settings::Current().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
 			break;
 		
-		
+		case B_OBSERVER_NOTICE_CHANGE:
+		{
+			int32 code;
+			message->FindInt32("be:observe_change_what", &code);
+			switch (code) {
+				case kMsgControllerResetSettings:
+				{
+					fCurrentMinimizeValue = Settings::Current().MinimizeOnRecording();
+					fMinimizeOnStart->SetValue(fCurrentMinimizeValue ? B_CONTROL_ON : B_CONTROL_OFF);
+					fMinimizeOnStart->SetEnabled(true);
+					fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
+					_EnableDirectWindowIfSupported();
+					break;
+				}
+				default:
+					break;
+			}
+			break;
+		}
 		default:
 			BView::MessageReceived(message);
 			break;
 	}
+}
+
+
+void
+AdvancedOptionsView::_EnableDirectWindowIfSupported()
+{
+	if (static_cast<BDirectWindow *>(Window())->SupportsWindowMode()) {
+		fUseDirectWindow->SetEnabled(true);
+		fUseDirectWindow->SetValue(B_CONTROL_ON);
+	} else
+		fUseDirectWindow->SetEnabled(false);
 }

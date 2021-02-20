@@ -19,6 +19,8 @@ private:
 	BCheckBox *fMinimizeOnStart;
 	BCheckBox* fHideDeskbarIcon;
 	bool fCurrentMinimizeValue;
+
+	void _EnableDirectWindowIfSupported();
 };
 
 #endif
