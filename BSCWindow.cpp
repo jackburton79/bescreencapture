@@ -276,7 +276,7 @@ BSCWindow::_BuildMenu()
 	fMenuBar->AddItem(menu);
 	
 	menu = new BMenu("Settings");
-	BMenuItem* resetSettings = new BMenuItem("Reset settings", new BMessage(kGUIResetSettings));
+	BMenuItem* resetSettings = new BMenuItem("Default", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
 #if 0
 	BMenuItem* media = new BMenuItem("Encoding settings"B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
