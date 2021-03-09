@@ -1,6 +1,7 @@
+#include "BSCWindow.h"
+
 #include "AdvancedOptionsView.h"
 #include "BSCApp.h"
-#include "BSCWindow.h"
 #include "CamStatusView.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
@@ -174,8 +175,8 @@ BSCWindow::MessageReceived(BMessage *message)
 					message->FindInt32("status", &status);
 					
 					if (status != B_OK) {
-						char errorString[128];
-						snprintf(errorString, 128, "Could not record clip:\n"
+						BString errorString;
+						errorString.SetToFormat("Could not record clip:\n"
 							"%s", strerror(status));
 						(new BAlert("Capture failed", errorString, "OK"))->Go();
 						fStartStopButton->SetEnabled(true);
@@ -204,7 +205,7 @@ BSCWindow::MessageReceived(BMessage *message)
 						BString errorString;
 						errorString.SetToFormat("Could not create clip: "
 							"%s", strerror(status));
-						(new BAlert("Encoding failed", errorString.String(), "OK"))->Go();
+						(new BAlert("Encoding failed", errorString, "OK"))->Go();
 					} else {
 						// TODO: Should be asynchronous
 						BString successString;
@@ -217,7 +218,7 @@ BSCWindow::MessageReceived(BMessage *message)
 							} else {
 								successString.SetTo("Do you want to open the clip?");	
 							}
-							int32 choice = (new BAlert("Success", successString.String(), "Yes", "No"))->Go();
+							int32 choice = (new BAlert("Success", successString, "Yes", "No"))->Go();
 							if (choice == 0) {
 								entry_ref ref;
 								if (entry.GetRef(&ref) == B_OK) {
