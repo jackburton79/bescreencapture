@@ -1,8 +1,9 @@
+#include "DeskbarControlView.h"
+
 #include "BSCApp.h"
 #include "Constants.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
-#include "DeskbarControlView.h"
 
 #include <Bitmap.h>
 #include <Deskbar.h>

@@ -2,8 +2,6 @@
  * Copyright 2015-2016 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
-
-
 #include "SliderTextControl.h"
 
 #include <GroupLayoutBuilder.h>

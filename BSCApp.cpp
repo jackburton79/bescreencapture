@@ -1,5 +1,6 @@
-#include "Arguments.h"
 #include "BSCApp.h"
+
+#include "Arguments.h"
 #include "BSCWindow.h"
 #include "Constants.h"
 #include "Controller.h"
@@ -11,7 +12,7 @@
 #include <Deskbar.h>
 #include <StringList.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 
 

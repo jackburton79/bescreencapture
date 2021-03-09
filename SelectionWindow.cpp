@@ -1,5 +1,6 @@
-#include "Constants.h"
 #include "SelectionWindow.h"
+
+#include "Constants.h"
 #include "Settings.h"
 #include "Utils.h"
 
