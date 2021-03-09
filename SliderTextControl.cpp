@@ -104,30 +104,42 @@ SliderTextControl::MessageReceived(BMessage* message)
 	switch (message->what) {
 		case kTextControlMessage:
 		{
-			if (fTextModificationRunner != NULL)
+			if (fTextModificationRunner == NULL) {
+				BMessenger thisMessenger(this);
+				fTextModificationRunner = new BMessageRunner(thisMessenger,
+					new BMessage(kTextControlRunnerMessage), 1000000, 1);
+			} else
 				fTextModificationRunner->SetInterval(1000000);
-			
-			BMessenger thisMessenger(this);
-			fTextModificationRunner = new BMessageRunner(thisMessenger,
-				new BMessage(kTextControlRunnerMessage), 1000000, 1);
 			break;
 		}
 		case kTextControlRunnerMessage:
 		{
+			// Apply limits
 			int32 value = atoi(fSizeTextControl->TextView()->Text());
+			int32 min;
+			int32 max;
+			fSizeSlider->GetLimits(&min, &max);
+			value = std::max(value, min);
+			value = std::min(value, max);
 			BControl::SetValue(value);
-			BMessage whatMessage(fWhat);
-			whatMessage.AddInt32("be:value", value);
-			Window()->PostMessage(&whatMessage, Target());
+
 			fSizeSlider->SetValue(value);
+
 			BString text;
-			text << fSizeSlider->Value();
+			text << value;
 			if (::strcmp(text, fSizeTextControl->Text()) != 0) {
+				// Avoid sending the modification message
 				fSizeTextControl->SetModificationMessage(NULL);
 				fSizeTextControl->SetText(text.String());
 				fSizeTextControl->SetModificationMessage(new BMessage(kTextControlMessage));
 			}
-			Window()->PostMessage(message, Target());
+
+			BMessage whatMessage(fWhat);
+			whatMessage.AddInt32("be:value", value);
+			Window()->PostMessage(&whatMessage, Target());
+
+			delete fTextModificationRunner;
+			fTextModificationRunner = NULL;
 			break;
 		}
 		default:
