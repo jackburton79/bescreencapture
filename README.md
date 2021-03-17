@@ -1,6 +1,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/jackburton79/bescreencapture/badge)](https://www.codefactor.io/repository/github/jackburton79/bescreencapture)
 # BeScreenCapture
 ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture.png)
+![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture-options.png)
 
 BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format supported by Haiku.
 
