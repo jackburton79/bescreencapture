@@ -119,7 +119,8 @@ FramesList::Path() const
 status_t
 FramesList::WriteFrames(const char* path)
 {
-	for (int32 i = 0; i < CountItems(); i++) {
+	int32 i = 0;
+	while (CountItems() > 0) {
 		BString fileName;
 		fileName.SetToFormat("frame_%05d.bmp", i + 1);
 		BitmapEntry* entry = Pop();
@@ -129,6 +130,7 @@ FramesList::WriteFrames(const char* path)
 		BitmapEntry::WriteFrame(bitmap, fullPath.String());
 		delete bitmap;
 		delete entry;
+		i++;
 	}
 	return B_OK;
 }
