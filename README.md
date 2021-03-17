@@ -28,6 +28,7 @@ Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 
 * Zumi, Pete Goodeve (icons)
 * John Scipione (layout fixes)
+* humdinger (layout fixes, other)
 * Jessica Hamilton (fixes)
 * puckipedia ("incognito" capture mode)
 
