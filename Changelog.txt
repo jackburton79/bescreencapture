@@ -1,5 +1,5 @@
 v2.5.2
-	- Fixed GIF/BMP export only exporting half frames (for real this time).
+	- Fixed GIF/BMP export only exporting half the frames (for real this time).
 	- Fixed Slider not respecting its limits in certain cases.
 	- Small layout tweaks / rewording (courthesy of Humdinger).
 	- Store as many frames in memory as possible before writing to disk.
