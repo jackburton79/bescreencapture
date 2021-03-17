@@ -13,6 +13,7 @@
 #include <String.h>
 #include <StringView.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 
