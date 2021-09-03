@@ -223,7 +223,7 @@ Controller::TogglePause()
 		
 	if (fPaused)
 		_ResumeCapture();
-	else if (!fPaused)
+	else
 		_PauseCapture();
 }
 
