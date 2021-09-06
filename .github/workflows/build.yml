@@ -28,14 +28,14 @@ jobs:
       # Runs a single command using the runners shell
       - name: build cross tools
         run: |
-         git clone --depth 1 https://review.haiku-os.org/buildtools
-         git clone --depth 1 https://review.haiku-os.org/haiku
-         cd ./haiku
-         mkdir generated.x86_64; cd generated.x86_64
+         git clone --depth 1 https://review.haiku-os.org/buildtools && \
+         git clone --depth 1 https://review.haiku-os.org/haiku && \
+         cd ./haiku && \
+         mkdir generated.x86_64; cd generated.x86_64 &&
          ../configure --distro-compatibility official -j12 \
-                  --build-cross-tools x86_64 ../buildtools
-         cd ../buildtools/jam
-         make all
+                  --build-cross-tools x86_64 ../buildtools &&
+         cd ../buildtools/jam &&
+         make all &&
          cd /opt/haiku/generated.x86_64
        
       - name: build
