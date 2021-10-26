@@ -71,7 +71,7 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t time)
 		return false;
 
 	// TODO: Use a smarter check
-	if (GetFreeMemory() < kMinFreeMemory) {
+	if (CountItems() >= 100 || GetFreeMemory() < kMinFreeMemory) {
 		if (entry->SaveToDisk(fTemporaryPath) != B_OK) {
 			delete entry;
 			return false;
