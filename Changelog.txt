@@ -1,3 +1,6 @@
+v2.5.3
+	- Fixed crash / hang after recording many frames with virtual memory enabled
+---
 v2.5.2
 	- Fixed GIF/BMP export only exporting half the frames (for real this time).
 	- Fixed Slider not respecting its limits in certain cases.
