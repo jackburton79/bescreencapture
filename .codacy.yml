@@ -2,3 +2,4 @@
 engines:
   cppcheck:
     language: c++
+    std: c++03
