@@ -19,14 +19,14 @@
 
 #define B_TRANSLATE(x) x
 
-Arguments::Arguments(int defaultArgsNum, const char* const* defaultArgs)
+Arguments::Arguments(int defaultArgcNum, const char* const* defaultArgv)
 	: fUsageRequested(false),
 	  fShellArgumentCount(0),
 	  fShellArguments(NULL),
 	  fRecordNow(false),
 	  fFullScreen(false)
 {
-	_SetShellArguments(defaultArgsNum, defaultArgs);
+	_SetShellArguments(defaultArgcNum, defaultArgv);
 }
 
 
