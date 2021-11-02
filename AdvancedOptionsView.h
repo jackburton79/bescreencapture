@@ -1,3 +1,7 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
 #ifndef __ADVANCEDOPTIONSVIEW_H
 #define __ADVANCEDOPTIONSVIEW_H
 
@@ -23,4 +27,4 @@ private:
 	void _EnableDirectWindowIfSupported();
 };
 
-#endif
+#endif // __ADVANCEDOPTIONSVIEW_H

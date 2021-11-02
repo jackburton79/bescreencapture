@@ -1,3 +1,7 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
 #ifndef __BSCWINDOW_H
 #define __BSCWINDOW_H
 
@@ -26,8 +30,6 @@ public:
 	virtual void DirectConnected(direct_buffer_info *info);
 	
 	status_t ReadBitmap(BBitmap *bitmap, BRect bounds);
-
-	BLooper* GetController();
 	
 private:
 	void _BuildMenu();
@@ -51,4 +53,4 @@ private:
 	BMessenger fAddonMessenger;
 };
 
-#endif
+#endif // __BSCWINDOW_H
