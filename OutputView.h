@@ -1,3 +1,8 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #ifndef __OUTPUTVIEW_H
 #define __OUTPUTVIEW_H
 
@@ -51,7 +56,7 @@ private:
 	void _LayoutView();
 	void _InitControlsFromSettings();
 	void _UpdateFileNameControlState();
-	void _SetFileNameExtension(const char* extension);
+	void _SetFileNameExtension(const char* newExtension);
 	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
 	void _HandleExistingFileName(const char* fileName);
 
