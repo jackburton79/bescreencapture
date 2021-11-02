@@ -1,3 +1,8 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #include "Settings.h"
 
 #include <Autolock.h>
@@ -306,13 +311,13 @@ Settings::WindowFrameEdgeSize() const
 	
 	
 void
-Settings::SetMinimizeOnRecording(const bool &mini)
+Settings::SetMinimizeOnRecording(const bool &minimize)
 {
 	BAutolock _(fLocker);
 	if (!fSettings->HasBool(kMinimize))
-		fSettings->AddBool(kMinimize, mini);
+		fSettings->AddBool(kMinimize, minimize);
 	else
-		fSettings->ReplaceBool(kMinimize, mini);
+		fSettings->ReplaceBool(kMinimize, minimize);
 }
 
 

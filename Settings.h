@@ -1,3 +1,8 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #ifndef __SETTINGS_H
 #define __SETTINGS_H
 
@@ -48,7 +53,7 @@ public:
 	void SetOutputFileName(const char *name);
 
 	BString OutputFileFormat() const;
-	void SetOutputFileFormat(const char* format);
+	void SetOutputFileFormat(const char* fileFormat);
 
 	BString OutputCodec() const;
 	void SetOutputCodec(const char* codecName);
