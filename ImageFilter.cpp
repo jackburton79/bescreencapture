@@ -22,6 +22,11 @@ ImageFilter::ImageFilter(BRect frame, color_space colorSpace)
 }
 
 
+ImageFilter::ImageFilter(const ImageFilter& other)
+{
+}
+
+
 ImageFilter::~ImageFilter()
 {
 	delete fBitmap;

@@ -5,11 +5,9 @@
 #ifndef IMAGEFILTER_H
 #define IMAGEFILTER_H
 
-
 #include <GraphicsDefs.h>
 #include <Rect.h>
 #include <SupportDefs.h>
-
 
 class BBitmap;
 class BView;
@@ -23,6 +21,9 @@ public:
 protected:
 	BBitmap* fBitmap;
 	BView* fView;
+
+private:
+	ImageFilter(const ImageFilter& other);
 };
 
 
