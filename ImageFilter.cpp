@@ -2,8 +2,6 @@
  * Copyright 2018-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
-
-
 #include "ImageFilter.h"
 
 #include <Bitmap.h>

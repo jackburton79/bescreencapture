@@ -1,3 +1,7 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
 #ifndef __DESKBAR_CONTROL_H
 #define __DESKBAR_CONTROL_H
 
@@ -37,4 +41,4 @@ private:
 };
 
 
-#endif 
+#endif // __DESKBAR_CONTROL_H

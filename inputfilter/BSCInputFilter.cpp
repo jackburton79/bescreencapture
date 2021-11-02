@@ -1,10 +1,12 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
 #include <InputServerFilter.h>
+#include <Roster.h>
 
 #include "BSCApp.h"
 #include "PublicMessages.h"
-
-#include <Roster.h>
-
 
 class BSCInputFilter : public BInputServerFilter {
 	status_t		InitCheck();

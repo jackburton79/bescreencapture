@@ -1,15 +1,13 @@
 /*
- * Copyright 2017 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2017-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef __MEDIAFORMATVIEW_H
 #define __MEDIAFORMATVIEW_H
 
-
 #include <MediaFormats.h>
 #include <String.h>
 #include <View.h>
-
 
 class BMenuField;
 class Controller;
