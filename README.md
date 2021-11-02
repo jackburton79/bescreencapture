@@ -12,33 +12,33 @@ You can do that by installing the bescreencapture_inputfilter and using the ctrl
 
 These are the commands you can configure in the "Shortcuts" preflet for the various actions:
 
-* Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StoR' "
-* Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
+*	Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StoR' "
+*	Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
 
-## Notes
+##	Notes
 
-* Command constants could change in the next releases.
-* It seems that the most reliable codec / format to use for encoding, in current Haiku nightlies, is MPEG/Mpeg4. Other codec/format combos may cause various kinds of problems.
-* The GIF export option requires the ffmpeg_tools package to be installed
+*	Command constants could change in the next releases.
+*	It seems that the most reliable codec / format to use for encoding, in current Haiku nightlies, is MPEG/Mpeg4. Other codec/format combos may cause various kinds of problems.
+*	The GIF export option requires the ffmpeg_tools package to be installed
  
-## Authors
+##	Authors
 
 Stefano Ceccherini ( stefano.ceccherini@gmail.com )
 
 ## Contributors
 
-* Zumi, Pete Goodeve (icons)
-* John Scipione (layout fixes)
-* humdinger (layout fixes, other)
-* Jessica Hamilton (fixes)
-* puckipedia ("incognito" capture mode)
+*	Zumi, Pete Goodeve (icons)
+*	John Scipione (layout fixes)
+*	humdinger (layout fixes, other)
+*	Jessica Hamilton (fixes)
+*	puckipedia ("incognito" capture mode)
 
-## Acknowledgements
+##	Acknowledgements
 
-* Marc Flerackers,
-* Francois Revol,
-* Andrew Bachmann for the help,
-* Marcin Konicki for the web space and support,
-* Zumi and Pete Goodeve for the icons,
-* Every Haiku contributor
-* and to anyone I forgot.
+*	Marc Flerackers,
+*	Francois Revol,
+*	Andrew Bachmann for the help,
+*	Marcin Konicki for the web space and support,
+*	Zumi and Pete Goodeve for the icons,
+*	Every Haiku contributor
+*	and to anyone I forgot.
