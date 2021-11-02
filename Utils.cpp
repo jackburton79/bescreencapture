@@ -6,7 +6,6 @@
 // Private Haiku header
 #include "WindowInfo.h"
 
-
 #include <Entry.h>
 #include <Path.h>
 #include <String.h>
@@ -17,7 +16,6 @@
 #include <cstdlib>
 
 #include <iostream>
-
 
 // TODO: Refactor
 
@@ -95,10 +93,10 @@ GetMediaFileFormat(const BString& prettyName, media_file_format* outFormat)
 void
 MakeGIFMediaFileFormat(media_file_format& outFormat)
 {
-	::strncpy(outFormat.pretty_name, "GIF", sizeof(outFormat.pretty_name));
-	::strncpy(outFormat.short_name, GIF_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
+	::strlcpy(outFormat.pretty_name, "GIF", sizeof(outFormat.pretty_name));
+	::strlcpy(outFormat.short_name, GIF_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
 	outFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	::strncpy(outFormat.file_extension, "gif", sizeof(outFormat.file_extension));
+	::strlcpy(outFormat.file_extension, "gif", sizeof(outFormat.file_extension));
 	outFormat.family = B_ANY_FORMAT_FAMILY;
 }
 
@@ -106,10 +104,10 @@ MakeGIFMediaFileFormat(media_file_format& outFormat)
 void
 MakeNULLMediaFileFormat(media_file_format& outFormat)
 {
-	::strncpy(outFormat.pretty_name, "Export frames as Bitmaps", sizeof(outFormat.pretty_name));
-	::strncpy(outFormat.short_name, NULL_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
+	::strlcpy(outFormat.pretty_name, "Export frames as Bitmaps", sizeof(outFormat.pretty_name));
+	::strlcpy(outFormat.short_name, NULL_FORMAT_SHORT_NAME, sizeof(outFormat.short_name));
 	outFormat.capabilities = media_file_format::B_KNOWS_OTHER;
-	::strncpy(outFormat.file_extension, "bmp", sizeof(outFormat.file_extension));
+	::strlcpy(outFormat.file_extension, "bmp", sizeof(outFormat.file_extension));
 	outFormat.family = B_ANY_FORMAT_FAMILY;
 }
 
