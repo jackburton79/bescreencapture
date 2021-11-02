@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2015-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef SLIDERTEXTCONTROL_H

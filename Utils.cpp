@@ -1,3 +1,7 @@
+/*
+ * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
 #include "Utils.h"
 
 #include "Constants.h"
