@@ -12,8 +12,8 @@ public:
 	
 	virtual ~DeskbarControlView();
 	
-	static DeskbarControlView *Instantiate(BMessage *data);
-	virtual status_t Archive(BMessage *data, bool deep) const;
+	static DeskbarControlView *Instantiate(BMessage *archive);
+	virtual status_t Archive(BMessage *message, bool deep) const;
 	
 	virtual void AttachedToWindow();
 	virtual void DetachedFromWindow();

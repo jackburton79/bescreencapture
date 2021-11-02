@@ -82,6 +82,7 @@ DeskbarControlView::Instantiate(BMessage *archive)
 }
 
 
+/* virtual */
 status_t
 DeskbarControlView::Archive(BMessage *message, bool deep) const
 {
@@ -99,6 +100,7 @@ DeskbarControlView::Archive(BMessage *message, bool deep) const
 }
 
 
+/* virtual */
 void
 DeskbarControlView::AttachedToWindow()
 {
@@ -114,6 +116,7 @@ DeskbarControlView::AttachedToWindow()
 }
 
 
+/* virtual */
 void
 DeskbarControlView::DetachedFromWindow()
 {
@@ -127,6 +130,7 @@ DeskbarControlView::DetachedFromWindow()
 }
 
 
+/* virtual */
 void
 DeskbarControlView::Draw(BRect rect)
 {
@@ -145,6 +149,7 @@ DeskbarControlView::Draw(BRect rect)
 }
 
 
+/* virtual */
 void
 DeskbarControlView::MessageReceived(BMessage *message)
 {
@@ -191,6 +196,7 @@ DeskbarControlView::MessageReceived(BMessage *message)
 }
 
 
+/* virtual */
 void
 DeskbarControlView::MouseDown(BPoint where)
 {
@@ -211,6 +217,7 @@ DeskbarControlView::MouseDown(BPoint where)
 }
 
 
+/* virtual */
 void
 DeskbarControlView::Pulse()
 {
@@ -263,6 +270,7 @@ BSCMenuItem::GetContentSize(float* width, float* height)
 }
 
 
+/* virtual */
 void
 BSCMenuItem::DrawContent()
 {
