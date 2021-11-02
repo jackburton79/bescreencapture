@@ -10,6 +10,9 @@
 #include <View.h>
 
 ImageFilter::ImageFilter(BRect frame, color_space colorSpace)
+	:
+	fBitmap(NULL),
+	fView(NULL)
 {
 	// Bitmap and view used to convert the source bitmap
 	// to the correct size and depth
@@ -23,6 +26,9 @@ ImageFilter::ImageFilter(BRect frame, color_space colorSpace)
 
 
 ImageFilter::ImageFilter(const ImageFilter& other)
+	:
+	fBitmap(NULL),
+	fView(NULL)
 {
 }
 
@@ -56,9 +62,8 @@ ImageFilterScale::ApplyFilter(BBitmap* bitmap)
 		fView->DrawBitmap(bitmap, bitmap->Bounds().OffsetToCopy(B_ORIGIN), fView->Bounds());
 		fView->Sync();
 		fBitmap->Unlock();
+		delete bitmap;
 	}
 
-	delete bitmap;
-	
 	return new BBitmap(*fBitmap);
 }
