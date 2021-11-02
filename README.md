@@ -24,7 +24,7 @@ These are the commands you can configure in the "Shortcuts" preflet for the vari
  
 ##	Authors
 
-Stefano Ceccherini ( stefano.ceccherini@gmail.com )
+Stefano Ceccherini
 
 ## Contributors
 
