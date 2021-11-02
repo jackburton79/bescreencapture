@@ -47,6 +47,7 @@ FramesList::FramesList()
 }
 
 
+/* virtual */
 FramesList::~FramesList()
 {
 	// Empty the list, which incidentally deletes the files
@@ -63,9 +64,9 @@ FramesList::~FramesList()
 
 
 bool
-FramesList::AddItem(BBitmap* bitmap, bigtime_t time)
+FramesList::AddItem(BBitmap* bitmap, bigtime_t frameTime)
 {
-	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, time);
+	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, frameTime);
 	if (entry == NULL)
 		return false;
 
