@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #include "Controller.h"
 
 #include "Constants.h"
@@ -352,11 +357,11 @@ Controller::SetVideoDepth(const color_space &space)
 
 
 void
-Controller::SetOutputFileName(const char *name)
+Controller::SetOutputFileName(const char *fileName)
 {
 	BAutolock _(this);
-	Settings::Current().SetOutputFileName(name);
-	fEncoder->SetOutputFile(name);
+	Settings::Current().SetOutputFileName(fileName);
+	fEncoder->SetOutputFile(fileName);
 }
 
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #ifndef __CONTROLLER_H
 #define __CONTROLLER_H
 
@@ -62,7 +67,7 @@ public:
 	void		SetMediaFormatFamily(const media_format_family &family);
 	
 	media_file_format	MediaFileFormat() const;
-	void		SetMediaFileFormat(const media_file_format& format);
+	void		SetMediaFileFormat(const media_file_format& fileFormat);
 	
 	BString		MediaFileFormatName() const;
 	BString		MediaCodecName() const;
@@ -101,7 +106,7 @@ private:
 	void		_PauseCapture();
 	void		_ResumeCapture();
 
-	void		_EncodingFinished(const status_t status, const char* destName);
+	void		_EncodingFinished(const status_t status, const char* fileName);
 	void		_HandleTargetFrameChanged(const BRect& targetRect);
 	void		_ForwardGUIMessage(BMessage *message);
 
