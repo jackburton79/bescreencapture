@@ -267,22 +267,22 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 
-	int32 framesWritten = 0;
 	// TODO: Improve this: we are using the name of the media format to see if it's a fake format
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
 		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
-		status = _WriteRawFrames();
-	} else {
-		BitmapEntry* firstEntry = fFileList->ItemAt(0);
-		BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
-		int framesPerSecond = (1000000 * framesLeft) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
-		media_format inputFormat = fFormat;
-		inputFormat.u.raw_video.field_rate = framesPerSecond;
-
-		// Create movie
-		status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
-		fTempPath = fFileList->Path();
+		return _WriteRawFrames();
 	}
+
+	int32 framesWritten = 0;
+	BitmapEntry* firstEntry = fFileList->ItemAt(0);
+	BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
+	int framesPerSecond = (1000000 * framesLeft) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
+	media_format inputFormat = fFormat;
+	inputFormat.u.raw_video.field_rate = framesPerSecond;
+
+	// Create movie
+	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
+	fTempPath = fFileList->Path();
 
 	if (status != B_OK) {
 		DisposeData();
@@ -364,6 +364,7 @@ MovieEncoder::_ApplyImageFilters()
 		}
 		delete filter;
 	}
+
 	return B_OK;
 }
 
@@ -377,6 +378,7 @@ MovieEncoder::_WriteRawFrames()
 	if (status != B_OK)
 		return status;
 
+	const int32 frames = fFileList->CountItems();
 	char tempDirectoryTemplate[PATH_MAX];
 	snprintf(tempDirectoryTemplate, PATH_MAX, "%s/BeScreenCapture_XXXXXX", path.Path());
 	char* tempDirectoryName = ::mkdtemp(tempDirectoryTemplate);
@@ -384,9 +386,13 @@ MovieEncoder::_WriteRawFrames()
 		status = B_ERROR;
 	else if (BEntry(tempDirectoryName).IsDirectory()) {
 		fTempPath = tempDirectoryName;
-		fFileList->WriteFrames(tempDirectoryName);
-		status = B_OK;
+		status = fFileList->WriteFrames(tempDirectoryName);
 	}
+
+	DisposeData();
+
+	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
+
 	return status;
 }
 
