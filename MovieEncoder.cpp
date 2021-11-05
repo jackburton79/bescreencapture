@@ -257,7 +257,9 @@ MovieEncoder::_EncoderThread()
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
-		
+	
+	status_t status = _ApplyImageFilters();
+	
 	BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
 	BRect sourceFrame = bitmap->Bounds();
 	delete bitmap;
@@ -265,46 +267,11 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 
-	// TODO: update progress
-	if (Settings::Current().Scale() != 100) {
-		// First pass: scale frames if needed
-		// TODO: we could apply different filters
-		ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
-		for (int32 c = 0; c < framesLeft; c++) {
-			if (fKillThread) {
-				DisposeData();
-				_HandleEncodingFinished(B_ERROR);
-				delete filter;
-				return B_ERROR;
-			}
-			BitmapEntry* entry = fFileList->ItemAt(c);
-			BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
-			entry->Replace(filtered);
-		}
-		delete filter;
-	}
-
 	int32 framesWritten = 0;
-	status_t status = B_ERROR;
 	// TODO: Improve this: we are using the name of the media format to see if it's a fake format
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
 		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
-		// TODO: Let the user select the output directory
-		BPath path;
-		status = find_directory(B_USER_DIRECTORY, &path);
-		if (status == B_OK) {
-			char tempDirectoryTemplate[PATH_MAX];
-			snprintf(tempDirectoryTemplate, PATH_MAX, "%s/BeScreenCapture_XXXXXX", path.Path());
-			char* tempDirectoryName = ::mkdtemp(tempDirectoryTemplate);
-			if (tempDirectoryName == NULL)
-				status = B_ERROR;
-			else if (BEntry(tempDirectoryName).IsDirectory()) {
-				fTempPath = tempDirectoryName;
-				fFileList->WriteFrames(tempDirectoryName);
-				framesWritten = framesLeft;
-				framesLeft = 0;
-			}
-		}
+		status = _WriteRawFrames();
 	} else {
 		BitmapEntry* firstEntry = fFileList->ItemAt(0);
 		BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
@@ -371,6 +338,55 @@ MovieEncoder::_EncoderThread()
 
 	_HandleEncodingFinished(status, framesWritten);
 
+	return status;
+}
+
+
+status_t
+MovieEncoder::_ApplyImageFilters()
+{
+	// TODO: update progress
+	if (Settings::Current().Scale() != 100) {
+		// First pass: scale frames if needed
+		// TODO: we could apply different filters
+		const int32 framesLeft = fFileList->CountItems();
+		ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
+		for (int32 c = 0; c < framesLeft; c++) {
+			if (fKillThread) {
+				DisposeData();
+				_HandleEncodingFinished(B_ERROR);
+				delete filter;
+				return B_ERROR;
+			}
+			BitmapEntry* entry = fFileList->ItemAt(c);
+			BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
+			entry->Replace(filtered);
+		}
+		delete filter;
+	}
+	return B_OK;
+}
+
+
+status_t
+MovieEncoder::_WriteRawFrames()
+{
+	// TODO: Let the user select the output directory
+	BPath path;
+	status_t status = find_directory(B_USER_DIRECTORY, &path);
+	if (status != B_OK)
+		return status;
+
+	char tempDirectoryTemplate[PATH_MAX];
+	snprintf(tempDirectoryTemplate, PATH_MAX, "%s/BeScreenCapture_XXXXXX", path.Path());
+	char* tempDirectoryName = ::mkdtemp(tempDirectoryTemplate);
+	if (tempDirectoryName == NULL)
+		status = B_ERROR;
+	else if (BEntry(tempDirectoryName).IsDirectory()) {
+		fTempPath = tempDirectoryName;
+		fFileList->WriteFrames(tempDirectoryName);
+		status = B_OK;
+	}
 	return status;
 }
 

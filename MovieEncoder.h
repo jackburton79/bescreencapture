@@ -57,6 +57,9 @@ private:
 	static int32 EncodeStarter(void *arg);		
 	status_t _EncoderThread();
 	
+	status_t _ApplyImageFilters();
+	status_t _WriteRawFrames();
+
 	void _HandleEncodingFinished(const status_t& status,
 								const int32& numFrames = 0);
 	status_t _PostEncodingAction(BPath& path);
