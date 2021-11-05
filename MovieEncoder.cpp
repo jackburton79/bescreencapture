@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Constants.h"
 #include "FramesList.h"
 #include "ImageFilter.h"
+#include "Settings.h"
 #include "Utils.h"
 
 #include <Bitmap.h>
@@ -264,24 +265,26 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid())
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
 
-	// First pass: apply filter to frames
 	// TODO: update progress
-	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);	
-	for (int32 c = 0; c < framesLeft; c++) {
-		if (fKillThread) {
-			DisposeData();
-			_HandleEncodingFinished(B_ERROR);
-			delete filter;
-			return B_ERROR;
+	if (Settings::Current().Scale() != 100) {
+		// First pass: scale frames if needed
+		// TODO: we could apply different filters
+		ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
+		for (int32 c = 0; c < framesLeft; c++) {
+			if (fKillThread) {
+				DisposeData();
+				_HandleEncodingFinished(B_ERROR);
+				delete filter;
+				return B_ERROR;
+			}
+			BitmapEntry* entry = fFileList->ItemAt(c);
+			BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
+			entry->Replace(filtered);
 		}
-		BitmapEntry* entry = fFileList->ItemAt(c);
-		BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
-		entry->Replace(filtered);
+		delete filter;
 	}
-	delete filter;
 
 	int32 framesWritten = 0;
-
 	status_t status = B_ERROR;
 	// TODO: Improve this: we are using the name of the media format to see if it's a fake format
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
