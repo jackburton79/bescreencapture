@@ -268,6 +268,12 @@ MovieEncoder::_EncoderThread()
 	// TODO: update progress
 	ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);	
 	for (int32 c = 0; c < framesLeft; c++) {
+		if (fKillThread) {
+			DisposeData();
+			_HandleEncodingFinished(B_ERROR);
+			delete filter;
+			return B_ERROR;
+		}
 		BitmapEntry* entry = fFileList->ItemAt(c);
 		BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
 		entry->Replace(filtered);
