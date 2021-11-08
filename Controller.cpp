@@ -47,7 +47,7 @@ Controller::Controller()
 	fCodecList(NULL)
 {
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
-	
+
 	fEncoder = new MovieEncoder;
 
 	const Settings& settings = Settings::Current();
@@ -56,16 +56,16 @@ Controller::Controller()
 
 	BRect rect = settings.CaptureArea();
 	SetCaptureArea(rect);
-	
+
 	BString fileFormatName = settings.OutputFileFormat();
 	media_file_format fileFormat;
 	if (!GetMediaFileFormat(fileFormatName, &fileFormat)) {
 		if (!GetMediaFileFormat("", &fileFormat))
 			throw "Unable to find a suitable media_file_format!";
 	}		
-	
+
 	SetMediaFileFormat(fileFormat);
-	
+
 	const BString codecName = settings.OutputCodec();
 	if (codecName != "")
 		SetMediaCodec(codecName);
@@ -136,7 +136,7 @@ Controller::QuitRequested()
 {
 	if (fCaptureThread < 0 && fFileList == NULL && fEncoderThread < 0)
 		return BLooper::QuitRequested();
-	
+
 	return false;
 }
 
@@ -157,7 +157,7 @@ Controller::CanQuit(BString& reason) const
 		default:
 			break;
 	}
-	
+
 	return false;
 }
 
@@ -192,10 +192,10 @@ Controller::State() const
 	BAutolock _((BLooper*)this);
 	if (fCaptureThread > 0)
 		return STATE_RECORDING;
-	
+
 	if (fEncoderThread > 0 || fFileList != NULL)
 		return STATE_ENCODING;
-	
+
 	return STATE_IDLE;
 }
 
@@ -225,7 +225,7 @@ Controller::TogglePause()
 	BAutolock _(this);
 	if (fCaptureThread < 0)
 		return;
-		
+
 	if (fPaused)
 		_ResumeCapture();
 	else
@@ -251,7 +251,7 @@ void
 Controller::EncodeMovie()
 {
 	BAutolock _(this);
-	
+
 	int32 numFrames = fFileList->CountItems();
 	if (numFrames <= 0) {
 		_EncodingFinished(B_ERROR, NULL);
@@ -266,16 +266,16 @@ Controller::EncodeMovie()
 		// file exists.
 		fileName = GetUniqueFileName(fileName, MediaFileFormat().file_extension);
 	}
-	
+
 	SetOutputFileName(fileName);
-	
+
 	BMessage message(kMsgControllerEncodeStarted);
 	message.AddInt32("frames_total", numFrames);
 	SendNotices(kMsgControllerEncodeStarted, &message);
-	
+
 	fEncoder->SetSource(fFileList);
 	fFileList = NULL;
-	
+
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
 
@@ -299,7 +299,7 @@ Controller::SetCaptureArea(const BRect& rect)
 	settings.SetCaptureArea(rect);
 	BRect targetRect = settings.TargetRect();
 	fEncoder->SetDestFrame(targetRect);
-	
+
 	BMessage message(kMsgControllerSourceFrameChanged);
 	message.AddRect("frame", rect);
 	SendNotices(kMsgControllerSourceFrameChanged, &message);
@@ -313,7 +313,7 @@ Controller::SetCaptureFrameRate(const int fps)
 {
 	BAutolock _(this);
 	Settings::Current().SetCaptureFrameRate(fps);
-	
+
 	BMessage message(kMsgControllerCaptureFrameRateChanged);
 	message.AddInt32("frame_rate", fps);
 	SendNotices(kMsgControllerCaptureFrameRateChanged, &message);
