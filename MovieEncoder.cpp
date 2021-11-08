@@ -253,14 +253,12 @@ MovieEncoder::_EncoderThread()
 {	
 	int32 framesLeft = fFileList->CountItems();
 	if (framesLeft <= 1) {
-		DisposeData();
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
 
 	status_t status = _ApplyImageFilters();
 	if (status != B_OK) {
-		DisposeData();
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
@@ -289,7 +287,6 @@ MovieEncoder::_EncoderThread()
 	fTempPath = fFileList->Path();
 
 	if (status != B_OK) {
-		DisposeData();
 		_HandleEncodingFinished(status);
 		return status;
 	}
@@ -339,8 +336,6 @@ MovieEncoder::_EncoderThread()
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)
 		status = _PostEncodingAction(fTempPath);
 
-	DisposeData();
-
 	_HandleEncodingFinished(status, framesWritten);
 
 	return status;
@@ -358,7 +353,6 @@ MovieEncoder::_ApplyImageFilters()
 		ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
 		for (int32 c = 0; c < framesLeft; c++) {
 			if (fKillThread) {
-				DisposeData();
 				_HandleEncodingFinished(B_ERROR);
 				delete filter;
 				return B_ERROR;
@@ -393,8 +387,6 @@ MovieEncoder::_WriteRawFrames()
 		fTempPath = tempDirectoryName;
 		status = fFileList->WriteFrames(tempDirectoryName);
 	}
-
-	DisposeData();
 
 	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
 
@@ -584,6 +576,8 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 void
 MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFrames)
 {
+	DisposeData();
+
 	if (!fMessenger.IsValid())
 		return;
 
