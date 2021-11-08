@@ -1,5 +1,10 @@
+v2.5.4
+	- Greatly improve encoding speed if scaling is disabled.
+	- Fixed hang-on-quit when in pre-encoding phase.
+	- Fixed distorted images when exporting to BMP / GIF.
+---
 v2.5.3
-	- Fixed crash / hang after recording many frames with virtual memory enabled
+	- Fixed crash / hang after recording many frames with virtual memory enabled.
 ---
 v2.5.2
 	- Fixed GIF/BMP export only exporting half the frames (for real this time).
