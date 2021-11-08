@@ -121,6 +121,16 @@ Controller::MessageReceived(BMessage *message)
 			int32 numFrames = 0;
 			if (message->FindInt32("frames_remaining", &numFrames) == B_OK)
 				progressMessage.AddInt32("frames_remaining", numFrames);
+			int32 framesTotal = 0;
+			if (message->FindInt32("frames_total", &framesTotal) == B_OK)
+				progressMessage.AddInt32("frames_total", framesTotal);
+			const char* text = NULL;
+			if (message->FindString("text", &text) == B_OK)
+				progressMessage.AddString("text", text);
+			bool reset = false;
+			if (message->FindBool("reset", &reset) == B_OK)
+				progressMessage.AddBool("reset", reset);
+
 			SendNotices(kMsgControllerEncodeProgress, &progressMessage);
 			break;
 		}

@@ -39,6 +39,7 @@ private:
 	BStringView* fEncodingStringView;
 	BStatusBar* fStatusBar;
 	int32 fNumFrames;
+	BString fStatusText;
 	bool fRecording;
 	bool fPaused;
 	BBitmap* fRecordingBitmap;

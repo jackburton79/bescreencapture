@@ -25,8 +25,6 @@
 
 const static float kSpacing = 10;
 const static float kBitmapSize = 48;
-const char* kEncodingString = "Encoding...";
-
 
 static float
 capped_size(float size)
@@ -68,6 +66,7 @@ CamStatusView::CamStatusView(Controller* controller)
 	fEncodingStringView(NULL),
 	fStatusBar(NULL),
 	fNumFrames(0),
+	fStatusText(""),
 	fRecording(false),
 	fPaused(false),
 	fRecordingBitmap(NULL),
@@ -81,7 +80,7 @@ CamStatusView::CamStatusView(Controller* controller)
 	
 	BView* statusView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
-		.Add(fEncodingStringView = new BStringView("stringview", kEncodingString))
+		.Add(fEncodingStringView = new BStringView("stringview", ""))
 		.Add(fStatusBar = new BStatusBar("", ""))
 		.View();
 
@@ -170,7 +169,7 @@ CamStatusView::MessageReceived(BMessage *message)
 					break;
 				case kMsgControllerEncodeStarted:
 				{
-					fEncodingStringView->SetText(kEncodingString);
+					fEncodingStringView->SetText(fStatusText);
 					BCardLayout* cardLayout = dynamic_cast<BCardLayout*>(GetLayout());
 					if (cardLayout != NULL)
 						cardLayout->SetVisibleItem(1);
@@ -181,9 +180,21 @@ CamStatusView::MessageReceived(BMessage *message)
 				}
 				case kMsgControllerEncodeProgress:
 				{
+					bool reset = false;
+					const char* text = NULL;
+					message->FindString("text", &text);
+					if (message->FindBool("reset", &reset) == B_OK && reset) {
+						int32 totalFrames = 0;
+						message->FindInt32("frames_total", &totalFrames);
+						fStatusText = text;
+						fEncodingStringView->SetText(fStatusText);
+						fStatusBar->Reset();
+						fStatusBar->SetMaxValue(float(totalFrames));
+					}
+
 					int32 remainingFrames = 0;
 					if (message->FindInt32("frames_remaining", &remainingFrames) == B_OK) {
-						BString string = kEncodingString;
+						BString string = fStatusText;
 						string << " (" << remainingFrames << " frames)";
 						fEncodingStringView->SetText(string);
 					}

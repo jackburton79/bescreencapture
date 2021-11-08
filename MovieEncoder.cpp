@@ -262,7 +262,7 @@ MovieEncoder::_EncoderThread()
 		_HandleEncodingFinished(status);
 		return status;
 	}
-	
+
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
@@ -293,6 +293,12 @@ MovieEncoder::_EncoderThread()
 
 	const uint32 keyFrameFrequency = 10;
 	// TODO: Make this tunable
+
+	BMessage progressMessage(kEncodingProgress);
+	progressMessage.AddBool("reset", true);
+	progressMessage.AddInt32("frames_total", framesLeft);
+	progressMessage.AddString("text", "Encoding...");
+	fMessenger.SendMessage(&progressMessage);
 
 	int32 framesWritten = 0;
 	while (!fKillThread && framesLeft > 0) {
@@ -345,11 +351,18 @@ MovieEncoder::_ApplyImageFilters()
 {
 	// TODO: update progress
 	if (Settings::Current().Scale() != 100) {
+		const int32 framesTotal = fFileList->CountItems();
+
+		BMessage progressMessage(kEncodingProgress);
+		progressMessage.AddBool("reset", true);
+		progressMessage.AddInt32("frames_total", framesTotal);
+		progressMessage.AddString("text", "Scaling...");
+		fMessenger.SendMessage(&progressMessage);
+
 		// First pass: scale frames if needed
 		// TODO: we could apply different filters
-		const int32 framesLeft = fFileList->CountItems();
 		ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
-		for (int32 c = 0; c < framesLeft; c++) {
+		for (int32 c = 0; c < framesTotal; c++) {
 			if (fKillThread) {
 				delete filter;
 				return B_ERROR;
@@ -357,6 +370,10 @@ MovieEncoder::_ApplyImageFilters()
 			BitmapEntry* entry = fFileList->ItemAt(c);
 			BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
 			entry->Replace(filtered);
+
+			BMessage progressMessage(kEncodingProgress);
+			progressMessage.AddInt32("frames_remaining", framesTotal - c);
+			fMessenger.SendMessage(&progressMessage);
 		}
 		delete filter;
 	}
@@ -553,6 +570,11 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 
 	if (!IsFFMPEGAvailable())
 		return B_ERROR;
+
+	BMessage progressMessage(kEncodingProgress);
+	progressMessage.AddBool("reset", true);
+	progressMessage.AddString("text", "Processing...");
+	fMessenger.SendMessage(&progressMessage);
 
 	BString command;
 	command.Append("ffmpeg -i ");

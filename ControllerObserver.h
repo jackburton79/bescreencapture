@@ -4,28 +4,31 @@
 
 enum {
 	kMsgControllerCaptureStarted = 5000,
-	kMsgControllerCaptureStopped,			// status_t status
+	kMsgControllerCaptureStopped,			// status_t "status"
 	kMsgControllerCapturePaused,
 	kMsgControllerCaptureResumed,
-	kMsgControllerCaptureProgress,			// int32 frames_total
+	kMsgControllerCaptureProgress,			// int32 "frames_total"
 
-	kMsgControllerEncodeStarted,			// int32 frames_total
+	kMsgControllerEncodeStarted,			// int32 "frames_total"
 
-	kMsgControllerEncodeProgress,			// int32 frames_remaining
+	kMsgControllerEncodeProgress,			// int32 "frames_remaining"
+											// const char* "text"
+											// bool "reset"
+											// int32 "frames_total"
 
-	kMsgControllerEncodeFinished,			// status_t status
-											// const char* file_name
+	kMsgControllerEncodeFinished,			// status_t "status"
+											// const char* "file_name"
 
 	kMsgControllerSelectionWindowClosed,
-	kMsgControllerSourceFrameChanged,		// BRect frame,
-	kMsgControllerTargetFrameChanged,		// BRect frame, float scale
+	kMsgControllerSourceFrameChanged,		// BRect "frame",
+	kMsgControllerTargetFrameChanged,		// BRect "frame", float "scale"
 	kMsgControllerVideoDepthChanged,
 	kMsgControllerOutputFileNameChanged,
 	kMsgControllerCodecListUpdated,
-	kMsgControllerCodecChanged,				// const char* codec_name
-	kMsgControllerMediaFileFormatChanged,	// const char* format_name
+	kMsgControllerCodecChanged,				// const char* "codec_name"
+	kMsgControllerMediaFileFormatChanged,	// const char* "format_name"
 	
-	kMsgControllerCaptureFrameRateChanged,	// int32 frame_rate
+	kMsgControllerCaptureFrameRateChanged,	// int32 "frame_rate"
 	
 	kMsgControllerResetSettings
 };
