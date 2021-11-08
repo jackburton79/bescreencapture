@@ -259,8 +259,8 @@ MovieEncoder::_EncoderThread()
 
 	status_t status = _ApplyImageFilters();
 	if (status != B_OK) {
-		_HandleEncodingFinished(B_ERROR);
-		return B_ERROR;
+		_HandleEncodingFinished(status);
+		return status;
 	}
 	
 	// If destination frame is not valid (I.E: something went wrong)
@@ -353,7 +353,6 @@ MovieEncoder::_ApplyImageFilters()
 		ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
 		for (int32 c = 0; c < framesLeft; c++) {
 			if (fKillThread) {
-				_HandleEncodingFinished(B_ERROR);
 				delete filter;
 				return B_ERROR;
 			}
