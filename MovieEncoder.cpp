@@ -257,15 +257,22 @@ MovieEncoder::_EncoderThread()
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
-	
-	status_t status = _ApplyImageFilters();
-	
-	BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
-	BRect sourceFrame = bitmap->Bounds();
-	delete bitmap;
 
-	if (!fDestFrame.IsValid())
+	status_t status = _ApplyImageFilters();
+	if (status != B_OK) {
+		DisposeData();
+		_HandleEncodingFinished(B_ERROR);
+		return B_ERROR;
+	}
+	
+	// If destination frame is not valid (I.E: something went wrong)
+	// then get source frame and use it as dest frame
+	if (!fDestFrame.IsValid()) {
+		BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
+		BRect sourceFrame = bitmap->Bounds();
+		delete bitmap;
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
+	}
 
 	// TODO: Improve this: we are using the name of the media format to see if it's a fake format
 	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
@@ -273,10 +280,7 @@ MovieEncoder::_EncoderThread()
 		return _WriteRawFrames();
 	}
 
-	int32 framesWritten = 0;
-	BitmapEntry* firstEntry = fFileList->ItemAt(0);
-	BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
-	int framesPerSecond = (1000000 * framesLeft) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
+	int framesPerSecond = _GetFramesPerSecond();
 	media_format inputFormat = fFormat;
 	inputFormat.u.raw_video.field_rate = framesPerSecond;
 
@@ -293,6 +297,7 @@ MovieEncoder::_EncoderThread()
 	const uint32 keyFrameFrequency = 10;
 	// TODO: Make this tunable
 
+	int32 framesWritten = 0;
 	while (!fKillThread && framesLeft > 0) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
 		if (entry == NULL)
@@ -394,6 +399,16 @@ MovieEncoder::_WriteRawFrames()
 	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
 
 	return status;
+}
+
+
+int
+MovieEncoder::_GetFramesPerSecond() const
+{
+	const int32 numFrames = fFileList->CountItems();
+	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
+	const BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
+	return (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
 }
 
 
