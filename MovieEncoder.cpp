@@ -333,7 +333,7 @@ MovieEncoder::_EncoderThread()
 		}
 	}
 
-	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)
+	if (status == B_OK)
 		status = _PostEncodingAction(fTempPath);
 
 	_HandleEncodingFinished(status, framesWritten);
@@ -386,6 +386,9 @@ MovieEncoder::_WriteRawFrames()
 		fTempPath = tempDirectoryName;
 		status = fFileList->WriteFrames(tempDirectoryName);
 	}
+
+	if (status == B_OK)
+		status = _PostEncodingAction(fTempPath);
 
 	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
 
@@ -546,6 +549,10 @@ MovieEncoder::EncodeStarter(void* arg)
 status_t
 MovieEncoder::_PostEncodingAction(BPath& path)
 {
+	// For now we need PostEncoding only for GIF export
+	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) != 0)
+		return B_OK;
+
 	if (!IsFFMPEGAvailable())
 		return B_ERROR;
 
