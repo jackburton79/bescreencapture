@@ -301,19 +301,17 @@ MovieEncoder::_EncoderThread()
 			break;
 
 		BBitmap* frame = entry->Bitmap();
+		delete entry;
+
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?
 			std::cerr << "Error while loading bitmap entry" << std::endl;
-			delete entry;
 			continue;
 		}
-		
-		delete entry;
 
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
 		if (status == B_OK)
 			status = _WriteFrame(frame, framesWritten + 1, keyFrame);
-
 		delete frame;
 
 		if (status != B_OK)
