@@ -259,7 +259,7 @@ Controller::EncodeMovie()
 		fFileList = NULL;
 		return;
 	}
-			
+
 	BString fileName = Settings::Current().OutputFileName();
 	BEntry entry(fileName.String());
 	if (entry.Exists()) {
@@ -269,13 +269,9 @@ Controller::EncodeMovie()
 	
 	SetOutputFileName(fileName);
 	
-	SendNotices(kMsgControllerEncodeStarted);
-		 
-	BMessage message(kMsgControllerEncodeProgress);
+	BMessage message(kMsgControllerEncodeStarted);
 	message.AddInt32("frames_total", numFrames);
-	message.AddInt32("frames_remaining", numFrames);
-	
-	SendNotices(kMsgControllerEncodeProgress, &message);
+	SendNotices(kMsgControllerEncodeStarted, &message);
 	
 	fEncoder->SetSource(fFileList);
 	fFileList = NULL;

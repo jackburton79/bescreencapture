@@ -25,8 +25,8 @@
 
 const static float kSpacing = 10;
 const static float kBitmapSize = 48;
-const char* kEncodingString = "Encoding movie...";
-const char* kDoneString = "Done!";
+const char* kEncodingString = "Encoding...";
+
 
 static float
 capped_size(float size)
@@ -174,14 +174,13 @@ CamStatusView::MessageReceived(BMessage *message)
 					BCardLayout* cardLayout = dynamic_cast<BCardLayout*>(GetLayout());
 					if (cardLayout != NULL)
 						cardLayout->SetVisibleItem(1);
+					int32 totalFrames = 0;
+					if (message->FindInt32("frames_total", &totalFrames) == B_OK)
+						fStatusBar->SetMaxValue(float(totalFrames));
 					break;
 				}
 				case kMsgControllerEncodeProgress:
 				{
-					int32 totalFrames = 0;
-					if (message->FindInt32("frames_total", &totalFrames) == B_OK) {
-						fStatusBar->SetMaxValue(float(totalFrames));
-					}
 					int32 remainingFrames = 0;
 					if (message->FindInt32("frames_remaining", &remainingFrames) == B_OK) {
 						BString string = kEncodingString;

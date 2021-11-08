@@ -8,13 +8,14 @@ enum {
 	kMsgControllerCapturePaused,
 	kMsgControllerCaptureResumed,
 	kMsgControllerCaptureProgress,			// int32 frames_total
-											// int32 frames_remaining
-	
-	kMsgControllerEncodeStarted,		
-	kMsgControllerEncodeProgress,			// int32 num_files
+
+	kMsgControllerEncodeStarted,			// int32 frames_total
+
+	kMsgControllerEncodeProgress,			// int32 frames_remaining
+
 	kMsgControllerEncodeFinished,			// status_t status
 											// const char* file_name
-	
+
 	kMsgControllerSelectionWindowClosed,
 	kMsgControllerSourceFrameChanged,		// BRect frame,
 	kMsgControllerTargetFrameChanged,		// BRect frame, float scale
