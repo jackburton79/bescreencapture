@@ -195,11 +195,11 @@ Settings::TargetRect() const
 	BAutolock _(fLocker);
 	const float scale = Scale();
 	BRect scaledRect = CaptureArea();
-	
+
 	scaledRect.OffsetTo(B_ORIGIN);
-	scaledRect.right = (scaledRect.right + 1) * scale / 100 - 1;
-	scaledRect.bottom = (scaledRect.bottom + 1) * scale / 100 - 1;	
-	
+	scaledRect.right = roundf((scaledRect.right + 1) * scale / 100 - 1);
+	scaledRect.bottom = roundf((scaledRect.bottom + 1) * scale / 100 - 1);
+
 	return scaledRect;
 }
 
