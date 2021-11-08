@@ -392,6 +392,13 @@ MovieEncoder::_WriteRawFrames()
 		return status;
 
 	const int32 frames = fFileList->CountItems();
+
+	BMessage progressMessage(kEncodingProgress);
+	progressMessage.AddBool("reset", true);
+	progressMessage.AddString("text", "Exporting...");
+	progressMessage.AddInt32("frames_total", frames);
+	fMessenger.SendMessage(&progressMessage);
+
 	char tempDirectoryTemplate[PATH_MAX];
 	snprintf(tempDirectoryTemplate, PATH_MAX, "%s/BeScreenCapture_XXXXXX", path.Path());
 	char* tempDirectoryName = ::mkdtemp(tempDirectoryTemplate);
@@ -538,7 +545,7 @@ MovieEncoder::GetCursorBitmap(const uint8* cursor)
 							(maskVal > 0 ? white : 0x00FFFFFF);
 		}
 	}
-		
+
 	return cursorBitmap;
 }
 
