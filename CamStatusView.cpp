@@ -104,7 +104,6 @@ CamStatusView::CamStatusView(Controller* controller)
 	fBitmapView->SetExplicitMinSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitMaxSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
-	
 	fStringView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
 	cardLayout->SetVisibleItem(int32(0));
@@ -170,9 +169,13 @@ CamStatusView::MessageReceived(BMessage *message)
 					TogglePause(what == kMsgControllerCapturePaused);
 					break;
 				case kMsgControllerEncodeStarted:
+				{
 					fEncodingStringView->SetText(kEncodingString);
-					((BCardLayout*)GetLayout())->SetVisibleItem(1);		
+					BCardLayout* cardLayout = dynamic_cast<BCardLayout*>(GetLayout());
+					if (cardLayout != NULL)
+						cardLayout->SetVisibleItem(1);
 					break;
+				}
 				case kMsgControllerEncodeProgress:
 				{
 					int32 totalFrames = 0;
@@ -190,7 +193,9 @@ CamStatusView::MessageReceived(BMessage *message)
 				}
 				case kMsgControllerEncodeFinished:
 				{
-					((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
+					BCardLayout* cardLayout = dynamic_cast<BCardLayout*>(GetLayout());
+					if (cardLayout != NULL)
+						cardLayout->SetVisibleItem((int32)0);
 					break;
 				}
 				default:
@@ -245,7 +250,9 @@ CamStatusView::SetRecording(const bool recording)
 	fRecording = recording;
 	if (recording) {
 		fBitmapView->SetBitmap(fRecordingBitmap);
-		((BCardLayout*)GetLayout())->SetVisibleItem((int32)0);
+		BCardLayout* cardLayout = dynamic_cast<BCardLayout*>(GetLayout());
+		if (cardLayout != NULL)
+			cardLayout->SetVisibleItem((int32)0);
 		fStatusBar->Reset();
 	} else {
 		fBitmapView->SetBitmap(NULL);
