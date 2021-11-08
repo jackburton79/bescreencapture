@@ -294,11 +294,11 @@ MovieEncoder::_EncoderThread()
 	const uint32 keyFrameFrequency = 10;
 	// TODO: Make this tunable
 
-	BMessage progressMessage(kEncodingProgress);
-	progressMessage.AddBool("reset", true);
-	progressMessage.AddInt32("frames_total", framesLeft);
-	progressMessage.AddString("text", "Encoding...");
-	fMessenger.SendMessage(&progressMessage);
+	BMessage initialMessage(kEncodingProgress);
+	initialMessage.AddBool("reset", true);
+	initialMessage.AddInt32("frames_total", framesLeft);
+	initialMessage.AddString("text", "Encoding...");
+	fMessenger.SendMessage(&initialMessage);
 
 	int32 framesWritten = 0;
 	while (!fKillThread && framesLeft > 0) {
@@ -353,11 +353,11 @@ MovieEncoder::_ApplyImageFilters()
 	if (Settings::Current().Scale() != 100) {
 		const int32 framesTotal = fFileList->CountItems();
 
-		BMessage progressMessage(kEncodingProgress);
-		progressMessage.AddBool("reset", true);
-		progressMessage.AddInt32("frames_total", framesTotal);
-		progressMessage.AddString("text", "Scaling...");
-		fMessenger.SendMessage(&progressMessage);
+		BMessage initialMessage(kEncodingProgress);
+		initialMessage.AddBool("reset", true);
+		initialMessage.AddInt32("frames_total", framesTotal);
+		initialMessage.AddString("text", "Scaling...");
+		fMessenger.SendMessage(&initialMessage);
 
 		// First pass: scale frames if needed
 		// TODO: we could apply different filters
