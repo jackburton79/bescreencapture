@@ -2,8 +2,6 @@
  * Copyright 2017 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
- 
-
 #include "OptionsWindow.h"
 
 #include "FrameRateView.h"
@@ -29,25 +27,25 @@ OptionsWindow::OptionsWindow(Controller* controller)
 		.Add(encodingBox)
 		.Add(frameBox)
 		.End();
-	
+
 	encodingBox->SetLabel("Encoding options");
 	frameBox->SetLabel("Frame rate");
-	
+
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.Add(new MediaFormatView(controller))
 		.View();
-	
+
 	encodingBox->AddChild(layoutView);
-	
+
 	layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(new FrameRateView(controller))
 		.View();
-	
+
 	frameBox->AddChild(layoutView);
-	
+
 	CenterOnScreen();
 }

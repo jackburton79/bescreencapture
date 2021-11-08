@@ -22,10 +22,10 @@ class PreviewView;
 class SliderTextControl;
 class OutputView : public BView {
 public:	
-	OutputView(Controller *controller);
+	OutputView(Controller* controller);
 
 	virtual void AttachedToWindow();
-	virtual void MessageReceived(BMessage *message);
+	virtual void MessageReceived(BMessage* message);
 	virtual void WindowActivated(bool active);
 
 	BPath OutputFileName() const;
@@ -33,18 +33,18 @@ public:
 	void UpdatePreviewFromSettings();
 
 private:
-	Controller *fController;
+	Controller* fController;
 
-	BTextControl *fFileName;
+	BTextControl* fFileName;
 	BString fFileExtension;
 	BButton* fFilePanelButton;
 
-	BButton *fSelectAreaButton;
-	BRadioButton *fWholeScreen;
-	BRadioButton *fCustomArea;
-	BRadioButton *fWindow;
+	BButton* fSelectAreaButton;
+	BRadioButton* fWholeScreen;
+	BRadioButton* fCustomArea;
+	BRadioButton* fWindow;
 
-	PreviewView *fRectView;
+	PreviewView* fRectView;
 	BRect fCustomCaptureRect;
 
 	SliderTextControl* fScaleSlider;

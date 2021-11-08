@@ -202,7 +202,7 @@ CamStatusView::MessageReceived(BMessage *message)
 			}
 			break;
 		}
-		
+
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -215,7 +215,7 @@ CamStatusView::Pulse()
 {
 	if (!fRecording)
 		return;
-		
+
 	fNumFrames = fController->RecordedFrames();
 	BString str = _GetRecordingTimeString();
 	str << " (" << fNumFrames << " frames)";
