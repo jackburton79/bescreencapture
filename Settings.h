@@ -10,6 +10,7 @@
 #include <GraphicsDefs.h>
 #include <Rect.h>
 
+class BFile;
 class BMessage;
 class BString;
 
@@ -76,6 +77,7 @@ private:
 
 	Settings& operator=(const Settings& settings);
 
+	status_t _LoadSettingsFile(BFile& file, int mode);
 	status_t _SetDefaults();
 
 	BMessage *fSettings;
