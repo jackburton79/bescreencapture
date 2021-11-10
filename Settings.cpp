@@ -91,57 +91,51 @@ status_t
 Settings::Load()
 {
 	BAutolock _(fLocker);
-	BPath path;
-	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
-	if (status == B_OK)
-		status = path.Append("BeScreenCapture");
 	
 	BFile file;
-	if (status == B_OK)
-		status = file.SetTo(path.Path(), B_READ_ONLY);
-	
+	status_t status = _LoadSettingsFile(file, B_READ_ONLY);
 	BMessage tempMessage;
 	if (status == B_OK)	
 		status = tempMessage.Unflatten(&file);
 	
 	if (status == B_OK) {
 		// Copy the loaded fields to the real settings message
-		// TODO: Since we use Replace<type> methods, if there is
-		// no default value, the setting won't be loaded.
+		// N.B: We only copy "known" settings
 		// This is okay for dropping old and incompatible settings,
-		// but it's still inconvenient, since we need to add a default value
-		// (in SetDefaults()) for every new setting we introduce
+		// but it's still inconvenient since we have to add the default
+		// settings in _SetDefault() and a check here for every new setting
+		// we introduce
 		BRect rect;
 		bool boolean;
 		int32 integer;
 		float decimal;
 		const char *string = NULL;
 		if (tempMessage.FindRect(kCaptureRect, &rect) == B_OK)
-			fSettings->ReplaceRect(kCaptureRect, rect);
+			fSettings->SetRect(kCaptureRect, rect);
 		if (tempMessage.FindInt32(kClipDepth, &integer) == B_OK)
-			fSettings->ReplaceInt32(kClipDepth, integer);
+			fSettings->SetInt32(kClipDepth, integer);
 		if (tempMessage.FindFloat(kClipScale, &decimal) == B_OK)
-			fSettings->ReplaceFloat(kClipScale, decimal);
+			fSettings->SetFloat(kClipScale, decimal);
 		if (tempMessage.FindBool(kUseDirectWindow, &boolean) == B_OK)
-			fSettings->ReplaceBool(kUseDirectWindow, boolean);
+			fSettings->SetBool(kUseDirectWindow, boolean);
 		if (tempMessage.FindBool(kIncludeCursor, &boolean) == B_OK)
-			fSettings->ReplaceBool(kIncludeCursor, boolean);
+			fSettings->SetBool(kIncludeCursor, boolean);
 		if (tempMessage.FindBool(kMinimize, &boolean) == B_OK)
-			fSettings->ReplaceBool(kMinimize, boolean);
+			fSettings->SetBool(kMinimize, boolean);
 		if (tempMessage.FindString(kOutputFile, &string) == B_OK)
-			fSettings->ReplaceString(kOutputFile, string);
+			fSettings->SetString(kOutputFile, string);
 		if (tempMessage.FindString(kOutputFileFormat, &string) == B_OK)
-			fSettings->ReplaceString(kOutputFileFormat, string);
+			fSettings->SetString(kOutputFileFormat, string);
 		if (tempMessage.FindString(kOutputCodecName, &string) == B_OK)
-			fSettings->ReplaceString(kOutputCodecName, string);
+			fSettings->SetString(kOutputCodecName, string);
 		if (tempMessage.FindInt32(kThreadPriority, &integer) == B_OK)
-			fSettings->ReplaceInt32(kThreadPriority, integer);
+			fSettings->SetInt32(kThreadPriority, integer);
 		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
-			fSettings->ReplaceInt32(kWindowFrameBorderSize, integer);
+			fSettings->SetInt32(kWindowFrameBorderSize, integer);
 		if (tempMessage.FindInt32(kCaptureFrameRate, &integer) == B_OK)
-			fSettings->ReplaceInt32(kCaptureFrameRate, integer);
+			fSettings->SetInt32(kCaptureFrameRate, integer);
 		if (tempMessage.FindBool(kDockingMode, &boolean) == B_OK)
-			fSettings->ReplaceBool(kDockingMode, boolean);
+			fSettings->SetBool(kDockingMode, boolean);
 	}	
 	
 	return status;
@@ -152,15 +146,10 @@ status_t
 Settings::Save()
 {
 	BAutolock _(fLocker);
-	BPath path;
-	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
-	if (status == B_OK)
-		status = path.Append("BeScreenCapture");
 	
 	BFile file;
-	if (status == B_OK)
-		status = file.SetTo(path.Path(), B_WRITE_ONLY|B_CREATE_FILE);
-		
+	status_t status = _LoadSettingsFile(file, B_WRITE_ONLY|B_CREATE_FILE);
+
 	if (status == B_OK)	
 		status = fSettings->Flatten(&file);
 	
@@ -172,10 +161,7 @@ void
 Settings::SetCaptureArea(const BRect &rect)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasRect(kCaptureRect))
-		fSettings->AddRect(kCaptureRect, rect);
-	else
-		fSettings->ReplaceRect(kCaptureRect, rect);
+	fSettings->SetRect(kCaptureRect, rect);
 }
 
 
@@ -209,10 +195,7 @@ Settings::SetClipDepth(const color_space &space)
 {
 	BAutolock _(fLocker);
 	const int32 &spaceInt = (int32)space;
-	if (!fSettings->HasInt32(kClipDepth))
-		fSettings->AddInt32(kClipDepth, spaceInt);
-	else
-		fSettings->ReplaceInt32(kClipDepth, spaceInt);
+	fSettings->SetInt32(kClipDepth, spaceInt);
 }
 
 
@@ -230,10 +213,7 @@ void
 Settings::SetScale(const float &scale)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasFloat(kClipScale))
-		fSettings->AddFloat(kClipScale, scale);
-	else
-		fSettings->ReplaceFloat(kClipScale, scale);
+	fSettings->SetFloat(kClipScale, scale);
 }
 
 
@@ -251,10 +231,7 @@ void
 Settings::SetUseDirectWindow(const bool &use)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasBool(kUseDirectWindow))
-		fSettings->AddBool(kUseDirectWindow, use);
-	else
-		fSettings->ReplaceBool(kUseDirectWindow, use);
+	fSettings->SetBool(kUseDirectWindow, use);
 }
 
 
@@ -272,10 +249,7 @@ void
 Settings::SetIncludeCursor(const bool &include)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasBool(kIncludeCursor))
-		fSettings->AddBool(kIncludeCursor, include);
-	else
-		fSettings->ReplaceBool(kIncludeCursor, include);
+	fSettings->SetBool(kIncludeCursor, include);
 }
 
 
@@ -293,10 +267,7 @@ void
 Settings::SetWindowFrameEdgeSize(const int32 &size)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasInt32(kWindowFrameBorderSize))
-		fSettings->AddInt32(kWindowFrameBorderSize, size);
-	else
-		fSettings->ReplaceInt32(kWindowFrameBorderSize, size);
+	fSettings->SetInt32(kWindowFrameBorderSize, size);
 }
 
 
@@ -314,10 +285,7 @@ void
 Settings::SetMinimizeOnRecording(const bool &minimize)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasBool(kMinimize))
-		fSettings->AddBool(kMinimize, minimize);
-	else
-		fSettings->ReplaceBool(kMinimize, minimize);
+	fSettings->SetBool(kMinimize, minimize);
 }
 
 
@@ -335,10 +303,7 @@ void
 Settings::SetOutputFileName(const char *name)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasString(kOutputFile))
-		fSettings->AddString(kOutputFile, name);
-	else
-		fSettings->ReplaceString(kOutputFile, name);
+	fSettings->SetString(kOutputFile, name);
 }
 
 
@@ -366,10 +331,7 @@ void
 Settings::SetOutputFileFormat(const char* fileFormat)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasString(kOutputFileFormat))
-		fSettings->AddString(kOutputFileFormat, fileFormat);
-	else
-		fSettings->ReplaceString(kOutputFileFormat, fileFormat);
+	fSettings->SetString(kOutputFileFormat, fileFormat);
 }
 
 
@@ -387,10 +349,7 @@ void
 Settings::SetOutputCodec(const char* codecName)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasString(kOutputCodecName))
-		fSettings->AddString(kOutputCodecName, codecName);
-	else
-		fSettings->ReplaceString(kOutputCodecName, codecName);
+	fSettings->SetString(kOutputCodecName, codecName);
 }
 
 
@@ -408,10 +367,7 @@ void
 Settings::SetCaptureFrameRate(const int32& value)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasInt32(kCaptureFrameRate))
-		fSettings->AddInt32(kCaptureFrameRate, value);
-	else
-		fSettings->ReplaceInt32(kCaptureFrameRate, value);
+	fSettings->SetInt32(kCaptureFrameRate, value);
 }
 
 
@@ -419,10 +375,7 @@ void
 Settings::SetEncodingThreadPriority(const int32 &value)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasInt32(kThreadPriority))
-		fSettings->AddInt32(kThreadPriority, value);
-	else
-		fSettings->ReplaceInt32(kThreadPriority, value);
+	fSettings->SetInt32(kThreadPriority, value);
 }
 
 
@@ -450,10 +403,7 @@ void
 Settings::SetDockingMode(const bool& value)
 {
 	BAutolock _(fLocker);
-	if (!fSettings->HasBool(kDockingMode))
-		fSettings->AddBool(kDockingMode, value);
-	else
-		fSettings->ReplaceBool(kDockingMode, value);	
+	fSettings->SetBool(kDockingMode, value);
 }
 
 
@@ -467,24 +417,37 @@ Settings::PrintToStream()
 
 
 status_t
+Settings::_LoadSettingsFile(BFile& file, int mode)
+{
+	BPath path;
+	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
+	if (status == B_OK)
+		status = path.Append("BeScreenCapture");
+	if (status == B_OK)
+		status = file.SetTo(path.Path(), mode);
+	return status;
+}
+
+
+status_t
 Settings::_SetDefaults()
 {
 	BAutolock _(fLocker);
 
 	BRect rect = BScreen().Frame();
 	fSettings->MakeEmpty();
-	fSettings->AddRect(kCaptureRect, rect);
-	fSettings->AddString(kOutputFile, "/boot/home/outputfile.avi");
-	fSettings->AddFloat(kClipScale, 100);
-	fSettings->AddInt32(kClipDepth, B_RGB32);
-	fSettings->AddBool(kIncludeCursor, true);
-	fSettings->AddInt32(kThreadPriority, B_NORMAL_PRIORITY);
-	fSettings->AddBool(kMinimize, false);
-	fSettings->AddString(kOutputFileFormat, "");
-	fSettings->AddString(kOutputCodecName, "");
-	fSettings->AddInt32(kWindowFrameBorderSize, 0);
-	fSettings->AddInt32(kCaptureFrameRate, 20);
-	fSettings->AddBool(kDockingMode, false);
+	fSettings->SetRect(kCaptureRect, rect);
+	fSettings->SetString(kOutputFile, "/boot/home/outputfile.avi");
+	fSettings->SetFloat(kClipScale, 100);
+	fSettings->SetInt32(kClipDepth, B_RGB32);
+	fSettings->SetBool(kIncludeCursor, true);
+	fSettings->SetInt32(kThreadPriority, B_NORMAL_PRIORITY);
+	fSettings->SetBool(kMinimize, false);
+	fSettings->SetString(kOutputFileFormat, "");
+	fSettings->SetString(kOutputCodecName, "");
+	fSettings->SetInt32(kWindowFrameBorderSize, 0);
+	fSettings->SetInt32(kCaptureFrameRate, 20);
+	fSettings->SetBool(kDockingMode, false);
 	
 	return B_OK;
 }
