@@ -123,13 +123,13 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 					fCurrentMinimizeValue = Settings::Current().MinimizeOnRecording();
 					fMinimizeOnStart->SetValue(B_CONTROL_ON);
 					fMinimizeOnStart->SetEnabled(false);
-					while (deskbar.HasItem(BSC_DESKBAR_VIEW))
-						deskbar.RemoveItem(BSC_DESKBAR_VIEW);
+					//while (deskbar.HasItem(BSC_DESKBAR_VIEW))
+						//deskbar.RemoveItem(BSC_DESKBAR_VIEW);
 				} else if (!deskbar.HasItem(BSC_DESKBAR_VIEW)) {
 					fMinimizeOnStart->SetValue(fCurrentMinimizeValue ? B_CONTROL_ON : B_CONTROL_OFF);
 					fMinimizeOnStart->SetEnabled(true);
-					deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
-						BSC_DESKBAR_VIEW));
+					//deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
+						//BSC_DESKBAR_VIEW));
 				}
 			}
 		}
