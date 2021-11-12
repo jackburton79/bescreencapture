@@ -4,6 +4,7 @@
  */
 #include "AdvancedOptionsView.h"
 
+#include "BSCApp.h"
 #include "Constants.h"
 #include "Controller.h"
 #include "ControllerObserver.h"
@@ -14,7 +15,6 @@
 
 #include <Box.h>
 #include <CheckBox.h>
-#include <Deskbar.h>
 #include <LayoutBuilder.h>
 
 
@@ -115,22 +115,21 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		case kLocalHideDeskbar:
 		{
 			bool hide = fHideDeskbarIcon->Value() == B_CONTROL_ON;
-			BDeskbar deskbar;
-			if (deskbar.IsRunning()) {
-				if (hide) {
-					// Save the current minimize setting, since we are going to override
-					// it when "hide deskbar" is set
-					fCurrentMinimizeValue = Settings::Current().MinimizeOnRecording();
-					fMinimizeOnStart->SetValue(B_CONTROL_ON);
-					fMinimizeOnStart->SetEnabled(false);
-					while (deskbar.HasItem(BSC_DESKBAR_VIEW))
-						deskbar.RemoveItem(BSC_DESKBAR_VIEW);
-				} else if (!deskbar.HasItem(BSC_DESKBAR_VIEW)) {
-					fMinimizeOnStart->SetValue(fCurrentMinimizeValue ? B_CONTROL_ON : B_CONTROL_OFF);
-					fMinimizeOnStart->SetEnabled(true);
-					deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
-						BSC_DESKBAR_VIEW));
-				}
+			if (hide) {
+				// Save the current minimize setting, since we are going to override
+				// it when "hide deskbar" is set
+				fCurrentMinimizeValue = Settings::Current().MinimizeOnRecording();
+				fMinimizeOnStart->SetValue(B_CONTROL_ON);
+				fMinimizeOnStart->SetEnabled(false);
+				BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+				if (app != NULL)
+					app->RemoveDeskbarReplicant();
+			} else {
+				fMinimizeOnStart->SetValue(fCurrentMinimizeValue ? B_CONTROL_ON : B_CONTROL_OFF);
+				fMinimizeOnStart->SetEnabled(true);
+				BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+				if (app != NULL)
+					app->InstallDeskbarReplicant();
 			}
 		}
 		// Fall through

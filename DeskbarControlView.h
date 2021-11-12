@@ -34,7 +34,7 @@ private:
 	
 	BMessenger fControllerMessenger;
 	BMessenger fAppMessenger;
-	BBitmap *fBitmap;
+	BBitmap* fBitmap;
 	
 	bool fRecording;
 	bool fPaused;
