@@ -22,6 +22,9 @@ public:
 	virtual void MessageReceived(BMessage *message);
 	virtual void AboutRequested();
 
+	void InstallDeskbarReplicant();
+	void RemoveDeskbarReplicant();
+
 	bool WasLaunchedSilently() const;
 	bool LaunchedFromCommandline() const;
 	

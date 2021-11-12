@@ -56,7 +56,7 @@ BSCApp::BSCApp()
 
 BSCApp::~BSCApp()
 {
-	BDeskbar().RemoveItem(BSC_DESKBAR_VIEW);
+	RemoveDeskbarReplicant();
 
 	Settings::Current().Save();
 	Settings::Destroy();
@@ -92,22 +92,13 @@ BSCApp::ReadyToRun()
 		PostMessage(B_QUIT_REQUESTED);
 		return;	
 	}
-	
+
 	if (fShouldStartRecording) {
 		fWindow->Run();
 		BMessenger(gControllerLooper).SendMessage(kMsgGUIToggleCapture);
-	} else
+	} else {
 		fWindow->Show();
-
-	
-	BDeskbar deskbar;
-	if (deskbar.IsRunning()) { 
-		while (deskbar.HasItem(BSC_DESKBAR_VIEW))
-			deskbar.RemoveItem(BSC_DESKBAR_VIEW);
-		if (!fShouldStartRecording) {
-			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
-				BSC_DESKBAR_VIEW));
-		}
+		InstallDeskbarReplicant();
 	}
 }
 
@@ -132,7 +123,6 @@ BSCApp::MessageReceived(BMessage *message)
 				fShouldStartRecording = true;
 			}
 			break;
-			
 		default:
 			BApplication::MessageReceived(message);
 			break;
@@ -183,6 +173,30 @@ BSCApp::AboutRequested()
 	delete[] charArray;
 	
 	aboutWindow->Show();
+}
+
+
+void
+BSCApp::InstallDeskbarReplicant()
+{
+	BDeskbar deskbar;
+	if (deskbar.IsRunning()) {
+		if (!deskbar.HasItem(BSC_DESKBAR_VIEW)) {
+			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
+				BSC_DESKBAR_VIEW));
+		}
+	}
+}
+
+
+void
+BSCApp::RemoveDeskbarReplicant()
+{
+	BDeskbar deskbar;
+	if (deskbar.IsRunning()) {
+		while (deskbar.HasItem(BSC_DESKBAR_VIEW))
+			deskbar.RemoveItem(BSC_DESKBAR_VIEW);
+	}
 }
 
 
