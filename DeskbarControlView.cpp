@@ -32,8 +32,6 @@ const float kContentSpacingHorizontal = 8;
 const float kContentIconMinSize = 12;
 const float kContentIconPad = 4;
 
-extern "C" BView* instantiate_deskbar_item(float maxWidth, float maxHeight);
-
 class BSCMenuItem : public BMenuItem {
 public:
 	BSCMenuItem(uint32 action, BMessage *message);
@@ -50,16 +48,12 @@ private:
 const static char* kControllerMessengerName = "controller_messenger";
 
 
-DeskbarControlView::DeskbarControlView(BRect rect)
+DeskbarControlView::DeskbarControlView(BRect rect, const char *name)
 	:
-	BView(rect, BSC_DESKBAR_VIEW, B_FOLLOW_LEFT|B_FOLLOW_TOP,
-						B_WILL_DRAW|B_PULSE_NEEDED|B_FRAME_EVENTS),
-	fBitmap(NULL),
-	fRecording(false),
-	fPaused(false)
+	BView(rect, name, B_FOLLOW_LEFT|B_FOLLOW_TOP, B_WILL_DRAW|B_PULSE_NEEDED)
 {
-	_UpdateBitmap();
-
+	InitData();
+	
 	fAppMessenger = BMessenger(kAppSignature);
 	fControllerMessenger = BMessenger(gControllerLooper);
 }
@@ -67,13 +61,10 @@ DeskbarControlView::DeskbarControlView(BRect rect)
 
 DeskbarControlView::DeskbarControlView(BMessage *data)
 	:
-	BView(data),
-	fBitmap(NULL),
-	fRecording(false),
-	fPaused(false)
+	BView(data)
 {
-	_UpdateBitmap();
-
+	InitData();
+	
 	fAppMessenger = BMessenger(kAppSignature);
 	data->FindMessenger(kControllerMessengerName, &fControllerMessenger);
 }
@@ -90,7 +81,7 @@ DeskbarControlView::Instantiate(BMessage *archive)
 {
 	if (!validate_instantiation(archive, "DeskbarControlView"))
 		return NULL;
-
+	
 	return new DeskbarControlView(archive);
 }
 
@@ -118,7 +109,7 @@ void
 DeskbarControlView::AttachedToWindow()
 {
 	SetViewColor(Parent()->ViewColor());
-
+		
 	if (LockLooper()) {
 		StartWatching(fControllerMessenger, kMsgControllerCaptureStarted);
 		StartWatching(fControllerMessenger, kMsgControllerCaptureStopped);
@@ -145,20 +136,11 @@ DeskbarControlView::DetachedFromWindow()
 
 /* virtual */
 void
-DeskbarControlView::FrameResized(float width, float height)
-{
-	_UpdateBitmap();
-	Invalidate();
-}
-
-
-/* virtual */
-void
 DeskbarControlView::Draw(BRect rect)
 {
 	SetDrawingMode(B_OP_OVER);
 	DrawBitmap(fBitmap);
-
+	
 	if (fPaused) {
 		SetDrawingMode(B_OP_COPY);
 		SetHighColor(kBlack);
@@ -243,7 +225,6 @@ DeskbarControlView::MouseDown(BPoint where)
 void
 DeskbarControlView::Pulse()
 {
-return;
 	if (!fControllerMessenger.IsValid()) {
 		snooze(100000);
 		BDeskbar deskbar;
@@ -254,13 +235,17 @@ return;
 
 
 void
-DeskbarControlView::_UpdateBitmap()
+DeskbarControlView::InitData()
 {
+	fBitmap = NULL;
+	fRecording = false;
+	fPaused = false;
+	
 	app_info info;
 	be_roster->GetAppInfo(kAppSignature, &info);
-
-	fBitmap = new BBitmap(BRect(0, 0, 31, 31), B_RGBA32);
-	BNodeInfo::GetTrackerIcon(&info.ref, fBitmap, B_LARGE_ICON);
+	
+	fBitmap = new BBitmap(BRect(0, 0, 15, 15), B_RGBA32);
+	BNodeInfo::GetTrackerIcon(&info.ref, fBitmap, B_MINI_ICON);
 }
 
 
@@ -378,11 +363,4 @@ BSCMenuItem::ActionToString(uint32 action)
 		default:
 			return "";
 	}
-}
-
-
-extern "C" BView*
-instantiate_deskbar_item(float maxWidth, float maxHeight)
-{
-	return new DeskbarControlView(BRect(0, 0, maxWidth - 1, maxHeight - 1));
 }

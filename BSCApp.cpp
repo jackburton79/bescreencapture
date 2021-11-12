@@ -14,7 +14,6 @@
 
 #include <private/interface/AboutWindow.h>
 #include <Deskbar.h>
-#include <Roster.h>
 #include <StringList.h>
 
 #include <cstdio>
@@ -106,9 +105,8 @@ BSCApp::ReadyToRun()
 		while (deskbar.HasItem(BSC_DESKBAR_VIEW))
 			deskbar.RemoveItem(BSC_DESKBAR_VIEW);
 		if (!fShouldStartRecording) {
-			app_info info;
-			GetAppInfo(&info);
-			deskbar.AddItem(&info.ref);
+			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
+				BSC_DESKBAR_VIEW));
 		}
 	}
 }
@@ -180,10 +178,10 @@ BSCApp::AboutRequested()
 		charArray[i] = (char*)list.StringAt(i).String();
 	}
 	charArray[stringCount] = NULL;
-
+	
 	aboutWindow->AddVersionHistory((const char**)charArray);
 	delete[] charArray;
-
+	
 	aboutWindow->Show();
 }
 
