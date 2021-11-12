@@ -244,6 +244,7 @@ DeskbarControlView::InitData()
 	app_info info;
 	be_roster->GetAppInfo(kAppSignature, &info);
 	
+	// TODO: scalable icon
 	fBitmap = new BBitmap(BRect(0, 0, 15, 15), B_RGBA32);
 	BNodeInfo::GetTrackerIcon(&info.ref, fBitmap, B_MINI_ICON);
 }
