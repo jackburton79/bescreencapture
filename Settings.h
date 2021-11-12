@@ -80,7 +80,7 @@ private:
 	status_t _LoadSettingsFile(BFile& file, int mode);
 	status_t _SetDefaults();
 
-	BMessage *fSettings;
+	BMessage* fSettings;
 	mutable BLocker fLocker;
 };
 
