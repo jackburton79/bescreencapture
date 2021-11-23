@@ -219,17 +219,17 @@ MediaFormatView::_BuildFileFormatsMenu()
 
 
 void 
-MediaFormatView::_RebuildCodecsMenu(const char* codec)
+MediaFormatView::_RebuildCodecsMenu(const char* currentCodec)
 {
 	BMenu* codecsMenu = fCodecMenu->Menu();
 	
-	BString currentCodec;
-	if (codec != NULL)
-		currentCodec = codec;
+	BString currentCodecString;
+	if (currentCodec != NULL)
+		currentCodecString = currentCodec;
 	else {
 		BMenuItem* item = codecsMenu->FindMarked();
 		if (item != NULL)
-			currentCodec = item->Label();
+			currentCodecString = item->Label();
 	}		
 	Window()->BeginViewTransaction();
 		
@@ -241,7 +241,7 @@ MediaFormatView::_RebuildCodecsMenu(const char* codec)
 			media_codec_info* codec = codecList.ItemAt(i);
 			BMenuItem* item = new BMenuItem(codec->pretty_name, new BMessage(kLocalCodecChanged));
 			codecsMenu->AddItem(item);
-			if (codec->pretty_name == currentCodec)
+			if (codec->pretty_name == currentCodecString)
 				item->SetMarked(true);
 		}			
 		// Make the app object the menu's message target
@@ -259,7 +259,7 @@ MediaFormatView::_RebuildCodecsMenu(const char* codec)
 	if (codecsMenu->FindMarked() == NULL) {
 		codecsMenu->SetEnabled(false);
 	} else {
-		if (currentCodec != codecsMenu->FindMarked()->Label())
+		if (currentCodecString != codecsMenu->FindMarked()->Label())
 			fController->SetMediaCodec(codecsMenu->FindMarked()->Label());
 		codecsMenu->SetEnabled(true);
 	}
