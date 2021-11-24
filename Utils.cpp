@@ -45,7 +45,11 @@ IsFileFormatUsable(const media_file_format& format)
 	static BString brokenFileFormats[] = {
 		"DV Movie",
 		"Ogg Audio",
-		"Ogg Video"
+		"Ogg Video",
+		// TODO: blacklist AVI and Matroska since, as today, Haiku can't encode
+		// these formats correctly. Remove when it's fixed
+		"AVI",
+		"Matroska"
 	};
 	
 	BString formatString = format.pretty_name;

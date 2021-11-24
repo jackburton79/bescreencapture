@@ -437,7 +437,7 @@ Settings::_SetDefaults()
 	BRect rect = BScreen().Frame();
 	fSettings->MakeEmpty();
 	fSettings->SetRect(kCaptureRect, rect);
-	fSettings->SetString(kOutputFile, "/boot/home/outputfile.avi");
+	fSettings->SetString(kOutputFile, "/boot/home/outputfile.mpg");
 	fSettings->SetFloat(kClipScale, 100);
 	fSettings->SetInt32(kClipDepth, B_RGB32);
 	fSettings->SetBool(kIncludeCursor, true);
