@@ -19,10 +19,13 @@ public:
 	virtual BBitmap* ApplyFilter(BBitmap* bitmap) = 0;
 
 protected:
+	BBitmap* Bitmap();
+	BView* View();
+
+private:
 	BBitmap* fBitmap;
 	BView* fView;
 
-private:
 	ImageFilter(const ImageFilter& other);
 };
 
