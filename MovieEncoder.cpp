@@ -326,15 +326,14 @@ MovieEncoder::_EncoderThread()
 		framesWritten++;
 		framesLeft--;
 
-		if (fMessenger.IsValid()) {
-			BMessage progressMessage(kEncodingProgress);
-			progressMessage.AddInt32("frames_remaining", fFileList->CountItems());
-			fMessenger.SendMessage(&progressMessage);
-		} else {
+		if (!fMessenger.IsValid()) {
 			// BMessenger is no longer valid. This means that the application
 			// has been closed or it has crashed.
 			break;
 		}
+		BMessage progressMessage(kEncodingProgress);
+		progressMessage.AddInt32("frames_remaining", fFileList->CountItems());
+		fMessenger.SendMessage(&progressMessage);
 	}
 
 	if (status == B_OK)
