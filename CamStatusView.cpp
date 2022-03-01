@@ -304,5 +304,5 @@ CamStatusView::_GetRecordingTimeString() const
 	BString timeString;
 	strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
 
-	return timeString;
+	return timeString.UnlockBuffer();
 }
