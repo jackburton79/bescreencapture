@@ -51,23 +51,27 @@ const static char* kControllerMessengerName = "controller_messenger";
 DeskbarControlView::DeskbarControlView(BRect rect)
 	:
 	BView(rect, BSC_DESKBAR_VIEW, B_FOLLOW_LEFT|B_FOLLOW_TOP,
-		B_WILL_DRAW|B_PULSE_NEEDED)
+		B_WILL_DRAW|B_PULSE_NEEDED),
+	fBitmap(NULL),
+	fRecording(false),
+	fPaused(false)
 {
-	InitData();
-	
 	fAppMessenger = BMessenger(kAppSignature);
 	fControllerMessenger = BMessenger(gControllerLooper);
+	_UpdateBitmap();
 }
 
 
 DeskbarControlView::DeskbarControlView(BMessage *data)
 	:
-	BView(data)
+	BView(data),
+	fBitmap(NULL),
+	fRecording(false),
+	fPaused(false)
 {
-	InitData();
-	
 	fAppMessenger = BMessenger(kAppSignature);
 	data->FindMessenger(kControllerMessengerName, &fControllerMessenger);
+	_UpdateBitmap();
 }
 
 
@@ -236,16 +240,13 @@ DeskbarControlView::Pulse()
 
 
 void
-DeskbarControlView::InitData()
+DeskbarControlView::_UpdateBitmap()
 {
-	fBitmap = NULL;
-	fRecording = false;
-	fPaused = false;
-	
 	app_info info;
 	be_roster->GetAppInfo(kAppSignature, &info);
 	
 	// TODO: scalable icon
+	delete fBitmap;
 	fBitmap = new BBitmap(BRect(0, 0, 15, 15), B_RGBA32);
 	BNodeInfo::GetTrackerIcon(&info.ref, fBitmap, B_MINI_ICON);
 }

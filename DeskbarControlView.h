@@ -30,7 +30,7 @@ public:
 	virtual void Pulse();
 
 private:
-	void InitData();
+	void _UpdateBitmap();
 	
 	BMessenger fControllerMessenger;
 	BMessenger fAppMessenger;
