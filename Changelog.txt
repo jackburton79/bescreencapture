@@ -1,3 +1,7 @@
+v2.6.1
+        - Added new icon from Zumi. Thanks!
+        - Fixed displaying number of recorded frames.
+---
 v2.6.0
 	- Greatly improve encoding speed if scaling is disabled.
 	- Fixed scaling / exporting / post encoding phases not showing progress.
