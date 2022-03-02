@@ -48,9 +48,10 @@ private:
 const static char* kControllerMessengerName = "controller_messenger";
 
 
-DeskbarControlView::DeskbarControlView(BRect rect, const char *name)
+DeskbarControlView::DeskbarControlView(BRect rect)
 	:
-	BView(rect, name, B_FOLLOW_LEFT|B_FOLLOW_TOP, B_WILL_DRAW|B_PULSE_NEEDED)
+	BView(rect, BSC_DESKBAR_VIEW, B_FOLLOW_LEFT|B_FOLLOW_TOP,
+		B_WILL_DRAW|B_PULSE_NEEDED)
 {
 	InitData();
 	

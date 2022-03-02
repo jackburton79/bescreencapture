@@ -11,7 +11,7 @@
 class BBitmap;
 class DeskbarControlView : public BView {
 public:
-	DeskbarControlView(BRect rect, const char *name);
+	DeskbarControlView(BRect rect);
 	DeskbarControlView(BMessage *data);
 	
 	virtual ~DeskbarControlView();

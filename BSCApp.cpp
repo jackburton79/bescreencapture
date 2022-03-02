@@ -182,8 +182,7 @@ BSCApp::InstallDeskbarReplicant()
 	BDeskbar deskbar;
 	if (deskbar.IsRunning()) {
 		if (!deskbar.HasItem(BSC_DESKBAR_VIEW)) {
-			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15),
-				BSC_DESKBAR_VIEW));
+			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15)));
 		}
 	}
 }
