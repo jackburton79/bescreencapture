@@ -167,14 +167,18 @@ DeskbarControlView::Draw(BRect rect)
 	SetDrawingMode(B_OP_OVER);
 	DrawBitmap(fBitmap);
 	
+	BRect overlayRect = Bounds();
+	overlayRect.left = 2;
+	overlayRect.right = overlayRect.left + 3;
+	overlayRect.top = overlayRect.bottom - 3;
 	if (fPaused) {
 		SetDrawingMode(B_OP_COPY);
 		SetHighColor(kBlack);
-		FillRect(BRect(2, 12, 5, 15));
+		FillRect(overlayRect);
 	} else if (fRecording) {
 		SetDrawingMode(B_OP_COPY);
 		SetHighColor(kRed);
-		FillRect(BRect(2, 12, 5, 15));
+		FillRect(overlayRect);
 	}
 }
 
