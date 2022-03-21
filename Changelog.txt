@@ -1,3 +1,10 @@
+v2.6.1
+	- Added new icon from Zumi. Thanks!
+	- Fixed displaying number of recorded frames.
+	- Moved settings file to a subfolder.
+	- Blacklist AVI and Matroska since they don't work well in current Haiku versions.
+	- Fix Deskbar icon not scaling.
+---
 v2.6.0
 	- Greatly improve encoding speed if scaling is disabled.
 	- Fixed scaling / exporting / post encoding phases not showing progress.

@@ -420,11 +420,23 @@ status_t
 Settings::_LoadSettingsFile(BFile& file, int mode)
 {
 	BPath path;
-	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
-	if (status == B_OK)
-		status = path.Append("BeScreenCapture");
+	status_t status = _GetSettingsPath(path);
+	bool migrate = false;
+	if (status == B_NOT_A_DIRECTORY) {
+		// Special case: old file settings exists.
+		// Load it and migrate to new style
+		migrate = true;
+		status = B_OK;
+	} else if (status == B_OK)
+		status = path.Append("settings");
+
 	if (status == B_OK)
 		status = file.SetTo(path.Path(), mode);
+	if (migrate) {
+		// Delete old file
+		BEntry(path.Path()).Remove();
+	}
+
 	return status;
 }
 
@@ -437,7 +449,7 @@ Settings::_SetDefaults()
 	BRect rect = BScreen().Frame();
 	fSettings->MakeEmpty();
 	fSettings->SetRect(kCaptureRect, rect);
-	fSettings->SetString(kOutputFile, "/boot/home/outputfile.avi");
+	fSettings->SetString(kOutputFile, "/boot/home/outputfile.mpg");
 	fSettings->SetFloat(kClipScale, 100);
 	fSettings->SetInt32(kClipDepth, B_RGB32);
 	fSettings->SetBool(kIncludeCursor, true);
@@ -450,6 +462,20 @@ Settings::_SetDefaults()
 	fSettings->SetBool(kDockingMode, false);
 	
 	return B_OK;
+}
+
+
+status_t
+Settings::_GetSettingsPath(BPath& path)
+{
+	status_t status = find_directory(B_USER_SETTINGS_DIRECTORY, &path);
+	if (status == B_OK)
+		status = path.Append("BeScreenCapture");
+	if (status == B_OK) {
+		// just create it, harmless if already there
+		status = create_directory(path.Path(), 0755);
+	}
+	return status;
 }
 
 

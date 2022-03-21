@@ -12,6 +12,7 @@
 
 class BFile;
 class BMessage;
+class BPath;
 class BString;
 
 class Settings {
@@ -79,6 +80,7 @@ private:
 
 	status_t _LoadSettingsFile(BFile& file, int mode);
 	status_t _SetDefaults();
+	status_t _GetSettingsPath(BPath& path);
 
 	BMessage* fSettings;
 	mutable BLocker fLocker;

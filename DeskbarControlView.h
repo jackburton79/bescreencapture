@@ -11,17 +11,17 @@
 class BBitmap;
 class DeskbarControlView : public BView {
 public:
-	DeskbarControlView(BRect rect, const char *name);
+	DeskbarControlView(BRect rect);
 	DeskbarControlView(BMessage *data);
 	
 	virtual ~DeskbarControlView();
 	
 	static DeskbarControlView *Instantiate(BMessage *archive);
-	virtual status_t Archive(BMessage *message, bool deep) const;
+	virtual status_t Archive(BMessage *message, bool deep = true) const;
 	
 	virtual void AttachedToWindow();
 	virtual void DetachedFromWindow();
-	
+	virtual void FrameResized(float width, float height);
 	virtual void Draw(BRect rect);
 	virtual void MessageReceived(BMessage *message);
 
@@ -30,7 +30,7 @@ public:
 	virtual void Pulse();
 
 private:
-	void InitData();
+	void _UpdateBitmap();
 	
 	BMessenger fControllerMessenger;
 	BMessenger fAppMessenger;

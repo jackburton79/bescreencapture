@@ -23,6 +23,7 @@ ImageFilter::ImageFilter(BRect frame, color_space colorSpace)
 }
 
 
+// private non-working
 ImageFilter::ImageFilter(const ImageFilter& other)
 	:
 	fBitmap(NULL),
@@ -31,9 +32,31 @@ ImageFilter::ImageFilter(const ImageFilter& other)
 }
 
 
+// private non-working
+ImageFilter&
+ImageFilter::operator=(const ImageFilter& other)
+{
+	return *this;
+}
+
+
 ImageFilter::~ImageFilter()
 {
 	delete fBitmap;
+}
+
+
+BBitmap*
+ImageFilter::Bitmap()
+{
+	return fBitmap;
+}
+
+
+BView*
+ImageFilter::View()
+{
+	return fView;
 }
 
 
@@ -56,12 +79,13 @@ ImageFilterScale::ApplyFilter(BBitmap* bitmap)
 {
 	// Draw scaled
 	if (bitmap != NULL) {
-		fBitmap->Lock();
-		fView->DrawBitmap(bitmap, bitmap->Bounds().OffsetToCopy(B_ORIGIN), fView->Bounds());
-		fView->Sync();
-		fBitmap->Unlock();
+		Bitmap()->Lock();
+		View()->DrawBitmap(bitmap, bitmap->Bounds().OffsetToCopy(B_ORIGIN),
+									View()->Bounds());
+		View()->Sync();
+		Bitmap()->Unlock();
 		delete bitmap;
 	}
 
-	return new BBitmap(*fBitmap);
+	return new BBitmap(*Bitmap());
 }

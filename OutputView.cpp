@@ -291,7 +291,7 @@ OutputView::_LayoutView()
 	outputBox->SetLabel("Output");
 	AddChild(outputBox);
 
-	Settings& settings = Settings::Current();
+	const Settings& settings = Settings::Current();
 	const char *kTCLabel = "File name:"; 
 	BString fileName = settings.OutputFileName();
 	fFileName = new BTextControl("file name",
@@ -363,7 +363,7 @@ OutputView::_LayoutView()
 void
 OutputView::_InitControlsFromSettings()
 {
-	Settings& settings = Settings::Current();
+	const Settings& settings = Settings::Current();
 	fBorderSlider->SetValue(settings.WindowFrameEdgeSize());
 	fScaleSlider->SetValue(settings.Scale());	
 	fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);
