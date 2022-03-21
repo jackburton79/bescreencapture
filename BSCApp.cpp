@@ -14,6 +14,8 @@
 
 #include <private/interface/AboutWindow.h>
 #include <Deskbar.h>
+#include <NodeInfo.h>
+#include <Roster.h>
 #include <StringList.h>
 
 #include <cstdio>
@@ -114,6 +116,15 @@ void
 BSCApp::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
+		case kMsgGetControllerMessenger:
+		{
+			// the deskbar view needs the controller looper messenger
+			BMessage reply(kMsgGetControllerMessenger);
+			BMessenger controllerMessenger(gControllerLooper);
+			reply.AddMessenger("ControllerMessenger", controllerMessenger);
+			message->SendReply(&reply);
+			break;
+		}
 		case kMsgGUIToggleCapture:
 		case kMsgGUITogglePause:
 			if (gControllerLooper != NULL)
@@ -182,7 +193,9 @@ BSCApp::InstallDeskbarReplicant()
 	BDeskbar deskbar;
 	if (deskbar.IsRunning()) {
 		if (!deskbar.HasItem(BSC_DESKBAR_VIEW)) {
-			deskbar.AddItem(new DeskbarControlView(BRect(0, 0, 15, 15)));
+			app_info info;
+			be_roster->GetAppInfo(kAppSignature, &info);
+			deskbar.AddItem(&info.ref);
 		}
 	}
 }

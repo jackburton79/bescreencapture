@@ -17,11 +17,11 @@ public:
 	virtual ~DeskbarControlView();
 	
 	static DeskbarControlView *Instantiate(BMessage *archive);
-	virtual status_t Archive(BMessage *message, bool deep) const;
+	virtual status_t Archive(BMessage *message, bool deep = true) const;
 	
 	virtual void AttachedToWindow();
 	virtual void DetachedFromWindow();
-	
+	virtual void FrameResized(float width, float height);
 	virtual void Draw(BRect rect);
 	virtual void MessageReceived(BMessage *message);
 

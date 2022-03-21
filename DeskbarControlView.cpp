@@ -12,12 +12,15 @@
 #include <Bitmap.h>
 #include <Deskbar.h>
 #include <Entry.h>
+#include <IconUtils.h>
 #include <MenuItem.h>
 #include <Message.h>
 #include <NodeInfo.h>
 #include <PopUpMenu.h>
+#include <Resources.h>
 #include <Roster.h>
 
+#include <syslog.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -50,8 +53,8 @@ const static char* kControllerMessengerName = "controller_messenger";
 
 DeskbarControlView::DeskbarControlView(BRect rect)
 	:
-	BView(rect, BSC_DESKBAR_VIEW, B_FOLLOW_LEFT|B_FOLLOW_TOP,
-		B_WILL_DRAW|B_PULSE_NEEDED),
+	BView(rect, BSC_DESKBAR_VIEW, B_FOLLOW_TOP|B_FOLLOW_LEFT,
+		B_WILL_DRAW|B_PULSE_NEEDED|B_FRAME_EVENTS),
 	fBitmap(NULL),
 	fRecording(false),
 	fPaused(false)
@@ -102,7 +105,7 @@ DeskbarControlView::Archive(BMessage *message, bool deep) const
 	status = message->AddString("add_on", kAppSignature);
 	if (status != B_OK)
 		return status;
-	
+
 	status = message->AddMessenger(kControllerMessengerName,
 		fControllerMessenger);
 	return status;
@@ -113,12 +116,21 @@ DeskbarControlView::Archive(BMessage *message, bool deep) const
 void
 DeskbarControlView::AttachedToWindow()
 {
+	BView::AttachedToWindow();
+
 	SetViewColor(Parent()->ViewColor());
-		
+
+	if (!fControllerMessenger.IsValid()) {
+		// ask the be_app to send us the controller looper messenger
+		BMessage message(kMsgGetControllerMessenger);
+		fAppMessenger.SendMessage(&message, this);
+		return;
+	}
+
 	if (LockLooper()) {
 		StartWatching(fControllerMessenger, kMsgControllerCaptureStarted);
 		StartWatching(fControllerMessenger, kMsgControllerCaptureStopped);
-		StartWatching(fControllerMessenger, kMsgControllerCapturePaused);	
+		StartWatching(fControllerMessenger, kMsgControllerCapturePaused);
 		StartWatching(fControllerMessenger, kMsgControllerCaptureResumed);
 		UnlockLooper();
 	}
@@ -136,6 +148,15 @@ DeskbarControlView::DetachedFromWindow()
 		StopWatching(fControllerMessenger, kMsgControllerCaptureResumed);	
 		UnlockLooper();
 	}
+}
+
+
+/* virtual */
+void
+DeskbarControlView::FrameResized(float width, float height)
+{
+	_UpdateBitmap();
+	Invalidate();
 }
 
 
@@ -163,6 +184,19 @@ void
 DeskbarControlView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
+		case kMsgGetControllerMessenger:
+		{
+			// this is the reply from the be_app
+			if (message->FindMessenger("ControllerMessenger",
+					&fControllerMessenger) == B_OK
+					&& fControllerMessenger.IsValid()) {
+				StartWatching(fControllerMessenger, kMsgControllerCaptureStarted);
+				StartWatching(fControllerMessenger, kMsgControllerCaptureStopped);
+				StartWatching(fControllerMessenger, kMsgControllerCapturePaused);
+				StartWatching(fControllerMessenger, kMsgControllerCaptureResumed);
+			}
+			break;
+		}
 		case kMsgGUIToggleCapture:
 			if (fControllerMessenger.IsValid())
 				fControllerMessenger.SendMessage(message);
@@ -245,13 +279,24 @@ DeskbarControlView::_UpdateBitmap()
 	app_info info;
 	be_roster->GetAppInfo(kAppSignature, &info);
 	
-	// TODO: scalable icon
-	delete fBitmap;
-	fBitmap = new BBitmap(BRect(0, 0, 15, 15), B_RGBA32);
-	BNodeInfo::GetTrackerIcon(&info.ref, fBitmap, B_MINI_ICON);
+	BResources resources(&info.ref);
+	if (resources.InitCheck() < B_OK)
+		return;
+
+	size_t size;
+	const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, 1, &size);
+	if (data != NULL) {
+		BBitmap* bitmap = new BBitmap(Bounds(), B_RGBA32);
+		if (bitmap->InitCheck() == B_OK && BIconUtils::GetVectorIcon(
+				(const uint8*)data, size, bitmap) == B_OK) {
+			delete fBitmap;
+			fBitmap = bitmap;
+		}
+	}
 }
 
 
+// BSCMenuItem
 BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message)
 	:
 	BMenuItem(ActionToString(action), message),
@@ -366,4 +411,11 @@ BSCMenuItem::ActionToString(uint32 action)
 		default:
 			return "";
 	}
+}
+
+
+extern "C" BView*
+instantiate_deskbar_item(float maxWidth, float maxHeight)
+{
+	return new DeskbarControlView(BRect(0, 0, maxHeight - 1, maxHeight - 1));
 }
