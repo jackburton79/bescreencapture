@@ -639,6 +639,30 @@ Controller::ResetSettings()
 
 
 void
+Controller::TestSystem()
+{
+	std::cout << "Testing system speed:" << std::endl;
+	int32 numFrames = 500;
+	FramesList* list = new FramesList(true);
+	
+	BRect rect = BScreen().Frame();
+	color_space colorSpace = BScreen().ColorSpace();
+	bigtime_t startTime = system_time();
+
+	for (int32 i = 0; i < numFrames; i++)
+		list->AddItem(new BBitmap(rect, colorSpace), system_time());
+
+	bigtime_t elapsedTime = system_time() - startTime;
+	
+	delete list;
+
+	std::cout << "Took " << (elapsedTime / 1000) << " msec to write ";
+	std::cout << numFrames << " frames: " << (numFrames / (elapsedTime / 1000000)) << " fps.";
+	std::cout << std::endl;
+}
+
+
+void
 Controller::_PauseCapture()
 {
 	SendNotices(kMsgControllerCapturePaused);
@@ -724,7 +748,11 @@ Controller::CaptureThread()
 	if (frameRate <= 0)
 		frameRate = 10;
 	bigtime_t captureDelay = 1000 * (1000 / frameRate);
-	
+
+#if 0
+	TestSystem();
+#endif
+
 	_TestWaitForRetrace();
 	
 	const int32 windowEdge = settings.WindowFrameEdgeSize();

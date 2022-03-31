@@ -81,7 +81,9 @@ public:
 	status_t	ReadBitmap(BBitmap *bitmap, bool includeCursor, BRect bounds);
 	
 	void		ResetSettings();
-		
+	
+	void		TestSystem();
+
 private:
 	thread_id			fCaptureThread;
 	int32				fNumFrames;
