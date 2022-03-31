@@ -38,7 +38,7 @@ private:
 class BPath;
 class FramesList : private BObjectList<BitmapEntry> {
 public:
-	FramesList();
+	FramesList(bool diskOnly = false);
 	virtual ~FramesList();
 
 	bool AddItem(BBitmap* bitmap, bigtime_t frameTime);
@@ -52,6 +52,7 @@ public:
 	status_t WriteFrames(const char* path);
 private:
 	char* fTemporaryPath;
+	bool fDiskOnly;
 };
 
 

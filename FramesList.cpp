@@ -28,10 +28,11 @@ static BTranslatorRoster* sTranslatorRoster = NULL;
 
 const uint64 kMinFreeMemory = (1 * 1024 * 1024 * 1024); // 1GB
 
-FramesList::FramesList()
+FramesList::FramesList(bool diskOnly)
 	:
 	BObjectList<BitmapEntry>(1, true),
-	fTemporaryPath(NULL)
+	fTemporaryPath(NULL),
+	fDiskOnly(diskOnly)
 {
 	BPath path;
 	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
@@ -71,7 +72,7 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t frameTime)
 		return false;
 
 	// TODO: Use a smarter check
-	if (CountItems() >= 100 || GetFreeMemory() < kMinFreeMemory) {
+	if (fDiskOnly || CountItems() >= 100 || GetFreeMemory() < kMinFreeMemory) {
 		if (entry->SaveToDisk(fTemporaryPath) != B_OK) {
 			delete entry;
 			return false;
