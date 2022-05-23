@@ -124,7 +124,7 @@ FramesList::WriteFrames(const char* path)
 	int32 i = 0;
 	while (CountItems() > 0) {
 		BString fileName;
-		fileName.SetToFormat("frame_%05d.bmp", i + 1);
+		fileName.SetToFormat("frame_%05d.png", i + 1);
 		BitmapEntry* entry = Pop();
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());
@@ -242,12 +242,12 @@ BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 
 	translator_info translatorInfo;
 	sTranslatorRoster->Identify(&bitmapStream, NULL,
-			&translatorInfo, 0, NULL, 'BMP ');
+			&translatorInfo, 0, NULL, 'PNG ');
 
 	BFile outFile;
 	outFile.SetTo(fileName, B_WRITE_ONLY|B_CREATE_FILE);
 	status_t status = sTranslatorRoster->Translate(&bitmapStream,
-		&translatorInfo, NULL, &outFile, 'BMP ');
+		&translatorInfo, NULL, &outFile, 'PNG ');
 
 	return status;
 }
