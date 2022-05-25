@@ -257,6 +257,14 @@ Controller::RecordTime() const
 }
 
 
+int32
+Controller::AverageFPS() const
+{
+	// TODO: Check division by 0
+	return (RecordedFrames() * 1000000) / RecordTime();
+}
+
+
 void
 Controller::EncodeMovie()
 {

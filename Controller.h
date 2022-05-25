@@ -51,6 +51,7 @@ public:
 	
 	int32		RecordedFrames() const;
 	bigtime_t	RecordTime() const;
+	int32		AverageFPS() const;
 	
 	void		EncodeMovie();
 	
