@@ -31,7 +31,7 @@ public:
 	virtual BSize MaxSize();
 
 private:
-	BString _GetRecordingTimeString() const;
+	BString _GetRecordingStatusString() const;
 
 	Controller* fController;
 	BStringView* fStringView;

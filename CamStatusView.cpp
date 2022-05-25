@@ -228,8 +228,7 @@ CamStatusView::Pulse()
 		return;
 
 	fNumFrames = fController->RecordedFrames();
-	BString str = _GetRecordingTimeString();
-	str << " (" << fNumFrames << " frames)";
+	BString str = _GetRecordingStatusString();
 	fStringView->SetText(str.String());
 	Invalidate();
 }
@@ -294,7 +293,7 @@ CamStatusView::MaxSize()
 
 
 BString
-CamStatusView::_GetRecordingTimeString() const
+CamStatusView::_GetRecordingStatusString() const
 {
 	time_t recordTime = (time_t)fController->RecordTime() / 1000000;
 	if (recordTime < 0)
@@ -303,6 +302,7 @@ CamStatusView::_GetRecordingTimeString() const
 	struct tm* diffTime = gmtime_r(&recordTime, &timeStruct);
 	BString timeString;
 	strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
-
-	return timeString.UnlockBuffer();
+	timeString.UnlockBuffer();
+	timeString << " (" << fNumFrames << " frames)";
+	return timeString;
 }
