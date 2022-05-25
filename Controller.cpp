@@ -504,7 +504,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	targetRect.right++;
 	targetRect.bottom++;
 	
-	const int32 frameRate =  settings.CaptureFrameRate();
+	const int32 frameRate = settings.CaptureFrameRate();
 	const media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
@@ -553,21 +553,21 @@ Controller::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 	if (!useDirectWindow)
 		return BScreen().ReadBitmap(bitmap, includeCursor, &bounds);
 		
-	int32 bytesPerPixel = fDirectInfo.bits_per_pixel >> 3;
+	const int32 bytesPerPixel = fDirectInfo.bits_per_pixel >> 3;
 	if (bytesPerPixel <= 0)
 		return B_ERROR;
 
-	uint32 rowBytes = fDirectInfo.bytes_per_row / bytesPerPixel;
+	const uint32 rowBytes = fDirectInfo.bytes_per_row / bytesPerPixel;
 	const int32 offset = ((uint32)bounds.left +
 		 ((uint32)bounds.top * rowBytes)) * bytesPerPixel;
 
-	int32 height = bounds.IntegerHeight() + 1;
+	const int32 height = bounds.IntegerHeight() + 1;
 	void* from = (void*)((uint8*)fDirectInfo.bits + offset);    		
 	void* to = bitmap->Bits();
-	int32 bytesPerRow = bitmap->BytesPerRow();
-	int32 areaSize = (bounds.IntegerWidth() + 1) * bytesPerPixel;
+	const int32 bytesPerRow = bitmap->BytesPerRow();
+	const int32 areaSize = (bounds.IntegerWidth() + 1) * bytesPerPixel;
 	for (int32 y = 0; y < height; y++) {  
-		memcpy(to, from, areaSize);
+		::memcpy(to, from, areaSize);
 	   	to = (void*)((uint8*)to + bytesPerRow);
 		from = (void*)((uint8*)from + fDirectInfo.bytes_per_row);
 	}
