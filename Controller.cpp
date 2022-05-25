@@ -776,21 +776,24 @@ Controller::CaptureThread()
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
 				
-			_WaitForRetrace(captureDelay); // Wait for Vsync
 			bitmap = new BBitmap(bounds, colorSpace);
 			error = ReadBitmap(bitmap, true, bounds);
-			bigtime_t currentTime = system_time();
+			bigtime_t lastFrameTime = system_time();
 
 			if (error != B_OK)
 				break;
 
 			// Takes ownership of the bitmap
-			if (!fFileList->AddItem(bitmap, currentTime)) {
+			if (!fFileList->AddItem(bitmap, lastFrameTime)) {
 				error = B_NO_MEMORY;
 				break;
 			}
 
 			atomic_add(&fNumFrames, 1);
+
+			bigtime_t toWait = (lastFrameTime + captureDelay) - system_time();
+			if (toWait > 0)
+				_WaitForRetrace(toWait); // Wait for Vsync
 		} else
 			snooze(500000);
 	}
