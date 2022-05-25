@@ -303,6 +303,7 @@ CamStatusView::_GetRecordingStatusString() const
 	BString timeString;
 	strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
 	timeString.UnlockBuffer();
-	timeString << " (" << fNumFrames << " frames)";
+	timeString << ", " << fNumFrames << " frames";
+	timeString << " (" << fController->AverageFPS() << " avg)";
 	return timeString;
 }
