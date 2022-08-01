@@ -1,6 +1,5 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/63f373e0c5c04abfa329e6d505d1f014)](https://app.codacy.com/gh/jackburton79/bescreencapture?utm_source=github.com&utm_medium=referral&utm_content=jackburton79/bescreencapture&utm_campaign=Badge_Grade_Settings)
 [![CodeFactor](https://www.codefactor.io/repository/github/jackburton79/bescreencapture/badge)](https://www.codefactor.io/repository/github/jackburton79/bescreencapture)
-[![Codiga](https://api.codiga.io/project/29882/score/svg)](https://app.codiga.io/public/project/29882/bescreencapture/dashboard)
 
 # BeScreenCapture
 
