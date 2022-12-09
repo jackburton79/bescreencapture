@@ -317,7 +317,7 @@ DeskbarControlView::_LoadIconBitmap(const char* iconName)
 	BBitmap* bitmap = NULL;
 	if (resources.InitCheck() == B_OK) {
 		size_t size;
-		const void* data = resources.LoadResource('VICN', iconName, &size);
+		const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, iconName, &size);
 		if (data != NULL) {
 			BRect bitmapRect(0, 0, 47, 47);
 			bitmap = new BBitmap(bitmapRect, B_RGBA32);
