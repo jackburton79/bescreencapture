@@ -15,6 +15,7 @@
 #include <private/interface/AboutWindow.h>
 #include <Deskbar.h>
 #include <NodeInfo.h>
+#include <PropertyInfo.h>
 #include <Roster.h>
 #include <StringList.h>
 
@@ -29,6 +30,24 @@ const char kChangeLog[] = {
 const char* kAuthors[] = {
 	"Stefano Ceccherini (stefano.ceccherini@gmail.com)",
 	NULL
+};
+
+
+#define BSC_SUITES "suites/vnd.BSC-application"
+#define kPropertyToggleRecording "StartStop"
+
+const property_info kPropList[] = {
+	{
+		kPropertyToggleRecording,
+		{ B_EXECUTE_PROPERTY },
+		{ B_DIRECT_SPECIFIER },
+		"toggle recording # Start or stop recording",
+		0,
+		{},
+		{},
+		{}
+	},
+	{ 0 }
 };
 
 int
@@ -162,6 +181,22 @@ SplitChangeLog(const char* changeLog)
 			i++;
 	}
 	return list;		
+}
+
+
+/* virtual */
+status_t
+BSCApp::GetSupportedSuites(BMessage* message)
+{
+	status_t status = message->AddString("suites", BSC_SUITES);
+	if (status != B_OK)
+		return status;
+		
+	BPropertyInfo info(const_cast<property_info*>(kPropList));
+	status = message->AddFlat("messages", &info);
+	if (status == B_OK)
+		status = BApplication::GetSupportedSuites(message);
+	return status;
 }
 
 

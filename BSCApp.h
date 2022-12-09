@@ -20,6 +20,7 @@ public:
 	virtual void ReadyToRun();
 	virtual bool QuitRequested();
 	virtual void MessageReceived(BMessage *message);
+	virtual status_t GetSupportedSuites(BMessage* message);
 	virtual void AboutRequested();
 
 	void InstallDeskbarReplicant();
