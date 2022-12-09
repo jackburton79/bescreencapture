@@ -37,7 +37,7 @@ const float kContentIconPad = 4;
 
 class BSCMenuItem : public BMenuItem {
 public:
-	BSCMenuItem(uint32 action, BMessage *message);
+	BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap = NULL);
 	virtual void DrawContent();
 	virtual void GetContentSize(float* width, float* height);
 private:
@@ -301,11 +301,11 @@ DeskbarControlView::_UpdateBitmap()
 
 
 // BSCMenuItem
-BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message)
+BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap)
 	:
 	BMenuItem(ActionToString(action), message),
 	fAction(action),
-	fMenuIcon(NULL)
+	fMenuIcon(bitmap)
 {
 }
 
