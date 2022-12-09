@@ -128,10 +128,10 @@ CamStatusView::AttachedToWindow()
 	
 	BResources* resources = be_app->AppResources();
 	size_t size;
-	const void* buffer = resources->LoadResource('VICN', "record_icon", &size);
+	const void* buffer = resources->LoadResource(B_VECTOR_ICON_TYPE, "record_icon", &size);
 	if (buffer != NULL)
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fRecordingBitmap);
-	buffer = resources->LoadResource('VICN', "pause_icon", &size);
+	buffer = resources->LoadResource(B_VECTOR_ICON_TYPE, "pause_icon", &size);
 	if (buffer != NULL)
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);
 	
