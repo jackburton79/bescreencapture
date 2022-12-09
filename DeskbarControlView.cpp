@@ -248,20 +248,20 @@ DeskbarControlView::MessageReceived(BMessage *message)
 void
 DeskbarControlView::MouseDown(BPoint where)
 {
+	// TODO: this is done on every MouseDown: not nice
+	// maybe we should load the bitmap or resource once
 	BPopUpMenu *menu = new BPopUpMenu("menu");
 	if (fRecording) {
-		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIToggleCapture)));
-		if (fPaused)
-			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kMsgGUITogglePause)));
-		else {
-			// TODO: this is done on every MouseDown: not nice
-			// maybe we should load the bitmap or resource once
-			BBitmap* bitmap = _LoadIconBitmap("pause_icon");
-			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kMsgGUITogglePause), bitmap));
+		BBitmap* stopBitmap = _LoadIconBitmap("stop_icon");
+		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIToggleCapture), stopBitmap));
+		if (fPaused) {
+			BBitmap* resumeBitmap = _LoadIconBitmap("resume_icon");
+			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kMsgGUITogglePause), resumeBitmap));
+		} else {
+			BBitmap* pauseBitmap = _LoadIconBitmap("pause_icon");
+			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kMsgGUITogglePause), pauseBitmap));
 		}
 	} else {
-		// TODO: this is done on every MouseDown: not nice
-		// maybe we should load the bitmap or resource once
 		BBitmap* bitmap = _LoadIconBitmap("record_icon");
 		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIToggleCapture), bitmap));
 	}
