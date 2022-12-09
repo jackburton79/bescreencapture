@@ -40,7 +40,7 @@ const property_info kPropList[] = {
 	{
 		kPropertyToggleRecording,
 		{ B_EXECUTE_PROPERTY },
-		{ B_DIRECT_SPECIFIER },
+		{ B_NO_SPECIFIER },
 		"toggle recording # Start or stop recording",
 		0,
 		{},
@@ -134,7 +134,30 @@ BSCApp::QuitRequested()
 void
 BSCApp::MessageReceived(BMessage *message)
 {
+	// TODO: Move scripting to its own method
 	switch (message->what) {
+		case B_EXECUTE_PROPERTY:
+		{
+			BMessage reply(B_REPLY);
+			const char* property = NULL;
+			int32 index = 0;
+			int32 form = 0;
+			BMessage specifier;
+			status_t status = message->GetCurrentSpecifier(&index,
+				&specifier, &form, &property);
+			if (status != B_OK || index == -1)
+				break;
+			if (strcmp(property, kPropertyToggleRecording) == 0) {
+				if (form == B_DIRECT_SPECIFIER) {
+					BMessage toggleMessage(kMsgGUIToggleCapture);
+					if (gControllerLooper != NULL)
+						BMessenger(gControllerLooper).SendMessage(&toggleMessage);
+					reply.AddInt32("error", B_OK);
+					message->SendReply(&reply);
+				}
+			}
+			break;
+		}
 		case kMsgGetControllerMessenger:
 		{
 			// the deskbar view needs the controller looper messenger
@@ -208,8 +231,13 @@ BSCApp::ResolveSpecifier(BMessage* message,
 								int32 what,
 								const char* property)
 {
-	return BApplication::ResolveSpecifier(message, index,
-			specifier, what, property);
+	BPropertyInfo info(const_cast<property_info*>(kPropList));
+	int32 result = info.FindMatch(message, index, specifier, what, property);
+	if (result < 0) {
+		return BApplication::ResolveSpecifier(message, index,
+				specifier, what, property);
+	}
+	return this;
 }
 
 
