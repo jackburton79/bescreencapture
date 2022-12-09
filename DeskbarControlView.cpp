@@ -256,28 +256,15 @@ DeskbarControlView::MouseDown(BPoint where)
 		else {
 			// TODO: this is done on every MouseDown: not nice
 			// maybe we should load the bitmap or resource once
-			app_info info;
-			be_roster->GetAppInfo(kAppSignature, &info);
-			BResources resources(&info.ref);
-			BBitmap* bitmap = NULL;
-			if (resources.InitCheck() == B_OK) {
-				size_t size;
-				const void* data = resources.LoadResource('VICN', "pause_icon", &size);
-				if (data != NULL) {
-					BRect bitmapRect(0, 0, 47, 47);
-					bitmap = new BBitmap(bitmapRect, B_RGBA32);
-					if (bitmap->InitCheck() != B_OK || BIconUtils::GetVectorIcon(
-							(const uint8*)data, size, bitmap) != B_OK) {
-						delete bitmap;
-						bitmap = NULL;
-					}
-				}
-			}
+			BBitmap* bitmap = _LoadIconBitmap("pause_icon");
 			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kMsgGUITogglePause), bitmap));
 		}
-	} else
-		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIToggleCapture)));
-	
+	} else {
+		// TODO: this is done on every MouseDown: not nice
+		// maybe we should load the bitmap or resource once
+		BBitmap* bitmap = _LoadIconBitmap("record_icon");
+		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIToggleCapture), bitmap));
+	}
 	menu->SetTargetForItems(this);
 	
 	ConvertToScreen(&where);
@@ -318,6 +305,30 @@ DeskbarControlView::_UpdateBitmap()
 			fBitmap = bitmap;
 		}
 	}
+}
+
+
+BBitmap*
+DeskbarControlView::_LoadIconBitmap(const char* iconName)
+{
+	app_info info;
+	be_roster->GetAppInfo(kAppSignature, &info);
+	BResources resources(&info.ref);
+	BBitmap* bitmap = NULL;
+	if (resources.InitCheck() == B_OK) {
+		size_t size;
+		const void* data = resources.LoadResource('VICN', iconName, &size);
+		if (data != NULL) {
+			BRect bitmapRect(0, 0, 47, 47);
+			bitmap = new BBitmap(bitmapRect, B_RGBA32);
+			if (bitmap->InitCheck() != B_OK || BIconUtils::GetVectorIcon(
+					(const uint8*)data, size, bitmap) != B_OK) {
+				delete bitmap;
+				bitmap = NULL;
+			}
+		}
+	}
+	return bitmap;
 }
 
 

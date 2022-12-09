@@ -31,6 +31,7 @@ public:
 
 private:
 	void _UpdateBitmap();
+	BBitmap* _LoadIconBitmap(const char* iconName);
 	
 	BMessenger fControllerMessenger;
 	BMessenger fAppMessenger;
