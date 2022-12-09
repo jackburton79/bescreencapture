@@ -38,6 +38,7 @@ const float kContentIconPad = 4;
 class BSCMenuItem : public BMenuItem {
 public:
 	BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap = NULL);
+	virtual ~BSCMenuItem();
 	virtual void DrawContent();
 	virtual void GetContentSize(float* width, float* height);
 private:
@@ -252,8 +253,28 @@ DeskbarControlView::MouseDown(BPoint where)
 		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIToggleCapture)));
 		if (fPaused)
 			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kMsgGUITogglePause)));
-		else
-			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kMsgGUITogglePause)));
+		else {
+			// TODO: this is done on every MouseDown: not nice
+			// maybe we should load the bitmap or resource once
+			app_info info;
+			be_roster->GetAppInfo(kAppSignature, &info);
+			BResources resources(&info.ref);
+			BBitmap* bitmap = NULL;
+			if (resources.InitCheck() == B_OK) {
+				size_t size;
+				const void* data = resources.LoadResource('VICN', "pause_icon", &size);
+				if (data != NULL) {
+					BRect bitmapRect(0, 0, 47, 47);
+					bitmap = new BBitmap(bitmapRect, B_RGBA32);
+					if (bitmap->InitCheck() != B_OK || BIconUtils::GetVectorIcon(
+							(const uint8*)data, size, bitmap) != B_OK) {
+						delete bitmap;
+						bitmap = NULL;
+					}
+				}
+			}
+			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kMsgGUITogglePause), bitmap));
+		}
 	} else
 		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIToggleCapture)));
 	
@@ -311,6 +332,13 @@ BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap)
 
 
 /* virtual */
+BSCMenuItem::~BSCMenuItem()
+{
+	delete fMenuIcon;
+}
+
+
+/* virtual */
 void
 BSCMenuItem::GetContentSize(float* width, float* height)
 {
@@ -343,29 +371,28 @@ BSCMenuItem::DrawContent()
 	imageRect.top += kContentIconPad / 2;
 	imageRect.right = imageRect.left + iconSize;
 	imageRect.bottom = imageRect.top + iconSize;
-			
+
+	Menu()->MovePenTo(drawPoint);
+	BMenuItem::DrawContent();
+	if (fMenuIcon != NULL) {
+		Menu()->DrawBitmap(fMenuIcon, imageRect);
+		return;
+	}
 	switch (fAction) {
 		case BSC_START:
 		{
-			Menu()->MovePenTo(drawPoint);
-			BMenuItem::DrawContent();
 			Menu()->SetHighColor(kRed);
 			Menu()->FillEllipse(imageRect);
 			break;
 		}
 		case BSC_STOP:
 		{
-			Menu()->MovePenTo(drawPoint);
-			BMenuItem::DrawContent();	
 			Menu()->SetHighColor(kRed);
 			Menu()->FillRect(imageRect);
 			break;
 		}
 		case BSC_PAUSE:
 		{
-			Menu()->MovePenTo(drawPoint);
-			BMenuItem::DrawContent();
-			
 			float stripWidth = 4;
 			BRect stripRect = imageRect;
 			stripRect.left += 1;
@@ -379,9 +406,6 @@ BSCMenuItem::DrawContent()
 		}
 		case BSC_RESUME:
 		{
-			Menu()->MovePenTo(drawPoint);
-			BMenuItem::DrawContent();
-		
 			BPoint ptOne = ContentLocation();
 			BPoint ptTwo = ptOne;
 			ptTwo.y = Frame().bottom - 2;
@@ -392,7 +416,7 @@ BSCMenuItem::DrawContent()
 			Menu()->SetHighColor(kBlack);
 			Menu()->FillTriangle(ptOne, ptTwo, ptThree);
 			break;
-		}	
+		}
 		default:
 			BMenuItem::DrawContent();
 			break;
