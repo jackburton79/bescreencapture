@@ -200,6 +200,19 @@ BSCApp::GetSupportedSuites(BMessage* message)
 }
 
 
+/* virtual */
+BHandler*
+BSCApp::ResolveSpecifier(BMessage* message,
+								int32 index,
+								BMessage* specifier,
+								int32 what,
+								const char* property)
+{
+	return BApplication::ResolveSpecifier(message, index,
+			specifier, what, property);
+}
+
+
 void
 BSCApp::AboutRequested()
 {

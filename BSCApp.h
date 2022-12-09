@@ -21,6 +21,11 @@ public:
 	virtual bool QuitRequested();
 	virtual void MessageReceived(BMessage *message);
 	virtual status_t GetSupportedSuites(BMessage* message);
+	BHandler* ResolveSpecifier(BMessage* message,
+								int32 index,
+								BMessage* specifier,
+								int32 what,
+								const char* property);
 	virtual void AboutRequested();
 
 	void InstallDeskbarReplicant();
