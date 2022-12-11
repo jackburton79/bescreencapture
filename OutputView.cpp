@@ -181,6 +181,12 @@ OutputView::MessageReceived(BMessage *message)
 					_UpdatePreview(&rect);
 					break;	
 				}
+				case kMsgControllerTargetFrameChanged:
+				{
+					Settings& settings = Settings::Current();
+					fScaleSlider->SetValue(settings.Scale());
+					break;
+				}
 				case kMsgControllerSelectionWindowClosed:
 				{
 					BRect rect;
