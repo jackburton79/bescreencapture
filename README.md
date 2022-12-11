@@ -22,13 +22,25 @@ These are the commands you can configure in the "Shortcuts" preflet for the vari
 BeScreenCapture is also scriptable with hey:
 
 Toggle recording
+
  hey BeScreenCapture DO StartStop
 
 Get capture rect 
+
  hey BeScreenCapture GET CaptureRect
 
 Set capture rect
- hey BeScreenCapture SET CaptureRect to BRect(0,0, 200,300)  
+
+ hey BeScreenCapture SET CaptureRect to BRect(0,0, 200,300)
+
+Get scale
+
+ hey BeScreenCapture GET Scale
+
+Set scale to 50%
+
+ hey BeScreenCapture SET Scale to float(50)
+
 
 ## Notes
 
