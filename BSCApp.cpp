@@ -36,6 +36,7 @@ const char* kAuthors[] = {
 #define BSC_SUITES "suites/vnd.BSC-application"
 #define kPropertyToggleRecording "StartStop"
 #define kPropertyCaptureRect "CaptureRect"
+#define kPropertyScaleFactor "Scale"
 
 const property_info kPropList[] = {
 	{
@@ -45,6 +46,16 @@ const property_info kPropList[] = {
 		"set/get capture rect # Set/Get capture rect",
 		0,
 		{ B_RECT_TYPE },
+		{},
+		{}
+	},
+	{
+		kPropertyScaleFactor,
+		{ B_GET_PROPERTY, B_SET_PROPERTY },
+		{ B_NO_SPECIFIER },
+		"set/get scaling factor # Set/Get scaling factor",
+		0,
+		{ B_FLOAT_TYPE },
 		{},
 		{}
 	},
@@ -294,7 +305,24 @@ BSCApp::_HandleScripting(BMessage* message)
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
-			}
+			} else if (strcmp(property, kPropertyScaleFactor) == 0) {
+				if (form == B_DIRECT_SPECIFIER) {
+					if (what == B_GET_PROPERTY) {
+						Settings& settings = Settings::Current();
+						reply.AddFloat("data", settings.Scale());
+					} else if (what == B_SET_PROPERTY) {
+						float scale;
+						if (message->FindFloat("data", &scale) != B_OK) {
+							result = B_ERROR;
+							break;
+						}
+						dynamic_cast<Controller*>(gControllerLooper)->SetScale(scale);
+					}	
+					reply.AddInt32("error", result);
+					message->SendReply(&reply);
+				}
+			} 
+			
 			break;
 		}
 		case B_EXECUTE_PROPERTY:

@@ -19,6 +19,17 @@ These are the commands you can configure in the "Shortcuts" preflet for the vari
 * Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StoR' "
 * Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
 
+BeScreenCapture is also scriptable with hey:
+
+Toggle recording
+ hey BeScreenCapture DO StartStop
+
+Get capture rect 
+ hey BeScreenCapture GET CaptureRect
+
+Set capture rect
+ hey BeScreenCapture SET CaptureRect to BRect(0,0, 200,300)  
+
 ## Notes
 
 * Command constants could change in the next releases.
