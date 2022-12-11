@@ -35,8 +35,19 @@ const char* kAuthors[] = {
 
 #define BSC_SUITES "suites/vnd.BSC-application"
 #define kPropertyToggleRecording "StartStop"
+#define kPropertyCaptureRect "CaptureRect"
 
 const property_info kPropList[] = {
+	{
+		kPropertyCaptureRect,
+		{ B_GET_PROPERTY, B_SET_PROPERTY },
+		{ B_NO_SPECIFIER },
+		"set/get capture rect # Set/Get capture rect",
+		0,
+		{ B_RECT_TYPE },
+		{},
+		{}
+	},
 	{
 		kPropertyToggleRecording,
 		{ B_EXECUTE_PROPERTY },
@@ -134,30 +145,10 @@ BSCApp::QuitRequested()
 void
 BSCApp::MessageReceived(BMessage *message)
 {
-	// TODO: Move scripting to its own method
+	if (_HandleScripting(message))
+		return;
+		
 	switch (message->what) {
-		case B_EXECUTE_PROPERTY:
-		{
-			BMessage reply(B_REPLY);
-			const char* property = NULL;
-			int32 index = 0;
-			int32 form = 0;
-			BMessage specifier;
-			status_t status = message->GetCurrentSpecifier(&index,
-				&specifier, &form, &property);
-			if (status != B_OK || index == -1)
-				break;
-			if (strcmp(property, kPropertyToggleRecording) == 0) {
-				if (form == B_DIRECT_SPECIFIER) {
-					BMessage toggleMessage(kMsgGUIToggleCapture);
-					if (gControllerLooper != NULL)
-						BMessenger(gControllerLooper).SendMessage(&toggleMessage);
-					reply.AddInt32("error", B_OK);
-					message->SendReply(&reply);
-				}
-			}
-			break;
-		}
 		case kMsgGetControllerMessenger:
 		{
 			// the deskbar view needs the controller looper messenger
@@ -260,6 +251,69 @@ BSCApp::AboutRequested()
 	delete[] charArray;
 	
 	aboutWindow->Show();
+}
+
+
+bool
+BSCApp::_HandleScripting(BMessage* message)
+{
+	uint32 what = message->what;
+	if (what != B_EXECUTE_PROPERTY &&
+		what != B_GET_PROPERTY &&
+		what != B_SET_PROPERTY)
+	return false;
+	
+	BMessage reply(B_REPLY);
+	const char* property = NULL;
+	int32 index = 0;
+	int32 form = 0;
+	BMessage specifier;
+	status_t status = message->GetCurrentSpecifier(&index,
+		&specifier, &form, &property);
+	if (status != B_OK || index == -1)
+		return false;
+	
+	status_t result = B_OK;
+	switch (what) {
+		case B_GET_PROPERTY:
+		case B_SET_PROPERTY:
+		{
+			if (strcmp(property, kPropertyCaptureRect) == 0) {
+				if (form == B_DIRECT_SPECIFIER) {
+					if (what == B_GET_PROPERTY) {
+						Settings& settings = Settings::Current();
+						reply.AddRect("data", settings.CaptureArea());
+					} else if (what == B_SET_PROPERTY) {
+						BRect rect;
+						if (message->FindRect("data", &rect) != B_OK) {
+							result = B_ERROR;
+							break;
+						}
+						dynamic_cast<Controller*>(gControllerLooper)->SetCaptureArea(rect);
+					}	
+					reply.AddInt32("error", result);
+					message->SendReply(&reply);
+				}
+			}
+			break;
+		}
+		case B_EXECUTE_PROPERTY:
+		{
+			if (strcmp(property, kPropertyToggleRecording) == 0) {
+				if (form == B_DIRECT_SPECIFIER) {
+					BMessage toggleMessage(kMsgGUIToggleCapture);
+					if (gControllerLooper != NULL)
+						BMessenger(gControllerLooper).SendMessage(&toggleMessage);
+					reply.AddInt32("error", B_OK);
+					message->SendReply(&reply);
+				}
+			}
+			break;
+		}
+		default:
+			break;
+	}	
+	return true;
 }
 
 

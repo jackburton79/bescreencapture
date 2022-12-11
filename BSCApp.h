@@ -36,6 +36,7 @@ public:
 	
 private:
 	void _UsageRequested();
+	bool _HandleScripting(BMessage* message);
 
 	BWindow *fWindow;
 	Arguments* fArgs;
