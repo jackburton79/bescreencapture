@@ -22,8 +22,6 @@
 #include <cstdio>
 #include <string>
 
-#include <iostream>
-
 const char kChangeLog[] = {
 #include "Changelog.h"
 };
@@ -35,7 +33,8 @@ const char* kAuthors[] = {
 
 
 #define BSC_SUITES "suites/vnd.BSC-application"
-#define kPropertyToggleRecording "StartStop"
+#define kPropertyStartRecording "Record"
+#define kPropertyStopRecording "Stop"
 #define kPropertyCaptureRect "CaptureRect"
 #define kPropertyScaleFactor "Scale"
 #define kPropertyRecordingTime "RecordingTime"
@@ -62,10 +61,20 @@ const property_info kPropList[] = {
 		{}
 	},
 	{
-		kPropertyToggleRecording,
+		kPropertyStartRecording,
 		{ B_EXECUTE_PROPERTY },
 		{ B_NO_SPECIFIER },
-		"toggle recording # Start or stop recording",
+		"start recording # Start recording",
+		0,
+		{},
+		{},
+		{}
+	},
+	{
+		kPropertyStopRecording,
+		{ B_EXECUTE_PROPERTY },
+		{ B_NO_SPECIFIER },
+		"stop recording # Stop recording",
 		0,
 		{},
 		{},
@@ -343,7 +352,6 @@ BSCApp::_HandleScripting(BMessage* message)
 						// TODO: bigtime_t is uint64, but apparently hey
 						// doesn't support uint64s
 						int32 msecs = 0;
-						message->PrintToStream();
 						if (message->FindInt32("data", &msecs) != B_OK) {
 							result = B_ERROR;
 							break;
@@ -358,12 +366,26 @@ BSCApp::_HandleScripting(BMessage* message)
 		}
 		case B_EXECUTE_PROPERTY:
 		{
-			if (strcmp(property, kPropertyToggleRecording) == 0) {
+			if (strcmp(property, kPropertyStartRecording) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
-					BMessage toggleMessage(kMsgGUIToggleCapture);
-					if (gControllerLooper != NULL)
-						BMessenger(gControllerLooper).SendMessage(&toggleMessage);
-					reply.AddInt32("error", B_OK);
+					if (controller->State() == Controller::STATE_IDLE) {
+						BMessage toggleMessage(kMsgGUIToggleCapture);
+						if (gControllerLooper != NULL)
+							BMessenger(gControllerLooper).SendMessage(&toggleMessage);
+					} else
+						result = B_ERROR;
+					reply.AddInt32("error", result);
+					message->SendReply(&reply);
+				}
+			} else if (strcmp(property, kPropertyStopRecording) == 0) {
+				if (form == B_DIRECT_SPECIFIER) {
+					if (controller->State() == Controller::STATE_RECORDING) {
+						BMessage toggleMessage(kMsgGUIToggleCapture);
+						if (gControllerLooper != NULL)
+							BMessenger(gControllerLooper).SendMessage(&toggleMessage);
+					} else
+						result = B_ERROR;
+					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
 			}
