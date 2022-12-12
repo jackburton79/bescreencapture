@@ -23,6 +23,7 @@ enum {
 extern BLooper *gControllerLooper;
 
 class BBitmap;
+class BMessageRunner;
 class BStopWatch;
 class BString;
 class FramesList;
@@ -51,6 +52,8 @@ public:
 	
 	int32		RecordedFrames() const;
 	bigtime_t	RecordTime() const;
+	void		SetRecordingTime(const bigtime_t msecs);
+	
 	int32		AverageFPS() const;
 	
 	void		EncodeMovie();
@@ -100,7 +103,10 @@ private:
 	FramesList			*fFileList;
 	
 	BObjectList<media_codec_info>* fCodecList;
-	
+
+	BMessageRunner*		fStopRunner;
+	bigtime_t			fRequestedRecordTime;
+
 	bool		fSupportsWaitForRetrace;
 	
 	void		StartCapture();

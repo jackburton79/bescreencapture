@@ -24,6 +24,7 @@
 #include <Directory.h>
 #include <Entry.h>
 #include <File.h>
+#include <MessageRunner.h>
 #include <Screen.h>
 #include <StopWatch.h>
 #include <String.h>
@@ -31,7 +32,7 @@
 
 BLooper *gControllerLooper = NULL;
 
-	
+
 Controller::Controller()
 	:
 	BLooper("Controller"),
@@ -45,6 +46,8 @@ Controller::Controller()
 	fEncoderThread(-1),
 	fFileList(NULL),
 	fCodecList(NULL),
+	fStopRunner(NULL),
+	fRequestedRecordTime(0),
 	fSupportsWaitForRetrace(false)
 {
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
@@ -255,6 +258,18 @@ bigtime_t
 Controller::RecordTime() const
 {
 	return fRecordWatch != NULL ? fRecordWatch->ElapsedTime() : 0;
+}
+
+
+void
+Controller::SetRecordingTime(const bigtime_t msecs)
+{
+	BAutolock _(this);
+	// Bail out if recording is already started
+	if (fCaptureThread > 0)
+		return;
+
+	fRequestedRecordTime = msecs;
 }
 
 
@@ -616,6 +631,22 @@ Controller::StartCapture()
 	delete fRecordWatch;
 	fRecordWatch = new BStopWatch("record_time", true);
 
+	delete fStopRunner;
+	fStopRunner = NULL;
+
+	if (fRequestedRecordTime != 0) {
+		std::cout << "AAAAAA" << std::endl;
+		BMessenger messenger(this);
+		// TODO: Use a specific message instead of kMsgGUIToggleCapture
+		// since this could trigger start instead of stopping
+		fStopRunner = new BMessageRunner(messenger,
+							new BMessage(kMsgGUIToggleCapture),
+							fRequestedRecordTime, 1);
+		// reset requested record time, so
+		// it won't be used for the next time
+		// TODO: rework this
+		fRequestedRecordTime = 0;
+	}
 	SendNotices(kMsgControllerCaptureStarted);
 }
 

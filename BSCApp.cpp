@@ -22,6 +22,7 @@
 #include <cstdio>
 #include <string>
 
+#include <iostream>
 
 const char kChangeLog[] = {
 #include "Changelog.h"
@@ -37,6 +38,7 @@ const char* kAuthors[] = {
 #define kPropertyToggleRecording "StartStop"
 #define kPropertyCaptureRect "CaptureRect"
 #define kPropertyScaleFactor "Scale"
+#define kPropertyRecordingTime "RecordingTime"
 
 const property_info kPropList[] = {
 	{
@@ -66,6 +68,16 @@ const property_info kPropList[] = {
 		"toggle recording # Start or stop recording",
 		0,
 		{},
+		{},
+		{}
+	},
+	{
+		kPropertyRecordingTime,
+		{ B_SET_PROPERTY },
+		{ B_NO_SPECIFIER },
+		"set recording time # Set recording time",
+		0,
+		{ B_UINT32_TYPE },
 		{},
 		{}
 	},
@@ -284,6 +296,10 @@ BSCApp::_HandleScripting(BMessage* message)
 	if (status != B_OK || index == -1)
 		return false;
 
+	Controller* controller = dynamic_cast<Controller*>(gControllerLooper);
+	if (controller == NULL)
+		return false;
+
 	status_t result = B_OK;
 	switch (what) {
 		case B_GET_PROPERTY:
@@ -293,14 +309,14 @@ BSCApp::_HandleScripting(BMessage* message)
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_GET_PROPERTY) {
 						Settings& settings = Settings::Current();
-						reply.AddRect("data", settings.CaptureArea());
+						reply.AddRect("result", settings.CaptureArea());
 					} else if (what == B_SET_PROPERTY) {
 						BRect rect;
 						if (message->FindRect("data", &rect) != B_OK) {
 							result = B_ERROR;
 							break;
 						}
-						dynamic_cast<Controller*>(gControllerLooper)->SetCaptureArea(rect);
+						controller->SetCaptureArea(rect);
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
@@ -309,14 +325,30 @@ BSCApp::_HandleScripting(BMessage* message)
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_GET_PROPERTY) {
 						Settings& settings = Settings::Current();
-						reply.AddFloat("data", settings.Scale());
+						reply.AddFloat("result", settings.Scale());
 					} else if (what == B_SET_PROPERTY) {
 						float scale;
 						if (message->FindFloat("data", &scale) != B_OK) {
 							result = B_ERROR;
 							break;
 						}
-						dynamic_cast<Controller*>(gControllerLooper)->SetScale(scale);
+						controller->SetScale(scale);
+					}
+					reply.AddInt32("error", result);
+					message->SendReply(&reply);
+				}
+			} else if (strcmp(property, kPropertyRecordingTime) == 0) {
+				if (form == B_DIRECT_SPECIFIER) {
+					if (what == B_SET_PROPERTY) {
+						// TODO: bigtime_t is uint64, but apparently hey
+						// doesn't support uint64s
+						int32 msecs = 0;
+						message->PrintToStream();
+						if (message->FindInt32("data", &msecs) != B_OK) {
+							result = B_ERROR;
+							break;
+						}
+						controller->SetRecordingTime(bigtime_t(msecs));
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
