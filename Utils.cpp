@@ -124,15 +124,19 @@ BString
 GetUniqueFileName(const BString& fileName, const char *extension)
 {
 	BString newName = fileName;
-	int32 suffix = 1;
 	BEntry entry(newName);
-	while (entry.Exists()) {
+	char timeSuffix[128];
+	time_t currentTime = ::time(NULL);
+	struct tm timeStruct;
+	struct tm* localTime = ::localtime_r(&currentTime, &timeStruct);
+	strftime(timeSuffix, sizeof(timeSuffix), "%Y-%m-%d", localTime);
+	if (entry.Exists()) {
 		newName = fileName;
 		newName.RemoveLast(extension);
 		newName.RemoveLast(".");
-		newName << '_' << suffix << '.' << extension;		
+		newName << '-' << timeSuffix;
+		newName	<< '.' << extension;
 		entry.SetTo(newName);
-		suffix++;
 	}
 
 	return newName;
