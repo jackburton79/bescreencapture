@@ -31,7 +31,7 @@ Get capture rect
 
 Set capture rect
 
- hey BeScreenCapture SET CaptureRect to BRect(0,0, 200,300)
+ hey BeScreenCapture SET CaptureRect to "BRect(0,0, 200,300)"
 
 Get scale
 
@@ -39,7 +39,7 @@ Get scale
 
 Set scale to 50%
 
- hey BeScreenCapture SET Scale to float(50)
+ hey BeScreenCapture SET Scale to "float(50)"
 
 
 ## Notes
