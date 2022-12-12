@@ -120,6 +120,13 @@ MovieEncoder::SetOutputFile(const char* fileName)
 }
 
 
+BPath
+MovieEncoder::OutputFile() const
+{
+	return fOutputFile;
+}
+
+
 status_t
 MovieEncoder::SetDestFrame(const BRect& rect)
 {

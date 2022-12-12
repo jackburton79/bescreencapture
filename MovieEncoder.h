@@ -21,6 +21,8 @@ public:
 	status_t SetSource(FramesList* fileList);
 	status_t SetCursorQueue(std::queue<BPoint> *queue);
 	status_t SetOutputFile(const char *fileName);
+	BPath OutputFile() const;
+
 	status_t SetDestFrame(const BRect &rect);
 	void SetColorSpace(const color_space &space);
 	status_t SetQuality(const float &quality);

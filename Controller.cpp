@@ -24,6 +24,7 @@
 #include <Directory.h>
 #include <Entry.h>
 #include <File.h>
+#include <FindDirectory.h>
 #include <MessageRunner.h>
 #include <Screen.h>
 #include <StopWatch.h>
@@ -55,9 +56,6 @@ Controller::Controller()
 	fEncoder = new MovieEncoder;
 
 	const Settings& settings = Settings::Current();
-	BString name = settings.OutputFileName();
-	fEncoder->SetOutputFile(name.String());
-
 	BRect rect = settings.CaptureArea();
 	SetCaptureArea(rect);
 
@@ -294,14 +292,26 @@ Controller::EncodeMovie()
 		return;
 	}
 
-	BString fileName = Settings::Current().OutputFileName();
-	BEntry entry(fileName.String());
-	if (entry.Exists()) {
-		// file exists.
-		fileName = GetUniqueFileName(fileName, MediaFileFormat().file_extension);
-	}
+	// Write to a temp file
+	BPath path;
+	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
+	if (status != B_OK)
+		throw status;
+	char tempFileName[B_PATH_NAME_LENGTH];
+	::snprintf(tempFileName, sizeof(tempFileName), "%s/BSC_clip_XXXXXXX", path.Path());
+	// mkstemp creates a fd with an unique file name.
+	// We then close the fd immediately, because we only need an unique file name.
+	// In theory, it's possible that between this and WriteFrame() someone
+	// creates a file with this exact name, but it's not likely to happen.
+	int tempFile = ::mkstemp(tempFileName);
+	if (tempFile < 0)
+		throw errno;
 
-	SetOutputFileName(fileName);
+	BString fileName = tempFileName;
+	::close(tempFile);
+
+	// Tell the encoder where to write
+	fEncoder->SetOutputFile(fileName);
 
 	BMessage message(kMsgControllerEncodeStarted);
 	message.AddInt32("frames_total", numFrames);
@@ -435,11 +445,11 @@ Controller::SetMediaFileFormat(const media_file_format& fileFormat)
 	fEncoder->SetMediaFileFormat(fileFormat);
 
 	Settings::Current().SetOutputFileFormat(fileFormat.pretty_name);
-	
+
 	BMessage message(kMsgControllerMediaFileFormatChanged);
 	message.AddString("format_name", fileFormat.pretty_name);
 	SendNotices(kMsgControllerMediaFileFormatChanged, &message);
-	
+
 	UpdateMediaFormatAndCodecsForCurrentFamily();
 }
 
@@ -732,9 +742,20 @@ Controller::_EncodingFinished(const status_t status, const char* fileName)
 	// Reminder: fFilelist is already NULL here, since it's deleted in MovieEncoder,
 	// except when Encoder didn't start at all, where it's deleted in EncodeMovie()
 	// TODO: Review fFileList ownership policy
-
 	fEncoderThread = -1;
 	fNumFrames = 0;
+
+	// Move the temporary file to the correct destination
+	// TODO: what if the file exists ?
+	BEntry sourceFile(fEncoder->OutputFile().Path());
+
+	const Settings& settings = Settings::Current();
+	BPath destFile(settings.OutputFileName());
+	BPath parent;
+	destFile.GetParent(&parent);
+	BEntry parentEntry(parent.Path());
+	BDirectory directory(&parentEntry);
+	sourceFile.MoveTo(&directory, destFile.Leaf());
 
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
