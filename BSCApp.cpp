@@ -283,7 +283,7 @@ BSCApp::_HandleScripting(BMessage* message)
 		&specifier, &form, &property);
 	if (status != B_OK || index == -1)
 		return false;
-	
+
 	status_t result = B_OK;
 	switch (what) {
 		case B_GET_PROPERTY:
@@ -301,7 +301,7 @@ BSCApp::_HandleScripting(BMessage* message)
 							break;
 						}
 						dynamic_cast<Controller*>(gControllerLooper)->SetCaptureArea(rect);
-					}	
+					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
@@ -317,12 +317,11 @@ BSCApp::_HandleScripting(BMessage* message)
 							break;
 						}
 						dynamic_cast<Controller*>(gControllerLooper)->SetScale(scale);
-					}	
+					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
-			} 
-			
+			}
 			break;
 		}
 		case B_EXECUTE_PROPERTY:
@@ -340,7 +339,7 @@ BSCApp::_HandleScripting(BMessage* message)
 		}
 		default:
 			break;
-	}	
+	}
 	return true;
 }
 
