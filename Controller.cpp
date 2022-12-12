@@ -746,22 +746,25 @@ Controller::_EncodingFinished(const status_t status, const char* fileName)
 	fEncoderThread = -1;
 	fNumFrames = 0;
 
-	// Move the temporary file to the correct destination
-	// TODO: what if the file exists ?
-	BEntry sourceFile(fEncoder->OutputFile().Path());
-
 	const Settings& settings = Settings::Current();
-	BPath destFile(settings.OutputFileName());
-	BPath parent;
-	destFile.GetParent(&parent);
-	BEntry parentEntry(parent.Path());
-	BDirectory directory(&parentEntry);
-	sourceFile.MoveTo(&directory, destFile.Leaf());
-
+	// TODO: Remove special case handling
+	media_file_format fileFormat = fEncoder->MediaFileFormat();
+	if ((::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) &&
+			(::strcmp(fileFormat.short_name, GIF_FORMAT_SHORT_NAME) != 0)) {	
+		// Move the temporary file to the correct destination
+		// TODO: what if the file exists ?
+		BEntry sourceFile(fileName);
+		BPath destFile(settings.OutputFileName());
+		BPath parent;
+		destFile.GetParent(&parent);
+		BEntry parentEntry(parent.Path());
+		BDirectory directory(&parentEntry);
+		sourceFile.MoveTo(&directory, destFile.Leaf());
+	}
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
 	if (fileName != NULL)
-		message.AddString("file_name", fileName);
+		message.AddString("file_name", settings.OutputFileName());
 	SendNotices(kMsgControllerEncodeFinished, &message);
 }
 
