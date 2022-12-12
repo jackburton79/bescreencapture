@@ -128,6 +128,11 @@ OutputView::MessageReceived(BMessage *message)
 		case kFileNameChanged:
 		{
 			BEntry entry(fFileName->Text());
+			if (entry.InitCheck() != B_OK) {
+				// current name is invalid, revert to previous one
+				const Settings& settings = Settings::Current();
+				fFileName->SetText(settings.OutputFileName());
+			}
 			if (entry.Exists())
 				_HandleExistingFileName(fFileName->Text());
 			fController->SetOutputFileName(fFileName->Text());
