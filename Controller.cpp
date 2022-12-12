@@ -274,7 +274,8 @@ Controller::SetRecordingTime(const bigtime_t msecs)
 int32
 Controller::AverageFPS() const
 {
-	// TODO: Check division by 0
+	if (RecordTime() == 0)
+		return 0;
 	return (RecordedFrames() * 1000000) / RecordTime();
 }
 

@@ -75,7 +75,7 @@ OutputView::AttachedToWindow()
 	fScaleSlider->SetTarget(this);
 	fFilePanelButton->SetTarget(this);
 	fBorderSlider->SetTarget(this);
-	
+
 	_InitControlsFromSettings();
 	UpdatePreviewFromSettings();
 }
