@@ -44,7 +44,8 @@ Controller::Controller()
 	fEncoder(NULL),
 	fEncoderThread(-1),
 	fFileList(NULL),
-	fCodecList(NULL)
+	fCodecList(NULL),
+	fSupportsWaitForRetrace(false)
 {
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
 
