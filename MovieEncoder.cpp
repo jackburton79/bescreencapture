@@ -581,8 +581,10 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) != 0)
 		return B_OK;
 
-	if (!IsFFMPEGAvailable())
+	if (!IsFFMPEGAvailable()) {
+		std::cerr << "ffmpeg_tools is not available" << std::endl;
 		return B_ERROR;
+	}
 
 	BMessage progressMessage(kEncodingProgress);
 	progressMessage.AddBool("reset", true);
@@ -591,9 +593,13 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 
 	BString command;
 	command.Append("ffmpeg -i ");
-	command.Append(path.Path()).Append("/frame_%5d.png ");
+	command.Append(path.Path()).Append("/frame_%5d.png");
+	command.Append(" -f gif ");
 	command.Append(fOutputFile.Path());
 	command.Append (" > /dev/null 2>&1");
+#if 0
+	std::cout << "_PostEncodingAction command: " << command.String() << std::endl;
+#endif
 	int result = system(command.String());
 
 	BEntry pathEntry(fTempPath.Path());

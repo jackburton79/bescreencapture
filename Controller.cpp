@@ -299,7 +299,7 @@ Controller::EncodeMovie()
 	if (status != B_OK)
 		throw status;
 	char tempFileName[B_PATH_NAME_LENGTH];
-	::snprintf(tempFileName, sizeof(tempFileName), "%s/BSC_clip_XXXXXXX", path.Path());
+	snprintf(tempFileName, sizeof(tempFileName), "%s/BSC_clip_XXXXXXX", path.Path());
 	// mkstemp creates a fd with an unique file name.
 	// We then close the fd immediately, because we only need an unique file name.
 	// In theory, it's possible that between this and WriteFrame() someone
@@ -310,6 +310,10 @@ Controller::EncodeMovie()
 
 	BString fileName = tempFileName;
 	::close(tempFile);
+	// Remove the temporary file, will be created
+	// later with the same name by MovieEncoder
+	// TODO: Not nice
+	BEntry(fileName).Remove();
 
 	// Tell the encoder where to write
 	fEncoder->SetOutputFile(fileName);
@@ -749,8 +753,7 @@ Controller::_EncodingFinished(const status_t status, const char* fileName)
 	const Settings& settings = Settings::Current();
 	// TODO: Remove special case handling
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
-	if ((::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) &&
-			(::strcmp(fileFormat.short_name, GIF_FORMAT_SHORT_NAME) != 0)) {	
+	if (::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) {
 		// Move the temporary file to the correct destination
 		// TODO: what if the file exists ?
 		BEntry sourceFile(fileName);
