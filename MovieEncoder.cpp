@@ -346,6 +346,13 @@ MovieEncoder::_EncoderThread()
 	if (status == B_OK)
 		status = _PostEncodingAction(fTempPath);
 
+	if (status != B_OK) {
+		// Something went wrong during the encoding
+		// TODO: at least save the frames somewhere ?
+		std::cerr << "Something went very wrong during encoding." << std::endl;
+		std::cerr << framesWritten << " frames were sent to the mediakit." << std::endl;
+		std::cerr << "The system returned: " << strerror(status) << std::endl;
+	}
 	_HandleEncodingFinished(status, framesWritten);
 
 	return status;
