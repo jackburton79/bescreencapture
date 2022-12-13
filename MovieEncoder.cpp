@@ -286,12 +286,9 @@ MovieEncoder::_EncoderThread()
 	}
 
 	media_format inputFormat = fFormat;
-#if 0
-	// TODO: This creates problem in certain cases:
-	// investigate
-	int framesPerSecond = _GetFramesPerSecond();
+	uint32 framesPerSecond = _GetFramesPerSecond();
 	inputFormat.u.raw_video.field_rate = framesPerSecond;
-#endif
+
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
 	fTempPath = fFileList->Path();
@@ -434,13 +431,14 @@ MovieEncoder::_WriteRawFrames()
 }
 
 
-int
+uint32
 MovieEncoder::_GetFramesPerSecond() const
 {
-	const int32 numFrames = fFileList->CountItems();
+	const uint32 numFrames = uint32(fFileList->CountItems());
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
-	return (1000000 * numFrames) / (lastEntry->TimeStamp() - firstEntry->TimeStamp());
+	bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
+	return uint32(uint32(1000000 * numFrames) / diff);
 }
 
 

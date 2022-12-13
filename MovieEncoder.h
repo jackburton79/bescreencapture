@@ -62,7 +62,7 @@ private:
 	status_t _ApplyImageFilters();
 	status_t _WriteRawFrames();
 
-	int _GetFramesPerSecond() const;
+	uint32 _GetFramesPerSecond() const;
 	void _HandleEncodingFinished(const status_t& status,
 								const int32& numFrames = 0);
 	status_t _PostEncodingAction(BPath& path);
