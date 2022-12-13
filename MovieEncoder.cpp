@@ -285,10 +285,13 @@ MovieEncoder::_EncoderThread()
 		return _WriteRawFrames();
 	}
 
-	int framesPerSecond = _GetFramesPerSecond();
 	media_format inputFormat = fFormat;
+#if 0
+	// TODO: This creates problem in certain cases:
+	// investigate
+	int framesPerSecond = _GetFramesPerSecond();
 	inputFormat.u.raw_video.field_rate = framesPerSecond;
-
+#endif
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
 	fTempPath = fFileList->Path();
@@ -347,7 +350,7 @@ MovieEncoder::_EncoderThread()
 		status = _PostEncodingAction(fTempPath);
 
 	if (status != B_OK) {
-		// Something went wrong during the encoding
+		// Something went wrong during encoding
 		// TODO: at least save the frames somewhere ?
 		std::cerr << "Something went very wrong during encoding." << std::endl;
 		std::cerr << framesWritten << " frames were sent to the mediakit." << std::endl;
