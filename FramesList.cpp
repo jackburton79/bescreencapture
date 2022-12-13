@@ -122,6 +122,7 @@ status_t
 FramesList::WriteFrames(const char* path)
 {
 	int32 i = 0;
+	status_t status = B_OK;
 	while (CountItems() > 0) {
 		BString fileName;
 		fileName.SetToFormat("frame_%05d.png", i + 1);
@@ -129,12 +130,14 @@ FramesList::WriteFrames(const char* path)
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());
 		BBitmap* bitmap = entry->Bitmap();
-		BitmapEntry::WriteFrame(bitmap, fullPath.String());
+		status = BitmapEntry::WriteFrame(bitmap, fullPath.String());
 		delete bitmap;
 		delete entry;
+		if (status != B_OK)
+			break;
 		i++;
 	}
-	return B_OK;
+	return status;
 }
 
 

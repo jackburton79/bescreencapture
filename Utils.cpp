@@ -10,6 +10,7 @@
 // Private Haiku header
 #include "WindowInfo.h"
 
+#include <Directory.h>
 #include <Entry.h>
 #include <Path.h>
 #include <String.h>
@@ -120,26 +121,50 @@ MakeNULLMediaFileFormat(media_file_format& outFormat)
 }
 
 
-BString
-GetUniqueFileName(const BString& fileName, const char *extension)
+BPath
+GetUniqueFileName(const BPath& filePath)
 {
-	BString newName = fileName;
-	BEntry entry(newName);
+	BString extension = filePath.Leaf();
+	int32 extensionIndex = extension.FindLast(".");
+	if (extensionIndex != -1)
+		extension.Remove(0, extensionIndex);
+
 	char timeSuffix[128];
 	time_t currentTime = ::time(NULL);
 	struct tm timeStruct;
 	struct tm* localTime = ::localtime_r(&currentTime, &timeStruct);
 	strftime(timeSuffix, sizeof(timeSuffix), "%Y-%m-%d", localTime);
-	if (entry.Exists()) {
-		newName = fileName;
-		newName.RemoveLast(extension);
-		newName.RemoveLast(".");
+
+	BPath parent;
+	filePath.GetParent(&parent);
+	BEntry parentEntry(parent.Path());
+	BDirectory directory(&parentEntry);
+	BEntry newEntry(filePath.Path());
+	BString newName = filePath.Leaf();
+	int32 suffix = 0;
+	while (BEntry(&directory, newName).Exists()) {
+		newName = filePath.Leaf();
+		// remove extension (if any)
+		if (extension != "")
+			newName.RemoveLast(extension);
+		// remove suffix
+		newName.RemoveLast(timeSuffix);
+		newName.RemoveLast("-");
+
+		// add back time suffix
 		newName << '-' << timeSuffix;
-		newName	<< '.' << extension;
-		entry.SetTo(newName);
+
+		// add suffix
+		if (suffix != 0)
+			newName << "-" << suffix;
+		// add back extension
+		if (extension != "")
+			newName	<< extension;
+		newEntry.SetTo(&directory, newName);
+		suffix++;
 	}
 
-	return newName;
+	return BPath(&newEntry);
 }
 
 

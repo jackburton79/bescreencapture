@@ -21,7 +21,7 @@ bool GetMediaFileFormat(const BString& prettyName, media_file_format* outFormat)
 void MakeGIFMediaFileFormat(media_file_format& outFormat);
 void MakeNULLMediaFileFormat(media_file_format& outFormat);
 
-BString GetUniqueFileName(const BString& fileName, const char *extension);
+BPath GetUniqueFileName(const BPath& fileName);
 void FixRect(BRect &rect, const BRect& maxRect, const bool fixWidth = false, const bool fixHeight = false);
 
 void GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border = 0);

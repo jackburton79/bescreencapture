@@ -58,7 +58,7 @@ private:
 	void _UpdateFileNameControlState();
 	void _SetFileNameExtension(const char* newExtension);
 	void _UpdatePreview(BRect* rect, BBitmap* bitmap = NULL);
-	void _HandleExistingFileName(const char* fileName);
+	void _HandleInvalidFileName(const char* fileName);
 
 	BRect _CaptureRect() const;
 };

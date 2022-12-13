@@ -650,7 +650,6 @@ Controller::StartCapture()
 	fStopRunner = NULL;
 
 	if (fRequestedRecordTime != 0) {
-		std::cout << "AAAAAA" << std::endl;
 		BMessenger messenger(this);
 		// TODO: Use a specific message instead of kMsgGUIToggleCapture
 		// since this could trigger start instead of stopping
@@ -753,21 +752,20 @@ Controller::_EncodingFinished(const status_t status, const char* fileName)
 	const Settings& settings = Settings::Current();
 	// TODO: Remove special case handling
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
+	BPath destFile = fileName;
 	if (::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) {
 		// Move the temporary file to the correct destination
-		// TODO: what if the file exists ?
 		BEntry sourceFile(fileName);
-		BPath destFile(settings.OutputFileName());
+		destFile = GetUniqueFileName(settings.OutputFileName().String());
 		BPath parent;
 		destFile.GetParent(&parent);
-		BEntry parentEntry(parent.Path());
-		BDirectory directory(&parentEntry);
-		sourceFile.MoveTo(&directory, destFile.Leaf());
+		BDirectory dir(parent.Path());
+		sourceFile.MoveTo(&dir, destFile.Path());
 	}
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", (int32)status);
 	if (fileName != NULL)
-		message.AddString("file_name", settings.OutputFileName());
+		message.AddString("file_name", destFile.Path());
 	SendNotices(kMsgControllerEncodeFinished, &message);
 }
 

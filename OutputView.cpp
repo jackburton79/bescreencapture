@@ -128,13 +128,9 @@ OutputView::MessageReceived(BMessage *message)
 		case kFileNameChanged:
 		{
 			BEntry entry(fFileName->Text());
-			if (entry.InitCheck() != B_OK) {
-				// current name is invalid, revert to previous one
-				const Settings& settings = Settings::Current();
-				fFileName->SetText(settings.OutputFileName());
-			}
-			if (entry.Exists())
-				_HandleExistingFileName(fFileName->Text());
+			if (entry.InitCheck() != B_OK)
+				_HandleInvalidFileName(fFileName->Text());
+
 			fController->SetOutputFileName(fFileName->Text());
 			break;
 		}
@@ -433,11 +429,11 @@ OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 
 
 void
-OutputView::_HandleExistingFileName(const char* fileName)
+OutputView::_HandleInvalidFileName(const char* fileName)
 {
-	BString newFileName = fileName;
-	newFileName = GetUniqueFileName(newFileName, fFileExtension);
-	fFileName->SetText(newFileName);
+	// Revert to previous name
+	Settings& settings = Settings::Current();
+	fFileName->SetText(settings.OutputFileName());
 
 	BMessenger thisMessenger(this);
 	if (fWarningCount > 0) {
