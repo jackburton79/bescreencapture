@@ -271,12 +271,12 @@ Controller::SetRecordingTime(const bigtime_t msecs)
 }
 
 
-int32
+uint32
 Controller::AverageFPS() const
 {
 	if (RecordTime() == 0)
 		return 0;
-	return (RecordedFrames() * 1000000) / RecordTime();
+	return uint32(uint32(RecordedFrames() * 1000000) / RecordTime());
 }
 
 
