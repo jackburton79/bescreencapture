@@ -593,7 +593,7 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 
 	BString command;
 	command.Append("ffmpeg -i ");
-	command.Append(path.Path()).Append("/frame_%5d.png");
+	command.Append(path.Path()).Append("/frame_%07d.png");
 	command.Append(" -f gif ");
 	command.Append(fOutputFile.Path());
 	command.Append (" > /dev/null 2>&1");
