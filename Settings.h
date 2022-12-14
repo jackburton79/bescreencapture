@@ -63,6 +63,9 @@ public:
 	int32 CaptureFrameRate() const;
 	void SetCaptureFrameRate(const int32& value);
 
+	void SetWarnOnQuit(const bool& warn);
+	bool WarnOnQuit() const;
+	
 	int32 EncodingThreadPriority() const;
 	void SetEncodingThreadPriority(const int32 &value);
 
