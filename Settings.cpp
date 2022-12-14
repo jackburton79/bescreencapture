@@ -481,7 +481,7 @@ Settings::_SetDefaults()
 	fSettings->SetInt32(kCaptureFrameRate, 20);
 	fSettings->SetBool(kWarnOnQuit, true);
 	fSettings->SetBool(kDockingMode, false);
-	
+
 	return B_OK;
 }
 

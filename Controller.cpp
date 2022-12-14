@@ -79,6 +79,7 @@ Controller::Controller()
 
 Controller::~Controller()
 {
+	Cancel();
 	delete fRecordWatch;
 	delete fEncoder;
 	delete fCodecList;
@@ -146,7 +147,7 @@ Controller::MessageReceived(BMessage *message)
 bool
 Controller::QuitRequested()
 {
-	if (fCaptureThread < 0 && fFileList == NULL && fEncoderThread < 0)
+	if (State() == STATE_IDLE)
 		return BLooper::QuitRequested();
 
 	return false;

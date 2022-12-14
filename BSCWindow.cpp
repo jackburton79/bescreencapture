@@ -109,8 +109,11 @@ bool
 BSCWindow::QuitRequested()
 {
 	BString reason;
-	bool canQuit = fController->CanQuit(reason);
-	if (!canQuit) {
+	bool canQuit = false;
+	if (!Settings::Current().WarnOnQuit()) {
+		fController->Cancel();
+		canQuit = true;
+	} else if ((canQuit = fController->CanQuit(reason)) != true) {
 		BString text = "Do you really want to quit?\n";
 		text.Append(" ");
 		text.Append(reason);
@@ -121,6 +124,7 @@ BSCWindow::QuitRequested()
 			canQuit = true;
 		}
 	}
+
 	if (canQuit)
 		be_app->PostMessage(B_QUIT_REQUESTED);
 	
