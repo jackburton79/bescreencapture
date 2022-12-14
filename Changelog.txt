@@ -1,8 +1,12 @@
 v2.7.0
 	- Added support for scripting via hey.
-	- Improved deskbar menu look with icons from zuMi.
 	- Reworked handling of existing output clip file.
 ---
+v2.6.2
+	- Improve deskbar menu using more icons from ZuMi.
+	- Fixed encoding when recording more than 3000 frames.
+---
+
 v2.6.1
 	- Added new icon from Zumi. Thanks!
 	- Fixed displaying number of recorded frames.
