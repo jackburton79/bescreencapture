@@ -286,8 +286,10 @@ MovieEncoder::_EncoderThread()
 	}
 
 	media_format inputFormat = fFormat;
-	uint32 framesPerSecond = _GetFramesPerSecond();
-	inputFormat.u.raw_video.field_rate = framesPerSecond;
+	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
+	const BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
+	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
+	inputFormat.u.raw_video.field_rate = CalculateFPS(fFileList->CountItems(), diff);;
 
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
@@ -428,17 +430,6 @@ MovieEncoder::_WriteRawFrames()
 	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
 
 	return status;
-}
-
-
-uint32
-MovieEncoder::_GetFramesPerSecond() const
-{
-	const uint32 numFrames = uint32(fFileList->CountItems());
-	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
-	const BitmapEntry* lastEntry = fFileList->ItemAt(numFrames - 1);
-	bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	return uint32(uint32(1000000 * numFrames) / diff);
 }
 
 
