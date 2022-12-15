@@ -229,8 +229,7 @@ SplitChangeLog(const char* changeLog)
 			BString string;
 			string.Append(stringStart, i - 2);
 			string.RemoveAll("\t");
-			//string.ReplaceFirst("-", "\n\t-");
-			string.ReplaceAll("-", "\n\t-");
+			string.ReplaceAll("- ", "\n\t- ");
 			list.Add(string);
 			stringStart = stringStart + i + 1;
 			i = 0;
