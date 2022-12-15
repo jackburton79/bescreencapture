@@ -229,8 +229,7 @@ SplitChangeLog(const char* changeLog)
 			BString string;
 			string.Append(stringStart, i - 2);
 			string.RemoveAll("\t");
-			//string.ReplaceFirst("-", "\n\t-");
-			string.ReplaceAll("-", "\n\t-");
+			string.ReplaceAll("- ", "\n\t- ");
 			list.Add(string);
 			stringStart = stringStart + i + 1;
 			i = 0;
@@ -336,7 +335,8 @@ BSCApp::_HandleScripting(BMessage* message)
 							result = B_ERROR;
 							break;
 						}
-						controller->SetCaptureArea(rect);
+						if (!controller->SetCaptureArea(rect))
+							result = B_BAD_VALUE;
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);

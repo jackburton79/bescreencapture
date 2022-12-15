@@ -343,10 +343,19 @@ Controller::SetUseDirectWindow(const bool& use)
 }
 
 
-void
+bool
 Controller::SetCaptureArea(const BRect& rect)
 {
 	BAutolock _(this);
+
+	// Rect is bigger than screen:
+	// bail out
+	BRect screenRect = BScreen().Frame();
+	if (rect.Width() > screenRect.Width() ||
+		rect.Height() > screenRect.Height() ||
+		rect.left < 0 || rect.top < 0)
+		return false;
+
 	Settings& settings = Settings::Current();
 	settings.SetCaptureArea(rect);
 	BRect targetRect = settings.TargetRect();
@@ -357,6 +366,8 @@ Controller::SetCaptureArea(const BRect& rect)
 	SendNotices(kMsgControllerSourceFrameChanged, &message);
 
 	_HandleTargetFrameChanged(targetRect);
+
+	return true;
 }
 
 

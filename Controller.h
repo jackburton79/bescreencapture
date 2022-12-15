@@ -59,7 +59,7 @@ public:
 	void		EncodeMovie();
 	
 	void		SetUseDirectWindow(const bool &use);
-	void		SetCaptureArea(const BRect &rect);
+	bool		SetCaptureArea(const BRect &rect);
 	void		SetCaptureFrameRate(const int fps);
 	void		SetPlaybackFrameRate(const int rate);
 	
