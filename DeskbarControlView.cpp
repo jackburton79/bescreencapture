@@ -375,7 +375,7 @@ BSCMenuItem::DrawContent()
 	BPoint drawPoint(ContentLocation());
 	drawPoint.x += fullHeight + kContentSpacingHorizontal;
 	drawPoint.y += ((Frame().Height() - fullHeight) / 2) - 1;
-	
+
 	float iconSize = max_c(kContentIconMinSize, fullHeight);
 	BRect imageRect;
 	imageRect.SetLeftTop(ContentLocation());		
@@ -385,53 +385,8 @@ BSCMenuItem::DrawContent()
 
 	Menu()->MovePenTo(drawPoint);
 	BMenuItem::DrawContent();
-	if (fMenuIcon != NULL) {
+	if (fMenuIcon != NULL)
 		Menu()->DrawBitmap(fMenuIcon, imageRect);
-		return;
-	}
-	switch (fAction) {
-		case BSC_START:
-		{
-			Menu()->SetHighColor(kRed);
-			Menu()->FillEllipse(imageRect);
-			break;
-		}
-		case BSC_STOP:
-		{
-			Menu()->SetHighColor(kRed);
-			Menu()->FillRect(imageRect);
-			break;
-		}
-		case BSC_PAUSE:
-		{
-			float stripWidth = 4;
-			BRect stripRect = imageRect;
-			stripRect.left += 1;
-			stripRect.right = stripRect.left + stripWidth;
-			
-			Menu()->SetHighColor(kBlack);
-			Menu()->FillRect(stripRect);
-			stripRect.OffsetBy(imageRect.Width() - stripWidth - 2, 0);
-			Menu()->FillRect(stripRect);
-			break;
-		}
-		case BSC_RESUME:
-		{
-			BPoint ptOne = ContentLocation();
-			BPoint ptTwo = ptOne;
-			ptTwo.y = Frame().bottom - 2;
-			BPoint ptThree = ptOne;
-			ptThree.x += max_c(kContentIconMinSize, fullHeight);
-			ptThree.y += (ptTwo.y - ptOne.y) / 2;			
-
-			Menu()->SetHighColor(kBlack);
-			Menu()->FillTriangle(ptOne, ptTwo, ptThree);
-			break;
-		}
-		default:
-			BMenuItem::DrawContent();
-			break;
-	}
 }
 
 
