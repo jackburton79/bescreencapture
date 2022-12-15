@@ -335,7 +335,8 @@ BSCApp::_HandleScripting(BMessage* message)
 							result = B_ERROR;
 							break;
 						}
-						controller->SetCaptureArea(rect);
+						if (!controller->SetCaptureArea(rect))
+							result = B_BAD_VALUE;
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
