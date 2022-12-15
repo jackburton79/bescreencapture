@@ -21,6 +21,7 @@
 const static uint32 kLocalUseDirectWindow = 'UsDW';
 const static uint32 kLocalHideDeskbar = 'HiDe';
 const static uint32 kLocalMinimizeOnRecording = 'MiRe';
+const static uint32 kLocalQuitWhenFinished = 'QuFi';
 
 
 AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
@@ -67,12 +68,14 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 					"Use less CPU (BDirectWindow)",
 					new BMessage(kLocalUseDirectWindow)))
 			.Add(fMinimizeOnStart = new BCheckBox("HideWhenRecording",
-				"Hide window when recording", new BMessage(kLocalMinimizeOnRecording)))
+					"Hide window when recording", new BMessage(kLocalMinimizeOnRecording)))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
 					"Incognito mode: Hide window and Deskbar icon", new BMessage(kLocalHideDeskbar)))
+			.Add(fQuitWhenFinished = new BCheckBox("quitWhenFinished",
+					"Quit when finished", new BMessage(kLocalQuitWhenFinished)))
 		.End()
 		.View();
-	
+
 	fHideDeskbarIcon->SetToolTip("Stop recording with with CTRL+ALT+SHIFT+R,\n"
 								"or define a key combination with the Shortcuts preferences");
 	
@@ -86,6 +89,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	const Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
+	fQuitWhenFinished->SetValue(settings.QuitWhenFinished() ? B_CONTROL_ON : B_CONTROL_OFF);
 }
 
 
@@ -100,6 +104,7 @@ AdvancedOptionsView::AttachedToWindow()
 	fUseDirectWindow->SetTarget(this);
 	fMinimizeOnStart->SetTarget(this);
 	fHideDeskbarIcon->SetTarget(this);
+	fQuitWhenFinished->SetTarget(this);
 }
 
 
@@ -137,6 +142,10 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			Settings::Current().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
 			break;
 		
+		case kLocalQuitWhenFinished:
+			Settings::Current().SetQuitWhenFinished(fQuitWhenFinished->Value() == B_CONTROL_ON);
+			break;
+
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -148,6 +157,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 					fMinimizeOnStart->SetValue(fCurrentMinimizeValue ? B_CONTROL_ON : B_CONTROL_OFF);
 					fMinimizeOnStart->SetEnabled(true);
 					fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
+					fQuitWhenFinished->SetValue(B_CONTROL_OFF);
 					_EnableDirectWindowIfSupported();
 					break;
 				}

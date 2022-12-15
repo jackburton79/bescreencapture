@@ -206,6 +206,10 @@ BSCWindow::MessageReceived(BMessage *message)
 					break;
 				case kMsgControllerEncodeFinished:
 				{
+					// We're set to quit, bail out
+					if (Settings::Current().QuitWhenFinished())
+						break;
+
 					fStartStopButton->SetEnabled(true);
 					status_t status = B_OK;
 					if (message->FindInt32("status", (int32*)&status) == B_OK

@@ -19,6 +19,7 @@
 
 #include <iostream>
 
+#include <Application.h>
 #include <Autolock.h>
 #include <Bitmap.h>
 #include <Directory.h>
@@ -687,6 +688,7 @@ Controller::EndCapture()
 void
 Controller::ResetSettings()
 {
+	BAutolock _(this);
 	Settings::ResetToDefaults();
 	BMessage message(kMsgControllerResetSettings);
 	SendNotices(kMsgControllerResetSettings, &message);
@@ -768,6 +770,9 @@ Controller::_EncodingFinished(const status_t status, const char* fileName)
 	if (fileName != NULL)
 		message.AddString("file_name", destFile.Path());
 	SendNotices(kMsgControllerEncodeFinished, &message);
+
+	if (settings.QuitWhenFinished())
+		be_app->PostMessage(B_QUIT_REQUESTED);
 }
 
 

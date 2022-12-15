@@ -38,6 +38,7 @@ const char* kAuthors[] = {
 #define kPropertyCaptureRect "CaptureRect"
 #define kPropertyScaleFactor "Scale"
 #define kPropertyRecordingTime "RecordingTime"
+#define kPropertyQuitWhenFinished "QuitWhenFinished"
 
 const property_info kPropList[] = {
 	{
@@ -87,6 +88,16 @@ const property_info kPropList[] = {
 		"set recording time # Set recording time",
 		0,
 		{ B_UINT32_TYPE },
+		{},
+		{}
+	},
+		{
+		kPropertyQuitWhenFinished,
+		{ B_SET_PROPERTY },
+		{ B_NO_SPECIFIER },
+		"set quit when finished # Set quit when finished",
+		0,
+		{ B_BOOL_TYPE },
 		{},
 		{}
 	},

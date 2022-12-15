@@ -22,6 +22,7 @@ private:
 	BCheckBox* fUseDirectWindow;
 	BCheckBox *fMinimizeOnStart;
 	BCheckBox* fHideDeskbarIcon;
+	BCheckBox* fQuitWhenFinished;
 	bool fCurrentMinimizeValue;
 
 	void _EnableDirectWindowIfSupported();

@@ -66,6 +66,9 @@ public:
 	void SetWarnOnQuit(const bool& warn);
 	bool WarnOnQuit() const;
 	
+	void SetQuitWhenFinished(const bool& quit);
+	bool QuitWhenFinished() const;
+
 	int32 EncodingThreadPriority() const;
 	void SetEncodingThreadPriority(const int32 &value);
 

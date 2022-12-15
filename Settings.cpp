@@ -32,7 +32,8 @@ const static char *kOutputCodecName = "output codec";
 const static char *kThreadPriority = "thread priority";
 const static char *kWindowFrameBorderSize = "window frame border size";
 const static char *kCaptureFrameRate = "capture frame rate";
-const static char* kWarnOnQuit = "warn on quit";
+const static char *kWarnOnQuit = "warn on quit";
+const static char *kQuitWhenFinished = "quit when finished";
 const static char *kDockingMode = "docking mode";
 
 
@@ -134,7 +135,9 @@ Settings::Load()
 		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
 			fSettings->SetInt32(kWindowFrameBorderSize, integer);	
 		if (tempMessage.FindBool(kWarnOnQuit, &boolean) == B_OK)
-			fSettings->SetBool(kWarnOnQuit, boolean);	
+			fSettings->SetBool(kWarnOnQuit, boolean);
+		if (tempMessage.FindBool(kQuitWhenFinished, &boolean) == B_OK)
+			fSettings->SetBool(kQuitWhenFinished, boolean);
 		if (tempMessage.FindInt32(kCaptureFrameRate, &integer) == B_OK)
 			fSettings->SetInt32(kCaptureFrameRate, integer);
 		if (tempMessage.FindBool(kDockingMode, &boolean) == B_OK)
@@ -391,7 +394,25 @@ Settings::WarnOnQuit() const
 	return warn;
 }
 	
-	
+
+void
+Settings::SetQuitWhenFinished(const bool& quit)
+{
+	BAutolock _(fLocker);
+	fSettings->SetBool(kQuitWhenFinished, quit);
+}
+
+
+bool
+Settings::QuitWhenFinished() const
+{
+	BAutolock _(fLocker);
+	bool quit = true;
+	fSettings->FindBool(kQuitWhenFinished, &quit);
+	return quit;
+}
+
+
 void
 Settings::SetEncodingThreadPriority(const int32 &value)
 {
@@ -480,6 +501,7 @@ Settings::_SetDefaults()
 	fSettings->SetInt32(kWindowFrameBorderSize, 0);
 	fSettings->SetInt32(kCaptureFrameRate, 20);
 	fSettings->SetBool(kWarnOnQuit, true);
+	fSettings->SetBool(kQuitWhenFinished, false);
 	fSettings->SetBool(kDockingMode, false);
 
 	return B_OK;
