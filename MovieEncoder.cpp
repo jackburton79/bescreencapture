@@ -289,7 +289,8 @@ MovieEncoder::_EncoderThread()
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	inputFormat.u.raw_video.field_rate = CalculateFPS(fFileList->CountItems(), diff);;
+	uint64 fps = CalculateFPS(fFileList->CountItems(), diff);
+	inputFormat.u.raw_video.field_rate = fps;
 
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
@@ -346,7 +347,7 @@ MovieEncoder::_EncoderThread()
 	}
 
 	if (status == B_OK)
-		status = _PostEncodingAction(fTempPath);
+		status = _PostEncodingAction(fTempPath, fps);
 
 	if (status != B_OK) {
 		// Something went wrong during encoding
@@ -406,7 +407,12 @@ MovieEncoder::_WriteRawFrames()
 	if (status != B_OK)
 		return status;
 
+	// TODO: Code duplication between here and _EncoderThread
 	const int32 frames = fFileList->CountItems();
+	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
+	const BitmapEntry* lastEntry = fFileList->ItemAt(frames - 1);
+	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
+	uint64 fps = CalculateFPS(fFileList->CountItems(), diff);
 
 	BMessage progressMessage(kEncodingProgress);
 	progressMessage.AddBool("reset", true);
@@ -425,7 +431,7 @@ MovieEncoder::_WriteRawFrames()
 	}
 
 	if (status == B_OK)
-		status = _PostEncodingAction(fTempPath);
+		status = _PostEncodingAction(fTempPath, fps);
 
 	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
 
@@ -574,7 +580,7 @@ MovieEncoder::EncodeStarter(void* arg)
 
 
 status_t
-MovieEncoder::_PostEncodingAction(BPath& path)
+MovieEncoder::_PostEncodingAction(BPath& path, uint32 fps)
 {
 	// For now we need PostEncoding only for GIF export
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) != 0)
@@ -594,12 +600,20 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 	command.Append("ffmpeg "); // command
 	command.Append("-i ").Append(path.Path()).Append("/frame_%07d.png"); // input
 	command.Append(" -f gif "); // output type
+	// filter
+	command.Append("-vf \"");
+	// add FPS
+	command.Append("fps=");
+	command << fps;
+	command.Append(",");
 	// optimize conversion by generating a palette
-	command.Append("-vf \"split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse=new=1:diff_mode=rectangle\" ");
+	command.Append("split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse=new=1:diff_mode=rectangle ");
+	command.Append("\"");
+	command.Append(" ");
 	command.Append(fOutputFile.Path()); // output
 	command.Append (" > /dev/null 2>&1");
-#if 0
-	std::cout << "_PostEncodingAction command: " << command.String() << std::endl;
+#if 1
+	std::cout << "PostEncodingAction command: " << command.String() << std::endl;
 #endif
 	int result = system(command.String());
 
