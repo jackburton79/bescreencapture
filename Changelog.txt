@@ -1,6 +1,7 @@
 v2.7.0
 	- Added support for scripting via hey.
-	- Reworked handling of existing output clip file.
+	- Reworked handling of existing output file.
+	- Added option to quit after encoding.
 ---
 v2.6.2
 	- Improve deskbar menu using more icons from ZuMi.
