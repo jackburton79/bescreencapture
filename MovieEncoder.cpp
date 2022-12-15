@@ -591,10 +591,12 @@ MovieEncoder::_PostEncodingAction(BPath& path)
 	fMessenger.SendMessage(&progressMessage);
 
 	BString command;
-	command.Append("ffmpeg -i ");
-	command.Append(path.Path()).Append("/frame_%07d.png");
-	command.Append(" -f gif ");
-	command.Append(fOutputFile.Path());
+	command.Append("ffmpeg "); // command
+	command.Append("-i ").Append(path.Path()).Append("/frame_%07d.png"); // input
+	command.Append(" -f gif "); // output type
+	// optimize conversion by generating a palette
+	command.Append("-vf \"split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse=new=1:diff_mode=rectangle\" ");
+	command.Append(fOutputFile.Path()); // output
 	command.Append (" > /dev/null 2>&1");
 #if 0
 	std::cout << "_PostEncodingAction command: " << command.String() << std::endl;
