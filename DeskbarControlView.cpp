@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2022, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "DeskbarControlView.h"
@@ -210,7 +210,6 @@ DeskbarControlView::MessageReceived(BMessage *message)
 			if (fControllerMessenger.IsValid())
 				fControllerMessenger.SendMessage(message->what);
 			break;
-		
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -220,23 +219,20 @@ DeskbarControlView::MessageReceived(BMessage *message)
 					fRecording = true;
 					Invalidate();
 					break;
-				
 				case kMsgControllerCaptureStopped:
 					fRecording = false;
 					fPaused = false;
 					Invalidate();
 					break;
-				
 				case kMsgControllerCapturePaused:
 				case kMsgControllerCaptureResumed:
 					fPaused = code == kMsgControllerCapturePaused;
 					Invalidate();
 					break;
-					
 				default:
 					break;
 			}
-		}					
+		}
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -290,7 +286,7 @@ DeskbarControlView::_UpdateBitmap()
 {
 	app_info info;
 	be_roster->GetAppInfo(kAppSignature, &info);
-	
+
 	BResources resources(&info.ref);
 	if (resources.InitCheck() < B_OK)
 		return;
