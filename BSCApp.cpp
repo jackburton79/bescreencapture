@@ -372,6 +372,19 @@ BSCApp::_HandleScripting(BMessage* message)
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
+			} else if (strcmp(property, kPropertyQuitWhenFinished) == 0) {
+				if (form == B_DIRECT_SPECIFIER) {
+					if (what == B_SET_PROPERTY) {
+						bool quit = false;
+						if (message->FindBool("data", &quit) != B_OK) {
+							result = B_ERROR;
+							break;
+						}
+						Settings::Current().SetQuitWhenFinished(quit);
+					}
+					reply.AddInt32("error", result);
+					message->SendReply(&reply);
+				}
 			}
 			break;
 		}
