@@ -125,7 +125,7 @@ FramesList::WriteFrames(const char* path)
 	status_t status = B_OK;
 	while (CountItems() > 0) {
 		BString fileName;
-		fileName.SetToFormat("frame_%07lu.png", i + 1);
+		fileName.SetToFormat("frame_%07" B_PRIu32 ".png", i + 1);
 		BitmapEntry* entry = Pop();
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());
