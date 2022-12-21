@@ -289,7 +289,7 @@ MovieEncoder::_EncoderThread()
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	uint64 fps = CalculateFPS(fFileList->CountItems(), diff);
+	float fps = CalculateFPS(fFileList->CountItems(), diff);
 	inputFormat.u.raw_video.field_rate = fps;
 
 	// Create movie
@@ -412,7 +412,7 @@ MovieEncoder::_WriteRawFrames()
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(frames - 1);
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	uint64 fps = CalculateFPS(fFileList->CountItems(), diff);
+	float fps = CalculateFPS(fFileList->CountItems(), diff);
 
 	BMessage progressMessage(kEncodingProgress);
 	progressMessage.AddBool("reset", true);

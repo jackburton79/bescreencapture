@@ -274,7 +274,7 @@ Controller::SetRecordingTime(const bigtime_t msecs)
 }
 
 
-uint32
+float
 Controller::AverageFPS() const
 {
 	if (RecordTime() == 0)

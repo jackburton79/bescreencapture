@@ -278,10 +278,10 @@ GetWindowFrameForToken(int32 token, int32 border)
 }
 
 
-uint64
+float
 CalculateFPS(const uint32& numFrames, const bigtime_t& elapsedTime)
 {
-	return uint64(1000000 * uint64(numFrames)) / elapsedTime;
+	return float(1000000 * uint64(numFrames)) / elapsedTime;
 }
 
 
