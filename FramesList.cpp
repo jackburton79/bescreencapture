@@ -121,11 +121,11 @@ FramesList::Path() const
 status_t
 FramesList::WriteFrames(const char* path)
 {
-	int32 i = 0;
+	uint32 i = 0;
 	status_t status = B_OK;
 	while (CountItems() > 0) {
 		BString fileName;
-		fileName.SetToFormat("frame_%07d.png", i + 1);
+		fileName.SetToFormat("frame_%07lu.png", i + 1);
 		BitmapEntry* entry = Pop();
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());

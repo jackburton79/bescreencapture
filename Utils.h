@@ -28,7 +28,7 @@ void GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border = 0);
 BRect GetWindowFrameForToken(int32 token, int32 border = 0);
 int32 GetWindowTokenForFrame(BRect frame, int32 border = 0);
 
-uint64 CalculateFPS(const uint32& numFrames, const bigtime_t& elapsedTime);
+float CalculateFPS(const uint32& numFrames, const bigtime_t& elapsedTime);
 
 uint64 GetFreeMemory();
 

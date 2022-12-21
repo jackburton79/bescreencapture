@@ -54,7 +54,7 @@ public:
 	bigtime_t	RecordTime() const;
 	void		SetRecordingTime(const bigtime_t msecs);
 	
-	uint32		AverageFPS() const;
+	float		AverageFPS() const;
 	
 	void		EncodeMovie();
 	

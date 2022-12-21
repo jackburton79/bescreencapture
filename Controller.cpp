@@ -274,7 +274,7 @@ Controller::SetRecordingTime(const bigtime_t msecs)
 }
 
 
-uint32
+float
 Controller::AverageFPS() const
 {
 	if (RecordTime() == 0)
@@ -664,7 +664,7 @@ Controller::StartCapture()
 	fStopRunner = NULL;
 
 	if (fRequestedRecordTime != 0) {
-		BMessenger messenger(this);
+		BMessenger messenger(NULL, this);
 		// TODO: Use a specific message instead of kMsgGUIToggleCapture
 		// since this could trigger start instead of stopping
 		fStopRunner = new BMessageRunner(messenger,
