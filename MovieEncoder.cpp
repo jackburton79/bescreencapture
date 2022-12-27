@@ -180,11 +180,12 @@ MovieEncoder::_CreateFile(
 {
 	std::cerr << "MovieEncoder::_CreateFile()" << std::endl;
 	std::cerr << "path: " << path << std::endl;
-	std::cerr << "media_file_format: " << mediaFileFormat.pretty_name << "(" << mediaFileFormat.short_name << ")" << std::endl;
+	std::cerr << "media_file_format: " << mediaFileFormat.pretty_name << " (" << mediaFileFormat.short_name << ")" << std::endl;
 	std::cerr << "media_format: " << "width: " << mediaFormat.Width();
 	std::cerr << ", height: " << mediaFormat.Height();
 	std::cerr << ", colorspace: " << mediaFormat.ColorSpace();
 	std::cerr << std::endl;
+	std::cerr << "media_codec_info: " << mediaCodecInfo.pretty_name << " (" << mediaCodecInfo.short_name << ")" << std::endl;
 	entry_ref ref;
 	status_t status = get_ref_for_path(path, &ref);
 	if (status != B_OK) {
@@ -203,7 +204,7 @@ MovieEncoder::_CreateFile(
 		// This next line casts away const to avoid a warning.  MediaFile::CreateTrack()
 		// *should* have the input format argument declared const, but it doesn't, and
 		// it can't be changed because it would break binary compatibility.  Oh, well.
-		fMediaTrack = file->CreateTrack(const_cast<media_format *>(&mediaFormat), &mediaCodecInfo);
+		fMediaTrack = file->CreateTrack(const_cast<media_format*>(&mediaFormat), &mediaCodecInfo);
 		if (fMediaTrack == NULL) {
 			status = B_ERROR;
 			std::cerr << "BMediaFile::CreateTrack() failed." << std::endl;
@@ -348,11 +349,11 @@ MovieEncoder::_EncoderThread()
 			break;
 		}
 
+		// Makes a copy of the bitmap
 		BBitmap* frame = entry->Bitmap();
 		delete entry;
 
 		if (frame == NULL) {
-			// TODO: What to do here ? Exit with an error ?
 			status = B_ERROR;
 			std::cerr << "Error while loading bitmap entry" << std::endl;
 			break;
