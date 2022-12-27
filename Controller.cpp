@@ -510,31 +510,30 @@ Controller::GetCodecsList(BObjectList<media_codec_info>& codecList) const
 
 media_format
 Controller::_ComputeMediaFormat(const int32 &width, const int32 &height,
-	const color_space &colorSpace, const int32 &fieldRate)
+	const color_space &colorSpace, const float &fieldRate)
 {
-	media_format initialFormat;
-	initialFormat.type = B_MEDIA_RAW_VIDEO;
-	initialFormat.u.raw_video.display.line_width = width;
-	initialFormat.u.raw_video.display.line_count = height;
-	initialFormat.u.raw_video.last_active = initialFormat.u.raw_video.display.line_count - 1;
+	media_format format;
+	format.type = B_MEDIA_RAW_VIDEO;
+	format.u.raw_video.display.line_width = width;
+	format.u.raw_video.display.line_count = height;
+	format.u.raw_video.last_active = format.u.raw_video.display.line_count - 1;
 	
 	size_t pixelChunk;
 	size_t rowAlign;
 	size_t pixelPerChunk;
-
 	status_t status = get_pixel_size_for(colorSpace, &pixelChunk,
 			&rowAlign, &pixelPerChunk);
 	if (status != B_OK)
 		throw status;
 
-	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
-	initialFormat.u.raw_video.display.format = colorSpace;
-	initialFormat.u.raw_video.interlace = 1;	
-	initialFormat.u.raw_video.field_rate = fieldRate; // Frames per second, overwritten later
-	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
-	initialFormat.u.raw_video.pixel_height_aspect = 1;
+	format.u.raw_video.display.bytes_per_row = width * rowAlign;
+	format.u.raw_video.display.format = colorSpace;
+	format.u.raw_video.interlace = 1;
+	format.u.raw_video.field_rate = fieldRate; // Frames per second, overwritten later
+	format.u.raw_video.pixel_width_aspect = 1;	// square pixels
+	format.u.raw_video.pixel_height_aspect = 1;
 	
-	return initialFormat;
+	return format;
 }
 
 
@@ -549,7 +548,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	targetRect.right++;
 	targetRect.bottom++;
 	
-	const int32 frameRate = settings.CaptureFrameRate();
+	const float frameRate = float(settings.CaptureFrameRate());
 	const media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
