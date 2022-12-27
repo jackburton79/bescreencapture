@@ -211,7 +211,8 @@ MovieEncoder::_CreateFile(
 			if (quality >= 0)
 				fMediaTrack->SetQuality(quality);
 		}
-	}
+	} else
+		std::cerr << "BMediaFile::InitCheck() failed with " << ::strerror(status) << std::endl;
 
 	// clean up if we incurred an error
 	if (status < B_OK) {
@@ -318,7 +319,7 @@ MovieEncoder::_EncoderThread()
 	ASSERT((firstEntry != NULL));
 	ASSERT((lastEntry != NULL));
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	float fps = CalculateFPS(fFileList->CountItems(), diff);
+	float fps = CalculateFPS(framesLeft, diff);
 	inputFormat.u.raw_video.field_rate = fps;
 
 	// Create movie
