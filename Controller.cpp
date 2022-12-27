@@ -883,7 +883,6 @@ Controller::CaptureThread()
 				std::cerr << "Error adding bitmap to frame list" << std::endl;
 				break;
 			}
-			delete bitmap;
 
 			atomic_add(&fNumFrames, 1);
 
