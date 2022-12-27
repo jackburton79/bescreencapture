@@ -880,7 +880,7 @@ Controller::CaptureThread()
 			// Takes ownership of the bitmap
 			if (!fFileList->AddItem(bitmap, lastFrameTime)) {
 				error = B_NO_MEMORY;
-				std::cerr << "Error adding bitmap to frame list" << std::endl;
+				std::cerr << "Controller::CaptureThread(): error adding bitmap to frame list: " << ::strerror(error) << std::endl;
 				break;
 			}
 
