@@ -859,13 +859,19 @@ Controller::CaptureThread()
 			bitmap = new (std::nothrow) BBitmap(bounds, colorSpace);
 			if (bitmap == NULL) {
 				error = B_NO_MEMORY;
-				std::cerr << "Error creating bitmap" << std::endl;
+				std::cerr << "Controller::CaptureThread(): error creating bitmap: " << ::strerror(error) << std::endl;
+				break;
+			}
+
+			error = bitmap->InitCheck();
+			if (error != B_OK) {
+				std::cerr << "Controller::CaptureThread(): error initializing bitmap: " << ::strerror(error) << std::endl;
 				break;
 			}
 
 			error = ReadBitmap(bitmap, true, bounds);
 			if (error != B_OK) {
-				std::cerr << "Error reading bitmap" << std::endl;
+				std::cerr << "Controller::CaptureThread(): error reading bitmap" << ::strerror(error) << std::endl;
 				break;
 			}
 
@@ -877,6 +883,7 @@ Controller::CaptureThread()
 				std::cerr << "Error adding bitmap to frame list" << std::endl;
 				break;
 			}
+			delete bitmap;
 
 			atomic_add(&fNumFrames, 1);
 
