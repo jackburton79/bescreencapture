@@ -174,7 +174,7 @@ BBitmap*
 BitmapEntry::Bitmap()
 {
 	if (fBitmap != NULL)
-		return new BBitmap(fBitmap);
+		return new (std::nothrow) BBitmap(fBitmap);
 
 	if (fFileName != "")
 		return BTranslationUtils::GetBitmapFile(fFileName);
@@ -207,9 +207,10 @@ status_t
 BitmapEntry::SaveToDisk(const char* path)
 {
 	if (fBitmap == NULL && fFileName != "") {
+		std::cerr << "BitmapEntry::SaveToDisk() called but bitmap already saved to disk. Loading from disk..." << std::endl;
 		fBitmap = BTranslationUtils::GetBitmapFile(fFileName);
 		if (fBitmap == NULL) {
-			std::cout << "AAAA" << std::endl;
+			std::cerr << "failed to load bitmap from disk" << std::endl;
 		}
 		fFileName = "";
 	}
