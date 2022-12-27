@@ -424,7 +424,7 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 void
 OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 {
-	if (fPreviewView != NULL)
+	if (fPreviewView != NULL && fController->State() == Controller::STATE_IDLE)
 		fPreviewView->Update(rect, bitmap);
 }
 
