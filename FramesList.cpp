@@ -208,6 +208,9 @@ BitmapEntry::SaveToDisk(const char* path)
 {
 	if (fBitmap == NULL && fFileName != "") {
 		fBitmap = BTranslationUtils::GetBitmapFile(fFileName);
+		if (fBitmap == NULL) {
+			std::cout << "AAAA" << std::endl;
+		}
 		fFileName = "";
 	}
 
@@ -225,9 +228,10 @@ BitmapEntry::SaveToDisk(const char* path)
 	::close(tempFile);
 
 	status_t status = WriteFrame(fBitmap, fFileName.String());
-
-	if (status != B_OK)
+	if (status != B_OK) {
+		std::cerr << "BitmapEntry::SaveToDisk(): WriteFrame failed: " << ::strerror(status) << std::endl;
 		return status;
+	}
 
 	delete fBitmap;
 	fBitmap = NULL;
@@ -241,20 +245,37 @@ status_t
 BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 {
 	// Does not take ownership of the passed BBitmap.
-	if (sTranslatorRoster == NULL)
+	if (sTranslatorRoster == NULL) {
 		sTranslatorRoster = BTranslatorRoster::Default();
+		std::cerr << "BitmapEntry::WriteFrame(): BTranslatorRoster::Default() returned NULL" << std::endl;
+	}
 
-	BBitmap *tempBitmap = new BBitmap(*bitmap);
+	BBitmap *tempBitmap = new (std::nothrow) BBitmap(*bitmap);
+	if (tempBitmap == NULL) {
+		std::cerr << "BitmapEntry::WriteFrame(): cannot create bitmap" << std::endl;
+		return B_NO_MEMORY;
+	}
+
 	BBitmapStream bitmapStream(tempBitmap);
-
 	translator_info translatorInfo;
-	sTranslatorRoster->Identify(&bitmapStream, NULL,
+	status_t status = sTranslatorRoster->Identify(&bitmapStream, NULL,
 			&translatorInfo, 0, NULL, 'PNG ');
+	if (status != B_OK) {
+		std::cerr << "BitmapEntry::WriteFrame(): cannot identify bitmap stream: " << ::strerror(status) << std::endl;
+		return status;
+	}
 
 	BFile outFile;
-	outFile.SetTo(fileName, B_WRITE_ONLY|B_CREATE_FILE);
-	status_t status = sTranslatorRoster->Translate(&bitmapStream,
+	status = outFile.SetTo(fileName, B_WRITE_ONLY|B_CREATE_FILE);
+	if (status != B_OK) {
+		std::cerr << "BitmapEntry::WriteFrame(): cannot create file" << ::strerror(status) << std::endl;
+		return status;
+	}
+	
+	status = sTranslatorRoster->Translate(&bitmapStream,
 		&translatorInfo, NULL, &outFile, 'PNG ');
+	if (status != B_OK)
+		std::cerr << "BitmapEntry::WriteFrame(): cannot translate bitmap: " << ::strerror(status) << std::endl;
 
 	return status;
 }
