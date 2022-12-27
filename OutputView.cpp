@@ -283,7 +283,7 @@ OutputView::UpdatePreviewFromSettings()
 	BRect rect = Settings::Current().CaptureArea();
 	if (!rect.IsValid())
 		rect = BScreen().Frame();
-	fRectView->Update(&rect);
+	fPreviewView->Update(&rect);
 }
 
 
@@ -339,7 +339,7 @@ OutputView::_LayoutView()
 					.Add(fSelectAreaButton)
 					.AddStrut(20)
 				.End()
-				.Add(fRectView = new PreviewView())
+				.Add(fPreviewView = new PreviewView())
 			.End()
 			.Add(fBorderSlider)
 		.End()
@@ -424,7 +424,7 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 void
 OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 {
-	fRectView->Update(rect, bitmap);
+	fPreviewView->Update(rect, bitmap);
 }
 
 

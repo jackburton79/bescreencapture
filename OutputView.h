@@ -44,7 +44,7 @@ private:
 	BRadioButton* fCustomArea;
 	BRadioButton* fWindow;
 
-	PreviewView* fRectView;
+	PreviewView* fPreviewView;
 	BRect fCustomCaptureRect;
 
 	SliderTextControl* fScaleSlider;
