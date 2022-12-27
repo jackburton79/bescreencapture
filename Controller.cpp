@@ -592,8 +592,7 @@ Controller::UpdateDirectInfo(direct_buffer_info* info)
 status_t
 Controller::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 {
-	const bool &useDirectWindow = Settings::Current().UseDirectWindow()
-		&& fDirectWindowAvailable;
+	const bool &useDirectWindow = fDirectWindowAvailable && Settings::Current().UseDirectWindow();
 	
 	if (!useDirectWindow)
 		return BScreen().ReadBitmap(bitmap, includeCursor, &bounds);
@@ -631,6 +630,11 @@ Controller::StartCapture()
 	} catch (status_t& error) { 
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", error);
+		SendNotices(kMsgControllerCaptureStopped, &message);
+		return;
+	} catch (...) {
+		BMessage message(kMsgControllerCaptureStopped);
+		message.AddInt32("status", int32(B_ERROR));
 		SendNotices(kMsgControllerCaptureStopped, &message);
 		return;
 	}
@@ -769,7 +773,7 @@ Controller::_EncodingFinished(const status_t status, const char* fileName)
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
 	BPath destFile = fileName;
 	if (::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) {
-		// Move the temporary file to the correct destination
+		// Move temporary file to the correct destination
 		BEntry sourceFile(fileName);
 		destFile = GetUniqueFileName(settings.OutputFileName().String());
 		BPath parent;
@@ -852,16 +856,25 @@ Controller::CaptureThread()
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
 				
-			bitmap = new BBitmap(bounds, colorSpace);
-			error = ReadBitmap(bitmap, true, bounds);
-			bigtime_t lastFrameTime = system_time();
-
-			if (error != B_OK)
+			bitmap = new (std::nothrow) BBitmap(bounds, colorSpace);
+			if (bitmap == NULL) {
+				error = B_NO_MEMORY;
+				std::cerr << "Error creating bitmap" << std::endl;
 				break;
+			}
+
+			error = ReadBitmap(bitmap, true, bounds);
+			if (error != B_OK) {
+				std::cerr << "Error reading bitmap" << std::endl;
+				break;
+			}
+
+			bigtime_t lastFrameTime = system_time();
 
 			// Takes ownership of the bitmap
 			if (!fFileList->AddItem(bitmap, lastFrameTime)) {
 				error = B_NO_MEMORY;
+				std::cerr << "Error adding bitmap to frame list" << std::endl;
 				break;
 			}
 
