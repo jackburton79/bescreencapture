@@ -178,6 +178,8 @@ MovieEncoder::_CreateFile(
 	const media_codec_info& mci,
 	float quality)
 {
+	std::cerr << "MovieEncoder::_CreateFile()" << std::endl;
+
 	entry_ref ref;
 	status_t status = get_ref_for_path(path, &ref);
 	if (status != B_OK)
@@ -264,14 +266,17 @@ MovieEncoder::_CloseFile()
 status_t
 MovieEncoder::_EncoderThread()
 {	
+	std::cerr << "MovieEncoder::_EncoderThread() started" << std::endl;
 	int32 framesLeft = fFileList->CountItems();
-	if (framesLeft <= 1) {
+	if (framesLeft <= 0) {
+		std::cerr << "MovieEncoder::_EncoderThread(): no frames to encode." << std::endl;
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
 
 	status_t status = _ApplyImageFilters();
 	if (status != B_OK) {
+		std::cerr << "MovieEncoder::_EncoderThread(): error while applying filters: " << ::strerror(status) << std::endl;
 		_HandleEncodingFinished(status);
 		return status;
 	}
@@ -279,13 +284,16 @@ MovieEncoder::_EncoderThread()
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
-		std::cerr << "MovieEncoder::_EncoderThread(): invalid destination frame. Getting it from first frame..." << std::endl;
+		std::cerr << "MovieEncoder::_EncoderThread(): invalid destination frame. Getting it from first frame...";
+		std::flush(std::cerr);
 		BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
 		if (bitmap == NULL) {
+			std::cerr << "FAILED" << std::endl;
 			status = B_ERROR;
 			_HandleEncodingFinished(status);
 			return status;
 		}
+		std::cerr << "OK" << std::endl;
 		BRect sourceFrame = bitmap->Bounds();
 		delete bitmap;
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
@@ -300,6 +308,8 @@ MovieEncoder::_EncoderThread()
 	media_format inputFormat = fFormat;
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
+	ASSERT((firstEntry != NULL));
+	ASSERT((lastEntry != NULL));
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
 	float fps = CalculateFPS(fFileList->CountItems(), diff);
 	inputFormat.u.raw_video.field_rate = fps;
