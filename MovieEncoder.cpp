@@ -173,17 +173,17 @@ MovieEncoder::SetMessenger(const BMessenger& messenger)
 status_t 
 MovieEncoder::_CreateFile(
 	const char* path,
-	const media_file_format& mff,
-	const media_format& inputFormat,
-	const media_codec_info& mci,
+	const media_file_format& mediaFileFormat,
+	const media_format& mediaFormat,
+	const media_codec_info& mediaCodecInfo,
 	float quality)
 {
 	std::cerr << "MovieEncoder::_CreateFile()" << std::endl;
 	std::cerr << "path: " << path << std::endl;
-	std::cerr << "media_file_format: " << mff.pretty_name << "(" << mff.short_name << ")" << std::endl;
-	std::cerr << "media_format: " << "width: " << inputFormat.Width();
-	std::cerr << ", height: " << inputFormat.Height();
-	std::cerr << ", colorspace: " << inputFormat.ColorSpace();
+	std::cerr << "media_file_format: " << mediaFileFormat.pretty_name << "(" << mediaFileFormat.short_name << ")" << std::endl;
+	std::cerr << "media_format: " << "width: " << mediaFormat.Width();
+	std::cerr << ", height: " << mediaFormat.Height();
+	std::cerr << ", colorspace: " << mediaFormat.ColorSpace();
 	std::cerr << std::endl;
 	entry_ref ref;
 	status_t status = get_ref_for_path(path, &ref);
@@ -191,7 +191,7 @@ MovieEncoder::_CreateFile(
 		std::cerr << "MovieEncoder::_CreateFile(): get_ref_for_path() failed with " << ::strerror(status) << std::endl;
 		return status;
 	}
-	BMediaFile* file = new (std::nothrow) BMediaFile(&ref, &mff);
+	BMediaFile* file = new (std::nothrow) BMediaFile(&ref, &mediaFileFormat);
 	if (file == NULL)
 		return B_NO_MEMORY;
 
@@ -203,7 +203,7 @@ MovieEncoder::_CreateFile(
 		// This next line casts away const to avoid a warning.  MediaFile::CreateTrack()
 		// *should* have the input format argument declared const, but it doesn't, and
 		// it can't be changed because it would break binary compatibility.  Oh, well.
-		fMediaTrack = file->CreateTrack(const_cast<media_format *>(&inputFormat), &mci);
+		fMediaTrack = file->CreateTrack(const_cast<media_format *>(&mediaFormat), &mediaCodecInfo);
 		if (fMediaTrack == NULL) {
 			status = B_ERROR;
 			std::cerr << "BMediaFile::CreateTrack() failed." << std::endl;
@@ -313,17 +313,17 @@ MovieEncoder::_EncoderThread()
 		return _WriteRawFrames();
 	}
 
-	media_format inputFormat = fFormat;
+	media_format mediaFormat = fFormat;
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
 	ASSERT((firstEntry != NULL));
 	ASSERT((lastEntry != NULL));
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
 	float fps = CalculateFPS(framesLeft, diff);
-	inputFormat.u.raw_video.field_rate = fps;
+	mediaFormat.u.raw_video.field_rate = fps;
 
 	// Create movie
-	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
+	status = _CreateFile(fOutputFile.Path(), fFileFormat, mediaFormat, fCodecInfo);
 	fTempPath = fFileList->Path();
 	if (status != B_OK) {
 		std::cerr << "MovieEncoder::_EncoderThread(): _CreateFile failed with " << ::strerror(status) << std::endl;
