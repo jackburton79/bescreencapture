@@ -179,10 +179,15 @@ MovieEncoder::_CreateFile(
 	float quality)
 {
 	entry_ref ref;
-	get_ref_for_path(path, &ref);
-	BMediaFile* file = new BMediaFile(&ref, &mff);
-	status_t err = file->InitCheck();
-	if (err == B_OK) {
+	status_t status = get_ref_for_path(path, &ref);
+	if (status != B_OK)
+		return status;
+	BMediaFile* file = new (std::nothrow) BMediaFile(&ref, &mff);
+	if (file == NULL)
+		return B_NO_MEMORY;
+
+	status = file->InitCheck();
+	if (status == B_OK) {
 		fHeaderCommitted = false;
 		fMediaFile = file;
 
@@ -190,22 +195,23 @@ MovieEncoder::_CreateFile(
 		// *should* have the input format argument declared const, but it doesn't, and
 		// it can't be changed because it would break binary compatibility.  Oh, well.
 		fMediaTrack = file->CreateTrack(const_cast<media_format *>(&inputFormat), &mci);
-		if (!fMediaTrack)
-			err = B_ERROR;
-		else {
+		if (fMediaTrack == NULL) {
+			status = B_ERROR;
+			std::cerr << "BMediaFile::CreateTrack() failed." << std::endl;
+		} else {
 			if (quality >= 0)
 				fMediaTrack->SetQuality(quality);
 		}
 	}
 
 	// clean up if we incurred an error
-	if (err < B_OK) {
+	if (status < B_OK) {
 		fHeaderCommitted = false;
 		delete fMediaFile;
 		fMediaFile = NULL;
 	}
 	
-	return err;
+	return status;
 }
 
 
