@@ -179,7 +179,12 @@ MovieEncoder::_CreateFile(
 	float quality)
 {
 	std::cerr << "MovieEncoder::_CreateFile()" << std::endl;
-
+	std::cerr << "path: " << path << std::endl;
+	std::cerr << "media_file_format: " << mff.pretty_name << "(" << mff.short_name << ")" << std::endl;
+	std::cerr << "media_format: " << "width: " << inputFormat.Width();
+	std::cerr << ", height: " << inputFormat.Height();
+	std::cerr << ", colorspace: " << inputFormat.ColorSpace();
+	std::cerr << std::endl;
 	entry_ref ref;
 	status_t status = get_ref_for_path(path, &ref);
 	if (status != B_OK) {
