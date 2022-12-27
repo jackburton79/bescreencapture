@@ -279,7 +279,13 @@ MovieEncoder::_EncoderThread()
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
+		std::cerr << "MovieEncoder::_EncoderThread(): invalid destination frame. Getting it from first frame..." << std::endl;
 		BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
+		if (bitmap == NULL) {
+			status = B_ERROR;
+			_HandleEncodingFinished(status);
+			return status;
+		}
 		BRect sourceFrame = bitmap->Bounds();
 		delete bitmap;
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
@@ -319,16 +325,19 @@ MovieEncoder::_EncoderThread()
 	int32 framesWritten = 0;
 	while (!fKillThread && framesLeft > 0) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
-		if (entry == NULL)
+		if (entry == NULL) {
+			status = B_ERROR;
 			break;
+		}
 
 		BBitmap* frame = entry->Bitmap();
 		delete entry;
 
 		if (frame == NULL) {
 			// TODO: What to do here ? Exit with an error ?
+			status = B_ERROR;
 			std::cerr << "Error while loading bitmap entry" << std::endl;
-			continue;
+			break;
 		}
 
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
