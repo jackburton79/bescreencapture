@@ -283,7 +283,7 @@ OutputView::UpdatePreviewFromSettings()
 	BRect rect = Settings::Current().CaptureArea();
 	if (!rect.IsValid())
 		rect = BScreen().Frame();
-	fPreviewView->Update(&rect);
+	_UpdatePreview(&rect, NULL);
 }
 
 
@@ -424,7 +424,8 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 void
 OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 {
-	fPreviewView->Update(rect, bitmap);
+	if (fPreviewView != NULL)
+		fPreviewView->Update(rect, bitmap);
 }
 
 
