@@ -248,7 +248,11 @@ BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 	// Does not take ownership of the passed BBitmap.
 	if (sTranslatorRoster == NULL) {
 		sTranslatorRoster = BTranslatorRoster::Default();
+	}
+
+	if (sTranslatorRoster == NULL) {
 		std::cerr << "BitmapEntry::WriteFrame(): BTranslatorRoster::Default() returned NULL" << std::endl;
+		return B_NO_MEMORY;
 	}
 
 	BBitmap *tempBitmap = new (std::nothrow) BBitmap(*bitmap);
