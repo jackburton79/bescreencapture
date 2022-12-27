@@ -182,8 +182,10 @@ MovieEncoder::_CreateFile(
 
 	entry_ref ref;
 	status_t status = get_ref_for_path(path, &ref);
-	if (status != B_OK)
+	if (status != B_OK) {
+		std::cerr << "MovieEncoder::_CreateFile(): get_ref_for_path() failed with " << ::strerror(status) << std::endl;
 		return status;
+	}
 	BMediaFile* file = new (std::nothrow) BMediaFile(&ref, &mff);
 	if (file == NULL)
 		return B_NO_MEMORY;
@@ -317,8 +319,8 @@ MovieEncoder::_EncoderThread()
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
 	fTempPath = fFileList->Path();
-
 	if (status != B_OK) {
+		std::cerr << "MovieEncoder::_EncoderThread(): _CreateFile failed with " << ::strerror(status) << std::endl;
 		_HandleEncodingFinished(status);
 		return status;
 	}
