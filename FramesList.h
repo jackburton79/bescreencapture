@@ -24,7 +24,7 @@ public:
 	void Replace(BBitmap* bitmap);
 	bigtime_t TimeStamp() const;
 	
-	status_t SaveToDisk(const char* path);
+	status_t SaveToDisk(const char* path, const int32 index);
 
 	static status_t WriteFrame(const BBitmap* bitmap, const char* fileName);
 	

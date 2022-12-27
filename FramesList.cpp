@@ -74,8 +74,9 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t frameTime)
 	}
 
 	// TODO: Use a smarter check
-	if (fDiskOnly || CountItems() >= 100 || GetFreeMemory() < kMinFreeMemory) {
-		status_t status = entry->SaveToDisk(fTemporaryPath);
+	const int32 numItems = CountItems();
+	if (fDiskOnly || numItems >= 100 || GetFreeMemory() < kMinFreeMemory) {
+		status_t status = entry->SaveToDisk(fTemporaryPath, numItems);
 		if (status != B_OK) {
 			std::cerr << "FramesList::AddItem(): cannot save to disk: " << strerror(status) << std::endl;
 			delete entry;
@@ -204,7 +205,7 @@ BitmapEntry::TimeStamp() const
 
 
 status_t
-BitmapEntry::SaveToDisk(const char* path)
+BitmapEntry::SaveToDisk(const char* path, const int32 index)
 {
 	if (fBitmap == NULL && fFileName != "") {
 		std::cerr << "BitmapEntry::SaveToDisk() called but bitmap already saved to disk. Loading from disk..." << std::endl;
@@ -215,19 +216,10 @@ BitmapEntry::SaveToDisk(const char* path)
 		fFileName = "";
 	}
 
-	char tempFileName[B_PATH_NAME_LENGTH];
-	::snprintf(tempFileName, sizeof(tempFileName), "%s/frame_XXXXXXX", path);
-	// mkstemp creates a fd with an unique file name.
-	// We then close the fd immediately, because we only need an unique file name.
-	// In theory, it's possible that between this and WriteFrame() someone
-	// creates a file with this exact name, but it's not likely to happen.
-	int tempFile = ::mkstemp(tempFileName);
-	if (tempFile < 0)
-		return tempFile;
-
-	fFileName = tempFileName;
-	::close(tempFile);
-
+	BString name;
+	name.SetToFormat("frame_%07" B_PRIu32 ".png", index + 1);
+	fFileName = path;
+	fFileName.Append("/").Append(name);
 	status_t status = WriteFrame(fBitmap, fFileName.String());
 	if (status != B_OK) {
 		std::cerr << "BitmapEntry::SaveToDisk(): WriteFrame failed: " << ::strerror(status) << std::endl;
