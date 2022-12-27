@@ -68,12 +68,16 @@ bool
 FramesList::AddItem(BBitmap* bitmap, bigtime_t frameTime)
 {
 	BitmapEntry* entry = new (std::nothrow) BitmapEntry(bitmap, frameTime);
-	if (entry == NULL)
+	if (entry == NULL) {
+		std::cerr << "FramesList::AddItem(): cannot create BitmapEntry" << std::endl;
 		return false;
+	}
 
 	// TODO: Use a smarter check
 	if (fDiskOnly || CountItems() >= 100 || GetFreeMemory() < kMinFreeMemory) {
-		if (entry->SaveToDisk(fTemporaryPath) != B_OK) {
+		status_t status = entry->SaveToDisk(fTemporaryPath);
+		if (status != B_OK) {
+			std::cerr << "FramesList::AddItem(): cannot save to disk: " << strerror(status) << std::endl;
 			delete entry;
 			return false;
 		}
