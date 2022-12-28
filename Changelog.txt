@@ -3,8 +3,11 @@ v2.7.0
 	- Added support for scripting via hey.
 	- Greatly improved GIF export quality and reduced size of the resulting file: 
 		for a 200 frames FullHD GIF: 300KB vs 95MB.
+	- Added display of average FPS while recording.
 	- Reworked handling of existing output file.
 	- Added option to quit after encoding.
+	- Improve error checking.
+	- Also log errors to console if launched from commandline.
 ---
 v2.6.2
 	- Improve deskbar menu using more icons from ZuMi.
