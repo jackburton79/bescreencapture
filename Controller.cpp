@@ -510,31 +510,30 @@ Controller::GetCodecsList(BObjectList<media_codec_info>& codecList) const
 
 media_format
 Controller::_ComputeMediaFormat(const int32 &width, const int32 &height,
-	const color_space &colorSpace, const int32 &fieldRate)
+	const color_space &colorSpace, const float &fieldRate)
 {
-	media_format initialFormat;
-	initialFormat.type = B_MEDIA_RAW_VIDEO;
-	initialFormat.u.raw_video.display.line_width = width;
-	initialFormat.u.raw_video.display.line_count = height;
-	initialFormat.u.raw_video.last_active = initialFormat.u.raw_video.display.line_count - 1;
+	media_format format;
+	format.type = B_MEDIA_RAW_VIDEO;
+	format.u.raw_video.display.line_width = width;
+	format.u.raw_video.display.line_count = height;
+	format.u.raw_video.last_active = format.u.raw_video.display.line_count - 1;
 	
 	size_t pixelChunk;
 	size_t rowAlign;
 	size_t pixelPerChunk;
-
 	status_t status = get_pixel_size_for(colorSpace, &pixelChunk,
 			&rowAlign, &pixelPerChunk);
 	if (status != B_OK)
 		throw status;
 
-	initialFormat.u.raw_video.display.bytes_per_row = width * rowAlign;			
-	initialFormat.u.raw_video.display.format = colorSpace;
-	initialFormat.u.raw_video.interlace = 1;	
-	initialFormat.u.raw_video.field_rate = fieldRate; // Frames per second, overwritten later
-	initialFormat.u.raw_video.pixel_width_aspect = 1;	// square pixels
-	initialFormat.u.raw_video.pixel_height_aspect = 1;
+	format.u.raw_video.display.bytes_per_row = width * rowAlign;
+	format.u.raw_video.display.format = colorSpace;
+	format.u.raw_video.interlace = 1;
+	format.u.raw_video.field_rate = fieldRate; // Frames per second, overwritten later
+	format.u.raw_video.pixel_width_aspect = 1;	// square pixels
+	format.u.raw_video.pixel_height_aspect = 1;
 	
-	return initialFormat;
+	return format;
 }
 
 
@@ -549,7 +548,7 @@ Controller::UpdateMediaFormatAndCodecsForCurrentFamily()
 	targetRect.right++;
 	targetRect.bottom++;
 	
-	const int32 frameRate = settings.CaptureFrameRate();
+	const float frameRate = float(settings.CaptureFrameRate());
 	const media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
@@ -592,8 +591,7 @@ Controller::UpdateDirectInfo(direct_buffer_info* info)
 status_t
 Controller::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 {
-	const bool &useDirectWindow = Settings::Current().UseDirectWindow()
-		&& fDirectWindowAvailable;
+	const bool &useDirectWindow = fDirectWindowAvailable && Settings::Current().UseDirectWindow();
 	
 	if (!useDirectWindow)
 		return BScreen().ReadBitmap(bitmap, includeCursor, &bounds);
@@ -631,6 +629,11 @@ Controller::StartCapture()
 	} catch (status_t& error) { 
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", error);
+		SendNotices(kMsgControllerCaptureStopped, &message);
+		return;
+	} catch (...) {
+		BMessage message(kMsgControllerCaptureStopped);
+		message.AddInt32("status", int32(B_ERROR));
 		SendNotices(kMsgControllerCaptureStopped, &message);
 		return;
 	}
@@ -769,7 +772,7 @@ Controller::_EncodingFinished(const status_t status, const char* fileName)
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
 	BPath destFile = fileName;
 	if (::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) {
-		// Move the temporary file to the correct destination
+		// Move temporary file to the correct destination
 		BEntry sourceFile(fileName);
 		destFile = GetUniqueFileName(settings.OutputFileName().String());
 		BPath parent;
@@ -852,16 +855,31 @@ Controller::CaptureThread()
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
 				
-			bitmap = new BBitmap(bounds, colorSpace);
-			error = ReadBitmap(bitmap, true, bounds);
-			bigtime_t lastFrameTime = system_time();
-
-			if (error != B_OK)
+			bitmap = new (std::nothrow) BBitmap(bounds, colorSpace);
+			if (bitmap == NULL) {
+				error = B_NO_MEMORY;
+				std::cerr << "Controller::CaptureThread(): error creating bitmap: " << ::strerror(error) << std::endl;
 				break;
+			}
+
+			error = bitmap->InitCheck();
+			if (error != B_OK) {
+				std::cerr << "Controller::CaptureThread(): error initializing bitmap: " << ::strerror(error) << std::endl;
+				break;
+			}
+
+			error = ReadBitmap(bitmap, true, bounds);
+			if (error != B_OK) {
+				std::cerr << "Controller::CaptureThread(): error reading bitmap" << ::strerror(error) << std::endl;
+				break;
+			}
+
+			bigtime_t lastFrameTime = system_time();
 
 			// Takes ownership of the bitmap
 			if (!fFileList->AddItem(bitmap, lastFrameTime)) {
 				error = B_NO_MEMORY;
+				std::cerr << "Controller::CaptureThread(): error adding bitmap to frame list: " << ::strerror(error) << std::endl;
 				break;
 			}
 

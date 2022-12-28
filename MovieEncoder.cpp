@@ -173,39 +173,56 @@ MovieEncoder::SetMessenger(const BMessenger& messenger)
 status_t 
 MovieEncoder::_CreateFile(
 	const char* path,
-	const media_file_format& mff,
-	const media_format& inputFormat,
-	const media_codec_info& mci,
+	const media_file_format& mediaFileFormat,
+	const media_format& mediaFormat,
+	const media_codec_info& mediaCodecInfo,
 	float quality)
 {
+	std::cerr << "MovieEncoder::_CreateFile()" << std::endl;
+	std::cerr << "path: " << path << std::endl;
+	std::cerr << "media_file_format: " << mediaFileFormat.pretty_name << " (" << mediaFileFormat.short_name << ")" << std::endl;
+	std::cerr << "media_format: " << "width: " << mediaFormat.Width();
+	std::cerr << ", height: " << mediaFormat.Height();
+	std::cerr << ", colorspace: " << mediaFormat.ColorSpace();
+	std::cerr << std::endl;
+	std::cerr << "media_codec_info: " << mediaCodecInfo.pretty_name << " (" << mediaCodecInfo.short_name << ")" << std::endl;
 	entry_ref ref;
-	get_ref_for_path(path, &ref);
-	BMediaFile* file = new BMediaFile(&ref, &mff);
-	status_t err = file->InitCheck();
-	if (err == B_OK) {
+	status_t status = get_ref_for_path(path, &ref);
+	if (status != B_OK) {
+		std::cerr << "MovieEncoder::_CreateFile(): get_ref_for_path() failed with " << ::strerror(status) << std::endl;
+		return status;
+	}
+	BMediaFile* file = new (std::nothrow) BMediaFile(&ref, &mediaFileFormat);
+	if (file == NULL)
+		return B_NO_MEMORY;
+
+	status = file->InitCheck();
+	if (status == B_OK) {
 		fHeaderCommitted = false;
 		fMediaFile = file;
 
 		// This next line casts away const to avoid a warning.  MediaFile::CreateTrack()
 		// *should* have the input format argument declared const, but it doesn't, and
 		// it can't be changed because it would break binary compatibility.  Oh, well.
-		fMediaTrack = file->CreateTrack(const_cast<media_format *>(&inputFormat), &mci);
-		if (!fMediaTrack)
-			err = B_ERROR;
-		else {
+		fMediaTrack = file->CreateTrack(const_cast<media_format*>(&mediaFormat), &mediaCodecInfo);
+		if (fMediaTrack == NULL) {
+			status = B_ERROR;
+			std::cerr << "BMediaFile::CreateTrack() failed." << std::endl;
+		} else {
 			if (quality >= 0)
 				fMediaTrack->SetQuality(quality);
 		}
-	}
+	} else
+		std::cerr << "BMediaFile::InitCheck() failed with " << ::strerror(status) << std::endl;
 
 	// clean up if we incurred an error
-	if (err < B_OK) {
+	if (status < B_OK) {
 		fHeaderCommitted = false;
 		delete fMediaFile;
 		fMediaFile = NULL;
 	}
 	
-	return err;
+	return status;
 }
 
 
@@ -258,14 +275,17 @@ MovieEncoder::_CloseFile()
 status_t
 MovieEncoder::_EncoderThread()
 {	
+	std::cerr << "MovieEncoder::_EncoderThread() started" << std::endl;
 	int32 framesLeft = fFileList->CountItems();
-	if (framesLeft <= 1) {
+	if (framesLeft <= 0) {
+		std::cerr << "MovieEncoder::_EncoderThread(): no frames to encode." << std::endl;
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
 
 	status_t status = _ApplyImageFilters();
 	if (status != B_OK) {
+		std::cerr << "MovieEncoder::_EncoderThread(): error while applying filters: " << ::strerror(status) << std::endl;
 		_HandleEncodingFinished(status);
 		return status;
 	}
@@ -273,7 +293,16 @@ MovieEncoder::_EncoderThread()
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
+		std::cerr << "MovieEncoder::_EncoderThread(): invalid destination frame. Getting it from first frame...";
+		std::flush(std::cerr);
 		BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
+		if (bitmap == NULL) {
+			std::cerr << "FAILED" << std::endl;
+			status = B_ERROR;
+			_HandleEncodingFinished(status);
+			return status;
+		}
+		std::cerr << "OK" << std::endl;
 		BRect sourceFrame = bitmap->Bounds();
 		delete bitmap;
 		fDestFrame = sourceFrame.OffsetToCopy(B_ORIGIN);
@@ -285,18 +314,20 @@ MovieEncoder::_EncoderThread()
 		return _WriteRawFrames();
 	}
 
-	media_format inputFormat = fFormat;
+	media_format mediaFormat = fFormat;
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
+	ASSERT((firstEntry != NULL));
+	ASSERT((lastEntry != NULL));
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	float fps = CalculateFPS(fFileList->CountItems(), diff);
-	inputFormat.u.raw_video.field_rate = fps;
+	float fps = CalculateFPS(framesLeft, diff);
+	mediaFormat.u.raw_video.field_rate = fps;
 
 	// Create movie
-	status = _CreateFile(fOutputFile.Path(), fFileFormat, inputFormat, fCodecInfo);
+	status = _CreateFile(fOutputFile.Path(), fFileFormat, mediaFormat, fCodecInfo);
 	fTempPath = fFileList->Path();
-
 	if (status != B_OK) {
+		std::cerr << "MovieEncoder::_EncoderThread(): _CreateFile failed with " << ::strerror(status) << std::endl;
 		_HandleEncodingFinished(status);
 		return status;
 	}
@@ -313,16 +344,19 @@ MovieEncoder::_EncoderThread()
 	int32 framesWritten = 0;
 	while (!fKillThread && framesLeft > 0) {
 		BitmapEntry* entry = const_cast<FramesList*>(fFileList)->Pop();
-		if (entry == NULL)
+		if (entry == NULL) {
+			status = B_ERROR;
 			break;
+		}
 
+		// Makes a copy of the bitmap
 		BBitmap* frame = entry->Bitmap();
 		delete entry;
 
 		if (frame == NULL) {
-			// TODO: What to do here ? Exit with an error ?
+			status = B_ERROR;
 			std::cerr << "Error while loading bitmap entry" << std::endl;
-			continue;
+			break;
 		}
 
 		bool keyFrame = (framesWritten % keyFrameFrequency == 0);
@@ -598,7 +632,7 @@ MovieEncoder::_PostEncodingAction(BPath& path, uint32 fps)
 
 	BString command;
 	command.Append("ffmpeg "); // command
-	command.Append("-i ").Append(path.Path()).Append("/frame_%07d.png"); // input
+	command.Append("-i ").Append(path.Path()).Append("/frame_%07d.bmp"); // input
 	command.Append(" -f gif "); // output type
 	// filter
 	command.Append("-vf \"");

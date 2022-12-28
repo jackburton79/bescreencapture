@@ -1,7 +1,8 @@
 v2.7.0
+	- Fixed crashing on haiku 32 bit after recording few frames.
 	- Added support for scripting via hey.
-	- Greatly improved GIF export quality and reduced size of the resulting file:
-		for a 200 frames FullHD GIF: 300KB vs 95MB
+	- Greatly improved GIF export quality and reduced size of the resulting file: 
+		for a 200 frames FullHD GIF: 300KB vs 95MB.
 	- Reworked handling of existing output file.
 	- Added option to quit after encoding.
 ---

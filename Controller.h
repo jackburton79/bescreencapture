@@ -120,7 +120,7 @@ private:
 	void		_ForwardGUIMessage(BMessage *message);
 
 	media_format	_ComputeMediaFormat(const int32 &width, const int32 &height,
-							const color_space &colorSpace, const int32 &fieldRate);
+							const color_space &colorSpace, const float &fieldRate);
 	
 	void		_TestWaitForRetrace();
 	void		_WaitForRetrace(bigtime_t time);
