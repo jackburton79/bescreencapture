@@ -26,6 +26,7 @@
 
 static BTranslatorRoster* sTranslatorRoster = NULL;
 
+const uint32 kBitmapFormat = 'BMP ';
 const uint64 kMinFreeMemory = (1 * 1024 * 1024 * 1024); // 1GB
 
 FramesList::FramesList(bool diskOnly)
@@ -74,8 +75,10 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t frameTime)
 	}
 
 	// TODO: Use a smarter check
+	// On haiku 32 bit, we start hitting the 2GB memory limit 
+	// after ~100 frames, so we cannot keep them in memory
 	const int32 numItems = CountItems();
-	if (fDiskOnly || numItems >= 100 || GetFreeMemory() < kMinFreeMemory) {
+	if (fDiskOnly || numItems >= 10 || GetFreeMemory() < kMinFreeMemory) {
 		status_t status = entry->SaveToDisk(fTemporaryPath, numItems);
 		if (status != B_OK) {
 			std::cerr << "FramesList::AddItem(): cannot save to disk: " << strerror(status) << std::endl;
@@ -130,7 +133,7 @@ FramesList::WriteFrames(const char* path)
 	status_t status = B_OK;
 	while (CountItems() > 0) {
 		BString fileName;
-		fileName.SetToFormat("frame_%07" B_PRIu32 ".png", i + 1);
+		fileName.SetToFormat("frame_%07" B_PRIu32 ".bmp", i + 1);
 		BitmapEntry* entry = Pop();
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());
@@ -217,7 +220,7 @@ BitmapEntry::SaveToDisk(const char* path, const int32 index)
 	}
 
 	BString name;
-	name.SetToFormat("frame_%07" B_PRIu32 ".png", index + 1);
+	name.SetToFormat("frame_%07" B_PRIu32 ".bmp", index + 1);
 	fFileName = path;
 	fFileName.Append("/").Append(name);
 	status_t status = WriteFrame(fBitmap, fFileName.String());
@@ -256,7 +259,7 @@ BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 	BBitmapStream bitmapStream(tempBitmap);
 	translator_info translatorInfo;
 	status_t status = sTranslatorRoster->Identify(&bitmapStream, NULL,
-			&translatorInfo, 0, NULL, 'PNG ');
+			&translatorInfo, 0, NULL, kBitmapFormat);
 	if (status != B_OK) {
 		std::cerr << "BitmapEntry::WriteFrame(): cannot identify bitmap stream: " << ::strerror(status) << std::endl;
 		return status;
@@ -270,7 +273,7 @@ BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 	}
 	
 	status = sTranslatorRoster->Translate(&bitmapStream,
-		&translatorInfo, NULL, &outFile, 'PNG ');
+		&translatorInfo, NULL, &outFile, kBitmapFormat);
 	if (status != B_OK)
 		std::cerr << "BitmapEntry::WriteFrame(): cannot translate bitmap: " << ::strerror(status) << std::endl;
 
