@@ -632,7 +632,7 @@ MovieEncoder::_PostEncodingAction(BPath& path, uint32 fps)
 
 	BString command;
 	command.Append("ffmpeg "); // command
-	command.Append("-i ").Append(path.Path()).Append("/frame_%07d.png"); // input
+	command.Append("-i ").Append(path.Path()).Append("/frame_%07d.bmp"); // input
 	command.Append(" -f gif "); // output type
 	// filter
 	command.Append("-vf \"");
