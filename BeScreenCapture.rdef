@@ -7,7 +7,7 @@ resource app_version {
 	middle	= 7,
 	minor		= 0,
 	variety	= B_APPV_DEVELOPMENT,
-	internal	= 0,
+	internal	= 3,
 	short_info	= "BeScreenCapture",
 	long_info	= "BeScreenCapture"
 };
