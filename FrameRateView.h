@@ -7,7 +7,6 @@
 
 #include <View.h>
 
-class BCheckBox;
 class Controller;
 class SliderTextControl;
 class FrameRateView : public BView {
@@ -19,7 +18,6 @@ public:
 private:
 	Controller* fController;
 	SliderTextControl* fFrameRateSlider;
-	BCheckBox* fAutoAdjust;
 };
 
 

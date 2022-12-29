@@ -57,24 +57,8 @@ Controller::Controller()
 
 	fEncoder = new MovieEncoder;
 
-	const Settings& settings = Settings::Current();
-	BRect rect = settings.CaptureArea();
-	SetCaptureArea(rect);
+	_UpdateFromSettings();
 
-	BString fileFormatName = settings.OutputFileFormat();
-	media_file_format fileFormat;
-	if (!GetMediaFileFormat(fileFormatName, &fileFormat)) {
-		if (!GetMediaFileFormat("", &fileFormat))
-			throw "Unable to find a suitable media_file_format!";
-	}		
-
-	SetMediaFileFormat(fileFormat);
-
-	const BString codecName = settings.OutputCodec();
-	if (codecName != "")
-		SetMediaCodec(codecName);
-	else
-		SetMediaCodec(fCodecList->ItemAt(0)->pretty_name);
 	Run();
 }
 
@@ -705,6 +689,9 @@ Controller::ResetSettings()
 {
 	BAutolock _(this);
 	Settings::ResetToDefaults();
+	
+	_UpdateFromSettings();
+
 	BMessage message(kMsgControllerResetSettings);
 	SendNotices(kMsgControllerResetSettings, &message);
 }
@@ -816,6 +803,30 @@ Controller::_WaitForRetrace(bigtime_t time)
 		BScreen().WaitForRetrace(time);
 	else
 		snooze(time);
+}
+
+
+void
+Controller::_UpdateFromSettings()
+{
+	const Settings& settings = Settings::Current();
+	BRect rect = settings.CaptureArea();
+	SetCaptureArea(rect);
+
+	BString fileFormatName = settings.OutputFileFormat();
+	media_file_format fileFormat;
+	if (!GetMediaFileFormat(fileFormatName, &fileFormat)) {
+		if (!GetMediaFileFormat("", &fileFormat))
+			throw "Unable to find a suitable media_file_format!";
+	}
+
+	SetMediaFileFormat(fileFormat);
+
+	const BString codecName = settings.OutputCodec();
+	if (codecName != "")
+		SetMediaCodec(codecName);
+	else if (fCodecList != NULL && fCodecList->ItemAt(0) != NULL)
+		SetMediaCodec(fCodecList->ItemAt(0)->pretty_name);
 }
 
 

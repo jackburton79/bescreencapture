@@ -136,6 +136,9 @@ CamStatusView::AttachedToWindow()
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);
 	
 	fBitmapView->SetBitmap(NULL);
+
+	BString statusString = _GetRecordingStatusString();
+	fEncodingStringView->SetExplicitMinSize(BSize(StringWidth(statusString) + 10, -1));
 }
 
 

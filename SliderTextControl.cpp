@@ -17,6 +17,7 @@
 
 const int32 kTextControlMessage = '9TCM';
 const int32 kTextControlRunnerMessage = '9RTC';
+const int32 kSliderModificationMessage = '9SMM';
 
 class SizeSlider : public BSlider {
 public:
@@ -50,6 +51,7 @@ SliderTextControl::SliderTextControl(const char* name, const char* label,
 	fSizeSlider = new SizeSlider("size_slider", label,
 		new BMessage(*message), minValue, maxValue, stepValue, B_HORIZONTAL);
 
+	fSizeSlider->SetModificationMessage(new BMessage(kSliderModificationMessage));
 	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fSizeSlider->SetHashMarkCount(8);
 	
@@ -139,6 +141,16 @@ SliderTextControl::MessageReceived(BMessage* message)
 
 			delete fTextModificationRunner;
 			fTextModificationRunner = NULL;
+			break;
+		}
+		case kSliderModificationMessage:
+		{
+			// Update text in real time
+			BString sizeString;
+			sizeString << (int32)fSizeSlider->Value();
+			fSizeTextControl->SetModificationMessage(NULL);
+			fSizeTextControl->SetText(sizeString);
+			fSizeTextControl->SetModificationMessage(new BMessage(kTextControlMessage));
 			break;
 		}
 		default:

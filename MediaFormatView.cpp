@@ -38,8 +38,6 @@ MediaFormatView::MediaFormatView(Controller *controller)
 	fOutputFileType(NULL),
 	fCodecMenu(NULL)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	
 	const char *kOutputMenuLabel = "File format:";
 	BPopUpMenu *fileFormatPopUp = new BPopUpMenu("Format");
 	fOutputFileType = new BMenuField("OutFormat",
@@ -49,16 +47,13 @@ MediaFormatView::MediaFormatView(Controller *controller)
 	BPopUpMenu *popUpMenu = new BPopUpMenu("Codecs");
 	fCodecMenu = new BMenuField("OutCodec", kCodecMenuLabel, popUpMenu);
 	
-	BView *layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(0, 0, 0, 0)
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-			.Add(fOutputFileType)
-			.Add(fCodecMenu)
-			.SetInsets(0)
-		.End()	
-		.View();
-
-	AddChild(layoutView);	
+	BLayoutBuilder::Grid<>(this, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.Add(fOutputFileType->CreateLabelLayoutItem(), 0, 0)
+		.Add(fOutputFileType->CreateMenuBarLayoutItem(), 1, 0)
+		.Add(fCodecMenu->CreateLabelLayoutItem(), 0, 1)
+		.Add(fCodecMenu->CreateMenuBarLayoutItem(), 1, 1)
+		.AddGlue(0, 3)
+		.SetInsets(0, 0);
 }
 
 
