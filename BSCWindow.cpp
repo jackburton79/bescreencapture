@@ -220,18 +220,24 @@ BSCWindow::MessageReceived(BMessage *message)
 						(new BAlert("Encoding failed", errorString, "OK"))->Go();
 					} else {
 						// TODO: Should be asynchronous
-						BString successString;
 						const char* destName = NULL;
 						message->FindString("file_name", &destName);
 						BEntry entry(destName);
 						if (entry.Exists()) {
+							BString buttonName;
+							BString successString;
 							if (entry.IsDirectory()) {
-								successString.SetTo("Do you want to open the folder in Tracker?");
+								buttonName.SetTo("Open folder");
+								successString.SetTo("Finished recording");
 							} else {
-								successString.SetTo("Do you want to open the clip?");	
+								buttonName.SetTo("Play");
+								successString.Append("Finished recording ");
+								successString.Append(destName);
 							}
-							int32 choice = (new BAlert("Success", successString, "Yes", "No"))->Go();
-							if (choice == 0) {
+							BAlert* alert = new BAlert("Success", successString, "Ok", buttonName.String());
+							alert->SetShortcut(0, B_ESCAPE);
+							int32 choice = alert->Go();
+							if (choice == 1) {
 								entry_ref ref;
 								if (entry.GetRef(&ref) == B_OK) {
 									entry_ref app;
