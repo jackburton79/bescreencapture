@@ -19,7 +19,7 @@
 static BString
 GetFormatString(const char* formatName)
 {
-	BString string = "Format: ";
+	BString string;
 	string << formatName;
 	return string;
 }
@@ -28,7 +28,7 @@ GetFormatString(const char* formatName)
 static BString
 GetCodecString(const char* codecName)
 {
-	BString string = "Codec: ";
+	BString string;
 	string << codecName;
 	return string;
 }
@@ -37,7 +37,7 @@ GetCodecString(const char* codecName)
 static BString
 GetSourceRectString(const BRect& rect)
 {
-	BString string = "Source region: ";
+	BString string;
 	string << "l: " << rect.left << ", t: " << rect.top;
 	string << ", r: " << rect.right << ", b: " << rect.bottom;
 	return string;
@@ -47,7 +47,7 @@ GetSourceRectString(const BRect& rect)
 static BString
 GetTargetRectString(const BRect& rect)
 {
-	BString string = "Clip frame size: ";
+	BString string;
 	string << (int32)(rect.right - rect.left + 1) << " x ";
 	string << (int32)(rect.bottom - rect.top + 1);
 	return string;
@@ -57,7 +57,7 @@ GetTargetRectString(const BRect& rect)
 static BString
 GetScaleString(float scale)
 {
-	BString string = "Clip scaling factor: ";
+	BString string;
 	string << scale << "%";
 	return string;
 }
@@ -66,7 +66,7 @@ GetScaleString(float scale)
 static BString
 GetFrameRateString(int32 fps)
 {
-	BString string = "Capture frame rate: ";
+	BString string;
 	string << fps << " frames per second";
 	return string;
 }
@@ -82,25 +82,19 @@ InfoView::InfoView(Controller* controller)
 	BRect targetRect = settings.TargetRect();
 	float scale = settings.Scale();
 	
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	BView* layoutView = BLayoutBuilder::Group<>()
-		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
-		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-			.Add(fSourceSize = new BStringView("source size",
-				GetSourceRectString(sourceArea)))
-			.Add(fClipSize = new BStringView("clip size",
-				GetTargetRectString(targetRect)))
-			.Add(fScale = new BStringView("clip scale",
-				GetScaleString(scale)))
-			.Add(fFormat = new BStringView("format", ""))
-			.Add(fCodec = new BStringView("codec", ""))
-			.Add(fCaptureFrameRate = new BStringView("frame_rate",
-				GetFrameRateString(settings.CaptureFrameRate())))
-			.AddGlue()
-		.End()
-		.View();
-	AddChild(layoutView);
+	BLayoutBuilder::Grid<>(this, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
+		.Add(new BStringView("source_size", "Source region: "), 0, 0)
+		.Add(fSourceSize = new BStringView("source_size_value", GetSourceRectString(sourceArea)), 1, 0)
+		.Add(new BStringView("clip_size", "Clip frame size: "), 0, 1)
+		.Add(fClipSize = new BStringView("clip_size_value", GetTargetRectString(targetRect)), 1, 1)
+		.Add(new BStringView("scale", "Clip scaling factor: "), 0, 2)
+		.Add(fScale = new BStringView("scale_value", GetScaleString(scale)), 1, 2)
+		.Add(new BStringView("format", "Format: "), 0, 3)
+		.Add(fFormat = new BStringView("format_value", ""), 1, 3)
+		.Add(new BStringView("codec", "Codec: "), 0, 4)
+		.Add(fCodec = new BStringView("codec value", ""), 1, 4)
+		.Add(new BStringView("frame_rate", "Capture frame rate: "), 0, 5)
+		.Add(fCaptureFrameRate = new BStringView("frame_rate value", GetFrameRateString(settings.CaptureFrameRate())), 1, 5);
 }
 
 
