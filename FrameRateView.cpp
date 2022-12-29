@@ -36,22 +36,11 @@ FrameRateView::FrameRateView(Controller* controller)
 {	
 	fFrameRateSlider = new SliderTextControl("frame rate",
 			kFrameRateLabel, new BMessage(kLocalFrameRateChanged), 1, 60, 1, "fps");
-			
-	fAutoAdjust = new BCheckBox("AutoAdjust",
-		"Auto Adjust", new BMessage(kAutoAdjust));			
 
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	
-	BView *layoutView = BLayoutBuilder::Group<>()
-		.AddGroup(B_VERTICAL)
-			.AddGroup(B_HORIZONTAL)
-				.Add(fFrameRateSlider)
-			.End()
-			/*.Add(fAutoAdjust)*/
-		.End()
-		.View();
-	
-	AddChild(layoutView);
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.AddGroup(B_HORIZONTAL)
+			.Add(fFrameRateSlider)
+		.End();
 }
 
 
@@ -66,7 +55,6 @@ FrameRateView::AttachedToWindow()
 	}
 	fFrameRateSlider->SetValue(Settings::Current().CaptureFrameRate());
 	fFrameRateSlider->SetTarget(this);
-	/*fAutoAdjust->SetTarget(this);*/	
 }
 
 
