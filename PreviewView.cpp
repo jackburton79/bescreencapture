@@ -30,13 +30,8 @@ PreviewView::PreviewView()
 	fLeftTop(NULL),
 	fRightBottom(NULL)
 {
-	SetLayout(new BGroupLayout(B_VERTICAL));
-	BLayoutBuilder::Group<>(this)
-	.AddGroup(B_VERTICAL, 0)
-		.AddGroup(B_HORIZONTAL, 0)
-			.Add(fBitmapView = new BitmapView())
-		.End()
-	.End();
+	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.Add(fBitmapView = new BitmapView());
 }
 
 
