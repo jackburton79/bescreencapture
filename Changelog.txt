@@ -1,11 +1,13 @@
 v2.7.0
 	- Fixed crashing on haiku 32 bit after recording few frames.
+	- Fixed 'Reset Settings' not resetting media format
 	- Added support for scripting via hey.
 	- Greatly improved GIF export quality and reduced size of the resulting file: 
 		for a 200 frames FullHD GIF: 300KB vs 95MB.
 	- Added display of average FPS while recording.
 	- Reworked handling of existing output file.
 	- Added option to quit after encoding.
+	- UI improvements and fixes (suggested by Humdinger).
 	- Improve error checking.
 	- Also log errors to console if launched from commandline.
 ---
