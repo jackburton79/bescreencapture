@@ -118,6 +118,7 @@ BSCWindow::QuitRequested()
 		text.Append(" ");
 		text.Append(reason);
 		BAlert* alert = new BAlert("Really quit?", text, "Quit", "Continue");
+		alert->SetShortcut(1, B_ESCAPE);
 		int32 result = alert->Go();
 		if (result == 0) {
 			fController->Cancel();
