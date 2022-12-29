@@ -335,7 +335,7 @@ BSCWindow::_LayoutWindow(bool dock)
 		return;
 	}
 
-	SetFlags((Flags() | B_AUTO_UPDATE_SIZE_LIMITS) & ~(B_NOT_MOVABLE|B_NOT_RESIZABLE));
+	SetFlags((Flags() | B_AUTO_UPDATE_SIZE_LIMITS) & ~(B_NOT_MOVABLE));
 
 	fOutputView->SetLayout(new BGroupLayout(B_VERTICAL));
 		

@@ -72,12 +72,10 @@ CamStatusView::CamStatusView(Controller* controller)
 	fRecordingBitmap(NULL),
 	fPauseBitmap(NULL)
 {
-	BCardLayout* cardLayout = new BCardLayout();
-	SetLayout(cardLayout);
 	BRect bitmapRect(0, 0, kBitmapSize, kBitmapSize);
 	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
-	
+
 	BView* statusView = BLayoutBuilder::Group<>()
 		.SetInsets(0)
 		.Add(fEncodingStringView = new BStringView("stringview", ""))
@@ -92,9 +90,6 @@ CamStatusView::CamStatusView(Controller* controller)
 		.Add(fStringView = new BStringView("cam string view", ""))
 		.View();
 
-	cardLayout->AddView(layoutView);
-	cardLayout->AddView(statusView);
-	
 	fBitmapView->SetBitmap(NULL);
 	
 	BFont font;
@@ -105,7 +100,10 @@ CamStatusView::CamStatusView(Controller* controller)
 	fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
 	fStringView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
-	cardLayout->SetVisibleItem(int32(0));
+	BLayoutBuilder::Cards<>(this)
+		.Add(layoutView)
+		.Add(statusView)
+		.SetVisibleItem(int32(0));
 }
 
 
