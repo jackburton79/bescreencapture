@@ -337,13 +337,12 @@ OutputView::_LayoutView()
 					.Add(fCustomArea)
 					.Add(fWindow)
 					.Add(fSelectAreaButton)
-					.AddStrut(20)
 				.End()
+				.AddStrut(30)
 				.Add(fPreviewView = new PreviewView())
 			.End()
 			.Add(fBorderSlider)
 		.End()
-		
 		.View();
 	
 	selectBox->AddChild(layoutView);
