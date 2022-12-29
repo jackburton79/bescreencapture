@@ -43,7 +43,7 @@ const static char* LABEL_BUTTON_RESUME = "Resume";
 BSCWindow::BSCWindow()
 	:
 	BDirectWindow(kWindowRect, "BeScreenCapture", B_TITLED_WINDOW,
-		B_ASYNCHRONOUS_CONTROLS),
+		B_ASYNCHRONOUS_CONTROLS|B_NOT_RESIZABLE|B_NOT_ZOOMABLE),
 	fController(dynamic_cast<Controller*>(gControllerLooper)),
 	fMenuBar(NULL),
 	fStartStopButton(NULL),
@@ -281,7 +281,7 @@ BSCWindow::DirectConnected(direct_buffer_info *info)
 void
 BSCWindow::_BuildMenu()
 {
-	BMenu* menu = new BMenu("File");
+	BMenu* menu = new BMenu("App");
 	BMenuItem* aboutItem = new BMenuItem("About", new BMessage(B_ABOUT_REQUESTED));
 	BMenuItem* quitItem = new BMenuItem("Quit", new BMessage(B_QUIT_REQUESTED));
 	menu->AddItem(aboutItem);
