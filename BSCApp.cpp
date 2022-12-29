@@ -45,7 +45,7 @@ const property_info kPropList[] = {
 		kPropertyCaptureRect,
 		{ B_GET_PROPERTY, B_SET_PROPERTY },
 		{ B_NO_SPECIFIER },
-		"set/get capture rect # Set/Get capture rect",
+		"Set/Get capture rect",
 		0,
 		{ B_RECT_TYPE },
 		{},
@@ -55,9 +55,9 @@ const property_info kPropList[] = {
 		kPropertyScaleFactor,
 		{ B_GET_PROPERTY, B_SET_PROPERTY },
 		{ B_NO_SPECIFIER },
-		"set/get scaling factor # Set/Get scaling factor",
+		"Set/Get scaling factor",
 		0,
-		{ B_FLOAT_TYPE },
+		{ B_UINT32_TYPE },
 		{},
 		{}
 	},
@@ -65,7 +65,7 @@ const property_info kPropList[] = {
 		kPropertyStartRecording,
 		{ B_EXECUTE_PROPERTY },
 		{ B_NO_SPECIFIER },
-		"start recording # Start recording",
+		"Start recording",
 		0,
 		{},
 		{},
@@ -75,7 +75,7 @@ const property_info kPropList[] = {
 		kPropertyStopRecording,
 		{ B_EXECUTE_PROPERTY },
 		{ B_NO_SPECIFIER },
-		"stop recording # Stop recording",
+		"Stop recording",
 		0,
 		{},
 		{},
@@ -85,7 +85,7 @@ const property_info kPropList[] = {
 		kPropertyRecordingTime,
 		{ B_SET_PROPERTY },
 		{ B_NO_SPECIFIER },
-		"set recording time # Set recording time",
+		"Set recording time (in seconds)",
 		0,
 		{ B_UINT32_TYPE },
 		{},
@@ -95,7 +95,7 @@ const property_info kPropList[] = {
 		kPropertyQuitWhenFinished,
 		{ B_SET_PROPERTY },
 		{ B_NO_SPECIFIER },
-		"set quit when finished # Set quit when finished",
+		"Set quit when finished",
 		0,
 		{ B_BOOL_TYPE },
 		{},
@@ -345,14 +345,14 @@ BSCApp::_HandleScripting(BMessage* message)
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_GET_PROPERTY) {
 						Settings& settings = Settings::Current();
-						reply.AddFloat("result", settings.Scale());
+						reply.AddInt32("result", int32(settings.Scale()));
 					} else if (what == B_SET_PROPERTY) {
-						float scale;
-						if (message->FindFloat("data", &scale) != B_OK) {
+						uint32 scale;
+						if (message->FindInt32("data", (int32*)&scale) != B_OK) {
 							result = B_ERROR;
 							break;
 						}
-						controller->SetScale(scale);
+						controller->SetScale(float(scale));
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
@@ -360,14 +360,12 @@ BSCApp::_HandleScripting(BMessage* message)
 			} else if (strcmp(property, kPropertyRecordingTime) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_SET_PROPERTY) {
-						// TODO: bigtime_t is uint64, but apparently hey
-						// doesn't support uint64 nor uint32, only int32
-						uint32 msecs = 0;
-						if (message->FindInt32("data", (int32*)&msecs) != B_OK) {
+						uint32 seconds = 0;
+						if (message->FindInt32("data", (int32*)&seconds) != B_OK) {
 							result = B_ERROR;
 							break;
 						}
-						controller->SetRecordingTime(bigtime_t(msecs));
+						controller->SetRecordingTime(bigtime_t(seconds * 1000 * 1000));
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
