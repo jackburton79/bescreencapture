@@ -64,6 +64,9 @@ BSCWindow::BSCWindow()
 	
 	fStartStopButton->SetTarget(fController);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	// TODO: Trying to avoid button shrinking when label changes.
+	// that won't work with translations, since the "Stop" label could be wider
+	fStartStopButton->SetExplicitMinSize(fStartStopButton->PreferredSize());
 	
 	fPauseButton = new BButton("Pause", LABEL_BUTTON_PAUSE,
 		new BMessage(kMsgGUITogglePause));
