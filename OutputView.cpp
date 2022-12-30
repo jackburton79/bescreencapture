@@ -319,7 +319,6 @@ OutputView::_LayoutView()
 	fSelectAreaButton->SetEnabled(false);
 	
 	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
-	fFilePanelButton->SetExplicitMaxSize(BSize(35, 25));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	
 	fScaleSlider = new SliderTextControl("scale_slider", "Scale",
@@ -337,13 +336,12 @@ OutputView::_LayoutView()
 					.Add(fCustomArea)
 					.Add(fWindow)
 					.Add(fSelectAreaButton)
-					.AddStrut(20)
 				.End()
+				.AddStrut(30)
 				.Add(fPreviewView = new PreviewView())
 			.End()
 			.Add(fBorderSlider)
 		.End()
-		
 		.View();
 	
 	selectBox->AddChild(layoutView);

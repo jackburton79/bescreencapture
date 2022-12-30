@@ -57,7 +57,7 @@ const property_info kPropList[] = {
 		{ B_NO_SPECIFIER },
 		"Set/Get scaling factor",
 		0,
-		{ B_UINT32_TYPE },
+		{ B_INT32_TYPE },
 		{},
 		{}
 	},
@@ -87,7 +87,7 @@ const property_info kPropList[] = {
 		{ B_NO_SPECIFIER },
 		"Set recording time (in seconds)",
 		0,
-		{ B_UINT32_TYPE },
+		{ B_INT32_TYPE },
 		{},
 		{}
 	},
@@ -331,12 +331,11 @@ BSCApp::_HandleScripting(BMessage* message)
 						reply.AddRect("result", settings.CaptureArea());
 					} else if (what == B_SET_PROPERTY) {
 						BRect rect;
-						if (message->FindRect("data", &rect) != B_OK) {
+						if (message->FindRect("data", &rect) == B_OK) {
+							if (!controller->SetCaptureArea(rect))
+								result = B_BAD_VALUE;
+						} else
 							result = B_ERROR;
-							break;
-						}
-						if (!controller->SetCaptureArea(rect))
-							result = B_BAD_VALUE;
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
@@ -347,12 +346,11 @@ BSCApp::_HandleScripting(BMessage* message)
 						Settings& settings = Settings::Current();
 						reply.AddInt32("result", int32(settings.Scale()));
 					} else if (what == B_SET_PROPERTY) {
-						uint32 scale;
-						if (message->FindInt32("data", (int32*)&scale) != B_OK) {
+						int32 scale;
+						if (message->FindInt32("data", &scale) == B_OK)
+							controller->SetScale(float(scale));
+						else
 							result = B_ERROR;
-							break;
-						}
-						controller->SetScale(float(scale));
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
@@ -360,12 +358,11 @@ BSCApp::_HandleScripting(BMessage* message)
 			} else if (strcmp(property, kPropertyRecordingTime) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_SET_PROPERTY) {
-						uint32 seconds = 0;
-						if (message->FindInt32("data", (int32*)&seconds) != B_OK) {
+						int32 seconds = 0;
+						if (message->FindInt32("data", &seconds) == B_OK)
+							controller->SetRecordingTime(bigtime_t(seconds * 1000 * 1000));
+						else
 							result = B_ERROR;
-							break;
-						}
-						controller->SetRecordingTime(bigtime_t(seconds * 1000 * 1000));
 					}
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
@@ -373,11 +370,9 @@ BSCApp::_HandleScripting(BMessage* message)
 			} else if (strcmp(property, kPropertyQuitWhenFinished) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_SET_PROPERTY) {
+						// No need to check for error, just assume "false" in that case
 						bool quit = false;
-						if (message->FindBool("data", &quit) != B_OK) {
-							result = B_ERROR;
-							break;
-						}
+						message->FindBool("data", &quit);
 						Settings::Current().SetQuitWhenFinished(quit);
 					}
 					reply.AddInt32("error", result);

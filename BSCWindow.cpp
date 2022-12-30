@@ -29,6 +29,8 @@
 #include <cstdio>
 
 
+#define USE_INFOVIEW 0
+
 const static BRect kWindowRect(0, 0, 400, 600);
 
 const static uint32 kGUIOpenMediaWindow = 'j89d';
@@ -54,8 +56,9 @@ BSCWindow::BSCWindow()
 {
 	fOutputView = new OutputView(fController);
 	fAdvancedOptionsView = new AdvancedOptionsView(fController);
+#if USE_INFOVIEW
 	fInfoView = new InfoView(fController);
-	
+#endif
 	fMenuBar = new BMenuBar("menubar");
 	_BuildMenu();
 	
@@ -64,6 +67,9 @@ BSCWindow::BSCWindow()
 	
 	fStartStopButton->SetTarget(fController);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	// TODO: Trying to avoid button shrinking when label changes.
+	// that won't work with translations, since the "Stop" label could be wider
+	fStartStopButton->SetExplicitMinSize(fStartStopButton->PreferredSize());
 	
 	fPauseButton = new BButton("Pause", LABEL_BUTTON_PAUSE,
 		new BMessage(kMsgGUITogglePause));
@@ -233,9 +239,10 @@ BSCWindow::MessageReceived(BMessage *message)
 							} else {
 								buttonName.SetTo("Play");
 								successString.Append("Finished recording ");
-								successString.Append(destName);
+								successString.Append(entry.Name());
 							}
-							BAlert* alert = new BAlert("Success", successString, "Ok", buttonName.String());
+							BAlert* alert = new BAlert("Success", successString,
+								"OK", buttonName.String());
 							alert->SetShortcut(0, B_ESCAPE);
 							int32 choice = alert->Go();
 							if (choice == 1) {
@@ -370,14 +377,15 @@ BSCWindow::_LayoutWindow(bool dock)
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(fAdvancedOptionsView);
 
-	BGroupView* infoGroup = new BGroupView(B_HORIZONTAL);
-	infoGroup->SetName("Info");
-	infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
-		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
-	tabView->AddTab(infoGroup);
-	BLayoutBuilder::Group<>(infoGroup)
-		.Add(fInfoView);
-	
+	if (fInfoView != NULL) {
+		BGroupView* infoGroup = new BGroupView(B_HORIZONTAL);
+		infoGroup->SetName("Info");
+		infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+		tabView->AddTab(infoGroup);
+		BLayoutBuilder::Group<>(infoGroup)
+			.Add(fInfoView);
+	}
 	CenterOnScreen();
 }
 
