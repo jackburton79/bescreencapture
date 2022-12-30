@@ -186,19 +186,17 @@ MovieEncoder::_CreateFile(
 		std::cerr << "MovieEncoder::_CreateFile(): get_ref_for_path() failed with " << ::strerror(status) << std::endl;
 		return status;
 	}
-	BMediaFile* file = new (std::nothrow) BMediaFile(&ref, &mediaFileFormat);
-	if (file == NULL)
+
+	fMediaFile = new (std::nothrow) BMediaFile(&ref, &mediaFileFormat);
+	if (fMediaFile == NULL)
 		return B_NO_MEMORY;
 
-	status = file->InitCheck();
+	status = fMediaFile->InitCheck();
 	if (status == B_OK) {
 		fHeaderCommitted = false;
-		fMediaFile = file;
 
-		// This next line casts away const to avoid a warning.  MediaFile::CreateTrack()
-		// *should* have the input format argument declared const, but it doesn't, and
-		// it can't be changed because it would break binary compatibility.  Oh, well.
-		fMediaTrack = file->CreateTrack(const_cast<media_format*>(&mediaFormat), &mediaCodecInfo);
+		// Fix warning since MediaFile::CreateTrack() argument isn't const
+		fMediaTrack = fMediaFile->CreateTrack(const_cast<media_format*>(&mediaFormat), &mediaCodecInfo);
 		if (fMediaTrack == NULL) {
 			status = B_ERROR;
 			std::cerr << "BMediaFile::CreateTrack() failed." << std::endl;
@@ -206,8 +204,9 @@ MovieEncoder::_CreateFile(
 			if (quality >= 0)
 				fMediaTrack->SetQuality(quality);
 		}
-	} else
+	} else {
 		std::cerr << "BMediaFile::InitCheck() failed with " << ::strerror(status) << std::endl;
+	}
 
 	// clean up if we incurred an error
 	if (status < B_OK) {
