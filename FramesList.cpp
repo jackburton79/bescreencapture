@@ -31,7 +31,7 @@ const uint64 kMinFreeMemory = (1 * 1024 * 1024 * 1024); // 1GB
 
 FramesList::FramesList(bool diskOnly)
 	:
-	BObjectList<BitmapEntry>(1, true),
+	BObjectList<BitmapEntry>(20, true),
 	fTemporaryPath(NULL),
 	fDiskOnly(diskOnly)
 {
