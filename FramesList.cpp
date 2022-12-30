@@ -35,6 +35,15 @@ FramesList::FramesList(bool diskOnly)
 	fTemporaryPath(NULL),
 	fDiskOnly(diskOnly)
 {
+#if 1
+	// On haiku 32 bit, we start hitting the 2GB memory limit
+	// after ~100 frames, so we cannot keep them in memory.
+	// It seems that already 10 frames are too much in some cases:
+	// I wonder if we're hitting the app_server 2GB limit in case some other app
+	// has many bitmaps
+	fDiskOnly = true;
+#endif
+
 	BPath path;
 	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
 	if (status != B_OK)
@@ -75,8 +84,6 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t frameTime)
 	}
 
 	// TODO: Use a smarter check
-	// On haiku 32 bit, we start hitting the 2GB memory limit 
-	// after ~100 frames, so we cannot keep them in memory
 	const int32 numItems = CountItems();
 	if (fDiskOnly || numItems >= 10 || GetFreeMemory() < kMinFreeMemory) {
 		status_t status = entry->SaveToDisk(fTemporaryPath, numItems);
