@@ -82,19 +82,32 @@ InfoView::InfoView(Controller* controller)
 	BRect targetRect = settings.TargetRect();
 	float scale = settings.Scale();
 	
+	BStringView* sizeView = new BStringView("source_size", "Source region:");
+	sizeView->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	BStringView* frameSizeView = new BStringView("clip_size", "Clip frame size:");
+	frameSizeView->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	BStringView* scaleView = new BStringView("scale", "Clip scaling factor:");
+	scaleView->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	BStringView* formatView = new BStringView("format", "Format:");
+	formatView->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	BStringView* codecView = new BStringView("codec", "Codec:");
+	codecView->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
+	BStringView* rateView = new BStringView("frame_rate", "Capture frame rate:");
+	rateView->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	BLayoutBuilder::Grid<>(this, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.Add(new BStringView("source_size", "Source region: "), 0, 0)
+		.Add(sizeView, 0, 0)
 		.Add(fSourceSize = new BStringView("source_size_value", GetSourceRectString(sourceArea)), 1, 0)
-		.Add(new BStringView("clip_size", "Clip frame size: "), 0, 1)
+		.Add(frameSizeView, 0, 1)
 		.Add(fClipSize = new BStringView("clip_size_value", GetTargetRectString(targetRect)), 1, 1)
-		.Add(new BStringView("scale", "Clip scaling factor: "), 0, 2)
+		.Add(scaleView, 0, 2)
 		.Add(fScale = new BStringView("scale_value", GetScaleString(scale)), 1, 2)
-		.Add(new BStringView("format", "Format: "), 0, 3)
+		.Add(formatView, 0, 3)
 		.Add(fFormat = new BStringView("format_value", ""), 1, 3)
-		.Add(new BStringView("codec", "Codec: "), 0, 4)
+		.Add(codecView, 0, 4)
 		.Add(fCodec = new BStringView("codec value", ""), 1, 4)
-		.Add(new BStringView("frame_rate", "Capture frame rate: "), 0, 5)
-		.Add(fCaptureFrameRate = new BStringView("frame_rate value", GetFrameRateString(settings.CaptureFrameRate())), 1, 5);
+		.Add(rateView, 0, 5)
+		.Add(fCaptureFrameRate = new BStringView("frame_rate value", GetFrameRateString(settings.CaptureFrameRate())), 1, 5)
+		.AddGlue(0, 2, 6, 0);
 }
 
 
