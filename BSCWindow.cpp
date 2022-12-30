@@ -29,6 +29,8 @@
 #include <cstdio>
 
 
+#define USE_INFOVIEW 0
+
 const static BRect kWindowRect(0, 0, 400, 600);
 
 const static uint32 kGUIOpenMediaWindow = 'j89d';
@@ -54,8 +56,9 @@ BSCWindow::BSCWindow()
 {
 	fOutputView = new OutputView(fController);
 	fAdvancedOptionsView = new AdvancedOptionsView(fController);
+#if USE_INFOVIEW
 	fInfoView = new InfoView(fController);
-	
+#endif
 	fMenuBar = new BMenuBar("menubar");
 	_BuildMenu();
 	
@@ -374,14 +377,15 @@ BSCWindow::_LayoutWindow(bool dock)
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(fAdvancedOptionsView);
 
-	BGroupView* infoGroup = new BGroupView(B_HORIZONTAL);
-	infoGroup->SetName("Info");
-	infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
-		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
-	tabView->AddTab(infoGroup);
-	BLayoutBuilder::Group<>(infoGroup)
-		.Add(fInfoView);
-	
+	if (fInfoView != NULL) {
+		BGroupView* infoGroup = new BGroupView(B_HORIZONTAL);
+		infoGroup->SetName("Info");
+		infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
+			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+		tabView->AddTab(infoGroup);
+		BLayoutBuilder::Group<>(infoGroup)
+			.Add(fInfoView);
+	}
 	CenterOnScreen();
 }
 
