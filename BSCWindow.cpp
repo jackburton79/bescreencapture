@@ -233,9 +233,10 @@ BSCWindow::MessageReceived(BMessage *message)
 							} else {
 								buttonName.SetTo("Play");
 								successString.Append("Finished recording ");
-								successString.Append(destName);
+								successString.Append(entry.Name());
 							}
-							BAlert* alert = new BAlert("Success", successString, "Ok", buttonName.String());
+							BAlert* alert = new BAlert("Success", successString,
+								"OK", buttonName.String());
 							alert->SetShortcut(0, B_ESCAPE);
 							int32 choice = alert->Go();
 							if (choice == 1) {
