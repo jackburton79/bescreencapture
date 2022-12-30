@@ -82,7 +82,7 @@ void
 MovieEncoder::DisposeData()
 {
 	// If the movie is still opened, close it; this also flushes all tracks
-	if (fMediaFile)
+	if (fMediaFile != NULL)
 		_CloseFile();
 	
 	// Deleting the filelist deletes the files referenced by it
@@ -180,12 +180,6 @@ MovieEncoder::_CreateFile(
 {
 	std::cerr << "MovieEncoder::_CreateFile()" << std::endl;
 	std::cerr << "path: " << path << std::endl;
-	std::cerr << "media_file_format: " << mediaFileFormat.pretty_name << " (" << mediaFileFormat.short_name << ")" << std::endl;
-	std::cerr << "media_format: " << "width: " << mediaFormat.Width();
-	std::cerr << ", height: " << mediaFormat.Height();
-	std::cerr << ", colorspace: " << mediaFormat.ColorSpace();
-	std::cerr << std::endl;
-	std::cerr << "media_codec_info: " << mediaCodecInfo.pretty_name << " (" << mediaCodecInfo.short_name << ")" << std::endl;
 	entry_ref ref;
 	status_t status = get_ref_for_path(path, &ref);
 	if (status != B_OK) {
