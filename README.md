@@ -43,11 +43,11 @@ Get scale
 
 Set scale to 50%
 
- hey BeScreenCapture SET Scale to "int32(50)"
+ hey BeScreenCapture SET Scale to 50
 
 Set recording time to 5 seconds
 
- hey BeScreenCapture SET RecordingTime to "int32(5)"
+ hey BeScreenCapture SET RecordingTime to 5
 
 ## Notes
 
