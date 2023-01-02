@@ -208,10 +208,8 @@ BSCApp::ReadyToRun()
 	}
 
 	if (fShouldStartRecording) {
-		// TODO: fix
-	/*	fWindow->Run();
-		BMessenger(gControllerLooper).SendMessage(kMsgGUIToggleCapture);
-		*/
+		fWindow->Run();
+		BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
 	} else {
 		fWindow->Show();
 		InstallDeskbarReplicant();
@@ -236,15 +234,7 @@ BSCApp::MessageReceived(BMessage *message)
 		return;
 		
 	switch (message->what) {
-		case kMsgGetControllerMessenger:
-		{
-			// the deskbar view needs the controller looper messenger
-			BMessage reply(kMsgGetControllerMessenger);
-			BMessenger controllerMessenger(be_app);
-			reply.AddMessenger("ControllerMessenger", controllerMessenger);
-			message->SendReply(&reply);
-			break;
-		}
+		// TODO: Fix handling of Start + record
 		/*case kMsgGUIToggleCapture:
 		case kMsgGUITogglePause:
 			if (gControllerLooper != NULL)
