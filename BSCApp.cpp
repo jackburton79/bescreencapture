@@ -234,17 +234,6 @@ BSCApp::MessageReceived(BMessage *message)
 		return;
 		
 	switch (message->what) {
-		// TODO: Fix handling of Start + record
-		/*case kMsgGUIToggleCapture:
-		case kMsgGUITogglePause:
-			if (gControllerLooper != NULL)
-				BMessenger(gControllerLooper).SendMessage(message);
-			else {
-				// Start recording as soon as a window is created
-				fShouldStartRecording = true;
-			}
-			break;
-		*/
 		case kSelectionWindowClosed:
 		{
 			SendNotices(kMsgControllerSelectionWindowClosed, message);
@@ -256,7 +245,10 @@ BSCApp::MessageReceived(BMessage *message)
 		}
 
 		case kMsgGUIToggleCapture:
-			ToggleCapture();
+			if (fWindow != NULL)
+				ToggleCapture();
+			else
+				fShouldStartRecording = true;
 			break;
 
 		case kMsgGUITogglePause:
