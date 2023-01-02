@@ -32,7 +32,7 @@ public:
 	
 private:
 	void _BuildMenu();
-	void _LayoutWindow(bool dock = false);
+	void _LayoutWindow();
 
 	status_t _CaptureStarted();
 	status_t _CaptureFinished();

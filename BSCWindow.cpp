@@ -78,7 +78,7 @@ BSCWindow::BSCWindow()
 	fCamStatus = new CamStatusView();
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
-	_LayoutWindow(false);
+	_LayoutWindow();
 
 	if (be_app->LockLooper()) {
 		be_app->StartWatching(this, kMsgControllerEncodeStarted);
@@ -148,7 +148,7 @@ BSCWindow::MessageReceived(BMessage *message)
 			(new OptionsWindow())->Show();
 			break;
 		case kGUIDockWindow:
-			_LayoutWindow(!Settings::Current().DockingMode());
+			_LayoutWindow();
 			break;
 		case kGUIResetSettings:
 			app->ResetSettings();
@@ -304,43 +304,14 @@ BSCWindow::_BuildMenu()
 	menu = new BMenu("Settings");
 	BMenuItem* resetSettings = new BMenuItem("Default", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
-#if 0
-	BMenuItem* media = new BMenuItem("Encoding settings" B_UTF8_ELLIPSIS, new BMessage(kGUIOpenMediaWindow));
-	menu->AddItem(media);
-#endif
-#if 0
-	BMenuItem* dock = new BMenuItem("Dock window", new BMessage(kGUIDockWindow));
-	menu->AddItem(dock);
-#endif
+
 	fMenuBar->AddItem(menu);
 }
 
 
 void
-BSCWindow::_LayoutWindow(bool dock)
+BSCWindow::_LayoutWindow()
 {
-	if (dock) {
-		SetFlags((Flags() & ~B_AUTO_UPDATE_SIZE_LIMITS) | (B_NOT_MOVABLE|B_NOT_RESIZABLE));
-
-		BLayoutBuilder::Group<>(this, B_VERTICAL)
-			.AddGroup(B_VERTICAL)
-			.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
-				.Add(fOutputView)
-				.AddGroup(B_HORIZONTAL)
-					.Add(fCamStatus)
-					.Add(fStartStopButton)
-				.End()
-			.End();
-			
-		fOutputView->SetLayout(new BGroupLayout(B_HORIZONTAL));
-		
-		BScreen screen(this);
-		ResizeTo(screen.Frame().Width(), 300);
-		MoveTo(0, screen.Frame().Height() - 300);
-		
-		return;
-	}
-
 	SetFlags((Flags() | B_AUTO_UPDATE_SIZE_LIMITS) & ~(B_NOT_MOVABLE));
 
 	fOutputView->SetLayout(new BGroupLayout(B_VERTICAL));
