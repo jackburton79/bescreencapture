@@ -411,6 +411,8 @@ BSCWindow::_CaptureFinished()
 	fPauseButton->SetLabel(LABEL_BUTTON_PAUSE);
 	fPauseButton->SetEnabled(false);
 	
+	// TODO: maybe don't show window if launched with
+	// the Shift-Alt-Control-R combo
 	if (IsHidden())
 		Show();
 	if (IsMinimized())
