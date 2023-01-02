@@ -7,16 +7,14 @@
 
 #include <View.h>
 
-class Controller;
 class SliderTextControl;
 class FrameRateView : public BView {
 public:
-	FrameRateView(Controller* controller);
+	FrameRateView();
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
 	
 private:
-	Controller* fController;
 	SliderTextControl* fFrameRateSlider;
 };
 

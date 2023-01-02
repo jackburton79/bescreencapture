@@ -1,10 +1,11 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "CamStatusView.h"
+
+#include "BSCApp.h"
 #include "Constants.h"
-#include "Controller.h"
 #include "ControllerObserver.h"
 
 #include <Application.h>
@@ -57,10 +58,9 @@ private:
 };
 
 
-CamStatusView::CamStatusView(Controller* controller)
+CamStatusView::CamStatusView()
 	:
 	BView("CamStatusView", B_WILL_DRAW|B_PULSE_NEEDED),
-	fController(controller),
 	fStringView(NULL),
 	fBitmapView(NULL),
 	fEncodingStringView(NULL),
@@ -110,15 +110,15 @@ CamStatusView::CamStatusView(Controller* controller)
 void
 CamStatusView::AttachedToWindow()
 {
-	if (fController->LockLooper()) {
-		fController->StartWatching(this, kMsgControllerCaptureStarted);
-		fController->StartWatching(this, kMsgControllerCaptureStopped);
-		fController->StartWatching(this, kMsgControllerCapturePaused);
-		fController->StartWatching(this, kMsgControllerCaptureResumed);
-		fController->StartWatching(this, kMsgControllerEncodeStarted);
-		fController->StartWatching(this, kMsgControllerEncodeProgress);
-		fController->StartWatching(this, kMsgControllerEncodeFinished);
-		fController->UnlockLooper();
+	if (be_app->LockLooper()) {
+		be_app->StartWatching(this, kMsgControllerCaptureStarted);
+		be_app->StartWatching(this, kMsgControllerCaptureStopped);
+		be_app->StartWatching(this, kMsgControllerCapturePaused);
+		be_app->StartWatching(this, kMsgControllerCaptureResumed);
+		be_app->StartWatching(this, kMsgControllerEncodeStarted);
+		be_app->StartWatching(this, kMsgControllerEncodeProgress);
+		be_app->StartWatching(this, kMsgControllerEncodeFinished);
+		be_app->UnlockLooper();
 	}
 	
 	if (Parent())
@@ -228,7 +228,8 @@ CamStatusView::Pulse()
 	if (!fRecording)
 		return;
 
-	fNumFrames = fController->RecordedFrames();
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	fNumFrames = app->RecordedFrames();
 	BString str = _GetRecordingStatusString();
 	fStringView->SetText(str.String());
 	Invalidate();
@@ -296,7 +297,8 @@ CamStatusView::MaxSize()
 BString
 CamStatusView::_GetRecordingStatusString() const
 {
-	time_t recordTime = (time_t)fController->RecordTime() / 1000000;
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	time_t recordTime = (time_t)app->RecordTime() / 1000000;
 	if (recordTime < 0)
 		recordTime = 0;
 	struct tm timeStruct;
@@ -305,6 +307,6 @@ CamStatusView::_GetRecordingStatusString() const
 	strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
 	timeString.UnlockBuffer();
 	timeString << ", " << fNumFrames << " frames";
-	timeString << " (" << fController->AverageFPS() << " avg)";
+	timeString << " (" << app->AverageFPS() << " avg)";
 	return timeString;
 }

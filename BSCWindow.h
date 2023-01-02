@@ -17,7 +17,6 @@ class BMenuBar;
 class BStringView;
 class BTabView;
 class CamStatusView;
-class Controller;
 class BSCWindow : public BDirectWindow {
 public:
 	BSCWindow();
@@ -37,8 +36,6 @@ private:
 
 	status_t _CaptureStarted();
 	status_t _CaptureFinished();
-
-	Controller *fController;
 
 	BMenuBar* fMenuBar;
 	BTabView *fTabView;

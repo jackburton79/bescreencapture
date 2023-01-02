@@ -5,7 +5,7 @@
 
 #include "InfoView.h"
 
-#include "Controller.h"
+#include "BSCApp.h"
 #include "ControllerObserver.h"
 #include "Settings.h"
 
@@ -72,10 +72,9 @@ GetFrameRateString(int32 fps)
 }
 
 
-InfoView::InfoView(Controller* controller)
+InfoView::InfoView()
 	:
-	BView("Info", B_WILL_DRAW),
-	fController(controller)
+	BView("Info", B_WILL_DRAW)
 {
 	const Settings& settings = Settings::Current();
 	BRect sourceArea = settings.CaptureArea();
@@ -116,17 +115,18 @@ InfoView::AttachedToWindow()
 {
 	BView::AttachedToWindow();
 	
-	if (fController->LockLooper()) {
-		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
-		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
-		fController->StartWatching(this, kMsgControllerCodecChanged);
-		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
-		fController->StartWatching(this, kMsgControllerCaptureFrameRateChanged);
-		fController->UnlockLooper();
+	if (be_app->LockLooper()) {
+		be_app->StartWatching(this, kMsgControllerSourceFrameChanged);
+		be_app->StartWatching(this, kMsgControllerTargetFrameChanged);
+		be_app->StartWatching(this, kMsgControllerCodecChanged);
+		be_app->StartWatching(this, kMsgControllerMediaFileFormatChanged);
+		be_app->StartWatching(this, kMsgControllerCaptureFrameRateChanged);
+		be_app->UnlockLooper();
 	}
 	
-	fFormat->SetText(GetFormatString(fController->MediaFileFormatName()));
-	fCodec->SetText(GetCodecString(fController->MediaCodecName()));
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	fFormat->SetText(GetFormatString(app->MediaFileFormatName()));
+	fCodec->SetText(GetCodecString(app->MediaCodecName()));
 }
 
 

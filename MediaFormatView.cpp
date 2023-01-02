@@ -4,9 +4,8 @@
  */
 
 #include "MediaFormatView.h"
-
+#include "BSCApp.h"
 #include "Constants.h"
-#include "Controller.h"
 #include "ControllerObserver.h"
 #include "Utils.h"
 
@@ -31,10 +30,9 @@ private:
 };
 
 
-MediaFormatView::MediaFormatView(Controller *controller)
+MediaFormatView::MediaFormatView()
 	:
 	BView("Media Options", B_WILL_DRAW),
-	fController(controller),
 	fOutputFileType(NULL),
 	fCodecMenu(NULL)
 {
@@ -68,22 +66,24 @@ MediaFormatView::AttachedToWindow()
 	BView::AttachedToWindow();
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+
 	// Watch for these from Controller
-	if (fController->LockLooper()) {
-		fController->StartWatching(this, kMsgControllerEncodeStarted);
-		fController->StartWatching(this, kMsgControllerEncodeFinished);
-		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
-		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
-		fController->StartWatching(this, kMsgControllerCodecListUpdated);
-		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
-		fController->StartWatching(this, kMsgControllerVideoDepthChanged);
-		fController->StartWatching(this, kMsgControllerCodecChanged);
-		fController->UnlockLooper();
+	if (be_app->LockLooper()) {
+		be_app->StartWatching(this, kMsgControllerEncodeStarted);
+		be_app->StartWatching(this, kMsgControllerEncodeFinished);
+		be_app->StartWatching(this, kMsgControllerSourceFrameChanged);
+		be_app->StartWatching(this, kMsgControllerTargetFrameChanged);
+		be_app->StartWatching(this, kMsgControllerCodecListUpdated);
+		be_app->StartWatching(this, kMsgControllerMediaFileFormatChanged);
+		be_app->StartWatching(this, kMsgControllerVideoDepthChanged);
+		be_app->StartWatching(this, kMsgControllerCodecChanged);
+		be_app->UnlockLooper();
 	}
 		
 	_BuildFileFormatsMenu();
 	
-	BString currentFileFormat = fController->MediaFileFormatName();
+	BString currentFileFormat = app->MediaFileFormatName();
 	BMenuItem* item = NULL;
 	if (currentFileFormat != "")
 		item = fOutputFileType->Menu()->FindItem(currentFileFormat.String());
@@ -97,32 +97,34 @@ MediaFormatView::AttachedToWindow()
 	}
 	
 	fOutputFileType->Menu()->SetTargetForItems(this);
-	BString codecName = fController->MediaCodecName();
+	BString codecName = app->MediaCodecName();
 	if (codecName != "") {
 		BMenuItem* codecItem = fCodecMenu->Menu()->FindItem(codecName);
 		if (codecItem != NULL)
 			codecItem->SetMarked(true);
 	}
-	_RebuildCodecsMenu(fController->MediaCodecName());
+	_RebuildCodecsMenu(app->MediaCodecName());
 }
 
 
 void
 MediaFormatView::MessageReceived(BMessage *message)
 {
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+
 	switch (message->what) {
 		case kLocalFileTypeChanged:
 		{
-			fController->SetMediaFileFormat(_MediaFileFormat());
-			fController->SetMediaFormatFamily(_MediaFileFormat().family);
-			fController->UpdateMediaFormatAndCodecsForCurrentFamily();
+			app->SetMediaFileFormat(_MediaFileFormat());
+			app->SetMediaFormatFamily(_MediaFileFormat().family);
+			app->UpdateMediaFormatAndCodecsForCurrentFamily();
 			break;
 		}
 		case kLocalCodecChanged:
 		{
 			BMenuItem* marked = fCodecMenu->Menu()->FindMarked();
 			if (marked != NULL)
-				fController->SetMediaCodec(marked->Label());
+				app->SetMediaCodec(marked->Label());
 			break;				
 		}
 		case B_OBSERVER_NOTICE_CHANGE:
@@ -155,7 +157,7 @@ MediaFormatView::MessageReceived(BMessage *message)
 				}	
 				case kMsgControllerVideoDepthChanged:
 				case kMsgControllerTargetFrameChanged:
-					fController->UpdateMediaFormatAndCodecsForCurrentFamily();
+					app->UpdateMediaFormatAndCodecsForCurrentFamily();
 					break;
 				case kMsgControllerEncodeStarted:
 					fCodecMenu->SetEnabled(false);
@@ -216,6 +218,8 @@ MediaFormatView::_BuildFileFormatsMenu()
 void 
 MediaFormatView::_RebuildCodecsMenu(const char* currentCodec)
 {
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+
 	BMenu* codecsMenu = fCodecMenu->Menu();
 	
 	BString currentCodecString;
@@ -231,7 +235,7 @@ MediaFormatView::_RebuildCodecsMenu(const char* currentCodec)
 	codecsMenu->RemoveItems(0, codecsMenu->CountItems(), true);
 	
 	BObjectList<media_codec_info> codecList(1, true);	
-	if (fController->GetCodecsList(codecList) == B_OK) {
+	if (app->GetCodecsList(codecList) == B_OK) {
 		for (int32 i = 0; i < codecList.CountItems(); i++) {
 			media_codec_info* codec = codecList.ItemAt(i);
 			BMenuItem* item = new BMenuItem(codec->pretty_name, new BMessage(kLocalCodecChanged));
@@ -255,7 +259,7 @@ MediaFormatView::_RebuildCodecsMenu(const char* currentCodec)
 		codecsMenu->SetEnabled(false);
 	} else {
 		if (currentCodecString != codecsMenu->FindMarked()->Label())
-			fController->SetMediaCodec(codecsMenu->FindMarked()->Label());
+			app->SetMediaCodec(codecsMenu->FindMarked()->Label());
 		codecsMenu->SetEnabled(true);
 	}
 }

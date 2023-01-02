@@ -17,12 +17,11 @@ class BButton;
 class BMessageRunner;
 class BRadioButton;
 class BTextControl;
-class Controller;
 class PreviewView;
 class SliderTextControl;
 class OutputView : public BView {
 public:	
-	OutputView(Controller* controller);
+	OutputView();
 
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
@@ -33,8 +32,6 @@ public:
 	void UpdatePreviewFromSettings();
 
 private:
-	Controller* fController;
-
 	BTextControl* fFileName;
 	BString fFileExtension;
 	BButton* fFilePanelButton;

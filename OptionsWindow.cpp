@@ -14,7 +14,7 @@
 
 const static BRect kWindowRect(0, 0, 300, 200);
 
-OptionsWindow::OptionsWindow(Controller* controller)
+OptionsWindow::OptionsWindow()
 	:
 	BWindow(kWindowRect, "Encoding Settings", B_TITLED_WINDOW,
 		B_ASYNCHRONOUS_CONTROLS|B_AUTO_UPDATE_SIZE_LIMITS)
@@ -34,7 +34,7 @@ OptionsWindow::OptionsWindow(Controller* controller)
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.Add(new MediaFormatView(controller))
+		.Add(new MediaFormatView())
 		.View();
 
 	encodingBox->AddChild(layoutView);
@@ -42,7 +42,7 @@ OptionsWindow::OptionsWindow(Controller* controller)
 	layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-			.Add(new FrameRateView(controller))
+			.Add(new FrameRateView())
 		.View();
 
 	frameBox->AddChild(layoutView);

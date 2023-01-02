@@ -1,12 +1,12 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
 #include "OutputView.h"
 
+#include "BSCApp.h"
 #include "Constants.h"
-#include "Controller.h"
 #include "ControllerObserver.h"
 #include "PreviewView.h"
 #include "Settings.h"
@@ -37,10 +37,9 @@ const static uint32 kWarningRunnerMessage = 'WaRm';
 const static char* kSelectWindowButtonText = "Select window";
 const static char* kSelectRegionButtonText = "Select region";
 
-OutputView::OutputView(Controller *controller)
+OutputView::OutputView()
 	:
 	BView("Capture Options", B_WILL_DRAW),
-	fController(controller),
 	fWarningRunner(NULL),
 	fWarningCount(0)
 {
@@ -55,17 +54,17 @@ OutputView::AttachedToWindow()
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 
 	// Watch for these from Controller
-	if (fController->LockLooper()) {
-		fController->StartWatching(this, kMsgControllerSourceFrameChanged);
-		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
-		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
-		fController->StartWatching(this, kMsgControllerMediaFileFormatChanged);
-		fController->StartWatching(this, kMsgControllerCaptureStarted);
-		fController->StartWatching(this, kMsgControllerCaptureStopped);
-		fController->StartWatching(this, kMsgControllerEncodeStarted);
-		fController->StartWatching(this, kMsgControllerEncodeFinished);
-		fController->StartWatching(this, kMsgControllerResetSettings);
-		fController->UnlockLooper();
+	if (be_app->LockLooper()) {
+		be_app->StartWatching(this, kMsgControllerSourceFrameChanged);
+		be_app->StartWatching(this, kMsgControllerTargetFrameChanged);
+		be_app->StartWatching(this, kMsgControllerSelectionWindowClosed);
+		be_app->StartWatching(this, kMsgControllerMediaFileFormatChanged);
+		be_app->StartWatching(this, kMsgControllerCaptureStarted);
+		be_app->StartWatching(this, kMsgControllerCaptureStopped);
+		be_app->StartWatching(this, kMsgControllerEncodeStarted);
+		be_app->StartWatching(this, kMsgControllerEncodeFinished);
+		be_app->StartWatching(this, kMsgControllerResetSettings);
+		be_app->UnlockLooper();
 	}
 
 	fFileName->SetTarget(this);
@@ -94,6 +93,7 @@ OutputView::WindowActivated(bool active)
 void
 OutputView::MessageReceived(BMessage *message)
 {
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	switch (message->what) {
 		case kOpenFilePanel:
 		{
@@ -122,7 +122,8 @@ OutputView::MessageReceived(BMessage *message)
 					fBorderSlider->SetEnabled(true);
 				}
 			}
-			fController->SetCaptureArea(rect);
+			
+			app->SetCaptureArea(rect);
 			break;	
 		}
 		case kFileNameChanged:
@@ -131,14 +132,14 @@ OutputView::MessageReceived(BMessage *message)
 			if (entry.InitCheck() != B_OK)
 				_HandleInvalidFileName(fFileName->Text());
 
-			fController->SetOutputFileName(fFileName->Text());
+			app->SetOutputFileName(fFileName->Text());
 			break;
 		}
 		case kScaleChanged:
 		{
 			int32 value;
 			message->FindInt32("be:value", &value);
-			fController->SetScale((float)value);
+			app->SetScale((float)value);
 			break;
 		}
 		case kWindowBorderFrameChanged:
@@ -200,8 +201,8 @@ OutputView::MessageReceived(BMessage *message)
 					break;
 				}
 				case kMsgControllerMediaFileFormatChanged:
-					_SetFileNameExtension(fController->MediaFileFormat().file_extension);
-					fController->SetOutputFileName(fFileName->Text());
+					_SetFileNameExtension(app->MediaFileFormat().file_extension);
+					app->SetOutputFileName(fFileName->Text());
 					_UpdateFileNameControlState();
 					break;
 
@@ -248,10 +249,10 @@ OutputView::MessageReceived(BMessage *message)
 			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
 				delete filePanel;
 
-			_SetFileNameExtension(fController->MediaFileFormat().file_extension);
+			_SetFileNameExtension(app->MediaFileFormat().file_extension);
 
 			// TODO: why does the textcontrol not send the modification message ?
-			fController->SetOutputFileName(fFileName->Text());
+			app->SetOutputFileName(fFileName->Text());
 			
 			break;
 		}
@@ -361,7 +362,8 @@ OutputView::_LayoutView()
 	
 	fScaleSlider->SetValue(100);
 	
-	fFileExtension = fController->MediaFileFormat().file_extension;		
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	fFileExtension = app->MediaFileFormat().file_extension;		
 }
 
 
@@ -386,7 +388,8 @@ OutputView::_InitControlsFromSettings()
 void
 OutputView::_UpdateFileNameControlState()
 {
-	bool enabled = strcmp(fController->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0;
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	bool enabled = strcmp(app->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0;
 	fFileName->SetEnabled(enabled);
 }
 
@@ -422,7 +425,8 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 void
 OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 {
-	if (fPreviewView != NULL && fController->State() == Controller::STATE_IDLE)
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	if (fPreviewView != NULL && app->State() == BSCApp::STATE_IDLE)
 		fPreviewView->Update(rect, bitmap);
 }
 

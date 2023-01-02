@@ -1,11 +1,11 @@
 /*
- * Copyright 2017-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2017-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
 #include "FrameRateView.h"
 
-#include "Controller.h"
+#include "BSCApp.h"
 #include "ControllerObserver.h"
 #include "Settings.h"
 #include "SliderTextControl.h"
@@ -29,10 +29,9 @@ const static uint32 kLocalFrameRateChanged = 'FrCh';
 const static uint32 kAutoAdjust = 'FrCh';
 
 
-FrameRateView::FrameRateView(Controller* controller)
+FrameRateView::FrameRateView()
 	:
-	BView("Frame Rate View", B_WILL_DRAW),
-	fController(controller)
+	BView("Frame Rate View", B_WILL_DRAW)
 {	
 	fFrameRateSlider = new SliderTextControl("frame rate",
 			kFrameRateLabel, new BMessage(kLocalFrameRateChanged), 1, 60, 1, "fps");
@@ -47,11 +46,11 @@ FrameRateView::FrameRateView(Controller* controller)
 void
 FrameRateView::AttachedToWindow()
 {
-	if (fController->LockLooper()) {
-		fController->StartWatching(this, kMsgControllerCaptureStarted);
-		fController->StartWatching(this, kMsgControllerCaptureStopped);
-		fController->StartWatching(this, kMsgControllerResetSettings);
-		fController->UnlockLooper();
+	if (be_app->LockLooper()) {
+		be_app->StartWatching(this, kMsgControllerCaptureStarted);
+		be_app->StartWatching(this, kMsgControllerCaptureStopped);
+		be_app->StartWatching(this, kMsgControllerResetSettings);
+		be_app->UnlockLooper();
 	}
 	fFrameRateSlider->SetValue(Settings::Current().CaptureFrameRate());
 	fFrameRateSlider->SetTarget(this);
@@ -61,11 +60,12 @@ FrameRateView::AttachedToWindow()
 void
 FrameRateView::MessageReceived(BMessage* message)
 {
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	switch (message->what) {
 		case kLocalFrameRateChanged:
 		{
 			int32 rate = fFrameRateSlider->Value();
-			fController->SetCaptureFrameRate(rate);
+			app->SetCaptureFrameRate(rate);
 			break;
 		}
 		case B_OBSERVER_NOTICE_CHANGE:

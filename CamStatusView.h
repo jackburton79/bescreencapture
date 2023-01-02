@@ -10,11 +10,10 @@
 class BBitmap;
 class BStatusBar;
 class BStringView;
-class Controller;
 class SquareBitmapView;
 class CamStatusView : public BView {
 public:
-	CamStatusView(Controller* controller);
+	CamStatusView();
 
 	virtual void AttachedToWindow();
 	virtual void Draw(BRect updateRect);
@@ -33,7 +32,6 @@ public:
 private:
 	BString _GetRecordingStatusString() const;
 
-	Controller* fController;
 	BStringView* fStringView;
 	SquareBitmapView* fBitmapView;
 	BStringView* fEncodingStringView;

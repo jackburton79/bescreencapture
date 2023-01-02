@@ -10,10 +10,9 @@
 #include <View.h>
 
 class BMenuField;
-class Controller;
 class MediaFormatView : public BView {
 public:
-	MediaFormatView(Controller *controller);
+	MediaFormatView();
 	virtual ~MediaFormatView();
 	
 	virtual void AttachedToWindow();
@@ -22,7 +21,6 @@ public:
 	void RequestMediaFormatUpdate();
 								
 private:
-	Controller *fController;
 	BMenuField *fOutputFileType;
 	BMenuField *fCodecMenu;
 	

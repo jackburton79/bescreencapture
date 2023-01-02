@@ -7,7 +7,6 @@
 #include "AdvancedOptionsView.h"
 #include "BSCApp.h"
 #include "CamStatusView.h"
-#include "Controller.h"
 #include "ControllerObserver.h"
 #include "Constants.h"
 #include "InfoView.h"
@@ -46,7 +45,6 @@ BSCWindow::BSCWindow()
 	:
 	BDirectWindow(kWindowRect, "BeScreenCapture", B_TITLED_WINDOW,
 		B_ASYNCHRONOUS_CONTROLS|B_NOT_RESIZABLE|B_NOT_ZOOMABLE),
-	fController(dynamic_cast<Controller*>(gControllerLooper)),
 	fMenuBar(NULL),
 	fStartStopButton(NULL),
 	fCamStatus(NULL),
@@ -54,10 +52,10 @@ BSCWindow::BSCWindow()
 	fAdvancedOptionsView(NULL),
 	fInfoView(NULL)
 {
-	fOutputView = new OutputView(fController);
-	fAdvancedOptionsView = new AdvancedOptionsView(fController);
+	fOutputView = new OutputView();
+	fAdvancedOptionsView = new AdvancedOptionsView();
 #if USE_INFOVIEW
-	fInfoView = new InfoView(fController);
+	fInfoView = new InfoView();
 #endif
 	fMenuBar = new BMenuBar("menubar");
 	_BuildMenu();
@@ -65,7 +63,7 @@ BSCWindow::BSCWindow()
 	fStartStopButton = new BButton("Start", LABEL_BUTTON_START,
 		new BMessage(kMsgGUIToggleCapture));
 	
-	fStartStopButton->SetTarget(fController);
+	fStartStopButton->SetTarget(be_app);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	// TODO: Trying to avoid button shrinking when label changes.
 	// that won't work with translations, since the "Stop" label could be wider
@@ -73,28 +71,26 @@ BSCWindow::BSCWindow()
 	
 	fPauseButton = new BButton("Pause", LABEL_BUTTON_PAUSE,
 		new BMessage(kMsgGUITogglePause));
-	fPauseButton->SetTarget(fController);
+	fPauseButton->SetTarget(be_app);
 	fPauseButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	fPauseButton->SetEnabled(false);
 	
-	fCamStatus = new CamStatusView(fController);
+	fCamStatus = new CamStatusView();
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	
 	_LayoutWindow(false);
 
-	if (fController->LockLooper()) {
-		// watch Controller for these
-		fController->StartWatching(this, kMsgControllerEncodeStarted);
-		fController->StartWatching(this, kMsgControllerEncodeProgress);
-		fController->StartWatching(this, kMsgControllerEncodeFinished);
-		fController->StartWatching(this, kMsgControllerTargetFrameChanged);
-		fController->StartWatching(this, kMsgControllerCaptureStarted);
-		fController->StartWatching(this, kMsgControllerCaptureStopped);
-		fController->StartWatching(this, kMsgControllerCapturePaused);
-		fController->StartWatching(this, kMsgControllerCaptureResumed);
-		fController->StartWatching(this, kMsgControllerSelectionWindowClosed);
-
-		fController->UnlockLooper();
+	if (be_app->LockLooper()) {
+		be_app->StartWatching(this, kMsgControllerEncodeStarted);
+		be_app->StartWatching(this, kMsgControllerEncodeProgress);
+		be_app->StartWatching(this, kMsgControllerEncodeFinished);
+		be_app->StartWatching(this, kMsgControllerTargetFrameChanged);
+		be_app->StartWatching(this, kMsgControllerCaptureStarted);
+		be_app->StartWatching(this, kMsgControllerCaptureStopped);
+		be_app->StartWatching(this, kMsgControllerCapturePaused);
+		be_app->StartWatching(this, kMsgControllerCaptureResumed);
+		be_app->StartWatching(this, kMsgControllerSelectionWindowClosed);
+		be_app->UnlockLooper();
 	}
 }
 
@@ -116,10 +112,11 @@ BSCWindow::QuitRequested()
 {
 	BString reason;
 	bool canQuit = false;
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	if (!Settings::Current().WarnOnQuit()) {
-		fController->Cancel();
+		app->Cancel();
 		canQuit = true;
-	} else if ((canQuit = fController->CanQuit(reason)) != true) {
+	} else if ((canQuit = app->CanQuit(reason)) != true) {
 		BString text = "Do you really want to quit?\n";
 		text.Append(" ");
 		text.Append(reason);
@@ -127,7 +124,7 @@ BSCWindow::QuitRequested()
 		alert->SetShortcut(1, B_ESCAPE);
 		int32 result = alert->Go();
 		if (result == 0) {
-			fController->Cancel();
+			app->Cancel();
 			canQuit = true;
 		}
 	}
@@ -142,18 +139,19 @@ BSCWindow::QuitRequested()
 void
 BSCWindow::MessageReceived(BMessage *message)
 {
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	switch (message->what) {
 		case B_ABOUT_REQUESTED:
 			be_app->PostMessage(B_ABOUT_REQUESTED);
 			break;
 		case kGUIOpenMediaWindow:
-			(new OptionsWindow(fController))->Show();
+			(new OptionsWindow())->Show();
 			break;
 		case kGUIDockWindow:
 			_LayoutWindow(!Settings::Current().DockingMode());
 			break;
 		case kGUIResetSettings:
-			fController->ResetSettings();
+			app->ResetSettings();
 			break;
 		case kSelectArea:
 		case kSelectWindow:
@@ -162,7 +160,7 @@ BSCWindow::MessageReceived(BMessage *message)
 			while (!IsHidden())
 				snooze(500);
 			snooze(2000);
-			BMessenger messenger(fController);
+			BMessenger messenger(app);
 			int mode = message->what == kSelectArea ? SelectionWindow::REGION : SelectionWindow::WINDOW;
 			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);			
 			window->Show();
@@ -279,10 +277,11 @@ BSCWindow::ScreenChanged(BRect screen_size, color_space depth)
 void
 BSCWindow::DirectConnected(direct_buffer_info *info)
 {
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	switch (info->buffer_state & B_DIRECT_MODE_MASK) {
 		case B_DIRECT_START:
 		case B_DIRECT_MODIFY:
-			fController->UpdateDirectInfo(info);
+			app->UpdateDirectInfo(info);
 			break;
 		case B_DIRECT_STOP:
 			break;

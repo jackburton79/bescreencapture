@@ -6,7 +6,6 @@
 
 #include "BSCApp.h"
 #include "Constants.h"
-#include "Controller.h"
 #include "ControllerObserver.h"
 #include "DeskbarControlView.h"
 #include "FrameRateView.h"
@@ -24,10 +23,9 @@ const static uint32 kLocalMinimizeOnRecording = 'MiRe';
 const static uint32 kLocalQuitWhenFinished = 'QuFi';
 
 
-AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
+AdvancedOptionsView::AdvancedOptionsView()
 	:
-	BView("Advanced", B_WILL_DRAW),
-	fController(controller)
+	BView("Advanced", B_WILL_DRAW)
 {
 	BGroupLayout* groupLayout = new BGroupLayout(B_VERTICAL);
 	SetLayout(groupLayout);
@@ -43,7 +41,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-		.Add(new MediaFormatView(controller))
+		.Add(new MediaFormatView())
 		.View();
 	
 	encodingBox->AddChild(layoutView);
@@ -51,7 +49,7 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 	layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-			.Add(new FrameRateView(controller))
+			.Add(new FrameRateView())
 		.View();
 	
 	frameBox->AddChild(layoutView);
@@ -83,8 +81,9 @@ AdvancedOptionsView::AdvancedOptionsView(Controller *controller)
 
 	_EnableDirectWindowIfSupported();
 
-	fController->SetVideoDepth(B_RGB32);
-	fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	app->SetVideoDepth(B_RGB32);
+	app->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 	
 	const Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
@@ -114,9 +113,11 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
 		case kLocalUseDirectWindow:
-			fController->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
+		{
+			BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+			app->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
 			break;
-		
+		}
 		case kLocalHideDeskbar:
 		{
 			bool hide = fHideDeskbarIcon->Value() == B_CONTROL_ON;

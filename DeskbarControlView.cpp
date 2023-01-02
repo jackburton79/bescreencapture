@@ -6,7 +6,6 @@
 
 #include "BSCApp.h"
 #include "Constants.h"
-#include "Controller.h"
 #include "ControllerObserver.h"
 
 #include <Bitmap.h>
@@ -49,9 +48,6 @@ private:
 };
 
 
-const static char* kControllerMessengerName = "controller_messenger";
-
-
 DeskbarControlView::DeskbarControlView(BRect rect)
 	:
 	BView(rect, BSC_DESKBAR_VIEW, B_FOLLOW_TOP|B_FOLLOW_LEFT,
@@ -61,7 +57,6 @@ DeskbarControlView::DeskbarControlView(BRect rect)
 	fPaused(false)
 {
 	fAppMessenger = BMessenger(kAppSignature);
-	fControllerMessenger = BMessenger(gControllerLooper);
 	_UpdateBitmap();
 }
 
@@ -74,7 +69,6 @@ DeskbarControlView::DeskbarControlView(BMessage *data)
 	fPaused(false)
 {
 	fAppMessenger = BMessenger(kAppSignature);
-	data->FindMessenger(kControllerMessengerName, &fControllerMessenger);
 	_UpdateBitmap();
 }
 
@@ -107,8 +101,6 @@ DeskbarControlView::Archive(BMessage *message, bool deep) const
 	if (status != B_OK)
 		return status;
 
-	status = message->AddMessenger(kControllerMessengerName,
-		fControllerMessenger);
 	return status;
 }
 
@@ -121,18 +113,11 @@ DeskbarControlView::AttachedToWindow()
 
 	SetViewColor(Parent()->ViewColor());
 
-	if (!fControllerMessenger.IsValid()) {
-		// ask the be_app to send us the controller looper messenger
-		BMessage message(kMsgGetControllerMessenger);
-		fAppMessenger.SendMessage(&message, this);
-		return;
-	}
-
 	if (LockLooper()) {
-		StartWatching(fControllerMessenger, kMsgControllerCaptureStarted);
-		StartWatching(fControllerMessenger, kMsgControllerCaptureStopped);
-		StartWatching(fControllerMessenger, kMsgControllerCapturePaused);
-		StartWatching(fControllerMessenger, kMsgControllerCaptureResumed);
+		StartWatching(fAppMessenger, kMsgControllerCaptureStarted);
+		StartWatching(fAppMessenger, kMsgControllerCaptureStopped);
+		StartWatching(fAppMessenger, kMsgControllerCapturePaused);
+		StartWatching(fAppMessenger, kMsgControllerCaptureResumed);
 		UnlockLooper();
 	}
 }
@@ -143,10 +128,10 @@ void
 DeskbarControlView::DetachedFromWindow()
 {
 	if (LockLooper()) {
-		StopWatching(fControllerMessenger, kMsgControllerCaptureStarted);
-		StopWatching(fControllerMessenger, kMsgControllerCaptureStopped);	
-		StopWatching(fControllerMessenger, kMsgControllerCapturePaused);	
-		StopWatching(fControllerMessenger, kMsgControllerCaptureResumed);	
+		StopWatching(fAppMessenger, kMsgControllerCaptureStarted);
+		StopWatching(fAppMessenger, kMsgControllerCaptureStopped);	
+		StopWatching(fAppMessenger, kMsgControllerCapturePaused);	
+		StopWatching(fAppMessenger, kMsgControllerCaptureResumed);	
 		UnlockLooper();
 	}
 }
@@ -189,26 +174,13 @@ void
 DeskbarControlView::MessageReceived(BMessage *message)
 {
 	switch (message->what) {
-		case kMsgGetControllerMessenger:
-		{
-			// this is the reply from the be_app
-			if (message->FindMessenger("ControllerMessenger",
-					&fControllerMessenger) == B_OK
-					&& fControllerMessenger.IsValid()) {
-				StartWatching(fControllerMessenger, kMsgControllerCaptureStarted);
-				StartWatching(fControllerMessenger, kMsgControllerCaptureStopped);
-				StartWatching(fControllerMessenger, kMsgControllerCapturePaused);
-				StartWatching(fControllerMessenger, kMsgControllerCaptureResumed);
-			}
-			break;
-		}
 		case kMsgGUIToggleCapture:
-			if (fControllerMessenger.IsValid())
-				fControllerMessenger.SendMessage(message);
+			if (fAppMessenger.IsValid())
+				fAppMessenger.SendMessage(message);
 			break;
 		case kMsgGUITogglePause:
-			if (fControllerMessenger.IsValid())
-				fControllerMessenger.SendMessage(message->what);
+			if (fAppMessenger.IsValid())
+				fAppMessenger.SendMessage(message->what);
 			break;
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
@@ -272,7 +244,7 @@ DeskbarControlView::MouseDown(BPoint where)
 void
 DeskbarControlView::Pulse()
 {
-	if (!fControllerMessenger.IsValid()) {
+	if (!fAppMessenger.IsValid()) {
 		snooze(100000);
 		BDeskbar deskbar;
 		if (deskbar.IsRunning())

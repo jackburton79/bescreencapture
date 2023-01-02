@@ -8,17 +8,15 @@
 #include <View.h>
 
 class BCheckBox;
-class Controller;
 class SizeControl;
 class AdvancedOptionsView : public BView {
 public:
-	AdvancedOptionsView(Controller* controller);
+	AdvancedOptionsView();
 	
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage *message);
 	
 private:
-	Controller* fController;
 	BCheckBox* fUseDirectWindow;
 	BCheckBox *fMinimizeOnStart;
 	BCheckBox* fHideDeskbarIcon;
