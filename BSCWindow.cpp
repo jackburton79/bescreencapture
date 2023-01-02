@@ -20,6 +20,7 @@
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
+#include <Notification.h>
 #include <Roster.h>
 #include <Screen.h>
 #include <String.h>
@@ -224,7 +225,9 @@ BSCWindow::MessageReceived(BMessage *message)
 							"%s", strerror(status));
 						(new BAlert("Encoding failed", errorString, "OK"))->Go();
 					} else {
-						// TODO: Should be asynchronous
+						// TODO: Move away from here ?
+						// also: should be asynchronous
+						// 
 						const char* destName = NULL;
 						message->FindString("file_name", &destName);
 						BEntry entry(destName);
@@ -239,6 +242,9 @@ BSCWindow::MessageReceived(BMessage *message)
 								successString.Append("Finished recording ");
 								successString.Append(entry.Name());
 							}
+							BNotification notification(B_INFORMATION_NOTIFICATION);
+							notification.SetContent(successString);
+							notification.Send();
 							BAlert* alert = new BAlert("Success", successString,
 								"OK", buttonName.String());
 							alert->SetShortcut(0, B_ESCAPE);
