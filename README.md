@@ -9,15 +9,8 @@ BeScreenCapture lets you record what happens on your screen and save it to a cli
 
 The recorded clip can be scaled to suit your needs.
 
-Includes an "Incognito" mode, which hides the application window and the deskbar icon, to be able to record clips without leaving any trace.
-In Incognito mode you need to use a shortcut key combination to start/stop the recording process.
-
-You can do that by installing the bescreencapture_inputfilter and using the ctrl-shift-alt-r shortcut, or by defining a shortcut key combo using the "Shortcuts" preflet included in Haiku.
-
-These are the commands you can configure in the "Shortcuts" preflet for the various actions:
-
-* Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StoR' "
-* Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
+Includes an "Incognito" mode, which hides the application window and the deskbar icon, to be able to record clips by using a keyboard combo and without leaving any trace.
+This functionality requires installing the bescreencapture_inputfilter and using the CTRL-ALT-SHIFT-r shortcut, which launches BeScreenCapture and start recording directly. Hit CTRL-ALT-SHIFT-r again to stop.
 
 BeScreenCapture is also scriptable with hey:
 
@@ -48,6 +41,11 @@ Set scale to 50%
 Set recording time to 5 seconds
 
  hey BeScreenCapture SET RecordingTime to 5
+
+You can also define your own shortcuts in the "Shortcuts" preflet:
+
+* Start/Stop Recording: " SendMessage application/x-vnd.BeScreenCapture 'StoR' "
+* Pause/Resume Recording: " SendMessage application/x-vnd.BeScreenCapture 'PauC' "
 
 ## Notes
 
