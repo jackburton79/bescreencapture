@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2022, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "DeskbarControlView.h"
@@ -52,11 +52,11 @@ DeskbarControlView::DeskbarControlView(BRect rect)
 	:
 	BView(rect, BSC_DESKBAR_VIEW, B_FOLLOW_TOP|B_FOLLOW_LEFT,
 		B_WILL_DRAW|B_PULSE_NEEDED|B_FRAME_EVENTS),
+	fAppMessenger(BMessenger(kAppSignature)),
 	fBitmap(NULL),
 	fRecording(false),
 	fPaused(false)
 {
-	fAppMessenger = BMessenger(kAppSignature);
 	_UpdateBitmap();
 }
 
@@ -64,11 +64,11 @@ DeskbarControlView::DeskbarControlView(BRect rect)
 DeskbarControlView::DeskbarControlView(BMessage *data)
 	:
 	BView(data),
+	fAppMessenger(BMessenger(kAppSignature)),
 	fBitmap(NULL),
 	fRecording(false),
 	fPaused(false)
 {
-	fAppMessenger = BMessenger(kAppSignature);
 	_UpdateBitmap();
 }
 
@@ -134,6 +134,8 @@ DeskbarControlView::DetachedFromWindow()
 		StopWatching(fAppMessenger, kMsgControllerCaptureResumed);	
 		UnlockLooper();
 	}
+
+	BView::DetachedFromWindow();
 }
 
 
@@ -141,6 +143,8 @@ DeskbarControlView::DetachedFromWindow()
 void
 DeskbarControlView::FrameResized(float width, float height)
 {
+	BView::FrameResized(width, height);
+
 	_UpdateBitmap();
 	Invalidate();
 }
