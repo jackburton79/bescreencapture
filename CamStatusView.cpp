@@ -76,29 +76,34 @@ CamStatusView::CamStatusView()
 	fRecordingBitmap = new BBitmap(bitmapRect, B_RGBA32);
 	fPauseBitmap = new BBitmap(bitmapRect, B_RGBA32);
 
-	BView* statusView = BLayoutBuilder::Group<>()
-		.SetInsets(0)
-		.Add(fEncodingStringView = new BStringView("stringview", ""))
-		.Add(fStatusBar = new BStatusBar("", ""))
-		.View();
-
+	fEncodingStringView = new BStringView("encoding_string_view", "");
+	fStatusBar = new BStatusBar("progress_bar", "");
 	fStatusBar->SetExplicitMinSize(BSize(100, 20));
-
-	BView* layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(0)
-		.Add(fBitmapView = new SquareBitmapView("bitmap view"))
-		.Add(fStringView = new BStringView("cam string view", ""))
-		.View();
-
-	fBitmapView->SetBitmap(NULL);
 	
+	fBitmapView = new SquareBitmapView("bitmap_view");
+	fBitmapView->SetBitmap(NULL);
+
 	BFont font;
 	GetFont(&font);
 	float scaledSize = kBitmapSize * (capped_size(font.Size()) / 12);
 	fBitmapView->SetExplicitMinSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitMaxSize(BSize(scaledSize, scaledSize));
 	fBitmapView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_TOP));
+
+	fStringView = new BStringView("cam_string_view", "");
 	fStringView->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
+
+	BView* statusView = BLayoutBuilder::Group<>()
+		.SetInsets(0)
+		.Add(fEncodingStringView)
+		.Add(fStatusBar)
+		.View();
+
+	BView* layoutView = BLayoutBuilder::Group<>()
+		.SetInsets(0)
+		.Add(fBitmapView)
+		.Add(fStringView)
+		.View();
 	
 	BLayoutBuilder::Cards<>(this)
 		.Add(layoutView)
