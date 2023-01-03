@@ -159,7 +159,7 @@ CamStatusView::MessageReceived(BMessage *message)
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 what;
-			message->FindInt32("be:observe_change_what", &what);
+			message->FindInt32(B_OBSERVE_WHAT_CHANGE, &what);
 			switch (what) {
 				case kMsgControllerCaptureStarted:
 					SetRecording(true);

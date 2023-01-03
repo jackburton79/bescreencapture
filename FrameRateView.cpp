@@ -71,7 +71,7 @@ FrameRateView::MessageReceived(BMessage* message)
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
-			message->FindInt32("be:observe_change_what", &code);
+			message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code);
 			switch (code) {
 				case kMsgControllerCaptureStarted:
 					fFrameRateSlider->SetEnabled(false);
