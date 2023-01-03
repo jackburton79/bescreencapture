@@ -47,6 +47,10 @@ You can also define your own shortcuts in the "Shortcuts" preflet:
 * Start/Stop Recording: `SendMessage application/x-vnd.BeScreenCapture 'StoR'`
 * Pause/Resume Recording: `SendMessage application/x-vnd.BeScreenCapture 'PauC'`
 
+## HowTo
+
+Jonathan Steadman made a nice video tutorial on how to use BeScreenCapture here: [https://youtu.be/kzwAKSbKDoU](https://youtu.be/kzwAKSbKDoU)
+
 ## Notes
 
 * Command constants could change in the next releases.
