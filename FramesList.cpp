@@ -55,7 +55,6 @@ FramesList::FramesList(bool diskOnly)
 	fTemporaryPath = ::mkdtemp(pathName);
 	if (fTemporaryPath == NULL)
 		throw B_ERROR;
-	::free(pathName);
 }
 
 
