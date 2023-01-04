@@ -127,7 +127,8 @@ main()
 {
 	BSCApp* app = new BSCApp();
 	app->Run();
-	
+	delete app;
+
 	return 0;
 }
 
