@@ -277,7 +277,12 @@ BSCWindow::ScreenChanged(BRect screen_size, color_space depth)
 void
 BSCWindow::DirectConnected(direct_buffer_info *info)
 {
+	BDirectWindow::DirectConnected(info);
+
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	if (app == NULL)
+		return;
+
 	switch (info->buffer_state & B_DIRECT_MODE_MASK) {
 		case B_DIRECT_START:
 		case B_DIRECT_MODIFY:
