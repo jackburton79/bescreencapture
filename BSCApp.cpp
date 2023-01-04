@@ -529,7 +529,7 @@ BSCApp::LaunchedFromCommandline() const
 bool
 BSCApp::CanQuit(BString& reason) const
 {
-	BAutolock _((BLooper*)this);
+	BAutolock _(const_cast<BSCApp*>(this));
 	switch (State()) {
 		case STATE_RECORDING:
 			reason = "Recording in progress.";
@@ -574,7 +574,7 @@ BSCApp::Cancel()
 int
 BSCApp::State() const
 {
-	BAutolock _((BLooper*)this);
+	BAutolock _(const_cast<BSCApp*>(this));
 	if (fCaptureThread > 0)
 		return STATE_RECORDING;
 
@@ -708,7 +708,7 @@ BSCApp::EncodeMovie()
 void
 BSCApp::SetUseDirectWindow(const bool& use)
 {
-//	BAutolock _(this);
+	BAutolock _(this);
 	Settings::Current().SetUseDirectWindow(use);
 }
 
@@ -797,7 +797,7 @@ BSCApp::SetOutputFileName(const char *fileName)
 media_format_family
 BSCApp::MediaFormatFamily() const
 {
-	BAutolock _((BLooper*)this);
+	BAutolock _(const_cast<BSCApp*>(this));
 	return fEncoder->MediaFormatFamily();
 }
 
@@ -814,7 +814,7 @@ BSCApp::SetMediaFormatFamily(const media_format_family& family)
 media_file_format
 BSCApp::MediaFileFormat() const
 {
-	BAutolock _((BLooper*)this);
+	BAutolock _(const_cast<BSCApp*>(this));
 	return fEncoder->MediaFileFormat();
 }
 
@@ -822,7 +822,7 @@ BSCApp::MediaFileFormat() const
 BString
 BSCApp::MediaFileFormatName() const
 {
-	BAutolock _((BLooper*)this);
+	BAutolock _(const_cast<BSCApp*>(this));
 	return fEncoder->MediaFileFormat().pretty_name;
 }
 
@@ -864,7 +864,7 @@ BSCApp::SetMediaCodec(const char* codecName)
 BString
 BSCApp::MediaCodecName() const
 {
-	BAutolock _((BLooper*)this);
+	BAutolock _(const_cast<BSCApp*>(this));
 	return fEncoder->MediaCodecInfo().pretty_name;
 }
 
@@ -872,7 +872,7 @@ BSCApp::MediaCodecName() const
 status_t
 BSCApp::GetCodecsList(BObjectList<media_codec_info>& codecList) const
 {
-	BAutolock _((BLooper*)this);
+	BAutolock _(const_cast<BSCApp*>(this));
 	codecList = *fCodecList;
 	return B_OK;
 }
