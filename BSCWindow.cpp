@@ -114,7 +114,7 @@ BSCWindow::QuitRequested()
 	bool canQuit = false;
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	if (!Settings::Current().WarnOnQuit()) {
-		app->Cancel();
+		app->StopThreads();
 		canQuit = true;
 	} else if ((canQuit = app->CanQuit(reason)) != true) {
 		BString text = "Do you really want to quit?\n";
@@ -124,7 +124,7 @@ BSCWindow::QuitRequested()
 		alert->SetShortcut(1, B_ESCAPE);
 		int32 result = alert->Go();
 		if (result == 0) {
-			app->Cancel();
+			app->StopThreads();
 			canQuit = true;
 		}
 	}

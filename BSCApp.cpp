@@ -169,7 +169,7 @@ BSCApp::~BSCApp()
 {
 	RemoveDeskbarReplicant();
 	
-	Cancel();
+	StopThreads();
 	delete fRecordWatch;
 	delete fEncoder;
 	delete fCodecList;
@@ -549,7 +549,7 @@ BSCApp::CanQuit(BString& reason) const
 
 
 void
-BSCApp::Cancel()
+BSCApp::StopThreads()
 {
 	BAutolock _(this);
 	switch (State()) {

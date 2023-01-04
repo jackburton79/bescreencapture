@@ -50,7 +50,7 @@ public:
 	};
 
 	bool		CanQuit(BString& reason) const;
-	void		Cancel();
+	void		StopThreads();
 	
 	int			State() const;
 		
