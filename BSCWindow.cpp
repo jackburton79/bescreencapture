@@ -314,8 +314,6 @@ BSCWindow::_LayoutWindow()
 {
 	SetFlags((Flags() | B_AUTO_UPDATE_SIZE_LIMITS) & ~(B_NOT_MOVABLE));
 
-	fOutputView->SetLayout(new BGroupLayout(B_VERTICAL));
-		
 	BTabView* tabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL);
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)

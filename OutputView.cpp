@@ -291,6 +291,8 @@ OutputView::UpdatePreviewFromSettings()
 void
 OutputView::_LayoutView()
 {
+	SetLayout(new BGroupLayout(B_VERTICAL));
+
 	BBox *selectBox = new BBox("source");
 	selectBox->SetLabel("Source");
 	AddChild(selectBox);
