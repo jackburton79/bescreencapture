@@ -951,7 +951,6 @@ BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 void
 BSCApp::UpdateDirectInfo(direct_buffer_info* info)
 {
-	return;
 	BAutolock _(this);
 	if (!fDirectWindowAvailable)
 		fDirectWindowAvailable = true;
