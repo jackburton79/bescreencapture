@@ -137,6 +137,7 @@ BSCApp::BSCApp()
 	BApplication(kAppSignature),
 	fWindow(NULL),
 	fArgs(NULL),
+	fShouldStartRecording(false),
 	fCaptureThread(-1),
 	fNumFrames(0),
 	fRecordWatch(NULL),
@@ -160,8 +161,6 @@ BSCApp::BSCApp()
 	fEncoder = new MovieEncoder;
 
 	_UpdateFromSettings();
-
-	fShouldStartRecording = false;
 }
 
 
