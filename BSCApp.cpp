@@ -125,8 +125,8 @@ const property_info kPropList[] = {
 int
 main()
 {
-	BSCApp app;
-	app.Run();
+	BSCApp* app = new BSCApp();
+	app->Run();
 	
 	return 0;
 }
@@ -708,7 +708,7 @@ BSCApp::EncodeMovie()
 void
 BSCApp::SetUseDirectWindow(const bool& use)
 {
-	BAutolock _(this);
+//	BAutolock _(this);
 	Settings::Current().SetUseDirectWindow(use);
 }
 
@@ -951,6 +951,7 @@ BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 void
 BSCApp::UpdateDirectInfo(direct_buffer_info* info)
 {
+	return;
 	BAutolock _(this);
 	if (!fDirectWindowAvailable)
 		fDirectWindowAvailable = true;
