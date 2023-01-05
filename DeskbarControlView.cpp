@@ -261,10 +261,11 @@ void
 DeskbarControlView::_UpdateBitmap()
 {
 	app_info info;
-	be_roster->GetAppInfo(kAppSignature, &info);
+	if (be_roster->GetAppInfo(kAppSignature, &info) != B_OK)
+		return;
 
 	BResources resources(&info.ref);
-	if (resources.InitCheck() < B_OK)
+	if (resources.InitCheck() != B_OK)
 		return;
 
 	size_t size;
@@ -284,7 +285,8 @@ BBitmap*
 DeskbarControlView::_LoadIconBitmap(const char* iconName)
 {
 	app_info info;
-	be_roster->GetAppInfo(kAppSignature, &info);
+	if (be_roster->GetAppInfo(kAppSignature, &info) != B_OK)
+		return NULL;
 	BResources resources(&info.ref);
 	BBitmap* bitmap = NULL;
 	if (resources.InitCheck() == B_OK) {
