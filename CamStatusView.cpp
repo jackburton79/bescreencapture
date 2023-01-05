@@ -199,14 +199,16 @@ CamStatusView::MessageReceived(BMessage *message)
 					}
 
 					int32 remaining = 0;
+					int32 current = int32(fStatusBar->CurrentValue());
 					int32 total = int32(fStatusBar->MaxValue());
+					int32 done = 0;
 					if (message->FindInt32("frames_remaining", &remaining) == B_OK) {
-						int32 done = total - remaining;
+						done = total - remaining;
 						BString string = fStatusText;
 						string << " (" << done << "/" << total << " frames)";
 						fEncodingStringView->SetText(string);
 					}
-					fStatusBar->Update(1);
+					fStatusBar->Update(done - current);
 					break;
 				}
 				case kMsgControllerEncodeFinished:
