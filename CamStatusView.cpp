@@ -198,10 +198,12 @@ CamStatusView::MessageReceived(BMessage *message)
 						fStatusBar->SetMaxValue(float(totalFrames));
 					}
 
-					int32 remainingFrames = 0;
-					if (message->FindInt32("frames_remaining", &remainingFrames) == B_OK) {
+					int32 remaining = 0;
+					int32 total = int32(fStatusBar->MaxValue());
+					if (message->FindInt32("frames_remaining", &remaining) == B_OK) {
+						int32 done = total - remaining;
 						BString string = fStatusText;
-						string << " (" << remainingFrames << " frames)";
+						string << " (" << done << "/" << total << " frames)";
 						fEncodingStringView->SetText(string);
 					}
 					fStatusBar->Update(1);
