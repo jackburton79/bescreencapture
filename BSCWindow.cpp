@@ -323,29 +323,24 @@ BSCWindow::_LayoutWindow()
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
 		.Add(fMenuBar)
-		.AddGroup(B_VERTICAL)
-			.SetInsets(-2, B_USE_DEFAULT_SPACING, -2, 0)
-			.Add(tabView)
-			.End()
+		.Add(tabView)
 		.AddGroup(B_HORIZONTAL)
-		.SetInsets(B_USE_DEFAULT_SPACING, 0, B_USE_DEFAULT_SPACING, 0)
 			.Add(fCamStatus)
 			.Add(fPauseButton)
 			.Add(fStartStopButton)
+			.SetInsets(B_USE_DEFAULT_SPACING)
 		.End();
 
 	BGroupView* outputGroup = new BGroupView(B_HORIZONTAL);
 	outputGroup->SetName("Capture");
-	outputGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
-		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+	outputGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING);
 	tabView->AddTab(outputGroup);
 	BLayoutBuilder::Group<>(outputGroup)
 		.Add(fOutputView);
 
 	BGroupView* advancedGroup = new BGroupView(B_HORIZONTAL);
 	advancedGroup->SetName("Options");
-	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
-		B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+	advancedGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING);
 	tabView->AddTab(advancedGroup);
 	BLayoutBuilder::Group<>(advancedGroup)
 		.Add(fAdvancedOptionsView);
@@ -353,8 +348,7 @@ BSCWindow::_LayoutWindow()
 	if (fInfoView != NULL) {
 		BGroupView* infoGroup = new BGroupView(B_HORIZONTAL);
 		infoGroup->SetName("Info");
-		infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING,
-			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING);
+		infoGroup->GroupLayout()->SetInsets(B_USE_DEFAULT_SPACING);
 		tabView->AddTab(infoGroup);
 		BLayoutBuilder::Group<>(infoGroup)
 			.Add(fInfoView);
