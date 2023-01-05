@@ -329,7 +329,7 @@ BSCWindow::_LayoutWindow()
 			.Add(fCamStatus)
 			.Add(fPauseButton)
 			.Add(fStartStopButton)
-			.SetInsets(B_USE_DEFAULT_SPACING)
+			.SetInsets(B_USE_DEFAULT_SPACING, 0)
 		.End();
 
 	BGroupView* outputGroup = new BGroupView(B_HORIZONTAL);
