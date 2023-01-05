@@ -296,13 +296,13 @@ OutputView::_LayoutView()
 	BBox *selectBox = new BBox("source");
 	selectBox->SetLabel("Source");
 	AddChild(selectBox);
-	
+
 	BBox *outputBox = new BBox("output");
 	outputBox->SetLabel("Output");
 	AddChild(outputBox);
 
 	const Settings& settings = Settings::Current();
-	const char *kTCLabel = "File name:"; 
+	const char *kTCLabel = "File name:";
 	BString fileName = settings.OutputFileName();
 	fFileName = new BTextControl("file name",
 			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
