@@ -346,13 +346,13 @@ OutputView::_LayoutView()
 
 	selectBox->AddChild(layout->View());
 
-	layout = BLayoutBuilder::Group<>(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
-		.SetInsets(B_USE_DEFAULT_SPACING)
+	layout = BLayoutBuilder::Group<>(B_VERTICAL)
 		.AddGroup(B_HORIZONTAL)
 			.Add(fFileName)
 			.Add(fFilePanelButton)
 		.End()
-		.Add(fScaleSlider);
+		.Add(fScaleSlider)
+		.SetInsets(B_USE_DEFAULT_SPACING);
 
 	outputBox->AddChild(layout->View());
 
@@ -386,7 +386,7 @@ void
 OutputView::_UpdateFileNameControlState()
 {
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
-	bool enabled = strcmp(app->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0;
+	bool enabled = ::strcmp(app->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0;
 	fFileName->SetEnabled(enabled);
 }
 
