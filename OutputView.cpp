@@ -306,30 +306,30 @@ OutputView::_LayoutView()
 	BString fileName = settings.OutputFileName();
 	fFileName = new BTextControl("file name",
 			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
-	
+
 	fWholeScreen = new BRadioButton("screen frame", "Whole screen",
 		new BMessage(kCheckBoxAreaSelectionChanged));
 	fCustomArea = new BRadioButton("region",
 		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
 	fWindow = new BRadioButton("window", 
 		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
-		
+
 	fSelectAreaButton = new BButton("select region", "Select region", new BMessage(kSelectArea));
 	fSelectAreaButton->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	float selectAreaButtonMinWidth = std::max(fSelectAreaButton->StringWidth(kSelectWindowButtonText),
 		fSelectAreaButton->StringWidth(kSelectRegionButtonText));
-	fSelectAreaButton->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, 30));
+	fSelectAreaButton->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, -1));
 	fSelectAreaButton->SetEnabled(false);
-	
-	fFilePanelButton = new BButton("...", new BMessage(kOpenFilePanel));
+
+	fFilePanelButton = new BButton(B_UTF8_ELLIPSIS, new BMessage(kOpenFilePanel));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
-	
+
 	fScaleSlider = new SliderTextControl("scale_slider", "Scale",
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
 
 	fBorderSlider = new SliderTextControl("border_slider", "Window edges",
 		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL);
-			
+
 	BView *layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL)
@@ -346,9 +346,9 @@ OutputView::_LayoutView()
 			.Add(fBorderSlider)
 		.End()
 		.View();
-	
+
 	selectBox->AddChild(layoutView);
-	
+
 	layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING)
 		.AddGroup(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
@@ -361,9 +361,9 @@ OutputView::_LayoutView()
 		.View();
 
 	outputBox->AddChild(layoutView);	
-	
+
 	fScaleSlider->SetValue(100);
-	
+
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	fFileExtension = app->MediaFileFormat().file_extension;		
 }
