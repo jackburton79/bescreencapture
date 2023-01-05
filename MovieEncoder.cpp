@@ -610,7 +610,7 @@ static uint32
 ExtractNumFrames(char* string)
 {
 	float numFrames = 0;
-	char rest[128];
+	char rest[256];
 	if (sscanf(string, "frame=%f %s", &numFrames, rest) == 0)
 		return 0;
 
@@ -664,7 +664,6 @@ MovieEncoder::_PostEncodingAction(BPath& path, int32 numFrames, uint32 fps)
 		while (fgets(line, 256, commandStream) != NULL) {
 			uint32 frames = ExtractNumFrames(line);
 			if (frames != 0) {
-				std::cout << "num frame: " << frames << ", total: " << numFrames << std::endl;
 				BMessage progressMessage(kEncodingProgress);
 				progressMessage.AddInt32("frames_remaining", numFrames - frames);
 				fMessenger.SendMessage(&progressMessage);
