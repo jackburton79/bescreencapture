@@ -330,42 +330,37 @@ OutputView::_LayoutView()
 	fBorderSlider = new SliderTextControl("border_slider", "Window edges",
 		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL);
 
-	BView *layoutView = BLayoutBuilder::Group<>()
-		.SetInsets(B_USE_DEFAULT_SPACING)
-		.AddGroup(B_VERTICAL)
-			.AddGroup(B_HORIZONTAL)
-				.AddGroup(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
-					.Add(fWholeScreen)
-					.Add(fCustomArea)
-					.Add(fWindow)
-					.Add(fSelectAreaButton)
-				.End()
-				.AddStrut(30)
-				.Add(fPreviewView = new PreviewView())
+	BGroupLayout *layout = BLayoutBuilder::Group<>(B_VERTICAL, B_USE_DEFAULT_SPACING)
+		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+			.AddGroup(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
+				.Add(fWholeScreen)
+				.Add(fCustomArea)
+				.Add(fWindow)
+				.Add(fSelectAreaButton)
 			.End()
-			.Add(fBorderSlider)
+			.AddStrut(30)
+			.Add(fPreviewView = new PreviewView())
 		.End()
-		.View();
+		.Add(fBorderSlider)
+		.SetInsets(B_USE_DEFAULT_SPACING);
 
-	selectBox->AddChild(layoutView);
+	selectBox->AddChild(layout->View());
 
-	layoutView = BLayoutBuilder::Group<>()
+	layout = BLayoutBuilder::Group<>(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING)
-		.AddGroup(B_VERTICAL, B_USE_HALF_ITEM_SPACING)
-			.AddGroup(B_HORIZONTAL)
-				.Add(fFileName)
-				.Add(fFilePanelButton)
-			.End()
-			.Add(fScaleSlider)
-		.End()	
-		.View();
+		.AddGroup(B_HORIZONTAL)
+			.Add(fFileName)
+			.Add(fFilePanelButton)
+		.End()
+		.Add(fScaleSlider);
 
-	outputBox->AddChild(layoutView);	
+	outputBox->AddChild(layout->View());
 
 	fScaleSlider->SetValue(100);
 
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
-	fFileExtension = app->MediaFileFormat().file_extension;		
+	if (app != NULL)
+		fFileExtension = app->MediaFileFormat().file_extension;
 }
 
 
