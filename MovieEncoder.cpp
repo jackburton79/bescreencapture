@@ -374,7 +374,7 @@ MovieEncoder::_EncoderThread()
 	}
 
 	if (status == B_OK)
-		status = _PostEncodingAction(fTempPath, fps);
+		status = _PostEncodingAction(fTempPath, framesWritten, fps);
 
 	if (status != B_OK) {
 		// Something went wrong during encoding
@@ -458,7 +458,7 @@ MovieEncoder::_WriteRawFrames()
 	}
 
 	if (status == B_OK)
-		status = _PostEncodingAction(fTempPath, fps);
+		status = _PostEncodingAction(fTempPath, frames, fps);
 
 	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
 
@@ -606,8 +606,20 @@ MovieEncoder::EncodeStarter(void* arg)
 }
 
 
+static uint32
+ExtractNumFrames(char* string)
+{
+	float numFrames = 0;
+	char rest[128];
+	if (sscanf(string, "frame=%f %s", &numFrames, rest) == 0)
+		return 0;
+
+	return uint32(numFrames);
+}
+
+
 status_t
-MovieEncoder::_PostEncodingAction(BPath& path, uint32 fps)
+MovieEncoder::_PostEncodingAction(BPath& path, int32 numFrames, uint32 fps)
 {
 	// For now we need PostEncoding only for GIF export
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) != 0)
@@ -620,6 +632,7 @@ MovieEncoder::_PostEncodingAction(BPath& path, uint32 fps)
 
 	BMessage progressMessage(kEncodingProgress);
 	progressMessage.AddBool("reset", true);
+	progressMessage.AddInt32("frames_total", numFrames);
 	progressMessage.AddString("text", "Processing...");
 	fMessenger.SendMessage(&progressMessage);
 
@@ -637,13 +650,31 @@ MovieEncoder::_PostEncodingAction(BPath& path, uint32 fps)
 	command.Append("split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse=new=1:diff_mode=rectangle ");
 	command.Append("\"");
 	command.Append(" ");
+	command.Append(" -progress pipe:1 "); // to show progress
 	command.Append(fOutputFile.Path()); // output
-	command.Append (" > /dev/null 2>&1");
+	//command.Append (" 2>&1");
 #if 1
 	std::cout << "PostEncodingAction command: " << command.String() << std::endl;
 #endif
-	int result = system(command.String());
 
+	status_t status = B_ERROR;
+	FILE* commandStream = ::popen(command.String(), "r");
+	if (commandStream != NULL) {
+		char line[256];
+		while (fgets(line, 256, commandStream) != NULL) {
+			uint32 frames = ExtractNumFrames(line);
+			if (frames != 0) {
+				std::cout << "num frame: " << frames << ", total: " << numFrames << std::endl;
+				BMessage progressMessage(kEncodingProgress);
+				progressMessage.AddInt32("frames_remaining", numFrames - frames);
+				fMessenger.SendMessage(&progressMessage);
+			}
+		}
+		::pclose(commandStream);
+		status = B_OK;
+	}
+
+	// Remove temporary path/files
 	BEntry pathEntry(fTempPath.Path());
 	if (pathEntry.Exists()) {
 		BDirectory dir(fTempPath.Path());
@@ -653,10 +684,7 @@ MovieEncoder::_PostEncodingAction(BPath& path, uint32 fps)
 		pathEntry.Remove();
 	}
 
-	if (WEXITSTATUS(result) != 0)
-		return B_ERROR;
-
-	return B_OK;
+	return status;
 }
 
 
