@@ -492,12 +492,10 @@ void
 BSCApp::InstallDeskbarReplicant()
 {
 	BDeskbar deskbar;
-	if (deskbar.IsRunning()) {
-		if (!deskbar.HasItem(BSC_DESKBAR_VIEW)) {
-			app_info info;
-			be_roster->GetAppInfo(kAppSignature, &info);
+	if (deskbar.IsRunning() && !deskbar.HasItem(BSC_DESKBAR_VIEW)) {
+		app_info info;
+		if (be_roster->GetAppInfo(kAppSignature, &info) == B_OK)
 			deskbar.AddItem(&info.ref);
-		}
 	}
 }
 
