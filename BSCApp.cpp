@@ -201,6 +201,12 @@ void
 BSCApp::ReadyToRun()
 {
 	try {
+		// TODO: InstallDeskbarReplicant creates a deadlock
+		// if called AFTER the window is created.
+		// Find out why
+		if (!fShouldStartRecording)
+			InstallDeskbarReplicant();
+		
 		fWindow = new BSCWindow();
 	} catch (...) {
 		PostMessage(B_QUIT_REQUESTED);
@@ -212,7 +218,6 @@ BSCApp::ReadyToRun()
 		BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
 	} else {
 		fWindow->Show();
-		InstallDeskbarReplicant();
 	}
 }
 
@@ -952,10 +957,7 @@ BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 void
 BSCApp::UpdateDirectInfo(direct_buffer_info* info)
 {
-	// TODO: Locking here creates a deadlock,
-	// Investigate if it's needed and in that case
-	// how to avoid the deadlock
-//	BAutolock _(this);
+	BAutolock _(this);
 	if (!fDirectWindowAvailable)
 		fDirectWindowAvailable = true;
 	fDirectInfo = *info;
