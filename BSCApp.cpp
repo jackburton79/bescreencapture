@@ -952,7 +952,10 @@ BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 void
 BSCApp::UpdateDirectInfo(direct_buffer_info* info)
 {
-	BAutolock _(this);
+	// TODO: Locking here creates a deadlock,
+	// Investigate if it's needed and in that case
+	// how to avoid the deadlock
+//	BAutolock _(this);
 	if (!fDirectWindowAvailable)
 		fDirectWindowAvailable = true;
 	fDirectInfo = *info;
