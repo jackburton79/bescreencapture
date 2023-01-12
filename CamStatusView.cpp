@@ -78,7 +78,7 @@ CamStatusView::CamStatusView()
 
 	fEncodingStringView = new BStringView("encoding_string_view", "");
 	fStatusBar = new BStatusBar("progress_bar", "");
-	fStatusBar->SetExplicitMinSize(BSize(100, 20));
+	fStatusBar->SetExplicitMinSize(BSize(100, B_SIZE_UNSET));
 	
 	fBitmapView = new SquareBitmapView("bitmap_view");
 	fBitmapView->SetBitmap(NULL);
@@ -141,7 +141,7 @@ CamStatusView::AttachedToWindow()
 	fBitmapView->SetBitmap(NULL);
 
 	BString statusString = _GetRecordingStatusString();
-	fEncodingStringView->SetExplicitMinSize(BSize(StringWidth(statusString) + 10, -1));
+	fEncodingStringView->SetExplicitMinSize(BSize(StringWidth(statusString) + 10, B_SIZE_UNSET));
 }
 
 

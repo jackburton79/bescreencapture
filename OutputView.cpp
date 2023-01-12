@@ -318,7 +318,7 @@ OutputView::_LayoutView()
 	fSelectAreaButton->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	float selectAreaButtonMinWidth = std::max(fSelectAreaButton->StringWidth(kSelectWindowButtonText),
 		fSelectAreaButton->StringWidth(kSelectRegionButtonText));
-	fSelectAreaButton->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, -1));
+	fSelectAreaButton->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, B_SIZE_UNSET));
 	fSelectAreaButton->SetEnabled(false);
 
 	fFilePanelButton = new BButton(B_UTF8_ELLIPSIS, new BMessage(kOpenFilePanel));
