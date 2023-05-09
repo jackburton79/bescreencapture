@@ -327,7 +327,7 @@ BSCApp::GetSupportedSuites(BMessage* message)
 	status_t status = message->AddString("suites", BSC_SUITES);
 	if (status != B_OK)
 		return status;
-		
+
 	BPropertyInfo info(const_cast<property_info*>(kPropList));
 	status = message->AddFlat("messages", &info);
 	if (status == B_OK)
@@ -989,7 +989,7 @@ BSCApp::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 	   	to = (void*)((uint8*)to + bytesPerRow);
 		from = (void*)((uint8*)from + fDirectInfo.bytes_per_row);
 	}
-	 
+
 	return B_OK;
 }
 
@@ -1012,20 +1012,20 @@ BSCApp::StartCapture()
 		SendNotices(kMsgControllerCaptureStopped, &message);
 		return;
 	}
-	
+
 	fKillCaptureThread = false;
 	fPaused = false;
-	
+
 	fCaptureThread = spawn_thread((thread_entry)CaptureStarter,
 		"Capture Thread", B_DISPLAY_PRIORITY, this);
-					
+
 	if (fCaptureThread < 0) {
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", fCaptureThread);
 		SendNotices(kMsgControllerCaptureStopped, &message);	
 		return;
 	}
-		
+
 	status_t status = resume_thread(fCaptureThread);
 	if (status < B_OK) {
 		kill_thread(fCaptureThread);
@@ -1080,7 +1080,7 @@ BSCApp::ResetSettings()
 {
 	BAutolock _(this);
 	Settings::ResetToDefaults();
-	
+
 	_UpdateFromSettings();
 
 	BMessage message(kMsgControllerResetSettings);
@@ -1094,7 +1094,7 @@ BSCApp::TestSystem()
 	std::cout << "Testing system speed:" << std::endl;
 	int32 numFrames = 500;
 	FramesList* list = new FramesList(true);
-	
+
 	BRect rect = BScreen().Frame();
 	color_space colorSpace = BScreen().ColorSpace();
 	bigtime_t startTime = system_time();
@@ -1103,7 +1103,7 @@ BSCApp::TestSystem()
 		list->AddItem(new BBitmap(rect, colorSpace), system_time());
 
 	bigtime_t elapsedTime = system_time() - startTime;
-	
+
 	delete list;
 
 	std::cout << "Took " << (elapsedTime / 1000) << " msec to write ";
@@ -1243,7 +1243,7 @@ BSCApp::CaptureThread()
 #endif
 
 	_TestWaitForRetrace();
-	
+
 	const int32 windowEdge = settings.WindowFrameEdgeSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowEdge);
 	status_t error = B_ERROR;
@@ -1296,7 +1296,7 @@ BSCApp::CaptureThread()
 	
 	fCaptureThread = -1;
 	fKillCaptureThread = true;
-	
+
 	if (error != B_OK) {
 		delete bitmap;
 		BMessage message(kMsgControllerCaptureStopped);
@@ -1306,7 +1306,7 @@ BSCApp::CaptureThread()
 		delete fFileList;
 		fFileList = NULL;
 	}
-		
+	
 	return B_OK;
 }
 
