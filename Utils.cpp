@@ -281,7 +281,8 @@ GetWindowFrameForToken(int32 token, int32 border)
 float
 CalculateFPS(const uint32& numFrames, const bigtime_t& elapsedTime)
 {
-	return float(1000000 * uint64(numFrames)) / elapsedTime;
+	// Don't ever return negative fps
+	return std::max(float(1000000 * uint64(numFrames)) / elapsedTime, float(0));
 }
 
 

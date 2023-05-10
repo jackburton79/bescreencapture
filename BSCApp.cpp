@@ -654,6 +654,7 @@ BSCApp::AverageFPS() const
 {
 	if (RecordTime() == 0)
 		return 0;
+
 	return CalculateFPS(RecordedFrames(), RecordTime());
 }
 

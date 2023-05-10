@@ -374,7 +374,7 @@ MovieEncoder::_EncoderThread()
 	}
 
 	if (status == B_OK)
-		status = _PostEncodingAction(fTempPath, framesWritten, fps);
+		status = _PostEncodingAction(fTempPath, framesWritten, int32(fps));
 
 	if (status != B_OK) {
 		// Something went wrong during encoding
@@ -458,7 +458,7 @@ MovieEncoder::_WriteRawFrames()
 	}
 
 	if (status == B_OK)
-		status = _PostEncodingAction(fTempPath, frames, fps);
+		status = _PostEncodingAction(fTempPath, frames, int32(fps));
 
 	_HandleEncodingFinished(status, status == B_OK ? frames : 0);
 
@@ -619,7 +619,7 @@ ExtractNumFrames(char* string)
 
 
 status_t
-MovieEncoder::_PostEncodingAction(BPath& path, int32 numFrames, uint32 fps)
+MovieEncoder::_PostEncodingAction(const BPath& path, int32 numFrames, int32 fps)
 {
 	// For now we need PostEncoding only for GIF export
 	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) != 0)
@@ -635,6 +635,9 @@ MovieEncoder::_PostEncodingAction(BPath& path, int32 numFrames, uint32 fps)
 	progressMessage.AddInt32("frames_total", numFrames);
 	progressMessage.AddString("text", "Processing...");
 	fMessenger.SendMessage(&progressMessage);
+
+	if (fps < 0)
+		fps = 0;
 
 	BString command;
 	command.Append("ffmpeg "); // command

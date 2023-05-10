@@ -64,7 +64,7 @@ private:
 
 	void _HandleEncodingFinished(const status_t& status,
 								const int32& numFrames = 0);
-	status_t _PostEncodingAction(BPath& path, int32 numFrames, uint32 fps);
+	status_t _PostEncodingAction(const BPath& path, int32 numFrames, int32 fps);
 	
 	thread_id	fEncoderThread;
 	bool		fKillThread;
