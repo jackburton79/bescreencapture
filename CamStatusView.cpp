@@ -24,7 +24,6 @@
 #include <algorithm>
 #include <iostream>
 
-const static float kSpacing = 10;
 const static float kBitmapSize = 48;
 
 static float

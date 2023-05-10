@@ -320,8 +320,8 @@ SelectionViewRegion::Draw(BRect updateRect)
 		sizeString << selection.IntegerWidth() << " x " << selection.IntegerHeight();
 		float stringWidth = StringWidth(sizeString.String());
 		BPoint position;
-		position.x = (selection.IntegerWidth() - stringWidth) / 2;
-		position.y = selection.IntegerHeight() / 2;
+		position.x = (selection.Width() - stringWidth) / 2;
+		position.y = selection.Height() / 2;
 		position += selection.LeftTop();
 		SetHighColor(kBlack);
 		SetLowColor(kBlack);
