@@ -9,6 +9,7 @@
 #include "ControllerObserver.h"
 
 #include <Bitmap.h>
+#include <ControlLook.h>
 #include <Deskbar.h>
 #include <Entry.h>
 #include <IconUtils.h>
@@ -293,7 +294,8 @@ DeskbarControlView::_LoadIconBitmap(const char* iconName)
 		size_t size;
 		const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, iconName, &size);
 		if (data != NULL) {
-			BRect bitmapRect(0, 0, 47, 47);
+			BRect bitmapRect(BRect(BPoint(0, 0),
+				be_control_look->ComposeIconSize(B_MINI_ICON)));
 			bitmap = new BBitmap(bitmapRect, B_RGBA32);
 			if (bitmap->InitCheck() != B_OK || BIconUtils::GetVectorIcon(
 					(const uint8*)data, size, bitmap) != B_OK) {
@@ -327,15 +329,22 @@ BSCMenuItem::~BSCMenuItem()
 void
 BSCMenuItem::GetContentSize(float* width, float* height)
 {
-	font_height fontHeight;
-	Menu()->GetFontHeight(&fontHeight);
-	float fullHeight = fontHeight.ascent + fontHeight.descent;
-	float stringWidth = Menu()->StringWidth("Resume Recording");
-	
-	if (width != NULL)
-		*width = stringWidth + kContentSpacingHorizontal + max_c(kContentIconMinSize, fullHeight);
-	if (height != NULL)
-		*height = max_c(fullHeight + kContentIconPad, kContentIconMinSize + kContentIconPad);
+	BMenuItem::GetContentSize(width, height);
+	if (fMenuIcon == NULL)
+		return;
+
+	const float limit = ceilf(fMenuIcon->Bounds().Height() +
+		be_control_look->DefaultLabelSpacing() / 3.0f);
+
+	if (height != NULL) {
+		if (*height < limit)
+			*height = limit;
+	}
+
+	if (width != NULL) {
+		*width += fMenuIcon->Bounds().Width()
+			+ be_control_look->DefaultLabelSpacing();
+	}
 }
 
 
@@ -343,24 +352,22 @@ BSCMenuItem::GetContentSize(float* width, float* height)
 void
 BSCMenuItem::DrawContent()
 {
-	font_height fontHeight;
-	Menu()->GetFontHeight(&fontHeight);
-	float fullHeight = fontHeight.ascent + fontHeight.descent + fontHeight.leading;
-	BPoint drawPoint(ContentLocation());
-	drawPoint.x += fullHeight + kContentSpacingHorizontal;
-	drawPoint.y += ((Frame().Height() - fullHeight) / 2) - 1;
-
-	float iconSize = max_c(kContentIconMinSize, fullHeight);
-	BRect imageRect;
-	imageRect.SetLeftTop(ContentLocation());		
-	imageRect.top += kContentIconPad / 2;
-	imageRect.right = imageRect.left + iconSize;
-	imageRect.bottom = imageRect.top + iconSize;
-
-	Menu()->MovePenTo(drawPoint);
+	BMenu* menu = Menu();
+	if (fMenuIcon != NULL) {
+		BPoint iconLocation = ContentLocation();
+		BRect frame = Frame();
+		iconLocation.y = frame.top
+			+ (frame.bottom - frame.top - fMenuIcon->Bounds().Height()) / 2;
+		menu->PushState();
+		menu->SetDrawingMode(B_OP_ALPHA);
+		menu->DrawBitmap(fMenuIcon, iconLocation);
+		menu->PopState();
+	}
+	// Text
+	BPoint textLocation = ContentLocation();
+	textLocation.x += ceilf(be_control_look->DefaultLabelSpacing() * 3.3f);
+	menu->MovePenTo(textLocation);
 	BMenuItem::DrawContent();
-	if (fMenuIcon != NULL)
-		Menu()->DrawBitmap(fMenuIcon, imageRect);
 }
 
 
