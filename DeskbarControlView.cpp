@@ -222,7 +222,8 @@ void
 DeskbarControlView::MouseDown(BPoint where)
 {
 	// TODO: this is done on every MouseDown: not nice
-	// maybe we should load the bitmap or resource once
+	// maybe we should load the bitmap or resource once,
+	// althought the performance hit is undetectable
 	BPopUpMenu *menu = new BPopUpMenu("menu");
 	if (fRecording) {
 		BBitmap* stopBitmap = _LoadIconBitmap("stop_icon");
