@@ -9,15 +9,12 @@
 
 #include <DirectWindow.h>
 #include <List.h>
-#include <Looper.h>
 #include <MediaDefs.h>
 #include <MediaFile.h>
 #include <ObjectList.h>
 #include <OS.h>
 
 #define kAppSignature "application/x-vnd.BeScreenCapture"
-
-extern BLooper *gControllerLooper;
 
 class BBitmap;
 class BMessageRunner;
