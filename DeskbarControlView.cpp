@@ -31,10 +31,6 @@ enum {
 	BSC_RESUME
 };
 
-const float kContentSpacingHorizontal = 8;
-const float kContentIconMinSize = 12;
-const float kContentIconPad = 4;
-
 class BSCMenuItem : public BMenuItem {
 public:
 	BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap = NULL);
@@ -44,7 +40,6 @@ public:
 private:
 	const char *ActionToString(uint32 action);
 	
-	uint32 fAction;
 	BBitmap *fMenuIcon;
 };
 
@@ -313,7 +308,6 @@ DeskbarControlView::_LoadIconBitmap(const char* iconName)
 BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap)
 	:
 	BMenuItem(ActionToString(action), message),
-	fAction(action),
 	fMenuIcon(bitmap)
 {
 }
