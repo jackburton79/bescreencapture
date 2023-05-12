@@ -1,3 +1,7 @@
+v2.8.0
+	- Added ability to select capture area on start when launched via shortcut.
+	- Code cleanup
+---
 v2.7.0
 	- Fixed crashing on haiku 32 bit after recording few frames.
 	- Fixed 'Reset Settings' not resetting media format
