@@ -208,6 +208,14 @@ BSCApp::ReadyToRun()
 		return;	
 	}
 
+	// TODO: Use a setting
+	// TODO: InstallDeskbarReplicant creates a deadlock
+	// if called AFTER the window is created
+	// I guess it's the interaction between the direct_info thread calling
+	// BDirectWindow::DirectConnected() (and our inherited version which ends up
+	// locking the BApplication) and BRoster::GetAppInfo() which also locks the BApplication
+	// Looks like doing it before Show() is safe.
+	InstallDeskbarReplicant();
 	if (fShouldStartRecording) {
 		fWindow->Run();
 		if (Settings::Current().SelectOnStart()) {
@@ -216,13 +224,6 @@ BSCApp::ReadyToRun()
 			BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
 		}
 	} else {
-		// TODO: InstallDeskbarReplicant creates a deadlock
-		// if called AFTER the window is created
-		// I guess it's the interaction between the direct_info thread calling
-		// BDirectWindow::DirectConnected() (and our inherited version which ends up
-		// locking the BApplication) and BRoster::GetAppInfo() which also locks the BApplication
-		// Looks like doing it before Show() is safe.
-		InstallDeskbarReplicant();
 		fWindow->Show();
 	}
 }
