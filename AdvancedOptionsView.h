@@ -20,6 +20,8 @@ private:
 	BCheckBox* fUseDirectWindow;
 	BCheckBox *fMinimizeOnStart;
 	BCheckBox* fHideDeskbarIcon;
+	BCheckBox* fUseShortcut;
+	BCheckBox* fSelectOnStart;
 	BCheckBox* fQuitWhenFinished;
 	bool fCurrentMinimizeValue;
 

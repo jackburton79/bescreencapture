@@ -69,6 +69,12 @@ public:
 	void SetQuitWhenFinished(const bool& quit);
 	bool QuitWhenFinished() const;
 
+	void SetEnableShortcut(const bool& enable);
+	bool EnableShortcut() const;
+
+	void SetSelectOnStart(const bool& select);
+	bool SelectOnStart() const;
+
 	int32 EncodingThreadPriority() const;
 	void SetEncodingThreadPriority(const int32 &value);
 

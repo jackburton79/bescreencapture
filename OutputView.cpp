@@ -67,6 +67,8 @@ OutputView::AttachedToWindow()
 		be_app->UnlockLooper();
 	}
 
+	fSelectAreaButton->SetTarget(be_app);
+
 	fFileName->SetTarget(this);
 	fCustomArea->SetTarget(this);
 	fWholeScreen->SetTarget(this);

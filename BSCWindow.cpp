@@ -153,19 +153,6 @@ BSCWindow::MessageReceived(BMessage *message)
 		case kGUIResetSettings:
 			app->ResetSettings();
 			break;
-		case kSelectArea:
-		case kSelectWindow:
-		{
-			Hide();
-			while (!IsHidden())
-				snooze(500);
-			snooze(2000);
-			BMessenger messenger(app);
-			int mode = message->what == kSelectArea ? SelectionWindow::REGION : SelectionWindow::WINDOW;
-			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);			
-			window->Show();
-			break;
-		}
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;

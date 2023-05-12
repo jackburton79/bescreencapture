@@ -13,6 +13,7 @@
 #include "FunctionObject.h"
 #include "MovieEncoder.h"
 #include "PublicMessages.h"
+#include "SelectionWindow.h"
 #include "Settings.h"
 #include "Utils.h"
 
@@ -209,6 +210,8 @@ BSCApp::ReadyToRun()
 
 	if (fShouldStartRecording) {
 		fWindow->Run();
+		if (Settings::Current().SelectOnStart())
+
 		BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
 	} else {
 		// TODO: InstallDeskbarReplicant creates a deadlock
@@ -240,6 +243,19 @@ BSCApp::MessageReceived(BMessage *message)
 		return;
 		
 	switch (message->what) {
+		case kSelectArea:
+		case kSelectWindow:
+		{
+			fWindow->Hide();
+			while (!fWindow->IsHidden())
+				snooze(500);
+			snooze(2000);
+			BMessenger messenger(this);
+			int mode = message->what == kSelectArea ? SelectionWindow::REGION : SelectionWindow::WINDOW;
+			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);			
+			window->Show();
+			break;
+		}
 		case kSelectionWindowClosed:
 		{
 			SendNotices(kMsgControllerSelectionWindowClosed, message);

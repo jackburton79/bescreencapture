@@ -34,6 +34,8 @@ const static char *kWindowFrameBorderSize = "window frame border size";
 const static char *kCaptureFrameRate = "capture frame rate";
 const static char *kWarnOnQuit = "warn on quit";
 const static char *kQuitWhenFinished = "quit when finished";
+const static char *kEnableShortcut = "enable shortcut";
+const static char *kSelectOnStart = "select on start";
 const static char *kDockingMode = "docking mode";
 
 
@@ -142,6 +144,10 @@ Settings::Load()
 			fSettings->SetInt32(kCaptureFrameRate, integer);
 		if (tempMessage.FindBool(kDockingMode, &boolean) == B_OK)
 			fSettings->SetBool(kDockingMode, boolean);
+		if (tempMessage.FindBool(kEnableShortcut, &boolean) == B_OK)
+			fSettings->SetBool(kEnableShortcut, boolean);
+		if (tempMessage.FindBool(kSelectOnStart, &boolean) == B_OK)
+			fSettings->SetBool(kSelectOnStart, boolean);		
 	}	
 	
 	return status;
@@ -414,6 +420,42 @@ Settings::QuitWhenFinished() const
 
 
 void
+Settings::SetEnableShortcut(const bool& enable)
+{
+	BAutolock _(fLocker);
+	fSettings->SetBool(kEnableShortcut, enable);
+}
+
+
+bool
+Settings::EnableShortcut() const
+{
+	BAutolock _(fLocker);
+	bool enable = false;
+	fSettings->FindBool(kEnableShortcut, &enable);
+	return enable;
+}
+
+
+void
+Settings::SetSelectOnStart(const bool& select)
+{
+	BAutolock _(fLocker);
+	fSettings->SetBool(kSelectOnStart, select);
+}
+
+
+bool
+Settings::SelectOnStart() const
+{
+	BAutolock _(fLocker);
+	bool select = false;
+	fSettings->FindBool(kSelectOnStart, &select);
+	return select;
+}
+
+
+void
 Settings::SetEncodingThreadPriority(const int32 &value)
 {
 	BAutolock _(fLocker);
@@ -503,6 +545,8 @@ Settings::_SetDefaults()
 	fSettings->SetBool(kWarnOnQuit, true);
 	fSettings->SetBool(kQuitWhenFinished, false);
 	fSettings->SetBool(kDockingMode, false);
+	fSettings->SetBool(kEnableShortcut, false);
+	fSettings->SetBool(kSelectOnStart, false);
 
 	return B_OK;
 }

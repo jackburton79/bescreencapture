@@ -19,6 +19,8 @@
 
 const static uint32 kLocalUseDirectWindow = 'UsDW';
 const static uint32 kLocalHideDeskbar = 'HiDe';
+const static uint32 kLocalEnableShortcut = 'EnSh';
+const static uint32 kLocalSelectOnStart = 'SeSt';
 const static uint32 kLocalMinimizeOnRecording = 'MiRe';
 const static uint32 kLocalQuitWhenFinished = 'QuFi';
 
@@ -69,6 +71,12 @@ AdvancedOptionsView::AdvancedOptionsView()
 					"Hide window when recording", new BMessage(kLocalMinimizeOnRecording)))
 			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
 					"Incognito mode: Hide window and Deskbar icon", new BMessage(kLocalHideDeskbar)))
+			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
+				.Add(fUseShortcut = new BCheckBox("useShortcut",
+					"Enable CTRL+ALT+SHIFT+R shortcut", new BMessage(kLocalEnableShortcut)))
+				.Add(fSelectOnStart = new BCheckBox("selectOnStart",
+					"Select area on start", new BMessage(kLocalSelectOnStart)))
+			.End()
 			.Add(fQuitWhenFinished = new BCheckBox("quitWhenFinished",
 					"Quit when finished", new BMessage(kLocalQuitWhenFinished)))
 		.End()
@@ -89,6 +97,9 @@ AdvancedOptionsView::AdvancedOptionsView()
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 	fQuitWhenFinished->SetValue(settings.QuitWhenFinished() ? B_CONTROL_ON : B_CONTROL_OFF);
+	fSelectOnStart->SetEnabled(settings.EnableShortcut());
+	fUseShortcut->SetValue(settings.EnableShortcut() ? B_CONTROL_ON : B_CONTROL_OFF);
+	fSelectOnStart->SetValue(settings.SelectOnStart() ? B_CONTROL_ON : B_CONTROL_OFF);
 }
 
 
@@ -99,10 +110,11 @@ AdvancedOptionsView::AttachedToWindow()
 	BView::AttachedToWindow();
 	
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
-	
 	fUseDirectWindow->SetTarget(this);
 	fMinimizeOnStart->SetTarget(this);
 	fHideDeskbarIcon->SetTarget(this);
+	fUseShortcut->SetTarget(this);
+	fSelectOnStart->SetTarget(this);
 	fQuitWhenFinished->SetTarget(this);
 }
 
@@ -147,6 +159,15 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 			Settings::Current().SetQuitWhenFinished(fQuitWhenFinished->Value() == B_CONTROL_ON);
 			break;
 
+		case kLocalEnableShortcut:
+			Settings::Current().SetEnableShortcut(fUseShortcut->Value() == B_CONTROL_ON);
+			fSelectOnStart->SetEnabled(fUseShortcut->Value() == B_CONTROL_ON);
+			// fall through
+		
+		case kLocalSelectOnStart:
+			Settings::Current().SetSelectOnStart(fSelectOnStart->Value() == B_CONTROL_ON);
+			break;
+
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
@@ -157,6 +178,9 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 					fCurrentMinimizeValue = Settings::Current().MinimizeOnRecording();
 					fMinimizeOnStart->SetValue(fCurrentMinimizeValue ? B_CONTROL_ON : B_CONTROL_OFF);
 					fMinimizeOnStart->SetEnabled(true);
+					fUseShortcut->SetValue(B_CONTROL_OFF);
+					fSelectOnStart->SetValue(B_CONTROL_OFF);
+					fSelectOnStart->SetEnabled(false);
 					fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 					fQuitWhenFinished->SetValue(B_CONTROL_OFF);
 					_EnableDirectWindowIfSupported();
