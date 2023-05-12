@@ -216,6 +216,7 @@ BSCApp::ReadyToRun()
 	// locking the BApplication) and BRoster::GetAppInfo() which also locks the BApplication
 	// Looks like doing it before Show() is safe.
 	InstallDeskbarReplicant();
+	//snooze(10000000);
 	if (fShouldStartRecording) {
 		fWindow->Run();
 		if (Settings::Current().SelectOnStart()) {
@@ -1309,6 +1310,11 @@ BSCApp::CaptureThread()
 			}
 
 			atomic_add(&fNumFrames, 1);
+
+			// Send notices every tenth frame so we don't
+			// overload receivers
+			if (fNumFrames % 10 == 0)
+				SendNotices(kMsgControllerCaptureProgress);
 
 			bigtime_t toWait = (lastFrameTime + captureDelay) - system_time();
 			if (toWait > 0)

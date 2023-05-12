@@ -105,6 +105,7 @@ DeskbarControlView::AttachedToWindow()
 	if (LockLooper()) {
 		StartWatching(fAppMessenger, kMsgControllerCaptureStarted);
 		StartWatching(fAppMessenger, kMsgControllerCaptureStopped);
+		StartWatching(fAppMessenger, kMsgControllerCaptureProgress);
 		StartWatching(fAppMessenger, kMsgControllerCapturePaused);
 		StartWatching(fAppMessenger, kMsgControllerCaptureResumed);
 		UnlockLooper();
@@ -118,7 +119,8 @@ DeskbarControlView::DetachedFromWindow()
 {
 	if (LockLooper()) {
 		StopWatching(fAppMessenger, kMsgControllerCaptureStarted);
-		StopWatching(fAppMessenger, kMsgControllerCaptureStopped);	
+		StopWatching(fAppMessenger, kMsgControllerCaptureStopped);
+		StopWatching(fAppMessenger, kMsgControllerCaptureProgress);
 		StopWatching(fAppMessenger, kMsgControllerCapturePaused);	
 		StopWatching(fAppMessenger, kMsgControllerCaptureResumed);	
 		UnlockLooper();
@@ -181,6 +183,7 @@ DeskbarControlView::MessageReceived(BMessage *message)
 			message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code);
 			switch (code) {			
 				case kMsgControllerCaptureStarted:
+				case kMsgControllerCaptureProgress:
 					fRecording = true;
 					Invalidate();
 					break;
