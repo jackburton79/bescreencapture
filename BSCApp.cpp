@@ -210,9 +210,11 @@ BSCApp::ReadyToRun()
 
 	if (fShouldStartRecording) {
 		fWindow->Run();
-		if (Settings::Current().SelectOnStart())
-
-		BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
+		if (Settings::Current().SelectOnStart()) {
+			BMessenger(be_app).SendMessage(kSelectArea);
+		} else {
+			BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
+		}
 	} else {
 		// TODO: InstallDeskbarReplicant creates a deadlock
 		// if called AFTER the window is created
@@ -249,11 +251,14 @@ BSCApp::MessageReceived(BMessage *message)
 			fWindow->Hide();
 			while (!fWindow->IsHidden())
 				snooze(500);
-			snooze(2000);
+			snooze(20000);
 			BMessenger messenger(this);
 			int mode = message->what == kSelectArea ? SelectionWindow::REGION : SelectionWindow::WINDOW;
 			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);			
 			window->Show();
+			
+			if (fShouldStartRecording && Settings::Current().SelectOnStart())
+				BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
 			break;
 		}
 		case kSelectionWindowClosed:
