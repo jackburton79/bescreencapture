@@ -259,8 +259,6 @@ BSCApp::MessageReceived(BMessage *message)
 			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);			
 			window->Show();
 			
-			if (fShouldStartRecording && Settings::Current().SelectOnStart())
-				BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
 			break;
 		}
 		case kSelectionWindowClosed:
@@ -270,6 +268,8 @@ BSCApp::MessageReceived(BMessage *message)
 			if (message->FindRect("selection", &rect) == B_OK) {
 				SetCaptureArea(rect);
 			}
+			if (fShouldStartRecording && Settings::Current().SelectOnStart())
+				BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
 			break;
 		}
 
