@@ -24,16 +24,9 @@
 #include <stdio.h>
 #include <string.h>
 
-enum {
-	BSC_STOP,
-	BSC_START,
-	BSC_PAUSE,
-	BSC_RESUME
-};
-
 class BSCMenuItem : public BMenuItem {
 public:
-	BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap = NULL);
+	BSCMenuItem(const char* label, BMessage *message, BBitmap* bitmap = NULL);
 	virtual ~BSCMenuItem();
 	virtual void DrawContent();
 	virtual void GetContentSize(float* width, float* height);
@@ -222,17 +215,21 @@ DeskbarControlView::MouseDown(BPoint where)
 	BPopUpMenu *menu = new BPopUpMenu("menu");
 	if (fRecording) {
 		BBitmap* stopBitmap = _LoadIconBitmap("stop_icon");
-		menu->AddItem(new BSCMenuItem(BSC_STOP, new BMessage(kMsgGUIToggleCapture), stopBitmap));
+		menu->AddItem(new BSCMenuItem("Stop recording",
+			new BMessage(kMsgGUIToggleCapture), stopBitmap));
 		if (fPaused) {
 			BBitmap* resumeBitmap = _LoadIconBitmap("resume_icon");
-			menu->AddItem(new BSCMenuItem(BSC_RESUME, new BMessage(kMsgGUITogglePause), resumeBitmap));
+			menu->AddItem(new BSCMenuItem("Resume recording",
+				new BMessage(kMsgGUITogglePause), resumeBitmap));
 		} else {
 			BBitmap* pauseBitmap = _LoadIconBitmap("pause_icon");
-			menu->AddItem(new BSCMenuItem(BSC_PAUSE, new BMessage(kMsgGUITogglePause), pauseBitmap));
+			menu->AddItem(new BSCMenuItem("Pause recording",
+				new BMessage(kMsgGUITogglePause), pauseBitmap));
 		}
 	} else {
 		BBitmap* bitmap = _LoadIconBitmap("record_icon");
-		menu->AddItem(new BSCMenuItem(BSC_START, new BMessage(kMsgGUIToggleCapture), bitmap));
+		menu->AddItem(new BSCMenuItem("Start recording",
+			new BMessage(kMsgGUIToggleCapture), bitmap));
 	}
 	menu->SetTargetForItems(this);
 	
@@ -305,9 +302,9 @@ DeskbarControlView::_LoadIconBitmap(const char* iconName)
 
 
 // BSCMenuItem
-BSCMenuItem::BSCMenuItem(uint32 action, BMessage *message, BBitmap* bitmap)
+BSCMenuItem::BSCMenuItem(const char* label, BMessage *message, BBitmap* bitmap)
 	:
-	BMenuItem(ActionToString(action), message),
+	BMenuItem(label, message),
 	fMenuIcon(bitmap)
 {
 }
@@ -363,24 +360,6 @@ BSCMenuItem::DrawContent()
 	textLocation.x += ceilf(be_control_look->DefaultLabelSpacing() * 3.3f);
 	menu->MovePenTo(textLocation);
 	BMenuItem::DrawContent();
-}
-
-
-const char *
-BSCMenuItem::ActionToString(uint32 action)
-{
-	switch (action) {
-		case BSC_START:
-			return "Start recording";
-		case BSC_STOP:
-			return "Stop recording";
-		case BSC_PAUSE:
-			return "Pause Recording";
-		case BSC_RESUME:
-			return "Resume Recording";
-		default:
-			return "";
-	}
 }
 
 
