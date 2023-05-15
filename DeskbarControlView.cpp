@@ -290,8 +290,8 @@ DeskbarControlView::_LoadIconBitmap(const char* iconName)
 		size_t size;
 		const void* data = resources.LoadResource(B_VECTOR_ICON_TYPE, iconName, &size);
 		if (data != NULL) {
-			BRect bitmapRect(BRect(BPoint(0, 0),
-				be_control_look->ComposeIconSize(B_MINI_ICON)));
+			BRect bitmapRect(BPoint(0, 0),
+				be_control_look->ComposeIconSize(B_MINI_ICON));
 			bitmap = new BBitmap(bitmapRect, B_RGBA32);
 			if (bitmap->InitCheck() != B_OK || BIconUtils::GetVectorIcon(
 					(const uint8*)data, size, bitmap) != B_OK) {

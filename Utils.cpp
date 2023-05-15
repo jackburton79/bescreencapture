@@ -16,6 +16,7 @@
 #include <String.h>
 #include <Window.h>
 
+#include <algorithm>
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
