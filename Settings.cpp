@@ -171,6 +171,18 @@ Settings::Save()
 }
 
 
+/* static */
+BPath
+Settings::SettingsFilePath()
+{
+	BPath path;
+	status_t status = _GetSettingsPath(path);
+	if (status == B_OK)
+		status = path.Append("settings");
+	return path;
+}
+
+
 void
 Settings::SetCaptureArea(const BRect &rect)
 {
@@ -571,6 +583,7 @@ Settings::_SetDefaults()
 }
 
 
+/* static */
 status_t
 Settings::_GetSettingsPath(BPath& path)
 {

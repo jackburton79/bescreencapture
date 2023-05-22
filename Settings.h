@@ -26,6 +26,8 @@ public:
 
 	status_t Load();
 	status_t Save();
+	
+	static BPath SettingsFilePath();
 
 	BRect CaptureArea() const;
 	void SetCaptureArea(const BRect &rect);
@@ -95,7 +97,7 @@ private:
 
 	status_t _LoadSettingsFile(BFile& file, int mode);
 	status_t _SetDefaults();
-	status_t _GetSettingsPath(BPath& path);
+	static status_t _GetSettingsPath(BPath& path);
 
 	BMessage* fSettings;
 	mutable BLocker fLocker;
