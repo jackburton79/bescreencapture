@@ -3,15 +3,76 @@
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include <InputServerFilter.h>
+#include <NodeMonitor.h>
+#include <Path.h>
 #include <Roster.h>
 
 #include "BSCApp.h"
 #include "PublicMessages.h"
+#include "Settings.h"
 
 class BSCInputFilter : public BInputServerFilter {
+public:
+	BSCInputFilter();
+	virtual ~BSCInputFilter();
 	status_t		InitCheck();
 	filter_result	Filter(BMessage* message, BList* outList);
+	void SetEnabled(bool enabled);
+private:
+	BLooper* fLooper;
+	BMessenger fMessenger;
+	node_ref fNodeRef;
+	bool fEnabled;
 };
+
+class InputFilterLooper : public BLooper {
+public:
+	InputFilterLooper(BSCInputFilter* filter) : BLooper("BSCInputFilter looper") {
+		fFilter = filter;
+	};
+	virtual void MessageReceived(BMessage* message) {
+		switch (message->what) {
+			case B_NODE_MONITOR:
+				Settings::Current().Load();
+				fFilter->SetEnabled(Settings::Current().EnableShortcut());
+				break;
+			default:
+				BLooper::MessageReceived(message);
+				break;
+		}
+	}
+private:
+	BSCInputFilter* fFilter;
+};
+
+
+BSCInputFilter::BSCInputFilter()
+	:
+	BInputServerFilter(),
+	fLooper(nullptr),
+	fEnabled(true)
+{
+	fLooper = new InputFilterLooper(this);
+	fMessenger = BMessenger(fLooper);
+	
+	Settings::Initialize();
+	fEnabled = Settings::Current().EnableShortcut();
+	
+	fLooper->Run();
+	
+	// Watch settings
+	BPath settingsFile = Settings::SettingsFilePath();
+	BEntry entry(settingsFile.Path());
+	entry.GetNodeRef(&fNodeRef);
+	watch_node(&fNodeRef, B_WATCH_ALL, fLooper);
+}
+
+
+BSCInputFilter::~BSCInputFilter()
+{
+	if (fLooper->Lock())
+		fLooper->Quit();
+}
 
 
 status_t
@@ -24,6 +85,9 @@ BSCInputFilter::InitCheck()
 filter_result
 BSCInputFilter::Filter(BMessage* message, BList* outList)
 {
+	if (!fEnabled)
+		return B_DISPATCH_MESSAGE;
+
 	switch (message->what) {
 		case B_KEY_DOWN:
 		case B_KEY_UP:
@@ -62,6 +126,13 @@ BSCInputFilter::Filter(BMessage* message, BList* outList)
 	}
 
 	return B_DISPATCH_MESSAGE;
+}
+
+
+void
+BSCInputFilter::SetEnabled(bool enable)
+{
+	fEnabled = enable;
 }
 
 
