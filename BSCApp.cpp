@@ -215,8 +215,9 @@ BSCApp::ReadyToRun()
 	// BDirectWindow::DirectConnected() (and our inherited version which ends up
 	// locking the BApplication) and BRoster::GetAppInfo() which also locks the BApplication
 	// Looks like doing it before Show() is safe.
-	InstallDeskbarReplicant();
-	//snooze(10000000);
+	
+	if (!Settings::Current().HideDeskbarIcon())
+		InstallDeskbarReplicant();
 	if (fShouldStartRecording) {
 		fWindow->Run();
 		if (Settings::Current().SelectOnStart()) {

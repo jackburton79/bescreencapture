@@ -95,7 +95,7 @@ AdvancedOptionsView::AdvancedOptionsView()
 	
 	const Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
-	fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
+	fHideDeskbarIcon->SetValue(settings.HideDeskbarIcon() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fQuitWhenFinished->SetValue(settings.QuitWhenFinished() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fSelectOnStart->SetEnabled(settings.EnableShortcut());
 	fUseShortcut->SetValue(settings.EnableShortcut() ? B_CONTROL_ON : B_CONTROL_OFF);
@@ -133,6 +133,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		case kLocalHideDeskbar:
 		{
 			bool hide = fHideDeskbarIcon->Value() == B_CONTROL_ON;
+			Settings::Current().SetHideDeskbarIcon(hide);
 			if (hide) {
 				// Save the current minimize setting, since we are going to override
 				// it when "hide deskbar" is set

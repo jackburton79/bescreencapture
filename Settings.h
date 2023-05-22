@@ -51,6 +51,9 @@ public:
 	bool MinimizeOnRecording() const;
 	void SetMinimizeOnRecording(const bool &minimize);
 
+	bool HideDeskbarIcon() const;
+	void SetHideDeskbarIcon(const bool& hide);
+
 	BString OutputFileName() const;
 	void SetOutputFileName(const char *name);
 

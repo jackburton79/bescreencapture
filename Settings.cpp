@@ -37,7 +37,7 @@ const static char *kQuitWhenFinished = "quit when finished";
 const static char *kEnableShortcut = "enable shortcut";
 const static char *kSelectOnStart = "select on start";
 const static char *kDockingMode = "docking mode";
-
+const static char *kHideDeskbarIcon = "hide deskbar icon";
 
 
 /* static */
@@ -126,6 +126,8 @@ Settings::Load()
 			fSettings->SetBool(kIncludeCursor, boolean);
 		if (tempMessage.FindBool(kMinimize, &boolean) == B_OK)
 			fSettings->SetBool(kMinimize, boolean);
+		if (tempMessage.FindBool(kHideDeskbarIcon, &boolean) == B_OK)
+			fSettings->SetBool(kHideDeskbarIcon, boolean);
 		if (tempMessage.FindString(kOutputFile, &string) == B_OK)
 			fSettings->SetString(kOutputFile, string);
 		if (tempMessage.FindString(kOutputFileFormat, &string) == B_OK)
@@ -308,6 +310,23 @@ Settings::MinimizeOnRecording() const
 	bool mini;
 	fSettings->FindBool(kMinimize, &mini);
 	return mini;
+}
+
+void
+Settings::SetHideDeskbarIcon(const bool& hide)
+{
+	BAutolock _(fLocker);
+	fSettings->SetBool(kHideDeskbarIcon, hide);
+}
+
+
+bool
+Settings::HideDeskbarIcon() const
+{
+	BAutolock _(fLocker);
+	bool hide;
+	fSettings->FindBool(kHideDeskbarIcon, &hide);
+	return hide;
 }
 
 
@@ -547,7 +566,7 @@ Settings::_SetDefaults()
 	fSettings->SetBool(kDockingMode, false);
 	fSettings->SetBool(kEnableShortcut, false);
 	fSettings->SetBool(kSelectOnStart, false);
-
+	fSettings->SetBool(kHideDeskbarIcon, false);
 	return B_OK;
 }
 

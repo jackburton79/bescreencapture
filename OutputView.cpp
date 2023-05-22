@@ -124,7 +124,6 @@ OutputView::MessageReceived(BMessage *message)
 					fBorderSlider->SetEnabled(true);
 				}
 			}
-			
 			app->SetCaptureArea(rect);
 			break;	
 		}
