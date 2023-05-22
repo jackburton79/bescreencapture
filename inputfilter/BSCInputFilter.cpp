@@ -7,6 +7,8 @@
 #include <Path.h>
 #include <Roster.h>
 
+#include <syslog.h>
+
 #include "BSCApp.h"
 #include "PublicMessages.h"
 #include "Settings.h"
@@ -52,6 +54,7 @@ BSCInputFilter::BSCInputFilter()
 	fLooper(nullptr),
 	fEnabled(true)
 {
+	syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, "BSCInputFilter");
 	fLooper = new InputFilterLooper(this);
 	fMessenger = BMessenger(fLooper);
 	
@@ -63,8 +66,16 @@ BSCInputFilter::BSCInputFilter()
 	// Watch settings
 	BPath settingsFile = Settings::SettingsFilePath();
 	BEntry entry(settingsFile.Path());
-	entry.GetNodeRef(&fNodeRef);
-	watch_node(&fNodeRef, B_WATCH_ALL, fLooper);
+	status_t status = entry.GetNodeRef(&fNodeRef);
+	if (status != B_OK) {
+		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, "failed getting node ref: ");
+		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, strerror(status));
+	}
+	status = watch_node(&fNodeRef, B_WATCH_ALL, fLooper);
+	if (status != B_OK) {
+		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, "failed watching node: ");
+		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, strerror(status));
+	}
 }
 
 
