@@ -1,0 +1,18 @@
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build rootfs
+        run: |
+          git clone --depth 1 https://github.com/jessicah/cross-compiler.git
+          cd cross-compiler
+          ./build-rootfs.sh
+        
+      
