@@ -13,6 +13,8 @@ jobs:
       
       - name: Build rootfs
         run: |
+          git config user.name "Jackburton79"
+          git config user.email "your-email@gmail.com"
           git clone --depth 1 https://github.com/jessicah/cross-compiler.git
           ./cross-compiler/build-rootfs.sh x86_64
         
