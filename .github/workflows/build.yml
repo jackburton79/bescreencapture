@@ -12,7 +12,6 @@ jobs:
       - name: Build rootfs
         run: |
           git clone --depth 1 https://github.com/jessicah/cross-compiler.git
-          cd cross-compiler
-          ./build-rootfs.sh
+          ./cross-compiler/build-rootfs.sh x86_64
         
       
