@@ -3,6 +3,8 @@
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include <InputServerFilter.h>
+
+#include <Autolock.h>
 #include <NodeMonitor.h>
 #include <Path.h>
 #include <Roster.h>
@@ -22,6 +24,7 @@ public:
 	void SetEnabled(bool enabled);
 private:
 	BLooper* fLooper;
+	BLocker fLocker;
 	BMessenger fMessenger;
 	node_ref fNodeRef;
 	bool fEnabled;
@@ -54,33 +57,41 @@ BSCInputFilter::BSCInputFilter()
 	fLooper(nullptr),
 	fEnabled(true)
 {
-	syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, "BSCInputFilter");
 	fLooper = new InputFilterLooper(this);
 	fMessenger = BMessenger(fLooper);
-	
+
 	Settings::Initialize();
 	fEnabled = Settings::Current().EnableShortcut();
-	
+
+	BAutolock _(fLocker);
+
 	fLooper->Run();
-	
 	// Watch settings
 	BPath settingsFile = Settings::SettingsFilePath();
 	BEntry entry(settingsFile.Path());
+	if (!entry.Exists()) {
+		// file doesn't exist, force creation
+		Settings::Current().Save();
+	}
+
 	status_t status = entry.GetNodeRef(&fNodeRef);
 	if (status != B_OK) {
-		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, "failed getting node ref: ");
-		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, strerror(status));
+		syslog(LOG_ERR, "failed getting node ref: ");
+		syslog(LOG_ERR, strerror(status));
+	} else {
+		status = watch_node(&fNodeRef, B_WATCH_ALL, fLooper);
+		syslog(LOG_ERR, "watching node");
 	}
-	status = watch_node(&fNodeRef, B_WATCH_ALL, fLooper);
 	if (status != B_OK) {
-		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, "failed watching node: ");
-		syslog(LOG_INFO|LOG_PID|LOG_CONS|LOG_USER, strerror(status));
+		syslog(LOG_ERR, "failed watching node: ");
+		syslog(LOG_ERR, strerror(status));
 	}
 }
 
 
 BSCInputFilter::~BSCInputFilter()
 {
+	watch_node(&fNodeRef, B_STOP_WATCHING, fLooper);
 	if (fLooper->Lock())
 		fLooper->Quit();
 }
@@ -96,6 +107,8 @@ BSCInputFilter::InitCheck()
 filter_result
 BSCInputFilter::Filter(BMessage* message, BList* outList)
 {
+	BAutolock _(fLocker);
+
 	if (!fEnabled)
 		return B_DISPATCH_MESSAGE;
 
