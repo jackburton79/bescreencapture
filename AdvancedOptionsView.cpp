@@ -167,6 +167,8 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		
 		case kLocalSelectOnStart:
 			Settings::Current().SetSelectOnStart(fSelectOnStart->Value() == B_CONTROL_ON);
+			// Save settings immediately, so the input server addon picks the change
+			Settings::Current().Save();
 			break;
 
 		case B_OBSERVER_NOTICE_CHANGE:
