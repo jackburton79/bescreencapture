@@ -9,8 +9,8 @@ BeScreenCapture lets you record what happens on your screen and save it to a cli
 
 The recorded clip can be scaled to suit your needs.
 
-Includes an "Incognito" mode, which hides the application window and the deskbar icon, to be able to record clips by using a keyboard combo and without leaving any trace.
-This functionality requires installing the `bescreencapture_inputfilter` and using the `CTRL`-`ALT`-`SHIFT`-`r` shortcut, which launches BeScreenCapture and start recording directly. Hit `CTRL`-`ALT`-`SHIFT`-`r` again to stop.
+Can be launched by using the `CTRL`-`ALT`-`SHIFT`-`r` shortcut, which will also start recording the specified area.
+Hit `CTRL`-`ALT`-`SHIFT`-`r` again to stop.
 
 BeScreenCapture is also scriptable with `hey`:
 
