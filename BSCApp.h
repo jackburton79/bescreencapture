@@ -39,6 +39,7 @@ public:
 								int32 what,
 								const char* property);
 	virtual void AboutRequested();
+	void ShowHelp();
 
 	enum state {
 		STATE_IDLE = 0,

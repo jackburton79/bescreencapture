@@ -400,6 +400,18 @@ BSCApp::AboutRequested()
 }
 
 
+void
+BSCApp::ShowHelp()
+{
+	BEntry entry("/boot/home/git/bescreencapture/README.md");
+	entry_ref readMeRef;
+	status_t status = entry.GetRef(&readMeRef);
+
+	if (status == B_OK)
+		be_roster->Launch(&readMeRef);
+}
+
+
 bool
 BSCApp::_HandleScripting(BMessage* message)
 {

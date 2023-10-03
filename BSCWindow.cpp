@@ -35,6 +35,7 @@ const static BRect kWindowRect(0, 0, 400, 600);
 const static uint32 kGUIOpenMediaWindow = 'j89d';
 const static uint32 kGUIDockWindow = 'j90d';
 const static uint32 kGUIResetSettings = 'j91d';
+const static uint32 kGUIShowHelp = 'j92d';
 
 const static char* LABEL_BUTTON_START = "Start recording";
 const static char* LABEL_BUTTON_STOP = "Stop recording";
@@ -152,6 +153,9 @@ BSCWindow::MessageReceived(BMessage *message)
 			break;
 		case kGUIResetSettings:
 			app->ResetSettings();
+			break;
+		case kGUIShowHelp:
+			app->ShowHelp();
 			break;
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
@@ -287,16 +291,20 @@ void
 BSCWindow::_BuildMenu()
 {
 	BMenu* menu = new BMenu("App");
-	BMenuItem* aboutItem = new BMenuItem("About", new BMessage(B_ABOUT_REQUESTED));
 	BMenuItem* quitItem = new BMenuItem("Quit", new BMessage(B_QUIT_REQUESTED));
-	menu->AddItem(aboutItem);
 	menu->AddItem(quitItem);
 	fMenuBar->AddItem(menu);
 	
 	menu = new BMenu("Settings");
 	BMenuItem* resetSettings = new BMenuItem("Default", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
-
+	fMenuBar->AddItem(menu);
+	
+	menu = new BMenu("Help");
+	BMenuItem* readMeItem = new BMenuItem("Show readme", new BMessage(kGUIShowHelp));
+	BMenuItem* aboutItem = new BMenuItem("About", new BMessage(B_ABOUT_REQUESTED));
+	menu->AddItem(readMeItem);
+	menu->AddItem(aboutItem);	
 	fMenuBar->AddItem(menu);
 }
 
