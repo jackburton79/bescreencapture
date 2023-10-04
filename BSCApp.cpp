@@ -208,14 +208,12 @@ BSCApp::ReadyToRun()
 		return;	
 	}
 
-	// TODO: Use a setting
 	// TODO: InstallDeskbarReplicant creates a deadlock
 	// if called AFTER the window is created
 	// I guess it's the interaction between the direct_info thread calling
 	// BDirectWindow::DirectConnected() (and our inherited version which ends up
 	// locking the BApplication) and BRoster::GetAppInfo() which also locks the BApplication
 	// Looks like doing it before Show() is safe.
-	
 	if (!Settings::Current().HideDeskbarIcon())
 		InstallDeskbarReplicant();
 	if (fShouldStartRecording) {
@@ -403,7 +401,7 @@ BSCApp::AboutRequested()
 void
 BSCApp::ShowHelp()
 {
-	const static char* kReadMe = "README.md";
+	const static char* kReadMe = "README.html";
 	app_info info;
 	BPath filePath;
 	if (be_app->GetAppInfo(&info) != B_OK)
