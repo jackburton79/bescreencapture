@@ -179,7 +179,7 @@ DRIVER_PATH =
 ## include the makefile-engine
 include $(BUILDHOME)/etc/makefile-engine
 
-BSCApp.cpp : Changelog.h README.html
+BSCApp.o : Changelog.h README.html
 
 Changelog.h : bin2txt Changelog.txt
 	bin2txt < Changelog.txt > Changelog.h
