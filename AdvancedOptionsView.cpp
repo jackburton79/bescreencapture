@@ -75,7 +75,7 @@ AdvancedOptionsView::AdvancedOptionsView()
 				.Add(fUseShortcut = new BCheckBox("useShortcut",
 					"Enable CTRL+ALT+SHIFT+R shortcut", new BMessage(kLocalEnableShortcut)))
 				.Add(fSelectOnStart = new BCheckBox("selectOnStart",
-					"Select area on start", new BMessage(kLocalSelectOnStart)))
+					"Select region on start", new BMessage(kLocalSelectOnStart)))
 			.End()
 			.Add(fQuitWhenFinished = new BCheckBox("quitWhenFinished",
 					"Quit when finished", new BMessage(kLocalQuitWhenFinished)))
