@@ -95,12 +95,12 @@ AdvancedOptionsView::AdvancedOptionsView()
 	
 	const Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
-	if (settings.HideDeskbarIcon() && settings.EnableShortcut()) {
-		fHideDeskbarIcon->SetValue(B_CONTROL_ON);
+	if (settings.EnableShortcut()) {
 		fHideDeskbarIcon->SetEnabled(true);
+		fHideDeskbarIcon->SetValue(settings.HideDeskbarIcon() ? B_CONTROL_ON : B_CONTROL_OFF);
 	} else {
-		fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 		fHideDeskbarIcon->SetEnabled(false);
+		fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 	}
 	fQuitWhenFinished->SetValue(settings.QuitWhenFinished() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fSelectOnStart->SetEnabled(settings.EnableShortcut());
