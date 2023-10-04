@@ -1,5 +1,6 @@
 v2.8.0
 	- Added ability to select capture area on start when launched via shortcut.
+	- Added options to enable/disable the launch shortcut
 	- Code cleanup
 ---
 v2.7.0

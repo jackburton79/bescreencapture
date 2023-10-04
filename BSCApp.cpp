@@ -400,6 +400,41 @@ BSCApp::AboutRequested()
 }
 
 
+void
+BSCApp::ShowHelp()
+{
+	const static char* kReadMe = "README.md";
+	app_info info;
+	BPath filePath;
+	if (be_app->GetAppInfo(&info) != B_OK)
+		return;
+	// This code should work both for the case when BeScreenCapture is
+	// in the "object" subdirectory, like in the repo,
+	// and when it's in the package.
+	BPath appPath(&info.ref);
+	BPath parentPath;
+	if (appPath.GetParent(&parentPath) != B_OK)
+		return;
+
+	// try application path
+	filePath = parentPath;
+	filePath.Append(kReadMe);
+	BEntry entry(filePath.Path());
+	if (!entry.Exists()) {
+		// try the parent path
+		parentPath.GetParent(&parentPath);
+		filePath = parentPath;
+		filePath.Append(kReadMe);
+	}
+	if (entry.SetTo(filePath.Path()) != B_OK)
+		return;
+
+	entry_ref readMeRef;
+	if (entry.GetRef(&readMeRef) == B_OK)
+		be_roster->Launch(&readMeRef);
+}
+
+
 bool
 BSCApp::_HandleScripting(BMessage* message)
 {

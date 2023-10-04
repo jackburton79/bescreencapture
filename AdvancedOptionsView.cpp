@@ -75,7 +75,7 @@ AdvancedOptionsView::AdvancedOptionsView()
 				.Add(fUseShortcut = new BCheckBox("useShortcut",
 					"Enable CTRL+ALT+SHIFT+R shortcut", new BMessage(kLocalEnableShortcut)))
 				.Add(fSelectOnStart = new BCheckBox("selectOnStart",
-					"Select area on start", new BMessage(kLocalSelectOnStart)))
+					"Select region on start", new BMessage(kLocalSelectOnStart)))
 			.End()
 			.Add(fQuitWhenFinished = new BCheckBox("quitWhenFinished",
 					"Quit when finished", new BMessage(kLocalQuitWhenFinished)))
@@ -95,7 +95,13 @@ AdvancedOptionsView::AdvancedOptionsView()
 	
 	const Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
-	fHideDeskbarIcon->SetValue(settings.HideDeskbarIcon() ? B_CONTROL_ON : B_CONTROL_OFF);
+	if (settings.HideDeskbarIcon() && settings.EnableShortcut()) {
+		fHideDeskbarIcon->SetValue(B_CONTROL_ON);
+		fHideDeskbarIcon->SetEnabled(true);
+	} else {
+		fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
+		fHideDeskbarIcon->SetEnabled(false);
+	}
 	fQuitWhenFinished->SetValue(settings.QuitWhenFinished() ? B_CONTROL_ON : B_CONTROL_OFF);
 	fSelectOnStart->SetEnabled(settings.EnableShortcut());
 	fUseShortcut->SetValue(settings.EnableShortcut() ? B_CONTROL_ON : B_CONTROL_OFF);
@@ -163,6 +169,12 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		case kLocalEnableShortcut:
 			Settings::Current().SetEnableShortcut(fUseShortcut->Value() == B_CONTROL_ON);
 			fSelectOnStart->SetEnabled(fUseShortcut->Value() == B_CONTROL_ON);
+			if (Settings::Current().EnableShortcut()) {
+				fHideDeskbarIcon->SetEnabled(true);
+			} else {
+				fHideDeskbarIcon->SetEnabled(false);
+				fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
+			}
 			// fall through
 		
 		case kLocalSelectOnStart:
