@@ -415,7 +415,7 @@ BSCApp::ShowHelp()
 	BPath parentPath;
 	if (appPath.GetParent(&parentPath) != B_OK)
 		return;
-	
+
 	// try application path
 	filePath = parentPath;
 	filePath.Append(kReadMe);
