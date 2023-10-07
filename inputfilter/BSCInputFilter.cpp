@@ -54,7 +54,7 @@ private:
 BSCInputFilter::BSCInputFilter()
 	:
 	BInputServerFilter(),
-	fLooper(nullptr),
+	fLooper(NULL),
 	fEnabled(true)
 {
 	fLooper = new InputFilterLooper(this);
