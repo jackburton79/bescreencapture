@@ -259,20 +259,16 @@ MovieEncoder::_CloseFile()
 status_t
 MovieEncoder::_EncoderThread()
 {	
-	std::cerr << "MovieEncoder::_EncoderThread() started" << std::endl;
 	fFileList = new FramesList();
-	fFileList->AddItemsFromDisk();
+	fFileList->GetFramesFromDisk();
 	
-	std::cout << "count items" << std::endl;
 	int32 framesLeft = fFileList->CountItems();
 	if (framesLeft <= 0) {
 		std::cerr << "MovieEncoder::_EncoderThread(): no frames to encode." << std::endl;
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
-	status_t status = B_OK;
-
-	status = _ApplyImageFilters();
+	status_t status = _ApplyImageFilters();
 	if (status != B_OK) {
 		_HandleEncodingFinished(status);
 		return status;

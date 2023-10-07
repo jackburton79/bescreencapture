@@ -244,7 +244,7 @@ FramesList::WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BString& file
 		std::cerr << "BitmapEntry::WriteFrame(): cannot create file" << ::strerror(status) << std::endl;
 		return status;
 	}
-	
+
 	status = sTranslatorRoster->Translate(&bitmapStream,
 		&translatorInfo, NULL, &outFile, kBitmapFormat);
 	if (status != B_OK)

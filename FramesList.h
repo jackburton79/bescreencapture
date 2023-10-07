@@ -34,6 +34,7 @@ public:
 	FramesList(bool diskOnly = false);
 	virtual ~FramesList();
 
+	// TODO: Move this away from here
 	static status_t CreateTempPath();
 	static status_t DeleteTempPath();
 	
