@@ -23,10 +23,7 @@ public:
 	void Replace(BBitmap* bitmap);
 	bigtime_t TimeStamp() const;
 
-	status_t SaveToDisk(const char* path, const int32 index);
-
-	static status_t WriteFrame(const BBitmap* bitmap, const char* fileName);
-	
+	status_t SaveToDisk(const char* path, const int32 index);	
 private:
 	BString fFileName;
 	bigtime_t fFrameTime;
@@ -51,7 +48,7 @@ public:
 	static const char* Path();
 
 	status_t WriteFrames(const char* path);
-	static status_t WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BPath& path);
+	static status_t WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BString& fileName);
 private:
 	static char* sTemporaryPath;
 };

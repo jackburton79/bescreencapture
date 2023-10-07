@@ -1325,8 +1325,9 @@ BSCApp::CaptureThread()
 			bigtime_t lastFrameTime = system_time();
 			
 			// TODO: set path ?
-			BPath path;
-			status_t status = FramesList::WriteFrame(bitmap, lastFrameTime, path);
+			BString fileName;
+			fileName << FramesList::Path() << "/" << lastFrameTime;
+			status_t status = FramesList::WriteFrame(bitmap, lastFrameTime, fileName);
 			if (status != B_OK) {
 			// Takes ownership of the bitmap
 				error = B_NO_MEMORY;

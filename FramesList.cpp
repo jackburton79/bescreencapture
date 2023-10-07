@@ -40,7 +40,6 @@ FramesList::FramesList(bool diskOnly)
 /* virtual */
 FramesList::~FramesList()
 {
-	std::cout << "~FramesList()" << std::endl;
 	// Empty the list, which incidentally deletes the files
 	// on disk. Must be done before deleting the folder
 	BObjectList<BitmapEntry>::MakeEmpty(true);
@@ -72,7 +71,6 @@ FramesList::CreateTempPath()
 status_t
 FramesList::DeleteTempPath()
 {
-	std::cout << "DeleteTempPath()" << std::endl;
 	// Delete the folder on disk
 	if (sTemporaryPath != NULL) {
 		BEntry(sTemporaryPath).Remove();
@@ -93,22 +91,18 @@ CompareTimestamps(const BitmapEntry* A, const BitmapEntry* B)
 status_t
 FramesList::AddItemsFromDisk()
 {
-	std::cout << "AddItemsFromDisk: path: " << Path() << std::endl;
 	BDirectory dir(Path());
 	BEntry entry;
 	while (dir.GetNextEntry(&entry) == B_OK) {
 		bigtime_t timeStamp = (bigtime_t)strtoull(entry.Name(), NULL, 10);
 		BString fullName;
 		fullName << Path() << "/" << entry.Name(); 
-		std::cout << fullName.String() << std::endl;
 		BitmapEntry* bitmapEntry =
 			new (std::nothrow) BitmapEntry(fullName, timeStamp);
-		if (bitmapEntry == NULL)
-			std::cerr << "error adding bitmapentry" << std::endl; 
 		BObjectList<BitmapEntry>::AddItem(bitmapEntry);
 	}
 
-	std::cout << "found " << CountItems() << " frames" << std::endl;
+	// Sort items based on timestamps
 	SortItems(CompareTimestamps);
 	return B_OK;
 }
@@ -163,7 +157,7 @@ FramesList::WriteFrames(const char* path)
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());
 		BBitmap* bitmap = entry->Bitmap();
-		//status = BitmapEntry::WriteFrame(bitmap, fullPath.String());
+		status = FramesList::WriteFrame(bitmap, entry->TimeStamp(), fullPath);
 		delete bitmap;
 		delete entry;
 		if (status != B_OK)
@@ -180,13 +174,11 @@ BitmapEntry::BitmapEntry(const BString& fileName, bigtime_t time)
 	fFileName(fileName),
 	fFrameTime(time)
 {
-	std::cout << "BitmapEntry: *" << fileName << "*" << std::endl;
 }
 
 
 BitmapEntry::~BitmapEntry()
 {	
-	std::cout << "Delete " << fFileName << std::endl;
 	if (fFileName != "")
 		BEntry(fFileName).Remove();
 }
@@ -195,10 +187,9 @@ BitmapEntry::~BitmapEntry()
 BBitmap*
 BitmapEntry::Bitmap()
 {
-	if (fFileName != "") {
-		return BTranslationUtils::GetBitmapFile(fFileName);
-	}
-	return NULL;
+	if (fFileName == "")
+		return NULL;
+	return BTranslationUtils::GetBitmapFile(fFileName);
 }
 
 
@@ -253,7 +244,7 @@ BitmapEntry::SaveToDisk(const char* path, const int32 index)
 
 /* static */
 status_t
-FramesList::WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BPath& path)
+FramesList::WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BString& fileName)
 {
 	// Does not take ownership of the passed BBitmap.
 	if (sTranslatorRoster == NULL) {
@@ -279,11 +270,6 @@ FramesList::WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BPath& path)
 		std::cerr << "BitmapEntry::WriteFrame(): cannot identify bitmap stream: " << ::strerror(status) << std::endl;
 		return status;
 	}
-
-	// TODO: use path
-	BString fileName;
-	fileName << Path() << "/" << frameTime;
-	std::cout << fileName << std::endl;
 
 	BFile outFile;
 	status = outFile.SetTo(fileName.String(), B_WRITE_ONLY|B_CREATE_FILE);
