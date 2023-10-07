@@ -147,7 +147,6 @@ FramesList::Path()
 status_t
 FramesList::WriteFrames(const char* path)
 {
-	std::cout << "WriteFrames()" << std::endl;
 	uint32 i = 0;
 	status_t status = B_OK;
 	while (CountItems() > 0) {
@@ -196,9 +195,8 @@ BitmapEntry::Bitmap()
 void
 BitmapEntry::Replace(BBitmap* bitmap)
 {
-	std::cout << "Replace()" << std::endl;
 	if (fFileName != "") {
-		//WriteFrame(bitmap, fFileName);
+		FramesList::WriteFrame(bitmap, TimeStamp(), fFileName);
 		delete bitmap;
 	}
 }
@@ -208,37 +206,6 @@ bigtime_t
 BitmapEntry::TimeStamp() const
 {
 	return fFrameTime;
-}
-
-
-status_t
-BitmapEntry::SaveToDisk(const char* path, const int32 index)
-{
-	std::cout << "SaveToDisk()" << std::endl;
-	return B_ERROR;
-	/*if (fBitmap == NULL && fFileName != "") {
-		std::cerr << "BitmapEntry::SaveToDisk() called but bitmap already saved to disk. Loading from disk..." << std::endl;
-		fBitmap = BTranslationUtils::GetBitmapFile(fFileName);
-		if (fBitmap == NULL) {
-			std::cerr << "failed to load bitmap from disk" << std::endl;
-		}
-		fFileName = "";
-	}
-*/
-	BString name;
-	name.SetToFormat("frame_%07" B_PRIu32 ".bmp", index + 1);
-	fFileName = path;
-	fFileName.Append("/").Append(name);
-	status_t status = B_ERROR;//WriteFrame(fBitmap, fFileName.String());
-	if (status != B_OK) {
-		std::cerr << "BitmapEntry::SaveToDisk(): WriteFrame failed: " << ::strerror(status) << std::endl;
-		return status;
-	}
-
-	/*delete fBitmap;
-	fBitmap = NULL;
-*/
-	return B_OK;
 }
 
 

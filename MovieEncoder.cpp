@@ -271,13 +271,13 @@ MovieEncoder::_EncoderThread()
 		return B_ERROR;
 	}
 	status_t status = B_OK;
-#if 0
+
 	status = _ApplyImageFilters();
 	if (status != B_OK) {
 		_HandleEncodingFinished(status);
 		return status;
 	}
-#endif	
+	
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
@@ -689,9 +689,7 @@ MovieEncoder::_PostEncodingAction(const BPath& path, int32 numFrames, int32 fps)
 void
 MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFrames)
 {
-	std::cout << "_HandleEncodingFinished()" << std::endl;
-
-	//DisposeData();
+	DisposeData();
 
 	if (!fMessenger.IsValid())
 		return;
