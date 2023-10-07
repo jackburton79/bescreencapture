@@ -270,13 +270,14 @@ MovieEncoder::_EncoderThread()
 		_HandleEncodingFinished(B_ERROR);
 		return B_ERROR;
 	}
-
-	status_t status = _ApplyImageFilters();
+	status_t status = B_OK;
+#if 0
+	status = _ApplyImageFilters();
 	if (status != B_OK) {
 		_HandleEncodingFinished(status);
 		return status;
 	}
-	
+#endif	
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
@@ -308,6 +309,7 @@ MovieEncoder::_EncoderThread()
 	ASSERT((lastEntry != NULL));
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
 	float fps = CalculateFPS(framesLeft, diff);
+	std::cout << "CalculateFPS returned " << fps << std::endl;
 	mediaFormat.u.raw_video.field_rate = fps;
 	
 	// Create movie
@@ -687,7 +689,9 @@ MovieEncoder::_PostEncodingAction(const BPath& path, int32 numFrames, int32 fps)
 void
 MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFrames)
 {
-	DisposeData();
+	std::cout << "_HandleEncodingFinished()" << std::endl;
+
+	//DisposeData();
 
 	if (!fMessenger.IsValid())
 		return;

@@ -14,9 +14,7 @@
 class BBitmap;
 class BitmapEntry {
 public:
-	BitmapEntry();
 	BitmapEntry(const BString& fileName, bigtime_t time);
-	BitmapEntry(BBitmap* bitmap, bigtime_t time);
 	BitmapEntry(BitmapEntry*);
 	BitmapEntry(const BitmapEntry&);
 	~BitmapEntry();
@@ -24,7 +22,7 @@ public:
 	BBitmap* Bitmap();
 	void Replace(BBitmap* bitmap);
 	bigtime_t TimeStamp() const;
-	
+
 	status_t SaveToDisk(const char* path, const int32 index);
 
 	static status_t WriteFrame(const BBitmap* bitmap, const char* fileName);
@@ -45,7 +43,6 @@ public:
 	static status_t DeleteTempPath();
 	
 	status_t AddItemsFromDisk();
-	bool AddItem(BBitmap* bitmap, bigtime_t frameTime);
 
 	BitmapEntry* Pop();
 	BitmapEntry* ItemAt(int32 index) const;

@@ -1146,6 +1146,7 @@ BSCApp::ResetSettings()
 void
 BSCApp::TestSystem()
 {
+#if 0
 	std::cout << "Testing system speed:" << std::endl;
 	int32 numFrames = 500;
 	FramesList* list = new FramesList(true);
@@ -1164,6 +1165,7 @@ BSCApp::TestSystem()
 	std::cout << "Took " << (elapsedTime / 1000) << " msec to write ";
 	std::cout << numFrames << " frames: " << (numFrames / (elapsedTime / 1000000)) << " fps.";
 	std::cout << std::endl;
+#endif
 }
 
 
