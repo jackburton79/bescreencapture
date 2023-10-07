@@ -1,441 +1,442 @@
 [
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-Xlinker",
-   "-soname=_APP_",
-   "-L./",
-   "-Lobjects.x86_64-cc11-release/",
-   "-lstdc++",
-   "-lsupc++",
-   "-lgame",
-   "-lmedia",
-   "-lbe",
-   "-ltracker",
-   "-ltranslation",
-   "bin2txt.cpp",
-   "-o",
-   "bin2txt"
-  ],
-  "file": "bin2txt.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "AdvancedOptionsView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/AdvancedOptionsView.o"
-  ],
-  "file": "AdvancedOptionsView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "Arguments.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/Arguments.o"
-  ],
-  "file": "Arguments.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "BSCApp.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/BSCApp.o"
-  ],
-  "file": "BSCApp.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "BSCWindow.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/BSCWindow.o"
-  ],
-  "file": "BSCWindow.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "CamStatusView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/CamStatusView.o"
-  ],
-  "file": "CamStatusView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "Constants.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/Constants.o"
-  ],
-  "file": "Constants.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "DeskbarControlView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/DeskbarControlView.o"
-  ],
-  "file": "DeskbarControlView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "Executor.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/Executor.o"
-  ],
-  "file": "Executor.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "FrameRateView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/FrameRateView.o"
-  ],
-  "file": "FrameRateView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "FramesList.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/FramesList.o"
-  ],
-  "file": "FramesList.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "ImageFilter.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/ImageFilter.o"
-  ],
-  "file": "ImageFilter.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "InfoView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/InfoView.o"
-  ],
-  "file": "InfoView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "MediaFormatView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/MediaFormatView.o"
-  ],
-  "file": "MediaFormatView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "MovieEncoder.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/MovieEncoder.o"
-  ],
-  "file": "MovieEncoder.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "OptionsWindow.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/OptionsWindow.o"
-  ],
-  "file": "OptionsWindow.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "OutputView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/OutputView.o"
-  ],
-  "file": "OutputView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "PreviewView.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/PreviewView.o"
-  ],
-  "file": "PreviewView.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "PriorityControl.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/PriorityControl.o"
-  ],
-  "file": "PriorityControl.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "SelectionWindow.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/SelectionWindow.o"
-  ],
-  "file": "SelectionWindow.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "Settings.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/Settings.o"
-  ],
-  "file": "Settings.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "SliderTextControl.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/SliderTextControl.o"
-  ],
-  "file": "SliderTextControl.cpp"
- },
- {
-  "directory": "/boot/home/git/bescreencapture",
-  "arguments": [
-   "g++",
-   "-c",
-   "Utils.cpp",
-   "-iquote./",
-   "-iquote./",
-   "-iquoteobjects.x86_64-cc11-release/",
-   "-O3",
-   "-Wall",
-   "-Wno-multichar",
-   "-Wno-ctor-dtor-privacy",
-   "-Werror",
-   "-o",
-   "objects.x86_64-cc11-release/Utils.o"
-  ],
-  "file": "Utils.cpp"
- }
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/AdvancedOptionsView.o",
+      "AdvancedOptionsView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/AdvancedOptionsView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/AdvancedOptionsView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/Arguments.o",
+      "Arguments.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/Arguments.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/Arguments.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/BSCApp.o",
+      "BSCApp.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/BSCApp.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/BSCApp.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/BSCWindow.o",
+      "BSCWindow.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/BSCWindow.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/BSCWindow.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/CamStatusView.o",
+      "CamStatusView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/CamStatusView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/CamStatusView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/Constants.o",
+      "Constants.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/Constants.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/Constants.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/DeskbarControlView.o",
+      "DeskbarControlView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/DeskbarControlView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/DeskbarControlView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/Executor.o",
+      "Executor.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/Executor.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/Executor.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/FrameRateView.o",
+      "FrameRateView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/FrameRateView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/FrameRateView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/FramesList.o",
+      "FramesList.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/FramesList.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/FramesList.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/ImageFilter.o",
+      "ImageFilter.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/ImageFilter.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/ImageFilter.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/InfoView.o",
+      "InfoView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/InfoView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/InfoView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/MediaFormatView.o",
+      "MediaFormatView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/MediaFormatView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/MediaFormatView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/MovieEncoder.o",
+      "MovieEncoder.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/MovieEncoder.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/MovieEncoder.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/OptionsWindow.o",
+      "OptionsWindow.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/OptionsWindow.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/OptionsWindow.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/OutputView.o",
+      "OutputView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/OutputView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/OutputView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/PreviewView.o",
+      "PreviewView.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/PreviewView.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/PreviewView.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/PriorityControl.o",
+      "PriorityControl.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/PriorityControl.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/PriorityControl.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/SelectionWindow.o",
+      "SelectionWindow.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/SelectionWindow.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/SelectionWindow.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/Settings.o",
+      "Settings.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/Settings.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/Settings.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/SliderTextControl.o",
+      "SliderTextControl.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/SliderTextControl.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/SliderTextControl.o"
+  },
+  {
+    "arguments": [
+      "/bin/g++",
+      "-c",
+      "-iquote./",
+      "-iquote./",
+      "-iquoteobjects.x86_64-cc13-release/",
+      "-O3",
+      "-Wall",
+      "-Wno-multichar",
+      "-Wno-ctor-dtor-privacy",
+      "-Werror",
+      "-o",
+      "objects.x86_64-cc13-release/Utils.o",
+      "Utils.cpp"
+    ],
+    "directory": "/boot/home/git/bescreencapture",
+    "file": "/boot/home/git/bescreencapture/Utils.cpp",
+    "output": "/boot/home/git/bescreencapture/objects.x86_64-cc13-release/Utils.o"
+  }
 ]
