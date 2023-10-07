@@ -148,7 +148,6 @@ BSCApp::BSCApp()
 	fDirectWindowAvailable(false),
 	fEncoder(NULL),
 	fEncoderThread(-1),
-	fFileList(NULL),
 	fCodecList(NULL),
 	fStopRunner(NULL),
 	fRequestedRecordTime(0),
@@ -174,7 +173,8 @@ BSCApp::~BSCApp()
 	delete fRecordWatch;
 	delete fEncoder;
 	delete fCodecList;
-	delete fFileList;
+
+	FramesList::DeleteTempPath();
 
 	Settings::Current().Save();
 	Settings::Destroy();
@@ -640,7 +640,7 @@ BSCApp::State() const
 	if (fCaptureThread > 0)
 		return STATE_RECORDING;
 
-	if (fEncoderThread > 0 || fFileList != NULL)
+	if (fEncoderThread > 0)
 		return STATE_ENCODING;
 
 	return STATE_IDLE;
@@ -1053,21 +1053,6 @@ void
 BSCApp::StartCapture()
 {
 	fNumFrames = 0;
-	try {
-		if (fFileList == NULL)
-			fFileList = new FramesList();
-	} catch (status_t& error) { 
-		BMessage message(kMsgControllerCaptureStopped);
-		message.AddInt32("status", error);
-		SendNotices(kMsgControllerCaptureStopped, &message);
-		return;
-	} catch (...) {
-		BMessage message(kMsgControllerCaptureStopped);
-		message.AddInt32("status", int32(B_ERROR));
-		SendNotices(kMsgControllerCaptureStopped, &message);
-		return;
-	}
-
 	fKillCaptureThread = false;
 	fPaused = false;
 
@@ -1371,9 +1356,6 @@ BSCApp::CaptureThread()
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", (int32)error);
 		SendNotices(kMsgControllerCaptureStopped, &message);
-		
-		delete fFileList;
-		fFileList = NULL;
 	}
 	
 	return B_OK;

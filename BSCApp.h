@@ -116,8 +116,6 @@ private:
 	MovieEncoder*		fEncoder;
 	thread_id			fEncoderThread;
 	
-	FramesList			*fFileList;
-	
 	BObjectList<media_codec_info>* fCodecList;
 
 	BMessageRunner*		fStopRunner;
