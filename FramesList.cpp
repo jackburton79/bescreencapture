@@ -25,36 +25,15 @@
 #include <new>
 
 static BTranslatorRoster* sTranslatorRoster = NULL;
+char* FramesList::sTemporaryPath = NULL;
 
 const uint32 kBitmapFormat = 'BMP ';
 const uint64 kMinFreeMemory = (1 * 1024 * 1024 * 1024); // 1GB
 
 FramesList::FramesList(bool diskOnly)
 	:
-	BObjectList<BitmapEntry>(20, true),
-	fTemporaryPath(NULL),
-	fDiskOnly(diskOnly)
+	BObjectList<BitmapEntry>(20, true)
 {
-#if 1
-	// On haiku 32 bit, we start hitting the 2GB memory limit
-	// after ~100 frames, so we cannot keep them in memory.
-	// It seems that already 10 frames are too much in some cases:
-	// I wonder if we're hitting the app_server 2GB limit in case some other app
-	// has many bitmaps
-	fDiskOnly = true;
-#endif
-
-	BPath path;
-	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
-	if (status != B_OK)
-		throw status;
-	char* pathName = (char*)malloc(B_PATH_NAME_LENGTH);
-	if (pathName == NULL)
-		throw B_NO_MEMORY;
-	::snprintf(pathName, B_PATH_NAME_LENGTH, "%s/_BSCXXXXXX", path.Path());
-	fTemporaryPath = ::mkdtemp(pathName);
-	if (fTemporaryPath == NULL)
-		throw B_ERROR;
 }
 
 
@@ -62,15 +41,64 @@ FramesList::FramesList(bool diskOnly)
 FramesList::~FramesList()
 {
 	// Empty the list, which incidentally deletes the files
-	// on disk. Must be done before deleting the folder below
+	// on disk. Must be done before deleting the folder
 	BObjectList<BitmapEntry>::MakeEmpty(true);
+	
+	DeleteTempPath();
+}
 
+
+/* static */
+status_t
+FramesList::CreateTempPath()
+{
+	BPath path;
+	status_t status = find_directory(B_SYSTEM_TEMP_DIRECTORY, &path);
+	if (status != B_OK)
+		return status;
+	char* pathName = (char*)malloc(B_PATH_NAME_LENGTH);
+	if (pathName == NULL)
+		return B_NO_MEMORY;
+	::snprintf(pathName, B_PATH_NAME_LENGTH, "%s/_BSCXXXXXX", path.Path());
+	sTemporaryPath = ::mkdtemp(pathName);
+	if (sTemporaryPath == NULL)
+		return B_ERROR;
+	return B_OK;
+}
+
+
+/* static */
+status_t
+FramesList::DeleteTempPath()
+{
 	// Delete the folder on disk
-	if (fTemporaryPath != NULL) {
-		BEntry(fTemporaryPath).Remove();
-		free(fTemporaryPath);
-		fTemporaryPath = NULL;
+	if (sTemporaryPath != NULL) {
+		BEntry(sTemporaryPath).Remove();
+		free(sTemporaryPath);
+		sTemporaryPath = NULL;
 	}
+	return B_OK;
+}
+
+
+status_t
+FramesList::AddItemsFromDisk()
+{
+	std::cout << "AddItemsFromDisk: path: " << Path() << std::endl;
+	BDirectory dir(Path());
+	BEntry entry;
+	while (dir.GetNextEntry(&entry) == B_OK) {
+		bigtime_t timeStamp = (bigtime_t)strtoull(entry.Name(), NULL, 10);
+		BString fullName;
+		fullName << Path() << "/" << entry.Name(); 
+		std::cout << fullName.String() << std::endl;
+		BitmapEntry* bitmapEntry =
+			new (std::nothrow) BitmapEntry(fullName, timeStamp);
+		if (bitmapEntry == NULL)
+			std::cerr << "error adding bitmapentry" << std::endl; 
+		BObjectList<BitmapEntry>::AddItem(bitmapEntry);
+	}
+	return B_OK;
 }
 
 
@@ -85,8 +113,8 @@ FramesList::AddItem(BBitmap* bitmap, bigtime_t frameTime)
 
 	// TODO: Use a smarter check
 	const int32 numItems = CountItems();
-	if (fDiskOnly || numItems >= 10 || GetFreeMemory() < kMinFreeMemory) {
-		status_t status = entry->SaveToDisk(fTemporaryPath, numItems);
+	if (true) {
+		status_t status = entry->SaveToDisk(sTemporaryPath, numItems);
 		if (status != B_OK) {
 			std::cerr << "FramesList::AddItem(): cannot save to disk: " << strerror(status) << std::endl;
 			delete entry;
@@ -126,10 +154,11 @@ FramesList::CountItems() const
 }
 
 
+/* static */
 const char*
-FramesList::Path() const
+FramesList::Path()
 {
-	return fTemporaryPath;
+	return sTemporaryPath;
 }
 
 
@@ -145,7 +174,7 @@ FramesList::WriteFrames(const char* path)
 		BString fullPath(path);
 		fullPath.Append("/").Append(fileName.String());
 		BBitmap* bitmap = entry->Bitmap();
-		status = BitmapEntry::WriteFrame(bitmap, fullPath.String());
+		//status = BitmapEntry::WriteFrame(bitmap, fullPath.String());
 		delete bitmap;
 		delete entry;
 		if (status != B_OK)
@@ -158,15 +187,20 @@ FramesList::WriteFrames(const char* path)
 
 // BitmapEntry
 BitmapEntry::BitmapEntry()
+{
+}
+
+
+BitmapEntry::BitmapEntry(const BString& fileName, bigtime_t time)
 	:
-	fBitmap(NULL)
+	fFileName(fileName),
+	fFrameTime(time)
 {
 }
 
 
 BitmapEntry::BitmapEntry(BBitmap* bitmap, bigtime_t time)
 	:
-	fBitmap(bitmap),
 	fFrameTime(time)
 {
 }
@@ -176,17 +210,12 @@ BitmapEntry::~BitmapEntry()
 {	
 	if (fFileName != "")
 		BEntry(fFileName).Remove();
-	if (fBitmap != NULL)
-		delete fBitmap;
 }
 
 
 BBitmap*
 BitmapEntry::Bitmap()
 {
-	if (fBitmap != NULL)
-		return new (std::nothrow) BBitmap(fBitmap);
-
 	if (fFileName != "")
 		return BTranslationUtils::GetBitmapFile(fFileName);
 	
@@ -197,11 +226,8 @@ BitmapEntry::Bitmap()
 void
 BitmapEntry::Replace(BBitmap* bitmap)
 {
-	if (fBitmap != NULL) {
-		delete fBitmap;
-		fBitmap = bitmap;
-	} else if (fFileName != "") {
-		WriteFrame(bitmap, fFileName);
+	if (fFileName != "") {
+		//WriteFrame(bitmap, fFileName);
 		delete bitmap;
 	}
 }
@@ -217,7 +243,7 @@ BitmapEntry::TimeStamp() const
 status_t
 BitmapEntry::SaveToDisk(const char* path, const int32 index)
 {
-	if (fBitmap == NULL && fFileName != "") {
+	/*if (fBitmap == NULL && fFileName != "") {
 		std::cerr << "BitmapEntry::SaveToDisk() called but bitmap already saved to disk. Loading from disk..." << std::endl;
 		fBitmap = BTranslationUtils::GetBitmapFile(fFileName);
 		if (fBitmap == NULL) {
@@ -225,27 +251,27 @@ BitmapEntry::SaveToDisk(const char* path, const int32 index)
 		}
 		fFileName = "";
 	}
-
+*/
 	BString name;
 	name.SetToFormat("frame_%07" B_PRIu32 ".bmp", index + 1);
 	fFileName = path;
 	fFileName.Append("/").Append(name);
-	status_t status = WriteFrame(fBitmap, fFileName.String());
+	status_t status = B_ERROR;//WriteFrame(fBitmap, fFileName.String());
 	if (status != B_OK) {
 		std::cerr << "BitmapEntry::SaveToDisk(): WriteFrame failed: " << ::strerror(status) << std::endl;
 		return status;
 	}
 
-	delete fBitmap;
+	/*delete fBitmap;
 	fBitmap = NULL;
-
+*/
 	return B_OK;
 }
 
 
 /* static */
 status_t
-BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
+FramesList::WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BPath& path)
 {
 	// Does not take ownership of the passed BBitmap.
 	if (sTranslatorRoster == NULL) {
@@ -272,8 +298,13 @@ BitmapEntry::WriteFrame(const BBitmap* bitmap, const char* fileName)
 		return status;
 	}
 
+	// TODO: use path
+	BString fileName;
+	fileName << Path() << "/" << frameTime;
+	std::cout << fileName << std::endl;
+
 	BFile outFile;
-	status = outFile.SetTo(fileName, B_WRITE_ONLY|B_CREATE_FILE);
+	status = outFile.SetTo(fileName.String(), B_WRITE_ONLY|B_CREATE_FILE);
 	if (status != B_OK) {
 		std::cerr << "BitmapEntry::WriteFrame(): cannot create file" << ::strerror(status) << std::endl;
 		return status;

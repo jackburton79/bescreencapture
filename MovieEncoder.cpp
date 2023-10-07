@@ -104,15 +104,6 @@ MovieEncoder::Cancel()
 
 
 status_t
-MovieEncoder::SetSource(FramesList* fileList)
-{
-	// Takes ownership
-	fFileList = fileList;
-	return B_OK;
-}
-
-
-status_t
 MovieEncoder::SetOutputFile(const char* fileName)
 {
 	fOutputFile.SetTo(fileName);
@@ -269,6 +260,10 @@ status_t
 MovieEncoder::_EncoderThread()
 {	
 	std::cerr << "MovieEncoder::_EncoderThread() started" << std::endl;
+	fFileList = new FramesList();
+	fFileList->AddItemsFromDisk();
+	
+	std::cout << "count items" << std::endl;
 	int32 framesLeft = fFileList->CountItems();
 	if (framesLeft <= 0) {
 		std::cerr << "MovieEncoder::_EncoderThread(): no frames to encode." << std::endl;
@@ -278,11 +273,10 @@ MovieEncoder::_EncoderThread()
 
 	status_t status = _ApplyImageFilters();
 	if (status != B_OK) {
-		std::cerr << "MovieEncoder::_EncoderThread(): error while applying filters: " << ::strerror(status) << std::endl;
 		_HandleEncodingFinished(status);
 		return status;
 	}
-
+	
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
@@ -315,10 +309,10 @@ MovieEncoder::_EncoderThread()
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
 	float fps = CalculateFPS(framesLeft, diff);
 	mediaFormat.u.raw_video.field_rate = fps;
-
+	
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, mediaFormat, fCodecInfo);
-	fTempPath = fFileList->Path();
+	fTempPath = FramesList::Path();
 	if (status != B_OK) {
 		std::cerr << "MovieEncoder::_EncoderThread(): _CreateFile failed with " << ::strerror(status) << std::endl;
 		_HandleEncodingFinished(status);

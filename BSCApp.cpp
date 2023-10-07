@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "BSCApp.h"
@@ -721,11 +721,8 @@ BSCApp::EncodeMovie()
 {
 	BAutolock _(this);
 
-	int32 numFrames = fFileList->CountItems();
-	if (numFrames <= 0) {
+	if (RecordedFrames() <= 0) {
 		_EncodingFinished(B_ERROR, NULL);
-		delete fFileList;
-		fFileList = NULL;
 		return;
 	}
 
@@ -755,11 +752,11 @@ BSCApp::EncodeMovie()
 	fEncoder->SetOutputFile(fileName);
 
 	BMessage message(kMsgControllerEncodeStarted);
-	message.AddInt32("frames_total", numFrames);
+	message.AddInt32("frames_total", RecordedFrames());
 	SendNotices(kMsgControllerEncodeStarted, &message);
 
-	fEncoder->SetSource(fFileList);
-	fFileList = NULL;
+	//fEncoder->SetSource(fFileList);
+	//fFileList = NULL;
 
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
@@ -1290,6 +1287,7 @@ int32
 BSCApp::CaptureThread()
 {
 	const Settings& settings = Settings::Current();
+	
 	BRect bounds = settings.CaptureArea();
 	int32 frameRate = settings.CaptureFrameRate();
 	if (frameRate <= 0)
@@ -1302,6 +1300,9 @@ BSCApp::CaptureThread()
 
 	_TestWaitForRetrace();
 
+	// TODO: Check status_t
+	FramesList::CreateTempPath();
+	
 	const int32 windowEdge = settings.WindowFrameEdgeSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowEdge);
 	status_t error = B_ERROR;
@@ -1335,9 +1336,12 @@ BSCApp::CaptureThread()
 			}
 
 			bigtime_t lastFrameTime = system_time();
-
+			
+			// TODO: set path ?
+			BPath path;
+			status_t status = FramesList::WriteFrame(bitmap, lastFrameTime, path);
+			if (status != B_OK) {
 			// Takes ownership of the bitmap
-			if (!fFileList->AddItem(bitmap, lastFrameTime)) {
 				error = B_NO_MEMORY;
 				std::cerr << "BSCApp::CaptureThread(): error adding bitmap to frame list: " << ::strerror(error) << std::endl;
 				break;

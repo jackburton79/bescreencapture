@@ -15,6 +15,7 @@ class BBitmap;
 class BitmapEntry {
 public:
 	BitmapEntry();
+	BitmapEntry(const BString& fileName, bigtime_t time);
 	BitmapEntry(BBitmap* bitmap, bigtime_t time);
 	BitmapEntry(BitmapEntry*);
 	BitmapEntry(const BitmapEntry&);
@@ -29,7 +30,6 @@ public:
 	static status_t WriteFrame(const BBitmap* bitmap, const char* fileName);
 	
 private:
-	BBitmap* fBitmap;
 	BString fFileName;
 	bigtime_t fFrameTime;
 };
@@ -41,18 +41,22 @@ public:
 	FramesList(bool diskOnly = false);
 	virtual ~FramesList();
 
+	static status_t CreateTempPath();
+	static status_t DeleteTempPath();
+	
+	status_t AddItemsFromDisk();
 	bool AddItem(BBitmap* bitmap, bigtime_t frameTime);
 
 	BitmapEntry* Pop();
 	BitmapEntry* ItemAt(int32 index) const;
 	BitmapEntry* ItemAt(int32 index);
 	int32 CountItems() const;
-	const char* Path() const;
+	static const char* Path();
 
 	status_t WriteFrames(const char* path);
+	static status_t WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BPath& path);
 private:
-	char* fTemporaryPath;
-	bool fDiskOnly;
+	static char* sTemporaryPath;
 };
 
 
