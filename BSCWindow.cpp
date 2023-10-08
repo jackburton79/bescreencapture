@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "BSCWindow.h"
@@ -291,20 +291,19 @@ void
 BSCWindow::_BuildMenu()
 {
 	BMenu* menu = new BMenu("App");
-	BMenuItem* quitItem = new BMenuItem("Quit", new BMessage(B_QUIT_REQUESTED));
+	BMenuItem* helpItem = new BMenuItem("Help" B_UTF8_ELLIPSIS, new BMessage(kGUIShowHelp), 'H');
+	BMenuItem* aboutItem = new BMenuItem("About BeScreenCapture", new BMessage(B_ABOUT_REQUESTED));
+	BMenuItem* quitItem = new BMenuItem("Quit", new BMessage(B_QUIT_REQUESTED), 'Q');
+	menu->AddItem(helpItem);
+	menu->AddItem(aboutItem);
+	menu->AddSeparatorItem();
 	menu->AddItem(quitItem);
+	
 	fMenuBar->AddItem(menu);
 	
 	menu = new BMenu("Settings");
 	BMenuItem* resetSettings = new BMenuItem("Default", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
-	fMenuBar->AddItem(menu);
-	
-	menu = new BMenu("Help");
-	BMenuItem* readMeItem = new BMenuItem("Show readme", new BMessage(kGUIShowHelp));
-	BMenuItem* aboutItem = new BMenuItem("About", new BMessage(B_ABOUT_REQUESTED));
-	menu->AddItem(readMeItem);
-	menu->AddItem(aboutItem);	
 	fMenuBar->AddItem(menu);
 }
 
