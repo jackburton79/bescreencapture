@@ -260,7 +260,7 @@ status_t
 MovieEncoder::_EncoderThread()
 {	
 	fFileList = new FramesList();
-	fFileList->GetFramesFromDisk();
+	fFileList->AddItemsFromDisk();
 	
 	int32 framesLeft = fFileList->CountItems();
 	if (framesLeft <= 0) {
