@@ -187,4 +187,4 @@ Changelog.h : bin2txt Changelog.txt
 bin2txt : bin2txt.cpp
 
 README.html : README.md
-	mmd README.md
+	multimarkdown -b README.md
