@@ -51,7 +51,8 @@ public:
 	void		StopThreads();
 	
 	int			State() const;
-		
+	bool		Paused() const;
+
 	void		ToggleCapture();
 	void		TogglePause();
 	

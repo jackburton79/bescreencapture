@@ -647,6 +647,13 @@ BSCApp::State() const
 }
 
 
+bool
+BSCApp::Paused() const
+{
+	return fPaused;
+}
+
+
 void
 BSCApp::ToggleCapture()
 {

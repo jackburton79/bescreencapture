@@ -287,6 +287,34 @@ BSCWindow::DirectConnected(direct_buffer_info *info)
 }
 
 
+/* virtual */
+void
+BSCWindow::MenusBeginning()
+{
+	BWindow::MenusBeginning();
+
+	BMenuItem* recordingItem = fMenuBar->FindItem("Recording");
+	if (recordingItem == NULL)
+		return;
+	BMenu* menu = recordingItem->Menu();
+	if (menu == NULL)
+		return;
+	BMenuItem* start = menu->FindItem("Start");
+	BMenuItem* stop = menu->FindItem("Stop");
+	BMenuItem* pause = menu->FindItem("Pause");
+	int state = ((BSCApp*)be_app)->State();
+	if (start != NULL)
+		start->SetEnabled(state == BSCApp::STATE_IDLE);
+	if (stop != NULL)
+		stop->SetEnabled(state == BSCApp::STATE_RECORDING);
+	if (pause != NULL) {
+		pause->SetEnabled(state == BSCApp::STATE_RECORDING);
+		bool paused = (((BSCApp*)be_app)->Paused());
+		pause->SetMarked(paused);
+	}
+}
+
+
 void
 BSCWindow::_BuildMenu()
 {
@@ -298,9 +326,21 @@ BSCWindow::_BuildMenu()
 	menu->AddItem(aboutItem);
 	menu->AddSeparatorItem();
 	menu->AddItem(quitItem);
-	
 	fMenuBar->AddItem(menu);
 	
+	menu = new BMenu("Recording");
+	BMenuItem* startRecording = new BMenuItem("Start", new BMessage(kMsgGUIToggleCapture), 'S');
+	startRecording->SetTarget(be_app);
+	BMenuItem* stopRecording = new BMenuItem("Stop", new BMessage(kMsgGUIToggleCapture), 'T');
+	stopRecording->SetTarget(be_app);
+	BMenuItem* pauseRecording = new BMenuItem("Pause", new BMessage(kMsgGUITogglePause));
+	pauseRecording->SetTarget(be_app);
+	menu->AddItem(startRecording);
+	menu->AddItem(stopRecording);
+	menu->AddSeparatorItem();
+	menu->AddItem(pauseRecording);
+	fMenuBar->AddItem(menu);
+
 	menu = new BMenu("Settings");
 	BMenuItem* resetSettings = new BMenuItem("Default", new BMessage(kGUIResetSettings));
 	menu->AddItem(resetSettings);
