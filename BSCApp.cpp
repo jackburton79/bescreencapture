@@ -640,7 +640,7 @@ BSCApp::State() const
 	if (fCaptureThread > 0)
 		return STATE_RECORDING;
 
-	if (fEncoderThread > 0 || fFileList != NULL)
+	if (fEncoderThread > 0)
 		return STATE_ENCODING;
 
 	return STATE_IDLE;
