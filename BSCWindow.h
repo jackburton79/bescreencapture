@@ -27,6 +27,7 @@ public:
 	virtual void MessageReceived(BMessage *);
 	virtual void ScreenChanged(BRect screen_size, color_space depth);
 	virtual void DirectConnected(direct_buffer_info *info);
+	virtual void MenusBeginning();
 	
 	status_t ReadBitmap(BBitmap *bitmap, BRect bounds);
 	
