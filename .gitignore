@@ -1,3 +1,4 @@
+.cache
 objects.*
 Changelog.h
 bin2txt
