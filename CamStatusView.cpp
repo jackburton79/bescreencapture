@@ -45,7 +45,7 @@ public:
 	{
 		SetDrawingMode(B_OP_ALPHA);
 		if (fBitmap != NULL)
-			DrawBitmap(fBitmap, fBitmap->Bounds(), Bounds());	
+			DrawBitmap(fBitmap, fBitmap->Bounds(), Bounds());
 	}
 	void SetBitmap(const BBitmap* bitmap)
 	{
@@ -78,7 +78,7 @@ CamStatusView::CamStatusView()
 	fEncodingStringView = new BStringView("encoding_string_view", "");
 	fStatusBar = new BStatusBar("progress_bar", "");
 	fStatusBar->SetExplicitMinSize(BSize(100, B_SIZE_UNSET));
-	
+
 	fBitmapView = new SquareBitmapView("bitmap_view");
 	fBitmapView->SetBitmap(NULL);
 
@@ -103,7 +103,7 @@ CamStatusView::CamStatusView()
 		.Add(fBitmapView)
 		.Add(fStringView)
 		.View();
-	
+
 	BLayoutBuilder::Cards<>(this)
 		.Add(layoutView)
 		.Add(statusView)
@@ -124,10 +124,10 @@ CamStatusView::AttachedToWindow()
 		be_app->StartWatching(this, kMsgControllerEncodeFinished);
 		be_app->UnlockLooper();
 	}
-	
+
 	if (Parent())
 		SetViewColor(Parent()->ViewColor());
-	
+
 	BResources* resources = be_app->AppResources();
 	size_t size;
 	const void* buffer = resources->LoadResource(B_VECTOR_ICON_TYPE, "record_icon", &size);
@@ -136,7 +136,7 @@ CamStatusView::AttachedToWindow()
 	buffer = resources->LoadResource(B_VECTOR_ICON_TYPE, "pause_icon", &size);
 	if (buffer != NULL)
 		BIconUtils::GetVectorIcon((uint8*)buffer, size, fPauseBitmap);
-	
+
 	fBitmapView->SetBitmap(NULL);
 
 	BString statusString = _GetRecordingStatusString();

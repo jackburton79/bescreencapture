@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "AdvancedOptionsView.h"
@@ -31,35 +31,35 @@ AdvancedOptionsView::AdvancedOptionsView()
 {
 	BGroupLayout* groupLayout = new BGroupLayout(B_VERTICAL);
 	SetLayout(groupLayout);
-	
+
 	BBox *encodingBox = new BBox("encoding options");
 	BBox* frameBox = new BBox("frame rate");
 	BBox *advancedBox = new BBox("Advanced");
-	
+
 	encodingBox->SetLabel("Encoding options");
 	frameBox->SetLabel("Frame rate");
 	advancedBox->SetLabel("Advanced");
-	
+
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.Add(new MediaFormatView())
 		.View();
-	
+
 	encodingBox->AddChild(layoutView);
-	
+
 	layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 			B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 			.Add(new FrameRateView())
 		.View();
-	
+
 	frameBox->AddChild(layoutView);
-	
+
 	AddChild(encodingBox);
 	AddChild(frameBox);
 	AddChild(advancedBox);
-	
+
 	layoutView = BLayoutBuilder::Group<>()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
@@ -84,7 +84,7 @@ AdvancedOptionsView::AdvancedOptionsView()
 
 	fHideDeskbarIcon->SetToolTip("Stop recording with with CTRL+ALT+SHIFT+R,\n"
 								"or define a key combination with the Shortcuts preferences");
-	
+
 	advancedBox->AddChild(layoutView);
 
 	_EnableDirectWindowIfSupported();
@@ -92,7 +92,7 @@ AdvancedOptionsView::AdvancedOptionsView()
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	app->SetVideoDepth(B_RGB32);
 	app->SetUseDirectWindow(fUseDirectWindow->Value() == B_CONTROL_ON);
-	
+
 	const Settings& settings = Settings::Current();
 	fMinimizeOnStart->SetValue(settings.MinimizeOnRecording() ? B_CONTROL_ON : B_CONTROL_OFF);
 	if (settings.EnableShortcut()) {
@@ -114,7 +114,7 @@ void
 AdvancedOptionsView::AttachedToWindow()
 {
 	BView::AttachedToWindow();
-	
+
 	SetViewColor(ui_color(B_PANEL_BACKGROUND_COLOR));
 	fUseDirectWindow->SetTarget(this);
 	fMinimizeOnStart->SetTarget(this);
@@ -161,7 +161,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 		case kLocalMinimizeOnRecording:
 			Settings::Current().SetMinimizeOnRecording(fMinimizeOnStart->Value() == B_CONTROL_ON);
 			break;
-		
+
 		case kLocalQuitWhenFinished:
 			Settings::Current().SetQuitWhenFinished(fQuitWhenFinished->Value() == B_CONTROL_ON);
 			break;
@@ -176,7 +176,7 @@ AdvancedOptionsView::MessageReceived(BMessage *message)
 				fHideDeskbarIcon->SetValue(B_CONTROL_OFF);
 			}
 			// fall through
-		
+
 		case kLocalSelectOnStart:
 			Settings::Current().SetSelectOnStart(fSelectOnStart->Value() == B_CONTROL_ON);
 			// Save settings immediately, so the input server addon picks the change

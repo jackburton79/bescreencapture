@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2017-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef __FRAMERATEVIEW_H
@@ -13,7 +13,7 @@ public:
 	FrameRateView();
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
-	
+
 private:
 	SliderTextControl* fFrameRateSlider;
 };

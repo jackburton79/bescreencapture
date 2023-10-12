@@ -32,7 +32,7 @@ const static uint32 kAutoAdjust = 'FrCh';
 FrameRateView::FrameRateView()
 	:
 	BView("Frame Rate View", B_WILL_DRAW)
-{	
+{
 	fFrameRateSlider = new SliderTextControl("frame rate",
 			kFrameRateLabel, new BMessage(kLocalFrameRateChanged), 1, 60, 1, "fps");
 
@@ -95,7 +95,7 @@ FrameRateView::MessageReceived(BMessage* message)
 				default:
 					break;
 			}
-		}	
+		}
 		default:
 			BView::MessageReceived(message);
 			break;

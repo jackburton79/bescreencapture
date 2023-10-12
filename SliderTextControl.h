@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2015-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef SLIDERTEXTCONTROL_H
@@ -22,7 +22,7 @@ public:
 		thumb_style thumbType = B_BLOCK_THUMB,
 		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
 							| B_FRAME_EVENTS);
-	
+
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
 	virtual void SetValue(int32 value);

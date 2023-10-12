@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #ifndef __CONSTANTS_H
 #define __CONSTANTS_H
 

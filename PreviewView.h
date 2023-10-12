@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef __PREVIEWVIEW_H
@@ -14,7 +14,7 @@ public:
 	virtual void AttachedToWindow();
 	void Update(const BRect* rect = NULL, BBitmap* bitmap = NULL);
 	BRect Rect() const;
-	
+
 private:
 	BView *fBitmapView;
 	BRect fCoordRect;
@@ -23,7 +23,7 @@ private:
 
 	BStringView *fLeftTop;
 	BStringView *fRightBottom;
-	
+
 	void _SetRect(const BRect& rect);
 };
 

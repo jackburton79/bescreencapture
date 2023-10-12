@@ -27,7 +27,7 @@ class BSCApp : public BApplication {
 public:
 	BSCApp();
 	virtual ~BSCApp();
-	
+
 	virtual void ArgvReceived(int32 argc, char** argv);
 	virtual void ReadyToRun();
 	virtual bool QuitRequested();
@@ -49,49 +49,49 @@ public:
 
 	bool		CanQuit(BString& reason) const;
 	void		StopThreads();
-	
+
 	int			State() const;
 	bool		Paused() const;
 
 	void		ToggleCapture();
 	void		TogglePause();
-	
+
 	int32		RecordedFrames() const;
 	bigtime_t	RecordTime() const;
 	void		SetRecordingTime(const bigtime_t msecs);
-	
+
 	float		AverageFPS() const;
-	
+
 	void		EncodeMovie();
-	
+
 	void		SetUseDirectWindow(const bool &use);
 	bool		SetCaptureArea(const BRect &rect);
 	void		SetCaptureFrameRate(const int fps);
 	void		SetPlaybackFrameRate(const int rate);
-	
+
 	void		SetScale(const float &scale);
 	void		SetVideoDepth(const color_space &space);
 	void		SetOutputFileName(const char *fileName);
 
 	media_format_family MediaFormatFamily() const;
 	void		SetMediaFormatFamily(const media_format_family &family);
-	
+
 	media_file_format	MediaFileFormat() const;
 	void		SetMediaFileFormat(const media_file_format& fileFormat);
-	
+
 	BString		MediaFileFormatName() const;
 	BString		MediaCodecName() const;
 	void		SetMediaCodec(const char* codecName);
 
 	status_t	GetCodecsList(BObjectList<media_codec_info>& codecList) const;
 	status_t	UpdateMediaFormatAndCodecsForCurrentFamily();
-	
+
 	void		UpdateDirectInfo(direct_buffer_info *info);
 
 	status_t	ReadBitmap(BBitmap *bitmap, bool includeCursor, BRect bounds);
-	
+
 	void		ResetSettings();
-	
+
 	void		TestSystem();
 
 
@@ -100,7 +100,7 @@ public:
 
 	bool WasLaunchedSilently() const;
 	bool LaunchedFromCommandline() const;
-	
+
 private:
 	BWindow *fWindow;
 	Arguments* fArgs;
@@ -112,11 +112,11 @@ private:
 	bool				fKillCaptureThread;
 	bool				fPaused;
 
-	bool				fDirectWindowAvailable;	
+	bool				fDirectWindowAvailable;
 	direct_buffer_info	fDirectInfo;
 	MovieEncoder*		fEncoder;
 	thread_id			fEncoderThread;
-	
+
 	BObjectList<media_codec_info>* fCodecList;
 
 	BMessageRunner*		fStopRunner;
@@ -126,7 +126,7 @@ private:
 
 	void _UsageRequested();
 	bool _HandleScripting(BMessage* message);
-	
+
 	void		StartCapture();
 	void		EndCapture();
 
@@ -144,9 +144,9 @@ private:
 	void		_WaitForRetrace(bigtime_t time);
 	void		_UpdateFromSettings();
 	void		_DumpSettings() const;
-	
+
 	status_t CaptureThread();
-	static int32 CaptureStarter(void *arg);	
+	static int32 CaptureStarter(void *arg);
 };
 
 #endif // __BSCAPP_H

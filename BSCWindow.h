@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef __BSCWINDOW_H
@@ -21,16 +21,16 @@ class BSCWindow : public BDirectWindow {
 public:
 	BSCWindow();
 	~BSCWindow();
-	
+
 	virtual void DispatchMessage(BMessage *, BHandler *);
 	virtual bool QuitRequested();
 	virtual void MessageReceived(BMessage *);
 	virtual void ScreenChanged(BRect screen_size, color_space depth);
 	virtual void DirectConnected(direct_buffer_info *info);
 	virtual void MenusBeginning();
-	
+
 	status_t ReadBitmap(BBitmap *bitmap, BRect bounds);
-	
+
 private:
 	void _BuildMenu();
 	void _LayoutWindow();
@@ -43,7 +43,7 @@ private:
 	BButton *fStartStopButton;
 	BButton *fPauseButton;
 	CamStatusView *fCamStatus;
-	
+
 	BView* fOutputView;
 	BView* fAdvancedOptionsView;
 	BView* fInfoView;

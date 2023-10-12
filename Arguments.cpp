@@ -3,7 +3,6 @@
  * Distributed under the terms of the MIT License.
  */
 
-
 #include "Arguments.h"
 
 #include <stdio.h>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -26,7 +26,7 @@ public:
 
 	status_t Load();
 	status_t Save();
-	
+
 	static BPath SettingsFilePath();
 
 	BRect CaptureArea() const;
@@ -70,7 +70,7 @@ public:
 
 	void SetWarnOnQuit(const bool& warn);
 	bool WarnOnQuit() const;
-	
+
 	void SetQuitWhenFinished(const bool& quit);
 	bool QuitWhenFinished() const;
 

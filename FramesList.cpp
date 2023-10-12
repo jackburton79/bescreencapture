@@ -1,8 +1,6 @@
 /*
- * FramesList.cpp
- *
- *  Created on: 11/dic/2013
- *      Author: Stefano Ceccherini (stefano.ceccherini@gmail.com)
+ * Copyright 2013-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
  */
 
 #include "FramesList.h"
@@ -43,7 +41,7 @@ FramesList::~FramesList()
 	// Empty the list, which incidentally deletes the files
 	// on disk. Must be done before deleting the folder
 	BObjectList<BitmapEntry>::MakeEmpty(true);
-	
+
 	DeleteTempPath();
 }
 
@@ -96,7 +94,7 @@ FramesList::AddItemsFromDisk()
 	while (dir.GetNextEntry(&entry) == B_OK) {
 		bigtime_t timeStamp = (bigtime_t)strtoull(entry.Name(), NULL, 10);
 		BString fullName;
-		fullName << Path() << "/" << entry.Name(); 
+		fullName << Path() << "/" << entry.Name();
 		BitmapEntry* bitmapEntry =
 			new (std::nothrow) BitmapEntry(fullName, timeStamp);
 		BObjectList<BitmapEntry>::AddItem(bitmapEntry);
@@ -177,7 +175,7 @@ BitmapEntry::BitmapEntry(const BString& fileName, bigtime_t time)
 
 
 BitmapEntry::~BitmapEntry()
-{	
+{
 	if (fFileName != "")
 		BEntry(fFileName).Remove();
 }

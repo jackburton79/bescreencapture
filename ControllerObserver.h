@@ -1,6 +1,10 @@
+/*
+ * Copyright 2018-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
+ */
+
 #ifndef __CONTROLLEROBSERVER_H
 #define __CONTROLLEROBSERVER_H
-
 
 enum {
 	kMsgControllerCaptureStarted = 5000,
@@ -27,9 +31,9 @@ enum {
 	kMsgControllerCodecListUpdated,
 	kMsgControllerCodecChanged,				// const char* "codec_name"
 	kMsgControllerMediaFileFormatChanged,	// const char* "format_name"
-	
+
 	kMsgControllerCaptureFrameRateChanged,	// int32 "frame_rate"
-	
+
 	kMsgControllerResetSettings
 };
 

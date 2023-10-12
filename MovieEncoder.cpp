@@ -1,8 +1,8 @@
 /*
- * Copyright 2015 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2015-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
- 
+
 // Part of this code was taken from BitmapMovie class, by Be, Inc.
 /*
 ----------------------
@@ -35,7 +35,7 @@ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
 AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.    
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
@@ -84,7 +84,7 @@ MovieEncoder::DisposeData()
 	// If the movie is still opened, close it; this also flushes all tracks
 	if (fMediaFile != NULL)
 		_CloseFile();
-	
+
 	// Deleting the filelist deletes the files referenced by it
 	// and also the temporary folder
 	delete fFileList;
@@ -123,7 +123,7 @@ MovieEncoder::SetDestFrame(const BRect& rect)
 {
 	fDestFrame = rect;
 	fDestFrame.OffsetTo(B_ORIGIN);
-	
+
 	return B_OK;
 }
 
@@ -155,13 +155,13 @@ MovieEncoder::SetMessenger(const BMessenger& messenger)
 {
 	if (!messenger.IsValid())
 		return B_BAD_VALUE;
-	
+
 	fMessenger = messenger;
 	return B_OK;
 }
 
 
-status_t 
+status_t
 MovieEncoder::_CreateFile(
 	const char* path,
 	const media_file_format& mediaFileFormat,
@@ -205,12 +205,12 @@ MovieEncoder::_CreateFile(
 		delete fMediaFile;
 		fMediaFile = NULL;
 	}
-	
+
 	return status;
 }
 
 
-status_t 
+status_t
 MovieEncoder::_WriteFrame(const BBitmap* bitmap, int32 frameNum, bool isKeyFrame)
 {
 	// NULL is not a valid bitmap pointer
@@ -233,19 +233,19 @@ MovieEncoder::_WriteFrame(const BBitmap* bitmap, int32 frameNum, bool isKeyFrame
 
 	if (err == B_OK)
 		err = fMediaTrack->WriteFrames(bitmap->Bits(), 1, isKeyFrame ? B_MEDIA_KEY_FRAME : 0);
-	
+
 	return err;
 }
 
 
-status_t 
+status_t
 MovieEncoder::_CloseFile()
 {
 	status_t err = B_OK;
 	if (fMediaFile != NULL) {
 		fMediaFile->ReleaseAllTracks();
 		err = fMediaFile->CloseFile();
-		
+
 		delete fMediaFile;		// deletes the track, too
 		fMediaFile = NULL;
 		fMediaTrack = NULL;
@@ -258,10 +258,10 @@ MovieEncoder::_CloseFile()
 // from other threads
 status_t
 MovieEncoder::_EncoderThread()
-{	
+{
 	fFileList = new FramesList();
 	fFileList->AddItemsFromDisk();
-	
+
 	int32 framesLeft = fFileList->CountItems();
 	if (framesLeft <= 0) {
 		std::cerr << "MovieEncoder::_EncoderThread(): no frames to encode." << std::endl;
@@ -273,7 +273,7 @@ MovieEncoder::_EncoderThread()
 		_HandleEncodingFinished(status);
 		return status;
 	}
-	
+
 	// If destination frame is not valid (I.E: something went wrong)
 	// then get source frame and use it as dest frame
 	if (!fDestFrame.IsValid()) {
@@ -307,7 +307,7 @@ MovieEncoder::_EncoderThread()
 	float fps = CalculateFPS(framesLeft, diff);
 	std::cout << "CalculateFPS returned " << fps << std::endl;
 	mediaFormat.u.raw_video.field_rate = fps;
-	
+
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, mediaFormat, fCodecInfo);
 	fTempPath = FramesList::Path();
@@ -462,19 +462,19 @@ thread_id
 MovieEncoder::EncodeThreaded()
 {
 	fKillThread = false;
-	
+
 	fEncoderThread = spawn_thread((thread_entry)EncodeStarter,
 		"Encoder Thread", B_DISPLAY_PRIORITY, this);
-					
+
 	if (fEncoderThread < 0)
 		return fEncoderThread;
-	
+
 	status_t status = resume_thread(fEncoderThread);
 	if (status < B_OK) {
 		kill_thread(fEncoderThread);
 		return status;
 	}
-	
+
 	return fEncoderThread;
 }
 
@@ -547,12 +547,12 @@ BBitmap*
 MovieEncoder::GetCursorBitmap(const uint8* cursor)
 {
 	uint8 size = *cursor;
-	
+
 	BBitmap* cursorBitmap = new BBitmap(BRect(0, 0, size - 1, size - 1), B_RGBA32);
-	
+
 	uint32 black = 0xFF000000;
 	uint32 white = 0xFFFFFFFF;
-	
+
 	uint8* castCursor = const_cast<uint8*>(cursor);
 	uint16* cursorPtr = reinterpret_cast<uint16*>(castCursor + 4);
 	uint16* maskPtr = reinterpret_cast<uint16*>(castCursor + 36);
@@ -563,10 +563,10 @@ MovieEncoder::GetCursorBitmap(const uint8* cursor)
 		uint32* bits = (uint32*)(buffer + (row * cursorBitmap->BytesPerRow()));
 		cursorFlip = (cursorPtr[row] & 0xFF) << 8;
 		cursorFlip |= (cursorPtr[row] & 0xFF00) >> 8;
-		
+
 		maskFlip = (maskPtr[row] & 0xFF) << 8;
 		maskFlip |= (maskPtr[row] & 0xFF00) >> 8;
-		
+
 		for (uint8 column = 0; column < size; column++) {
 			uint16 posVal = 1 << (15 - column);
 			cursorVal = cursorFlip & posVal;
@@ -586,7 +586,7 @@ MovieEncoder::PopCursorPosition(BPoint& point)
 	ASSERT(fCursorQueue != NULL);
 	//point = fCursorQueue->front();
 	//fCursorQueue->pop();
-	
+
 	return B_OK;
 }
 

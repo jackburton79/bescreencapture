@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "PreviewView.h"
@@ -15,7 +15,7 @@ class BitmapView : public BView {
 public:
 	BitmapView();
 	virtual ~BitmapView();
-	
+
 	virtual void Draw(BRect rect);
 };
 
@@ -37,7 +37,7 @@ PreviewView::PreviewView()
 
 void
 PreviewView::AttachedToWindow()
-{	
+{
 	BView::AttachedToWindow();
 	SetViewColor(Parent()->ViewColor());
 
@@ -49,7 +49,7 @@ void
 PreviewView::_SetRect(const BRect& rect)
 {
 	fCoordRect = rect;
-	
+
 	BString text;
 	text << "Capture area:\n";
 	text << "left: " << (int)rect.left << ", ";

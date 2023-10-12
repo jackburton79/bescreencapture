@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2015-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "SliderTextControl.h"
@@ -54,16 +54,16 @@ SliderTextControl::SliderTextControl(const char* name, const char* label,
 	fSizeSlider->SetModificationMessage(new BMessage(kSliderModificationMessage));
 	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fSizeSlider->SetHashMarkCount(8);
-	
+
 	BString minLabel;
 	minLabel << minValue << " " << unit;
 	BString maxLabel;
 	maxLabel << maxValue << " " << unit;
-	
+
 	fSizeSlider->SetLimitLabels(minLabel.String(), maxLabel.String());
 	fSizeTextControl = new BTextControl("", "", new BMessage(kTextControlMessage));
 	fTextLabel = new BStringView("label", unit);
-	
+
 	BLayoutBuilder::Group<>(this)
 	.AddGroup(B_HORIZONTAL, 1)
 		.Add(fSizeSlider, 20)
@@ -73,7 +73,7 @@ SliderTextControl::SliderTextControl(const char* name, const char* label,
 		.End()
 		.Add(fTextLabel)
 	.End();
-		
+
 	fSizeTextControl->SetModificationMessage(new BMessage(kTextControlMessage));
 	fSizeTextControl->SetExplicitAlignment(BAlignment(B_ALIGN_HORIZONTAL_CENTER,
 		B_ALIGN_TOP));
@@ -156,9 +156,9 @@ SliderTextControl::MessageReceived(BMessage* message)
 		default:
 			BControl::MessageReceived(message);
 			break;
-	}	
+	}
 }
-	
+
 
 void
 SliderTextControl::SetValue(int32 value)
@@ -167,7 +167,7 @@ SliderTextControl::SetValue(int32 value)
 	BString sizeString;
 	sizeString << (int32)fSizeSlider->Value();
 	fSizeTextControl->SetText(sizeString);
-	
+
 	BControl::SetValue(value);
 }
 

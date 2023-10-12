@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef __DESKBAR_CONTROL_H
@@ -13,12 +13,12 @@ class DeskbarControlView : public BView {
 public:
 	DeskbarControlView(BRect rect);
 	DeskbarControlView(BMessage *data);
-	
+
 	virtual ~DeskbarControlView();
-	
+
 	static DeskbarControlView *Instantiate(BMessage *archive);
 	virtual status_t Archive(BMessage *message, bool deep = true) const;
-	
+
 	virtual void AttachedToWindow();
 	virtual void DetachedFromWindow();
 	virtual void FrameResized(float width, float height);
@@ -32,10 +32,10 @@ public:
 private:
 	void _UpdateBitmap();
 	BBitmap* _LoadIconBitmap(const char* iconName);
-	
+
 	BMessenger fAppMessenger;
 	BBitmap* fBitmap;
-	
+
 	bool fRecording;
 	bool fPaused;
 };

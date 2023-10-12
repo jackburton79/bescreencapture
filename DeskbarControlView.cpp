@@ -32,7 +32,7 @@ public:
 	virtual void GetContentSize(float* width, float* height);
 private:
 	const char *ActionToString(uint32 action);
-	
+
 	BBitmap *fMenuIcon;
 };
 
@@ -73,7 +73,7 @@ DeskbarControlView::Instantiate(BMessage *archive)
 {
 	if (!validate_instantiation(archive, "DeskbarControlView"))
 		return NULL;
-	
+
 	return new DeskbarControlView(archive);
 }
 
@@ -85,7 +85,7 @@ DeskbarControlView::Archive(BMessage *message, bool deep) const
 	status_t status = BView::Archive(message, deep);
 	if (status != B_OK)
 		return status;
-	
+
 	status = message->AddString("add_on", kAppSignature);
 	if (status != B_OK)
 		return status;
@@ -121,8 +121,8 @@ DeskbarControlView::DetachedFromWindow()
 		StopWatching(fAppMessenger, kMsgControllerCaptureStarted);
 		StopWatching(fAppMessenger, kMsgControllerCaptureStopped);
 		StopWatching(fAppMessenger, kMsgControllerCaptureProgress);
-		StopWatching(fAppMessenger, kMsgControllerCapturePaused);	
-		StopWatching(fAppMessenger, kMsgControllerCaptureResumed);	
+		StopWatching(fAppMessenger, kMsgControllerCapturePaused);
+		StopWatching(fAppMessenger, kMsgControllerCaptureResumed);
 		UnlockLooper();
 	}
 
@@ -147,7 +147,7 @@ DeskbarControlView::Draw(BRect rect)
 {
 	SetDrawingMode(B_OP_OVER);
 	DrawBitmap(fBitmap);
-	
+
 	BRect overlayRect = Bounds();
 	overlayRect.left = 2;
 	overlayRect.right = overlayRect.left + 3;
@@ -181,7 +181,7 @@ DeskbarControlView::MessageReceived(BMessage *message)
 		{
 			int32 code;
 			message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code);
-			switch (code) {			
+			switch (code) {
 				case kMsgControllerCaptureStarted:
 				case kMsgControllerCaptureProgress:
 					fRecording = true;
@@ -235,7 +235,7 @@ DeskbarControlView::MouseDown(BPoint where)
 			new BMessage(kMsgGUIToggleCapture), bitmap));
 	}
 	menu->SetTargetForItems(this);
-	
+
 	ConvertToScreen(&where);
 	menu->Go(where, true, false, true);
 }

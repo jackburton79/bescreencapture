@@ -5,7 +5,6 @@
 #ifndef _OPTIONSWINDOW_H
 #define _OPTIONSWINDOW_H
 
-
 #include <Window.h>
 
 class OptionsWindow : public BWindow {

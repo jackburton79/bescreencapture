@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2016-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include <iostream>
@@ -26,7 +26,7 @@ PrepareVariable(std::istream& inFile, std::ostream& outFile)
 		}
 	} catch (...) {
 	}
-	
+
 	outFile << "'\\0'";
 }
 
@@ -35,6 +35,6 @@ int main()
 {
 	std::istream& inputFile = std::cin;
 	std::ostream& outputFile = std::cout;
-		
+
 	PrepareVariable(inputFile, outputFile);
 }

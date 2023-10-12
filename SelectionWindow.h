@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #ifndef __SELECTIONWINDOW_H
@@ -15,16 +15,16 @@ public:
 		REGION,
 		WINDOW
 	};
-	
+
 	SelectionWindow(int mode, BMessenger& target, uint32 command);
-	
+
 	virtual void Show();
 	virtual void SetTarget(BMessenger& target);
 	virtual void SetCommand(uint32 command);
 	virtual bool QuitRequested();
-	
-private:	
-	SelectionView *fView;	
+
+private:
+	SelectionView *fView;
 	BMessenger fTarget;
 	uint32 fCommand;
 };

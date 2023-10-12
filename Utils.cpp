@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "Utils.h"
@@ -53,7 +53,7 @@ IsFileFormatUsable(const media_file_format& format)
 		"AVI",
 		"Matroska"
 	};
-	
+
 	BString formatString = format.pretty_name;
 	for (size_t i = 0; i < sizeof(brokenFileFormats) / sizeof(brokenFileFormats[i]); i++) {
 		if (formatString.StartsWith(brokenFileFormats[i]))
@@ -88,7 +88,7 @@ GetMediaFileFormat(const BString& prettyName, media_file_format* outFormat)
 			return true;
 		}
 	}
-	
+
 	if (prettyName == NULL_FORMAT_PRETTY_NAME) {
 		MakeNULLMediaFileFormat(*outFormat);
 		return true;
@@ -174,7 +174,7 @@ FixRect(BRect &rect, const BRect& maxRect,
 	const bool fixWidth, const bool fixHeight)
 {
 	const static int kAlignAmount = 16;
-	
+
 	if (rect.left < 0)
 		rect.left = 0;
 	if (rect.top < 0)
@@ -187,7 +187,7 @@ FixRect(BRect &rect, const BRect& maxRect,
 	// Adjust width and/or height to be a multiple of 16
 	// as some codecs create bad movies otherwise
 	int32 diffHorizontal = kAlignAmount - (rect.IntegerWidth() + 1) % kAlignAmount;
-	if (fixWidth && diffHorizontal != kAlignAmount) { 
+	if (fixWidth && diffHorizontal != kAlignAmount) {
 		if (rect.left < diffHorizontal) {
 			diffHorizontal -= (int32)rect.left;
 			rect.left = 0;
@@ -199,14 +199,14 @@ FixRect(BRect &rect, const BRect& maxRect,
 	}
 
 	int32 diffVertical = kAlignAmount - (rect.IntegerHeight() + 1) % kAlignAmount;
-	if (fixHeight && diffVertical != kAlignAmount) { 
+	if (fixHeight && diffVertical != kAlignAmount) {
 		if (rect.top < diffVertical) {
 			diffVertical -= (int32)rect.top;
 			rect.top = 0;
 		} else {
 			rect.top -= diffVertical;
 			diffVertical = 0;
-		}	
+		}
 
 		rect.bottom += diffVertical;
 	}
@@ -217,7 +217,7 @@ void
 GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border)
 {
 	int32 tokenCount = 0;
-	// Haiku does not have a public API to retrieve windows from other teams, 
+	// Haiku does not have a public API to retrieve windows from other teams,
 	// so we have to use this.
 	int32 *tokenList = NULL;
 	status_t status = BPrivate::get_window_order(current_workspace(), &tokenList, &tokenCount);

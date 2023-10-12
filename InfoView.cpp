@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2016-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -80,7 +80,7 @@ InfoView::InfoView()
 	BRect sourceArea = settings.CaptureArea();
 	BRect targetRect = settings.TargetRect();
 	float scale = settings.Scale();
-	
+
 	BStringView* sizeView = new BStringView("source_size", "Source region:");
 	sizeView->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	BStringView* frameSizeView = new BStringView("clip_size", "Clip frame size:");
@@ -114,7 +114,7 @@ void
 InfoView::AttachedToWindow()
 {
 	BView::AttachedToWindow();
-	
+
 	if (be_app->LockLooper()) {
 		be_app->StartWatching(this, kMsgControllerSourceFrameChanged);
 		be_app->StartWatching(this, kMsgControllerTargetFrameChanged);
@@ -123,7 +123,7 @@ InfoView::AttachedToWindow()
 		be_app->StartWatching(this, kMsgControllerCaptureFrameRateChanged);
 		be_app->UnlockLooper();
 	}
-	
+
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	fFormat->SetText(GetFormatString(app->MediaFileFormatName()));
 	fCodec->SetText(GetCodecString(app->MediaCodecName()));
@@ -173,7 +173,7 @@ InfoView::MessageReceived(BMessage* message)
 				case kMsgControllerMediaFileFormatChanged:
 				{
 					const char* formatName = NULL;
-					if (message->FindString("format_name", &formatName) == B_OK) {						
+					if (message->FindString("format_name", &formatName) == B_OK) {
 						fFormat->SetText(GetFormatString(formatName));
 					}
 					break;
@@ -181,11 +181,11 @@ InfoView::MessageReceived(BMessage* message)
 				case kMsgControllerCaptureFrameRateChanged:
 				{
 					int32 fps;
-					if (message->FindInt32("frame_rate", &fps) == B_OK) {						
+					if (message->FindInt32("frame_rate", &fps) == B_OK) {
 						fCaptureFrameRate->SetText(GetFrameRateString(fps));
 					}
 					break;
-				}	
+				}
 				default:
 					break;
 			}

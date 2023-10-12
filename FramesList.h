@@ -1,8 +1,6 @@
 /*
- * FramesList.h
- *
- *  Created on: 11/dic/2013
- *      Author: Stefano Ceccherini (stefano.ceccherini@gmail.com)
+ * Copyright 2013-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * All rights reserved. Distributed under the terms of the MIT license.
  */
 
 #ifndef __FRAMESLIST_H_
@@ -18,7 +16,7 @@ public:
 	BitmapEntry(BitmapEntry*);
 	BitmapEntry(const BitmapEntry&);
 	~BitmapEntry();
-	
+
 	BBitmap* Bitmap();
 	void Replace(BBitmap* bitmap);
 	bigtime_t TimeStamp() const;
@@ -37,7 +35,7 @@ public:
 	// TODO: Move this away from here
 	static status_t CreateTempPath();
 	static status_t DeleteTempPath();
-	
+
 	status_t AddItemsFromDisk();
 
 	BitmapEntry* Pop();

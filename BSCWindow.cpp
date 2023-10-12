@@ -60,25 +60,25 @@ BSCWindow::BSCWindow()
 #endif
 	fMenuBar = new BMenuBar("menubar");
 	_BuildMenu();
-	
+
 	fStartStopButton = new BButton("Start", LABEL_BUTTON_START,
 		new BMessage(kMsgGUIToggleCapture));
-	
+
 	fStartStopButton->SetTarget(be_app);
 	fStartStopButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	// TODO: Trying to avoid button shrinking when label changes.
 	// that won't work with translations, since the "Stop" label could be wider
 	fStartStopButton->SetExplicitMinSize(fStartStopButton->PreferredSize());
-	
+
 	fPauseButton = new BButton("Pause", LABEL_BUTTON_PAUSE,
 		new BMessage(kMsgGUITogglePause));
 	fPauseButton->SetTarget(be_app);
 	fPauseButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 	fPauseButton->SetEnabled(false);
-	
+
 	fCamStatus = new CamStatusView();
 	fCamStatus->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
-	
+
 	_LayoutWindow();
 
 	if (be_app->LockLooper()) {
@@ -132,7 +132,7 @@ BSCWindow::QuitRequested()
 
 	if (canQuit)
 		be_app->PostMessage(B_QUIT_REQUESTED);
-	
+
 	return canQuit && BWindow::QuitRequested();
 }
 
@@ -161,7 +161,7 @@ BSCWindow::MessageReceived(BMessage *message)
 		{
 			int32 code;
 			message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code);
-			switch (code) {		
+			switch (code) {
 				case kMsgControllerSelectionWindowClosed:
 				{
 					if (IsHidden())
@@ -174,10 +174,10 @@ BSCWindow::MessageReceived(BMessage *message)
 				case kMsgControllerCaptureStopped:
 				{
 					_CaptureFinished();
-					
+
 					status_t status = B_OK;
 					message->FindInt32("status", &status);
-					
+
 					if (status != B_OK) {
 						BString errorString;
 						errorString.SetToFormat("Could not record clip:\n"
@@ -198,7 +198,7 @@ BSCWindow::MessageReceived(BMessage *message)
 					break;
 				}
 				case kMsgControllerEncodeStarted:
-					fStartStopButton->SetEnabled(false);			
+					fStartStopButton->SetEnabled(false);
 					break;
 				case kMsgControllerEncodeFinished:
 				{
@@ -240,7 +240,7 @@ BSCWindow::MessageReceived(BMessage *message)
 									entry_ref app;
 									be_roster->Launch(&ref);
 								}
-							}	
+							}
 						}
 					}
 					if (dynamic_cast<BSCApp*>(be_app)->WasLaunchedSilently())
@@ -327,7 +327,7 @@ BSCWindow::_BuildMenu()
 	menu->AddSeparatorItem();
 	menu->AddItem(quitItem);
 	fMenuBar->AddItem(menu);
-	
+
 	menu = new BMenu("Recording");
 	BMenuItem* startRecording = new BMenuItem("Start", new BMessage(kMsgGUIToggleCapture), 'S');
 	startRecording->SetTarget(be_app);
@@ -398,11 +398,11 @@ BSCWindow::_CaptureStarted()
 	const Settings& settings = Settings::Current();
 	if (settings.MinimizeOnRecording())
 		Hide();
-	
+
 	fStartStopButton->SetLabel(LABEL_BUTTON_STOP);
 	fPauseButton->SetLabel(LABEL_BUTTON_PAUSE);
 	fPauseButton->SetEnabled(true);
-	
+
 	return B_OK;
 }
 
@@ -413,7 +413,7 @@ BSCWindow::_CaptureFinished()
 	fStartStopButton->SetLabel(LABEL_BUTTON_START);
 	fPauseButton->SetLabel(LABEL_BUTTON_PAUSE);
 	fPauseButton->SetEnabled(false);
-	
+
 	// TODO: maybe don't show window if launched with
 	// the Shift-Alt-Control-R combo
 	if (IsHidden())

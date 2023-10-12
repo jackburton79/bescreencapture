@@ -154,7 +154,7 @@ BSCApp::BSCApp()
 	fSupportsWaitForRetrace(false)
 {
 	fArgs = new Arguments(0, NULL);
-	
+
 	Settings::Initialize();
 
 	memset(&fDirectInfo, 0, sizeof(fDirectInfo));
@@ -168,7 +168,7 @@ BSCApp::BSCApp()
 BSCApp::~BSCApp()
 {
 	RemoveDeskbarReplicant();
-	
+
 	StopThreads();
 	delete fRecordWatch;
 	delete fEncoder;
@@ -178,7 +178,7 @@ BSCApp::~BSCApp()
 
 	Settings::Current().Save();
 	Settings::Destroy();
-	
+
 	delete fArgs;
 }
 
@@ -193,7 +193,7 @@ BSCApp::ArgvReceived(int32 argc, char** argv)
 		PostMessage(B_QUIT_REQUESTED);
 		return;
 	}
-	
+
 	fShouldStartRecording = fArgs->RecordNow();
 }
 
@@ -205,7 +205,7 @@ BSCApp::ReadyToRun()
 		fWindow = new BSCWindow();
 	} catch (...) {
 		PostMessage(B_QUIT_REQUESTED);
-		return;	
+		return;
 	}
 
 	// TODO: InstallDeskbarReplicant creates a deadlock
@@ -244,7 +244,7 @@ BSCApp::MessageReceived(BMessage *message)
 {
 	if (_HandleScripting(message))
 		return;
-		
+
 	switch (message->what) {
 		case kSelectArea:
 		case kSelectWindow:
@@ -255,9 +255,9 @@ BSCApp::MessageReceived(BMessage *message)
 			snooze(20000);
 			BMessenger messenger(this);
 			int mode = message->what == kSelectArea ? SelectionWindow::REGION : SelectionWindow::WINDOW;
-			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);			
+			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);
 			window->Show();
-			
+
 			break;
 		}
 		case kSelectionWindowClosed:
@@ -311,7 +311,7 @@ BSCApp::MessageReceived(BMessage *message)
 			SendNotices(kMsgControllerEncodeProgress, &progressMessage);
 			break;
 		}
-		
+
 		default:
 			BApplication::MessageReceived(message);
 			break;
@@ -338,7 +338,7 @@ SplitChangeLog(const char* changeLog)
 		} else
 			i++;
 	}
-	return list;		
+	return list;
 }
 
 
@@ -390,10 +390,10 @@ BSCApp::AboutRequested()
 		charArray[i] = (char*)list.StringAt(i).String();
 	}
 	charArray[stringCount] = NULL;
-	
+
 	aboutWindow->AddVersionHistory((const char**)charArray);
 	delete[] charArray;
-	
+
 	aboutWindow->Show();
 }
 
@@ -441,7 +441,7 @@ BSCApp::_HandleScripting(BMessage* message)
 		what != B_GET_PROPERTY &&
 		what != B_SET_PROPERTY)
 	return false;
-	
+
 	BMessage reply(B_REPLY);
 	const char* property = NULL;
 	int32 index = 0;
@@ -954,7 +954,7 @@ BSCApp::_ComputeMediaFormat(const int32 &width, const int32 &height,
 	format.u.raw_video.display.line_width = width;
 	format.u.raw_video.display.line_count = height;
 	format.u.raw_video.last_active = format.u.raw_video.display.line_count - 1;
-	
+
 	size_t pixelChunk;
 	size_t rowAlign;
 	size_t pixelPerChunk;
@@ -969,7 +969,7 @@ BSCApp::_ComputeMediaFormat(const int32 &width, const int32 &height,
 	format.u.raw_video.field_rate = fieldRate; // Frames per second, overwritten later
 	format.u.raw_video.pixel_width_aspect = 1;	// square pixels
 	format.u.raw_video.pixel_height_aspect = 1;
-	
+
 	return format;
 }
 
@@ -979,22 +979,22 @@ status_t
 BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 {
 	BAutolock _(this);
-	
+
 	const Settings& settings = Settings::Current();
 	BRect targetRect = settings.TargetRect();
 	targetRect.right++;
 	targetRect.bottom++;
-	
+
 	const float frameRate = float(settings.CaptureFrameRate());
 	const media_format mediaFormat = _ComputeMediaFormat(targetRect.IntegerWidth(),
 									targetRect.IntegerHeight(),
 									settings.ClipDepth(), frameRate);
-	
+
 	fEncoder->SetMediaFormat(mediaFormat);
-	
+
 	delete fCodecList;
 	fCodecList = new BObjectList<media_codec_info> (1, true);
-	
+
 	// Handle the NULL/GIF media_file_formats
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
 	if ((::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) &&
@@ -1029,10 +1029,10 @@ status_t
 BSCApp::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 {
 	const bool &useDirectWindow = fDirectWindowAvailable && Settings::Current().UseDirectWindow();
-	
+
 	if (!useDirectWindow)
 		return BScreen().ReadBitmap(bitmap, includeCursor, &bounds);
-		
+
 	const int32 bytesPerPixel = fDirectInfo.bits_per_pixel >> 3;
 	if (bytesPerPixel <= 0)
 		return B_ERROR;
@@ -1042,11 +1042,11 @@ BSCApp::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 		 ((uint32)bounds.top * rowBytes)) * bytesPerPixel;
 
 	const int32 height = bounds.IntegerHeight() + 1;
-	void* from = (void*)((uint8*)fDirectInfo.bits + offset);    		
+	void* from = (void*)((uint8*)fDirectInfo.bits + offset);
 	void* to = bitmap->Bits();
 	const int32 bytesPerRow = bitmap->BytesPerRow();
 	const int32 areaSize = (bounds.IntegerWidth() + 1) * bytesPerPixel;
-	for (int32 y = 0; y < height; y++) {  
+	for (int32 y = 0; y < height; y++) {
 		::memcpy(to, from, areaSize);
 	   	to = (void*)((uint8*)to + bytesPerRow);
 		from = (void*)((uint8*)from + fDirectInfo.bytes_per_row);
@@ -1069,7 +1069,7 @@ BSCApp::StartCapture()
 	if (fCaptureThread < 0) {
 		BMessage message(kMsgControllerCaptureStopped);
 		message.AddInt32("status", fCaptureThread);
-		SendNotices(kMsgControllerCaptureStopped, &message);	
+		SendNotices(kMsgControllerCaptureStopped, &message);
 		return;
 	}
 
@@ -1281,7 +1281,7 @@ int32
 BSCApp::CaptureThread()
 {
 	const Settings& settings = Settings::Current();
-	
+
 	BRect bounds = settings.CaptureArea();
 	int32 frameRate = settings.CaptureFrameRate();
 	if (frameRate <= 0)
@@ -1296,20 +1296,20 @@ BSCApp::CaptureThread()
 
 	// TODO: Check status_t
 	FramesList::CreateTempPath();
-	
+
 	const int32 windowEdge = settings.WindowFrameEdgeSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowEdge);
 	status_t error = B_ERROR;
 	BBitmap *bitmap = NULL;
 	const color_space colorSpace = BScreen().ColorSpace();
 	while (!fKillCaptureThread) {
-		if (!fPaused) {		
+		if (!fPaused) {
 			if (token != -1) {
 				BRect windowBounds = GetWindowFrameForToken(token, windowEdge);
 				if (windowBounds.IsValid())
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
-				
+
 			bitmap = new (std::nothrow) BBitmap(bounds, colorSpace);
 			if (bitmap == NULL) {
 				error = B_NO_MEMORY;
@@ -1330,7 +1330,7 @@ BSCApp::CaptureThread()
 			}
 
 			bigtime_t lastFrameTime = system_time();
-			
+
 			// TODO: set path ?
 			BString fileName;
 			fileName << FramesList::Path() << "/" << lastFrameTime;
@@ -1355,7 +1355,7 @@ BSCApp::CaptureThread()
 		} else
 			snooze(500000);
 	}
-	
+
 	fCaptureThread = -1;
 	fKillCaptureThread = true;
 
@@ -1365,7 +1365,7 @@ BSCApp::CaptureThread()
 		message.AddInt32("status", (int32)error);
 		SendNotices(kMsgControllerCaptureStopped, &message);
 	}
-	
+
 	return B_OK;
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -20,7 +20,7 @@ class BTextControl;
 class PreviewView;
 class SliderTextControl;
 class OutputView : public BView {
-public:	
+public:
 	OutputView();
 
 	virtual void AttachedToWindow();
@@ -49,7 +49,7 @@ private:
 
 	BMessageRunner* fWarningRunner;
 	int32 fWarningCount;
-	
+
 	void _LayoutView();
 	void _InitControlsFromSettings();
 	void _UpdateFileNameControlState();

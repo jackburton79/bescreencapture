@@ -125,7 +125,7 @@ OutputView::MessageReceived(BMessage *message)
 				}
 			}
 			app->SetCaptureArea(rect);
-			break;	
+			break;
 		}
 		case kFileNameChanged:
 		{
@@ -182,7 +182,7 @@ OutputView::MessageReceived(BMessage *message)
 							fCustomCaptureRect = rect;
 					}
 					_UpdatePreview(&rect);
-					break;	
+					break;
 				}
 				case kMsgControllerTargetFrameChanged:
 				{
@@ -195,7 +195,7 @@ OutputView::MessageReceived(BMessage *message)
 					BRect rect;
 					BBitmap* bitmap = NULL;
 					if (message != NULL && message->FindRect("selection", &rect) == B_OK
-						&& message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {	
+						&& message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {
 						_UpdatePreview(&rect, bitmap);
 						delete bitmap;
 					}
@@ -254,7 +254,7 @@ OutputView::MessageReceived(BMessage *message)
 
 			// TODO: why does the textcontrol not send the modification message ?
 			app->SetOutputFileName(fFileName->Text());
-			
+
 			break;
 		}
 		case B_CANCEL:
@@ -263,7 +263,7 @@ OutputView::MessageReceived(BMessage *message)
 			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
 				delete filePanel;
 			break;
-		}			
+		}
 		default:
 			BView::MessageReceived(message);
 			break;
@@ -312,7 +312,7 @@ OutputView::_LayoutView()
 		new BMessage(kCheckBoxAreaSelectionChanged));
 	fCustomArea = new BRadioButton("region",
 		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
-	fWindow = new BRadioButton("window", 
+	fWindow = new BRadioButton("window",
 		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
 
 	fSelectAreaButton = new BButton("select region", "Select region", new BMessage(kSelectArea));
@@ -370,7 +370,7 @@ OutputView::_InitControlsFromSettings()
 {
 	const Settings& settings = Settings::Current();
 	fBorderSlider->SetValue(settings.WindowFrameEdgeSize());
-	fScaleSlider->SetValue(settings.Scale());	
+	fScaleSlider->SetValue(settings.Scale());
 	fBorderSlider->SetEnabled(fWindow->Value() == B_CONTROL_ON);
 	fCustomCaptureRect = settings.CaptureArea();
 	if (fCustomCaptureRect == BScreen().Frame())
@@ -407,7 +407,7 @@ OutputView::_SetFileNameExtension(const char* newExtension)
 {
 	// TODO: If fFileExtension contains the wrong extension
 	// (for example if the user renamed the file manually)
-	// this will fail. For example, outputfile.avi, but 
+	// this will fail. For example, outputfile.avi, but
 	// fFileExtension is mkv -> outputfile.avi.mkv
 	BString fileName = fFileName->Text();
 	BString extension = ".";
