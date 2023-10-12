@@ -1,12 +1,12 @@
 v2.8.1
-	- Improved menus
-	- Fixed hang on quit if exiting during pause
-	- Fixed build on 32 bit
+	- Fixed hang on quit if exiting during pause.
+	- Fixed build on 32 bit.
+	- Improved menus.
 ---
 v2.8.0
 	- Added ability to select capture area on start when launched via shortcut.
-	- Added options to enable/disable the launch shortcut
-	- Code cleanup
+	- Added options to enable/disable the launch shortcut.
+	- Code cleanup.
 ---
 v2.7.0
 	- Fixed crashing on haiku 32 bit after recording few frames.
