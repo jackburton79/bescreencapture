@@ -1,0 +1,65 @@
+1	English	application/x-vnd.BeScreenCapture	2408250371
+Help…	BSCWindow		Help…
+Capture area:\n	PreviewView		Capture area:\n
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Use less CPU (BDirectWindow)
+Play	BSCWindow		Play
+About BeScreenCapture	BSCWindow		About BeScreenCapture
+Region	OutputView		Region
+Select region	OutputView		Select region
+Capture failed	BSCWindow		Capture failed
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Do you really want to quit BeScreenCapture?\n
+Select a region on start	AdvancedOptionsView		Select a region on start
+Pause	BSCWindow		Pause
+Encoding options	AdvancedOptionsView		Encoding options
+File name:	OutputView		File name:
+Finished recording	BSCWindow		Finished recording
+Continue	BSCWindow		Continue
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Enable CTRL+ALT+SHIFT+R shortcut
+Could not create clip:\n%s	BSCWindow		Could not create clip:\n%s
+Encoding in progress.	BSCApp		Encoding in progress.
+Window	OutputView		Window
+Encoding failed	BSCWindow		Encoding failed
+Select window	OutputView		Select window
+BeScreenCapture	System name		BeScreenCapture
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture is a screen recording application.
+Target frame rate	FrameRateView		Target frame rate
+OK	BSCWindow		OK
+fps	FrameRateView		fps
+Recording in progress.	BSCApp		Recording in progress.
+Window edges	OutputView		Window edges
+App	BSCWindow		App
+Really quit?	BSCWindow		Really quit?
+Success	BSCWindow		Success
+Recording	BSCWindow		Recording
+Start	BSCWindow		Start
+Reset to defaults	BSCWindow		Reset to defaults
+Could not record clip:\n%s	BSCWindow		Could not record clip:\n%s
+bottom:	PreviewView		bottom:
+Info	BSCWindow		Info
+Stop	BSCWindow		Stop
+Finished recording '%filename%'.	BSCWindow		Finished recording '%filename%'.
+left:	PreviewView		left:
+Scale	OutputView		Scale
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d frames (%.1f frames/s)
+Options	BSCWindow		Options
+Browse…	OutputView		Browse…
+Settings	BSCWindow		Settings
+Advanced	AdvancedOptionsView		Advanced
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Incognito mode: Hide window and Deskbar tray icon
+pixels	OutputView		pixels
+Open folder	BSCWindow		Open folder
+Quit	BSCWindow		Quit
+File format:	MediaFormatView		File format:
+top:	PreviewView		top:
+Quit when finished	AdvancedOptionsView		Quit when finished
+Hide window when recording	AdvancedOptionsView		Hide window when recording
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d frames)
+Media codec:	MediaFormatView		Media codec:
+Resume	BSCWindow		Resume
+Output	OutputView		Output
+Whole screen	OutputView		Whole screen
+Source	OutputView		Source
+right:	PreviewView		right:
+Frame rate	AdvancedOptionsView		Frame rate
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.
+Capture	BSCWindow		Capture

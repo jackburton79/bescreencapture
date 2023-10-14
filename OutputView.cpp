@@ -15,6 +15,7 @@
 
 #include <Box.h>
 #include <Button.h>
+#include <Catalog.h>
 #include <FilePanel.h>
 #include <LayoutBuilder.h>
 #include <MessageRunner.h>
@@ -25,6 +26,10 @@
 #include <algorithm>
 #include <iostream>
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "OutputView"
+
+
 const static int32 kInitialWarningCount = 20;
 
 const static uint32 kCheckBoxAreaSelectionChanged = 'CaCh';
@@ -34,12 +39,12 @@ const static uint32 kScaleChanged = 'ScCh';
 const static uint32 kWindowBorderFrameChanged = 'WbFc';
 const static uint32 kWarningRunnerMessage = 'WaRm';
 
-const static char* kSelectWindowButtonText = "Select window";
-const static char* kSelectRegionButtonText = "Select region";
+const static char* kSelectWindowButtonText = B_TRANSLATE("Select window");
+const static char* kSelectRegionButtonText = B_TRANSLATE("Select region");
 
 OutputView::OutputView()
 	:
-	BView("Capture Options", B_WILL_DRAW),
+	BView("capture_options", B_WILL_DRAW),
 	fWarningRunner(NULL),
 	fWarningCount(0)
 {
@@ -295,41 +300,43 @@ OutputView::_LayoutView()
 	SetLayout(new BGroupLayout(B_VERTICAL));
 
 	BBox *selectBox = new BBox("source");
-	selectBox->SetLabel("Source");
+	selectBox->SetLabel(B_TRANSLATE("Source"));
 	AddChild(selectBox);
 
 	BBox *outputBox = new BBox("output");
-	outputBox->SetLabel("Output");
+	outputBox->SetLabel(B_TRANSLATE("Output"));
 	AddChild(outputBox);
 
 	const Settings& settings = Settings::Current();
-	const char *kTCLabel = "File name:";
+	const char *kTCLabel = B_TRANSLATE("File name:");
 	BString fileName = settings.OutputFileName();
 	fFileName = new BTextControl("file name",
 			kTCLabel, fileName.String(), new BMessage(kFileNameChanged));
 
-	fWholeScreen = new BRadioButton("screen frame", "Whole screen",
-		new BMessage(kCheckBoxAreaSelectionChanged));
+	fWholeScreen = new BRadioButton("screen frame",
+		B_TRANSLATE("Whole screen"), new BMessage(kCheckBoxAreaSelectionChanged));
 	fCustomArea = new BRadioButton("region",
-		"Region", new BMessage(kCheckBoxAreaSelectionChanged));
+		B_TRANSLATE("Region"), new BMessage(kCheckBoxAreaSelectionChanged));
 	fWindow = new BRadioButton("window",
-		"Window", new BMessage(kCheckBoxAreaSelectionChanged));
+		B_TRANSLATE("Window"), new BMessage(kCheckBoxAreaSelectionChanged));
 
-	fSelectAreaButton = new BButton("select region", "Select region", new BMessage(kSelectArea));
+	fSelectAreaButton = new BButton("select region", B_TRANSLATE("Select region"),
+		new BMessage(kSelectArea));
 	fSelectAreaButton->SetExplicitAlignment(BAlignment(B_ALIGN_LEFT, B_ALIGN_MIDDLE));
 	float selectAreaButtonMinWidth = std::max(fSelectAreaButton->StringWidth(kSelectWindowButtonText),
 		fSelectAreaButton->StringWidth(kSelectRegionButtonText));
 	fSelectAreaButton->SetExplicitMinSize(BSize(selectAreaButtonMinWidth, B_SIZE_UNSET));
 	fSelectAreaButton->SetEnabled(false);
 
-	fFilePanelButton = new BButton(B_UTF8_ELLIPSIS, new BMessage(kOpenFilePanel));
+	fFilePanelButton = new BButton(B_TRANSLATE("Browse" B_UTF8_ELLIPSIS),
+		new BMessage(kOpenFilePanel));
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 
-	fScaleSlider = new SliderTextControl("scale_slider", "Scale",
+	fScaleSlider = new SliderTextControl("scale_slider", B_TRANSLATE("Scale"),
 		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
 
-	fBorderSlider = new SliderTextControl("border_slider", "Window edges",
-		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, "pixels", B_HORIZONTAL);
+	fBorderSlider = new SliderTextControl("border_slider", B_TRANSLATE("Window edges"),
+		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, B_TRANSLATE("pixels"), B_HORIZONTAL);
 
 	BGroupLayout *layout = BLayoutBuilder::Group<>(B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
@@ -446,4 +453,3 @@ OutputView::_HandleInvalidFileName(const char* fileName)
 
 	fWarningCount = kInitialWarningCount;
 }
-

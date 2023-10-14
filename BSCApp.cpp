@@ -20,6 +20,7 @@
 #include <private/interface/AboutWindow.h>
 #include <Autolock.h>
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <Deskbar.h>
 #include <Directory.h>
 #include <Entry.h>
@@ -40,6 +41,10 @@
 #include <string>
 
 #include <iostream>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "BSCApp"
+
 
 const char kChangeLog[] = {
 #include "Changelog.h"
@@ -380,7 +385,8 @@ void
 BSCApp::AboutRequested()
 {
 	BAboutWindow* aboutWindow = new BAboutWindow("BeScreenCapture", kAppSignature);
-	aboutWindow->AddDescription("BeScreenCapture is a screen recording application for Haiku");
+	aboutWindow->AddDescription(B_TRANSLATE(
+		"BeScreenCapture is a screen recording application."));
 	aboutWindow->AddAuthors(kAuthors);
 	aboutWindow->AddCopyright(2013, "Stefano Ceccherini");
 	BStringList list = SplitChangeLog(kChangeLog);
@@ -594,10 +600,10 @@ BSCApp::CanQuit(BString& reason) const
 	BAutolock _(const_cast<BSCApp*>(this));
 	switch (State()) {
 		case STATE_RECORDING:
-			reason = "Recording in progress.";
+			reason = B_TRANSLATE("Recording in progress.");
 			break;
 		case STATE_ENCODING:
-			reason = "Encoding in progress.";
+			reason = B_TRANSLATE("Encoding in progress.");
 			break;
 		case STATE_IDLE:
 			return true;
@@ -1064,7 +1070,7 @@ BSCApp::StartCapture()
 	fPaused = false;
 
 	fCaptureThread = spawn_thread((thread_entry)CaptureStarter,
-		"Capture Thread", B_DISPLAY_PRIORITY, this);
+		"Capture thread", B_DISPLAY_PRIORITY, this);
 
 	if (fCaptureThread < 0) {
 		BMessage message(kMsgControllerCaptureStopped);

@@ -5,10 +5,14 @@
 #include "PreviewView.h"
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <GroupLayout.h>
 #include <LayoutBuilder.h>
 #include <Screen.h>
 #include <String.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "PreviewView"
 
 
 class BitmapView : public BView {
@@ -22,7 +26,7 @@ public:
 
 PreviewView::PreviewView()
 	:
-	BView("Rect View", B_WILL_DRAW),
+	BView("rect_view", B_WILL_DRAW),
 	fBitmapView(NULL),
 	fCoordRect(BScreen().Frame()),
 	fTimeStamp(0),
@@ -51,11 +55,11 @@ PreviewView::_SetRect(const BRect& rect)
 	fCoordRect = rect;
 
 	BString text;
-	text << "Capture area:\n";
-	text << "left: " << (int)rect.left << ", ";
-	text << "top: " << (int)rect.top << ", ";
-	text << "right: " << (int)rect.right << ", ";
-	text << "bottom: " << (int)rect.bottom;
+	text << B_TRANSLATE("Capture area:\n");
+	text << B_TRANSLATE("left:") << " " << (int)rect.left << ", ";
+	text << B_TRANSLATE("top:") << " " << (int)rect.top << ", ";
+	text << B_TRANSLATE("right:") << " " << (int)rect.right << ", ";
+	text << B_TRANSLATE("bottom:") << " " << (int)rect.bottom;
 	SetToolTip(text.String());
 }
 
@@ -130,7 +134,7 @@ PreviewView::Rect() const
 // BitmapView
 BitmapView::BitmapView()
 	:
-	BView("bitmap view", B_WILL_DRAW|B_FULL_UPDATE_ON_RESIZE)
+	BView("bitmap_view", B_WILL_DRAW|B_FULL_UPDATE_ON_RESIZE)
 {
 }
 

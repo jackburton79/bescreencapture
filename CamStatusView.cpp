@@ -11,6 +11,7 @@
 #include <Application.h>
 #include <Bitmap.h>
 #include <CardLayout.h>
+#include <Catalog.h>
 #include <GroupLayoutBuilder.h>
 #include <IconUtils.h>
 #include <LayoutBuilder.h>
@@ -23,6 +24,10 @@
 
 #include <algorithm>
 #include <iostream>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "CamStatusView"
+
 
 const static float kBitmapSize = 48;
 
@@ -59,7 +64,7 @@ private:
 
 CamStatusView::CamStatusView()
 	:
-	BView("CamStatusView", B_WILL_DRAW|B_PULSE_NEEDED),
+	BView("cam_status_view", B_WILL_DRAW|B_PULSE_NEEDED),
 	fStringView(NULL),
 	fBitmapView(NULL),
 	fEncodingStringView(NULL),
@@ -203,8 +208,13 @@ CamStatusView::MessageReceived(BMessage *message)
 					int32 done = 0;
 					if (message->FindInt32("frames_remaining", &remaining) == B_OK) {
 						done = total - remaining;
-						BString string = fStatusText;
-						string << " (" << done << "/" << total << " frames)";
+						BString string;
+						string.SetToFormat(B_TRANSLATE_COMMENT(
+							"(%" B_PRId32 "/%" B_PRId32 " frames)",
+							"Progress as in '(10/230 frames)"),
+							done, total);
+						string.Append(" ");
+						string.Append(fStatusText);
 						fEncodingStringView->SetText(string);
 					}
 					fStatusBar->Update(done - current);
@@ -314,7 +324,12 @@ CamStatusView::_GetRecordingStatusString() const
 	BString timeString;
 	strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
 	timeString.UnlockBuffer();
-	timeString << ", " << fNumFrames << " frames";
-	timeString << " (" << app->AverageFPS() << " avg)";
+	BString avgFrames;
+	avgFrames.SetToFormat(B_TRANSLATE_COMMENT(
+		", %" B_PRId32 " frames (%.1f frames/s)",
+		"Progress as in '230 frames (14.9 frames/s)'"),
+		fNumFrames, app->AverageFPS());
+
+	timeString << avgFrames;
 	return timeString;
 }
