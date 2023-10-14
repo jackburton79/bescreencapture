@@ -13,6 +13,7 @@
 #include "Settings.h"
 
 #include <Box.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <LayoutBuilder.h>
 
@@ -25,20 +26,24 @@ const static uint32 kLocalMinimizeOnRecording = 'MiRe';
 const static uint32 kLocalQuitWhenFinished = 'QuFi';
 
 
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "AdvancedOptionsView"
+
+
 AdvancedOptionsView::AdvancedOptionsView()
 	:
-	BView("Advanced", B_WILL_DRAW)
+	BView("options", B_WILL_DRAW)
 {
 	BGroupLayout* groupLayout = new BGroupLayout(B_VERTICAL);
 	SetLayout(groupLayout);
 
-	BBox *encodingBox = new BBox("encoding options");
-	BBox* frameBox = new BBox("frame rate");
-	BBox *advancedBox = new BBox("Advanced");
+	BBox *encodingBox = new BBox("encoding_options");
+	BBox* frameBox = new BBox("frame_rate");
+	BBox *advancedBox = new BBox("advanced");
 
-	encodingBox->SetLabel("Encoding options");
-	frameBox->SetLabel("Frame rate");
-	advancedBox->SetLabel("Advanced");
+	encodingBox->SetLabel(B_TRANSLATE("Encoding options"));
+	frameBox->SetLabel(B_TRANSLATE("Frame rate"));
+	advancedBox->SetLabel(B_TRANSLATE("Advanced"));
 
 	BView* layoutView = BLayoutBuilder::Group<>()
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
@@ -64,26 +69,32 @@ AdvancedOptionsView::AdvancedOptionsView()
 		.AddGroup(B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.SetInsets(B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING,
 				B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
-			.Add(fUseDirectWindow = new BCheckBox("Use DW",
-					"Use less CPU (BDirectWindow)",
+			.Add(fUseDirectWindow = new BCheckBox("use_dw",
+					B_TRANSLATE("Use less CPU (BDirectWindow)"),
 					new BMessage(kLocalUseDirectWindow)))
-			.Add(fMinimizeOnStart = new BCheckBox("HideWhenRecording",
-					"Hide window when recording", new BMessage(kLocalMinimizeOnRecording)))
-			.Add(fHideDeskbarIcon = new BCheckBox("hideDeskbar",
-					"Incognito mode: Hide window and Deskbar icon", new BMessage(kLocalHideDeskbar)))
+			.Add(fMinimizeOnStart = new BCheckBox("hide_when_Recording",
+					B_TRANSLATE("Hide window when recording"),
+					new BMessage(kLocalMinimizeOnRecording)))
+			.Add(fHideDeskbarIcon = new BCheckBox("hide_deskbar",
+					B_TRANSLATE("Incognito mode: Hide window and Deskbar tray icon"),
+					new BMessage(kLocalHideDeskbar)))
 			.AddGroup(B_HORIZONTAL, B_USE_DEFAULT_SPACING)
-				.Add(fUseShortcut = new BCheckBox("useShortcut",
-					"Enable CTRL+ALT+SHIFT+R shortcut", new BMessage(kLocalEnableShortcut)))
-				.Add(fSelectOnStart = new BCheckBox("selectOnStart",
-					"Select region on start", new BMessage(kLocalSelectOnStart)))
+				.Add(fUseShortcut = new BCheckBox("use_shortcut",
+					B_TRANSLATE("Enable CTRL+ALT+SHIFT+R shortcut"),
+					new BMessage(kLocalEnableShortcut)))
+				.Add(fSelectOnStart = new BCheckBox("select_on_start",
+					B_TRANSLATE("Select a region on start"),
+					new BMessage(kLocalSelectOnStart)))
 			.End()
-			.Add(fQuitWhenFinished = new BCheckBox("quitWhenFinished",
-					"Quit when finished", new BMessage(kLocalQuitWhenFinished)))
+			.Add(fQuitWhenFinished = new BCheckBox("quit_when_finished",
+					B_TRANSLATE("Quit when finished"),
+					new BMessage(kLocalQuitWhenFinished)))
 		.End()
 		.View();
 
-	fHideDeskbarIcon->SetToolTip("Stop recording with with CTRL+ALT+SHIFT+R,\n"
-								"or define a key combination with the Shortcuts preferences");
+	fHideDeskbarIcon->SetToolTip(B_TRANSLATE(
+		"Stop recording with with CTRL+ALT+SHIFT+R,\n"
+		"or define a key combination with the Shortcuts preferences."));
 
 	advancedBox->AddChild(layoutView);
 

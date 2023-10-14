@@ -74,7 +74,7 @@ GetFrameRateString(int32 fps)
 
 InfoView::InfoView()
 	:
-	BView("Info", B_WILL_DRAW)
+	BView("info", B_WILL_DRAW)
 {
 	const Settings& settings = Settings::Current();
 	BRect sourceArea = settings.CaptureArea();

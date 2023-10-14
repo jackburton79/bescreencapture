@@ -9,14 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*#include <Catalog.h>
-#include <Locale.h>
-
-
-#undef B_TRANSLATION_CONTEXT
-#define B_TRANSLATION_CONTEXT "Terminal arguments parsing"*/
-
-#define B_TRANSLATE(x) x
 
 Arguments::Arguments(int defaultArgcNum, const char* const* defaultArgv)
 	: fUsageRequested(false),
@@ -53,8 +45,7 @@ Arguments::Parse(int argc, const char* const* argv)
 				fFullScreen = true;
 			else {
 				// illegal option
-				fprintf(stderr, B_TRANSLATE("Unrecognized option \"%s\"\n"),
-					arg);
+				fprintf(stderr, "Unrecognized option \"%s\"\n", arg);
 				fUsageRequested = true;
 			}
 		} else {

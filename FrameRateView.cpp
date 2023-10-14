@@ -11,6 +11,7 @@
 #include "SliderTextControl.h"
 
 #include <Box.h>
+#include <Catalog.h>
 #include <CheckBox.h>
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
@@ -23,7 +24,10 @@
 #include <cstdlib>
 #include <iostream>
 
-const static char* kFrameRateLabel = "Target frame rate";
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "FrameRateView"
+
+const static char* kFrameRateLabel = B_TRANSLATE("Target frame rate");
 
 const static uint32 kLocalFrameRateChanged = 'FrCh';
 const static uint32 kAutoAdjust = 'FrCh';
@@ -31,10 +35,10 @@ const static uint32 kAutoAdjust = 'FrCh';
 
 FrameRateView::FrameRateView()
 	:
-	BView("Frame Rate View", B_WILL_DRAW)
+	BView("frame_rate_view", B_WILL_DRAW)
 {
-	fFrameRateSlider = new SliderTextControl("frame rate",
-			kFrameRateLabel, new BMessage(kLocalFrameRateChanged), 1, 60, 1, "fps");
+	fFrameRateSlider = new SliderTextControl("frame_rate_slider",
+			kFrameRateLabel, new BMessage(kLocalFrameRateChanged), 1, 60, 1, B_TRANSLATE("fps"));
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, B_USE_DEFAULT_SPACING)
 		.AddGroup(B_HORIZONTAL)

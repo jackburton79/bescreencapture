@@ -9,6 +9,7 @@
 #include "ControllerObserver.h"
 
 #include <Bitmap.h>
+#include <Catalog.h>
 #include <ControlLook.h>
 #include <Deskbar.h>
 #include <Entry.h>
@@ -23,6 +24,16 @@
 #include <syslog.h>
 #include <stdio.h>
 #include <string.h>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "BSCWindow"
+
+// from BSCWindow.cpp
+extern const char* LABEL_START;
+extern const char* LABEL_STOP;
+extern const char* LABEL_PAUSE;
+extern const char* LABEL_RESUME;
+
 
 class BSCMenuItem : public BMenuItem {
 public:
@@ -218,21 +229,21 @@ DeskbarControlView::MouseDown(BPoint where)
 	BPopUpMenu *menu = new BPopUpMenu("menu");
 	if (fRecording) {
 		BBitmap* stopBitmap = _LoadIconBitmap("stop_icon");
-		menu->AddItem(new BSCMenuItem("Stop recording",
-			new BMessage(kMsgGUIToggleCapture), stopBitmap));
+		menu->AddItem(new BSCMenuItem(LABEL_STOP,
+		new BMessage(kMsgGUIToggleCapture), stopBitmap));
 		if (fPaused) {
 			BBitmap* resumeBitmap = _LoadIconBitmap("resume_icon");
-			menu->AddItem(new BSCMenuItem("Resume recording",
-				new BMessage(kMsgGUITogglePause), resumeBitmap));
+			menu->AddItem(new BSCMenuItem(LABEL_RESUME,
+			new BMessage(kMsgGUITogglePause), resumeBitmap));
 		} else {
 			BBitmap* pauseBitmap = _LoadIconBitmap("pause_icon");
-			menu->AddItem(new BSCMenuItem("Pause recording",
-				new BMessage(kMsgGUITogglePause), pauseBitmap));
+			menu->AddItem(new BSCMenuItem(LABEL_PAUSE,
+			new BMessage(kMsgGUITogglePause), pauseBitmap));
 		}
 	} else {
 		BBitmap* bitmap = _LoadIconBitmap("record_icon");
-		menu->AddItem(new BSCMenuItem("Start recording",
-			new BMessage(kMsgGUIToggleCapture), bitmap));
+		menu->AddItem(new BSCMenuItem(LABEL_START,
+		new BMessage(kMsgGUIToggleCapture), bitmap));
 	}
 	menu->SetTargetForItems(this);
 

@@ -18,7 +18,7 @@ TYPE=APP
 
 # 	if you plan to use localization features 
 # 	specify the application MIME siganture
-APP_MIME_SIG= 
+APP_MIME_SIG=application/x-vnd.BeScreenCapture
 
 #	add support for new Pe and Eddie features
 #	to fill in generic makefile
@@ -49,7 +49,6 @@ SRCS = \
 	 InfoView.cpp  \
 	 MediaFormatView.cpp  \
 	 MovieEncoder.cpp  \
-	 OptionsWindow.cpp  \
 	 OutputView.cpp  \
 	 PreviewView.cpp  \
 	 PriorityControl.cpp  \
@@ -102,7 +101,7 @@ RSRCS = \
 #		naming scheme you need to specify the path to the library
 #		and it's name
 #		library: my_lib.a entry: my_lib.a or path/my_lib.a
-LIBS=$(STDCPPLIBS) game media be tracker translation
+LIBS=$(STDCPPLIBS) game media be localestub tracker translation
 
 #	specify additional paths to directories following the standard
 #	libXXX.so or libXXX.a naming scheme.  You can specify full paths
@@ -132,7 +131,7 @@ OPTIMIZE= FULL
 # 	locales/en.catkeys file. Use it as template for creating other
 # 	languages catkeys. All localization files must be placed
 # 	in "locales" sub-directory.
-LOCALES=
+LOCALES= de en
 
 #	specify any preprocessor symbols to be defined.  The symbols will not
 #	have their values set automatically; you must supply the value (if any)

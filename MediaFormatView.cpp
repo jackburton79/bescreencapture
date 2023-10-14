@@ -10,6 +10,7 @@
 #include "Utils.h"
 
 #include <Button.h>
+#include <Catalog.h>
 #include <LayoutBuilder.h>
 #include <MenuItem.h>
 #include <MenuField.h>
@@ -17,6 +18,10 @@
 #include <TextControl.h>
 
 #include <iostream>
+
+#undef B_TRANSLATION_CONTEXT
+#define B_TRANSLATION_CONTEXT "MediaFormatView"
+
 
 const static int32 kLocalCodecChanged = 'CdCh';
 const static int32 kLocalFileTypeChanged = 'FtyC';
@@ -32,18 +37,18 @@ private:
 
 MediaFormatView::MediaFormatView()
 	:
-	BView("Media Options", B_WILL_DRAW),
+	BView("media_options", B_WILL_DRAW),
 	fOutputFileType(NULL),
 	fCodecMenu(NULL)
 {
-	const char *kOutputMenuLabel = "File format:";
-	BPopUpMenu *fileFormatPopUp = new BPopUpMenu("Format");
-	fOutputFileType = new BMenuField("OutFormat",
+	const char *kOutputMenuLabel = B_TRANSLATE("File format:");
+	BPopUpMenu *fileFormatPopUp = new BPopUpMenu("format");
+	fOutputFileType = new BMenuField("outformat",
 			kOutputMenuLabel, fileFormatPopUp);
 
-	const char *kCodecMenuLabel = "Media codec:";
-	BPopUpMenu *popUpMenu = new BPopUpMenu("Codecs");
-	fCodecMenu = new BMenuField("OutCodec", kCodecMenuLabel, popUpMenu);
+	const char *kCodecMenuLabel = B_TRANSLATE("Media codec:");
+	BPopUpMenu *popUpMenu = new BPopUpMenu("codecs");
+	fCodecMenu = new BMenuField("outcodec", kCodecMenuLabel, popUpMenu);
 
 	BLayoutBuilder::Grid<>(this, B_USE_DEFAULT_SPACING, B_USE_DEFAULT_SPACING)
 		.Add(fOutputFileType->CreateLabelLayoutItem(), 0, 0)
