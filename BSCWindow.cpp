@@ -356,9 +356,11 @@ BSCWindow::_LayoutWindow()
 	BTabView* tabView = new BTabView("Tab View", B_WIDTH_FROM_LABEL);
 
 	BLayoutBuilder::Group<>(this, B_VERTICAL, 0)
-		.SetInsets(-2, -2)
 		.Add(fMenuBar)
-		.Add(tabView)
+		.AddGroup(B_VERTICAL)
+			.SetInsets(-2, B_USE_SMALL_SPACING, -2, 0)
+			.Add(tabView)
+		.End()
 		.AddGroup(B_HORIZONTAL)
 			.Add(fCamStatus)
 			.Add(fPauseButton)
