@@ -1,3 +1,7 @@
+v2.9.0
+	- Added localization (courthesy of Humdinger).
+	- Small layout tweaks (courthesy of Humdinger).
+---
 v2.8.1
 	- Fixed hang on quit if exiting during pause.
 	- Fixed build on 32 bit.

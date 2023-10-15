@@ -4,9 +4,9 @@ resource app_flags B_SINGLE_LAUNCH;
 
 resource app_version {
 	major		= 2,
-	middle	= 8,
-	minor		= 1,
-	variety	= B_APPV_FINAL,
+	middle	= 9,
+	minor		= 0,
+	variety	= B_APPV_DEVELOPMENT,
 	internal	= 1,
 	short_info	= "BeScreenCapture",
 	long_info	= "BeScreenCapture"
