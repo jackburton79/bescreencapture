@@ -1,0 +1,65 @@
+1	Catalan	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d fotogrames (%.1f fotogrames/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d fotogrames)
+About BeScreenCapture	BSCWindow		Quant al BeScreenCapture
+App	BSCWindow		Aplicació
+Capture	BSCWindow		Captura
+Capture failed	BSCWindow		Ha fallat la captura.
+Continue	BSCWindow		Continua
+Could not create clip:\n%s	BSCWindow		No s'ha pogut crear el clip:\n%s
+Could not record clip:\n%s	BSCWindow		No s'ha pogut gravar el clip:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Segur que voleu sortir de la Captura de pantalla del Be?\n
+Encoding failed	BSCWindow		La codificació ha fallat.
+Finished recording	BSCWindow		Enregistrament acabat
+Finished recording '%filename%'.	BSCWindow		S'ha acabat d'enregistrar %filename%.
+Help…	BSCWindow		Ajuda...
+Info	BSCWindow		Informació
+OK	BSCWindow		D'acord
+Open folder	BSCWindow		Obre la carpeta
+Options	BSCWindow		Opcions
+Pause	BSCWindow		Interromp
+Play	BSCWindow		Reprodueix
+Quit	BSCWindow		Surt
+Really quit?	BSCWindow		Realment en voleu sortir?
+Recording	BSCWindow		Gravació
+Reset to defaults	BSCWindow		Restableix els valors per defecte
+Resume	BSCWindow		Reprèn
+Settings	BSCWindow		Configuració
+Start	BSCWindow		Inicia
+Stop	BSCWindow		Atura
+Success	BSCWindow		Correcte
+Advanced	AdvancedOptionsView		Avançat
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Activa la drecera CTRL+ALT+MAJ+R
+Encoding options	AdvancedOptionsView		Opcions de codificació
+Frame rate	AdvancedOptionsView		Velocitat dels fotogrames
+Hide window when recording	AdvancedOptionsView		Amaga la finestra en gravar
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Mode d'incògnit: amaga la finestra i la icona de la safata de la barra d'escriptori.
+Quit when finished	AdvancedOptionsView		Surt quan s'acabi.
+Select a region on start	AdvancedOptionsView		Seleccioneu una regió a l'inici.
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Atureu la gravació amb CTRL+ALT+MAJ+R,\ni definiu una combinació de tecles amb les preferències de les dreceres.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Usa menys la CPU (Finestra directa del Be)
+BeScreenCapture	System name		Captura de pantalla del Be
+BeScreenCapture is a screen recording application.	BSCApp		La Captura de pantalla del Be és una aplicació de gravació de pantalla.
+Encoding in progress.	BSCApp		Codificació en curs
+Recording in progress.	BSCApp		Enregistrament en curs.
+bottom:	PreviewView		inferior:
+Capture area:\n	PreviewView		Àrea de captura:\n
+left:	PreviewView		esquerra:
+right:	PreviewView		dreta:
+top:	PreviewView		superior:
+Browse…	OutputView		Navega...
+File name:	OutputView		Nom del fitxer:
+Output	OutputView		Sortida
+pixels	OutputView		píxels
+Region	OutputView		Regió
+Scale	OutputView		Escala
+Select region	OutputView		Seleccioneu la regió
+Select window	OutputView		Seleccioneu la finestra
+Source	OutputView		Font
+Whole screen	OutputView		Tota la pantalla
+Window	OutputView		Finestra
+Window edges	OutputView		Vores de la finestra
+File format:	MediaFormatView		Format del fitxer:
+Media codec:	MediaFormatView		Còdec multimèdia:
+fps	FrameRateView		fps
+Target frame rate	FrameRateView		Objectiu de la velocitat de fotogrames

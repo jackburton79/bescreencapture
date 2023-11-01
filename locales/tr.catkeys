@@ -1,0 +1,65 @@
+1	Turkish	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d kare (%.1f kare/sn)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d kare)
+About BeScreenCapture	BSCWindow		BeScreenCapture hakkında
+App	BSCWindow		Uygulama
+Capture	BSCWindow		Yakala
+Capture failed	BSCWindow		Yakalama başarısız
+Continue	BSCWindow		Sürdür
+Could not create clip:\n%s	BSCWindow		Klip oluşturulamadı:\n%s
+Could not record clip:\n%s	BSCWindow		Klip kaydedilemedi:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		BeScreenCapture uygulamasından çıkmayı gerçekten istiyor musunuz?\n
+Encoding failed	BSCWindow		Kodlama başarısız
+Finished recording	BSCWindow		Kayıt bitti
+Finished recording '%filename%'.	BSCWindow		'%filename%' kaydı bitti.
+Help…	BSCWindow		Yardım…
+Info	BSCWindow		Bilgi
+OK	BSCWindow		Tamam
+Open folder	BSCWindow		Klasör aç
+Options	BSCWindow		Seçenekler
+Pause	BSCWindow		Duraklat
+Play	BSCWindow		Oynat
+Quit	BSCWindow		Çık
+Really quit?	BSCWindow		Gerçekten çıkılsın mı?
+Recording	BSCWindow		Kayıt
+Reset to defaults	BSCWindow		Saptanmışlara sıfırla
+Resume	BSCWindow		Sürdür
+Settings	BSCWindow		Ayarlar
+Start	BSCWindow		Başlat
+Stop	BSCWindow		Durdur
+Success	BSCWindow		Başarılı
+Advanced	AdvancedOptionsView		Gelişmiş
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Kontrol+Seçenek+Üst Karakter+R kısayolunu etkinleştir
+Encoding options	AdvancedOptionsView		Kodlama seçenekleri
+Frame rate	AdvancedOptionsView		Kare hızı
+Hide window when recording	AdvancedOptionsView		Kaydederken pencereyi gizle
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Gizli kip: Pencereyi ve Masaüstü Çubuğu simgesini gizle
+Quit when finished	AdvancedOptionsView		Bitince çık
+Select a region on start	AdvancedOptionsView		Başlamak için bir bölge seç
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Kontrol+Seçenek+Üst Karakter+R ile kaydı durdurun\nveya Kestirmeler tercihlerinden bir düğme kombinasyonu ayarlayın.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Daha az CPU kullan (BDirectWindow)
+BeScreenCapture	System name		BeScreenCapture
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture, bir ekran kaydı uygulamasıdır.
+Encoding in progress.	BSCApp		Kodlama sürüyor.
+Recording in progress.	BSCApp		Kayıt sürüyor.
+bottom:	PreviewView		alt:
+Capture area:\n	PreviewView		Yakalama alanı:\n
+left:	PreviewView		sol:
+right:	PreviewView		sağ:
+top:	PreviewView		üst:
+Browse…	OutputView		Göz at…
+File name:	OutputView		Dosya adı:
+Output	OutputView		Çıktı
+pixels	OutputView		piksel
+Region	OutputView		Bölge
+Scale	OutputView		Ölçek
+Select region	OutputView		Bölge seç
+Select window	OutputView		Pencere seç
+Source	OutputView		Kaynak
+Whole screen	OutputView		Tüm ekran
+Window	OutputView		Pencere
+Window edges	OutputView		Pencere kenarları
+File format:	MediaFormatView		Dosya biçimi:
+Media codec:	MediaFormatView		Ortam kodlayıcısı:
+fps	FrameRateView		fps
+Target frame rate	FrameRateView		Hedef kare hızı
