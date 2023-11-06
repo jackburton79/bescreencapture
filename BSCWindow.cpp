@@ -265,6 +265,7 @@ BSCWindow::MessageReceived(BMessage *message)
 void
 BSCWindow::ScreenChanged(BRect screen_size, color_space depth)
 {
+	BDirectWindow::ScreenChanged(screen_size, depth);
 }
 
 
@@ -302,18 +303,22 @@ BSCWindow::MenusBeginning()
 	BMenu* menu = recordingItem->Menu();
 	if (menu == NULL)
 		return;
+
+	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	if (app == NULL)
+		return;
+	
 	BMenuItem* start = menu->FindItem(LABEL_START);
 	BMenuItem* stop = menu->FindItem(LABEL_STOP);
 	BMenuItem* pause = menu->FindItem(LABEL_PAUSE);
-	int state = ((BSCApp*)be_app)->State();
+	int state = app->State();
 	if (start != NULL)
 		start->SetEnabled(state == BSCApp::STATE_IDLE);
 	if (stop != NULL)
 		stop->SetEnabled(state == BSCApp::STATE_RECORDING);
 	if (pause != NULL) {
 		pause->SetEnabled(state == BSCApp::STATE_RECORDING);
-		bool paused = (((BSCApp*)be_app)->Paused());
-		pause->SetMarked(paused);
+		pause->SetMarked(app->Paused());
 	}
 }
 
