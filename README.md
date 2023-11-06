@@ -5,12 +5,14 @@
 
 ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture.png) ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture-options.png)
 
-BeScreenCapture lets you record what happens on your screen and save it to a clip in any media format supported by Haiku.
+BeScreenCapture lets you record what happens on your screen and save it 
+to a clip in any media format supported by Haiku.
 
 The recorded clip can be scaled to suit your needs.
 
-Can be launched by using the `CTRL`-`ALT`-`SHIFT`-`r` shortcut, which will also start recording the specified area.
-Hit `CTRL`-`ALT`-`SHIFT`-`r` again to stop.
+Can be launched by using the `CTRL`+`ALT`+`SHIFT`+`r` shortcut, which will 
+also start recording the specified area.
+Hit `CTRL`+`ALT`+`SHIFT`+`r` again to stop.
 
 BeScreenCapture is also scriptable with `hey`:
 
@@ -49,7 +51,8 @@ You can also define your own shortcuts in the "Shortcuts" preflet:
 
 ## HowTo
 
-Jonathan Steadman made a nice video tutorial on how to use BeScreenCapture here: [https://youtu.be/kzwAKSbKDoU](https://youtu.be/kzwAKSbKDoU)
+Jonathan Steadman made a nice video tutorial on how to use BeScreenCapture 
+here: [https://youtu.be/kzwAKSbKDoU](https://youtu.be/kzwAKSbKDoU)
 
 ## Notes
 
