@@ -1,5 +1,6 @@
 v2.9.0
-	- Added localization (courthesy of Humdinger).
+	- Added localization support (courthesy of Humdinger).
+	- Added various translations.
 	- Small layout tweaks (courthesy of Humdinger).
 ---
 v2.8.1
