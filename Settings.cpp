@@ -101,7 +101,6 @@ Settings::Load()
 	BMessage tempMessage;
 	if (status == B_OK)
 		status = tempMessage.Unflatten(&file);
-
 	if (status == B_OK) {
 		// Copy the loaded fields to the real settings message
 		// N.B: We only copy "known" settings
@@ -163,7 +162,6 @@ Settings::Save()
 
 	BFile file;
 	status_t status = _LoadSettingsFile(file, B_WRITE_ONLY|B_CREATE_FILE);
-
 	if (status == B_OK)
 		status = fSettings->Flatten(&file);
 
@@ -220,7 +218,7 @@ void
 Settings::SetClipDepth(const color_space &space)
 {
 	BAutolock _(fLocker);
-	const int32 &spaceInt = (int32)space;
+	const int32 &spaceInt = reinterpret_cast<const int32&>(space);
 	fSettings->SetInt32(kClipDepth, spaceInt);
 }
 
@@ -230,7 +228,7 @@ Settings::ClipDepth() const
 {
 	BAutolock _(fLocker);
 	color_space depth;
-	fSettings->FindInt32(kClipDepth, (int32 *)&depth);
+	fSettings->FindInt32(kClipDepth, reinterpret_cast<int32*>(&depth));
 	return depth;
 }
 

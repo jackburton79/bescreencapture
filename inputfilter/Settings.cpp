@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -95,13 +95,12 @@ status_t
 Settings::Load()
 {
 	BAutolock _(fLocker);
-	
+
 	BFile file;
 	status_t status = _LoadSettingsFile(file, B_READ_ONLY);
 	BMessage tempMessage;
-	if (status == B_OK)	
+	if (status == B_OK)
 		status = tempMessage.Unflatten(&file);
-	
 	if (status == B_OK) {
 		// Copy the loaded fields to the real settings message
 		// N.B: We only copy "known" settings
@@ -137,7 +136,7 @@ Settings::Load()
 		if (tempMessage.FindInt32(kThreadPriority, &integer) == B_OK)
 			fSettings->SetInt32(kThreadPriority, integer);
 		if (tempMessage.FindInt32(kWindowFrameBorderSize, &integer) == B_OK)
-			fSettings->SetInt32(kWindowFrameBorderSize, integer);	
+			fSettings->SetInt32(kWindowFrameBorderSize, integer);
 		if (tempMessage.FindBool(kWarnOnQuit, &boolean) == B_OK)
 			fSettings->SetBool(kWarnOnQuit, boolean);
 		if (tempMessage.FindBool(kQuitWhenFinished, &boolean) == B_OK)
@@ -149,9 +148,9 @@ Settings::Load()
 		if (tempMessage.FindBool(kEnableShortcut, &boolean) == B_OK)
 			fSettings->SetBool(kEnableShortcut, boolean);
 		if (tempMessage.FindBool(kSelectOnStart, &boolean) == B_OK)
-			fSettings->SetBool(kSelectOnStart, boolean);		
-	}	
-	
+			fSettings->SetBool(kSelectOnStart, boolean);
+	}
+
 	return status;
 }
 
@@ -160,13 +159,12 @@ status_t
 Settings::Save()
 {
 	BAutolock _(fLocker);
-	
+
 	BFile file;
 	status_t status = _LoadSettingsFile(file, B_WRITE_ONLY|B_CREATE_FILE);
-
-	if (status == B_OK)	
+	if (status == B_OK)
 		status = fSettings->Flatten(&file);
-	
+
 	return status;
 }
 
@@ -220,7 +218,7 @@ void
 Settings::SetClipDepth(const color_space &space)
 {
 	BAutolock _(fLocker);
-	const int32 &spaceInt = (int32)space;
+	const int32 &spaceInt = reinterpret_cast<const int32&>(space);
 	fSettings->SetInt32(kClipDepth, spaceInt);
 }
 
@@ -230,7 +228,7 @@ Settings::ClipDepth() const
 {
 	BAutolock _(fLocker);
 	color_space depth;
-	fSettings->FindInt32(kClipDepth, (int32 *)&depth);
+	fSettings->FindInt32(kClipDepth, reinterpret_cast<int32*>(&depth));
 	return depth;
 }
 
@@ -304,9 +302,9 @@ Settings::WindowFrameEdgeSize() const
 	int32 size = 0;
 	fSettings->FindInt32(kWindowFrameBorderSize, &size);
 	return size;
-}	
-	
-	
+}
+
+
 void
 Settings::SetMinimizeOnRecording(const bool &minimize)
 {
@@ -430,7 +428,7 @@ Settings::WarnOnQuit() const
 	fSettings->FindBool(kWarnOnQuit, &warn);
 	return warn;
 }
-	
+
 
 void
 Settings::SetQuitWhenFinished(const bool& quit)
