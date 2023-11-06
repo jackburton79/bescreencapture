@@ -1,65 +1,65 @@
-1	English	application/x-vnd.BeScreenCapture	2408250371
-Help…	BSCWindow		Hilfe…
-Capture area:\n	PreviewView		Aufnahmebereich:\n
-Use less CPU (BDirectWindow)	AdvancedOptionsView		CPU weniger belasten (BDirectWindow)
-Play	BSCWindow		Abspielen
+1	German	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d Bilder (%.1f Bilder/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d Bilder)
 About BeScreenCapture	BSCWindow		Über BeScreenCapture
-Region	OutputView		Bereich
-Select region	OutputView		Bereich festlegen
+App	BSCWindow		App
+Capture	BSCWindow		Aufnahme
 Capture failed	BSCWindow		Aufnahme fehlgeschlagen
-Do you really want to quit BeScreenCapture?\n	BSCWindow		Soll BeScreenCapture tatsächlich beendet werden?\n
-Select a region on start	AdvancedOptionsView		Bereich beim Start festlegen
-Pause	BSCWindow		Pause
-Encoding options	AdvancedOptionsView		Kodieroptionen
-File name:	OutputView		Dateiname:
-Finished recording	BSCWindow		Aufnahme abgeschlossen
 Continue	BSCWindow		Weitermachen
-Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		STRG+ALT+SHIFT+R Kürzel aktivieren
 Could not create clip:\n%s	BSCWindow		Video konnte nicht erzeugt werden:\n%s
-Encoding in progress.	BSCApp		Es läuft gerade eine Kodierung.
-Window	OutputView		Fenster
+Could not record clip:\n%s	BSCWindow		Video konnte nicht aufgenommen werden:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Soll BeScreenCapture tatsächlich beendet werden?\n
 Encoding failed	BSCWindow		Kodierung fehlgeschlagen
-Select window	OutputView		Fenster auswählen
+Finished recording	BSCWindow		Aufnahme abgeschlossen
+Finished recording '%filename%'.	BSCWindow		Aufnahme von '%filename%' abgeschlossen.
+Help…	BSCWindow		Hilfe…
+Info	BSCWindow		Info
+OK	BSCWindow		OK
+Open folder	BSCWindow		Ordner öffnen
+Options	BSCWindow		Optionen
+Pause	BSCWindow		Pause
+Play	BSCWindow		Abspielen
+Quit	BSCWindow		Beenden
+Really quit?	BSCWindow		Wirklich beenden?
+Recording	BSCWindow		Aufnahme
+Reset to defaults	BSCWindow		Auf Standardwerte zurücksetzen
+Resume	BSCWindow		Weiter
+Settings	BSCWindow		Einstellungen
+Start	BSCWindow		Start
+Stop	BSCWindow		Stopp
+Success	BSCWindow		Aufnahme erfolgreich
+Advanced	AdvancedOptionsView		Weitere Optionen
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		STRG+ALT+SHIFT+R Kürzel aktivieren
+Encoding options	AdvancedOptionsView		Kodieroptionen
+Frame rate	AdvancedOptionsView		Bildrate
+Hide window when recording	AdvancedOptionsView		Fenster während der Aufnahme ausblenden
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Incognito Modus: Fenster und Deskbar Tray-Icon ausblenden
+Quit when finished	AdvancedOptionsView		Nach Aufnahme automatisch beenden
+Select a region on start	AdvancedOptionsView		Bereich beim Start festlegen
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Aufnahme beenden mit STRG+ALT+SHIFT+R,\noder eigene Tastenkombination mit Haikus\n Tastenkürzel-Einstellungen vergeben.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		CPU weniger belasten (BDirectWindow)
 BeScreenCapture	System name		BeScreenCapture
 BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture macht Videoaufnamen des Bildschirminhalts.
-Target frame rate	FrameRateView		Angestrebte Bildrate
-OK	BSCWindow		OK
-fps	FrameRateView		Bilder/s
+Encoding in progress.	BSCApp		Es läuft gerade eine Kodierung.
 Recording in progress.	BSCApp		Es läuft gerade eine Aufnahme.
-Window edges	OutputView		Fensterrahmen
-App	BSCWindow		App
-Really quit?	BSCWindow		Wirklich beenden?
-Success	BSCWindow		Aufnahme erfolgreich
-Recording	BSCWindow		Aufnahme
-Start	BSCWindow		Start
-Reset to defaults	BSCWindow		Auf Standardwerte zurücksetzen
-Could not record clip:\n%s	BSCWindow		Video konnte nicht aufgenommen werden:\n%s
 bottom:	PreviewView		unten:
-Info	BSCWindow		Info
-Stop	BSCWindow		Stopp
-Finished recording '%filename%'.	BSCWindow		Aufnahme von '%filename%' abgeschlossen.
+Capture area:\n	PreviewView		Aufnahmebereich:\n
 left:	PreviewView		links:
-Scale	OutputView		Zoom
-, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d Bilder (%.1f Bilder/s)
-Options	BSCWindow		Optionen
-Browse…	OutputView		Auswählen…
-Settings	BSCWindow		Einstellungen
-Advanced	AdvancedOptionsView		Weitere Optionen
-Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Incognito Modus: Fenster und Deskbar Tray-Icon ausblenden
-pixels	OutputView		Pixel
-Open folder	BSCWindow		Ordner öffnen
-Quit	BSCWindow		Beenden
-File format:	MediaFormatView		Dateiformat:
-top:	PreviewView		oben:
-Quit when finished	AdvancedOptionsView		Nach Aufnahme automatisch beenden
-Hide window when recording	AdvancedOptionsView		Fenster während der Aufnahme ausblenden
-(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d Bilder)
-Media codec:	MediaFormatView		Media-Codec:
-Resume	BSCWindow		Weiter
-Output	OutputView		Ausgabe
-Whole screen	OutputView		Ganzer Bildschirm
-Source	OutputView		Quelle
 right:	PreviewView		rechts:
-Frame rate	AdvancedOptionsView		Bildrate
-Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Aufnahme beenden mit STRG+ALT+SHIFT+R,\noder eigene Tastenkombination mit Haikus\n Tastenkürzel-Einstellungen vergeben.
-Capture	BSCWindow		Aufnahme
+top:	PreviewView		oben:
+Browse…	OutputView		Auswählen…
+File name:	OutputView		Dateiname:
+Output	OutputView		Ausgabe
+pixels	OutputView		Pixel
+Region	OutputView		Bereich
+Scale	OutputView		Zoom
+Select region	OutputView		Bereich festlegen
+Select window	OutputView		Fenster auswählen
+Source	OutputView		Quelle
+Whole screen	OutputView		Ganzer Bildschirm
+Window	OutputView		Fenster
+Window edges	OutputView		Fensterrahmen
+File format:	MediaFormatView		Dateiformat:
+Media codec:	MediaFormatView		Media-Codec:
+fps	FrameRateView		Bilder/s
+Target frame rate	FrameRateView		Angestrebte Bildrate
