@@ -24,7 +24,6 @@
 #include <TextControl.h>
 
 #include <algorithm>
-#include <iostream>
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "OutputView"

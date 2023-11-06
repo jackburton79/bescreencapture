@@ -9,8 +9,6 @@
 #include <Locker.h>
 #include <Messenger.h>
 
-#include <queue>
-
 
 class BButton;
 class BMenuBar;

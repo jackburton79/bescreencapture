@@ -8,11 +8,8 @@
 #include "BSCApp.h"
 #include "CamStatusView.h"
 #include "ControllerObserver.h"
-#include "Constants.h"
-#include "InfoView.h"
-#include "OptionsWindow.h"
 #include "OutputView.h"
-#include "SelectionWindow.h"
+#include "PublicMessages.h"
 #include "Settings.h"
 
 #include <Alert.h>

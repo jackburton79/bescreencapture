@@ -20,9 +20,6 @@
 #include <TextControl.h>
 #include <StringView.h>
 
-#include <algorithm>
-#include <cstdlib>
-#include <iostream>
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "FrameRateView"

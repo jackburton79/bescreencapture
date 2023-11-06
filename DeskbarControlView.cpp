@@ -7,6 +7,7 @@
 #include "BSCApp.h"
 #include "Constants.h"
 #include "ControllerObserver.h"
+#include "PublicMessages.h"
 
 #include <Bitmap.h>
 #include <Catalog.h>

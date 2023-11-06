@@ -5,7 +5,6 @@
 
 #include "MediaFormatView.h"
 #include "BSCApp.h"
-#include "Constants.h"
 #include "ControllerObserver.h"
 #include "Utils.h"
 
@@ -17,7 +16,6 @@
 #include <PopUpMenu.h>
 #include <TextControl.h>
 
-#include <iostream>
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "MediaFormatView"

@@ -10,7 +10,6 @@
 #include "ControllerObserver.h"
 #include "DeskbarControlView.h"
 #include "FramesList.h"
-#include "FunctionObject.h"
 #include "MovieEncoder.h"
 #include "PublicMessages.h"
 #include "SelectionWindow.h"

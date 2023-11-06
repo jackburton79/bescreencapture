@@ -13,7 +13,6 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <iostream>
 
 const int32 kTextControlMessage = '9TCM';
 const int32 kTextControlRunnerMessage = '9RTC';

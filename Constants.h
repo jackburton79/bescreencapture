@@ -6,8 +6,6 @@
 #ifndef __CONSTANTS_H
 #define __CONSTANTS_H
 
-#include "PublicMessages.h"
-
 #include <GraphicsDefs.h>
 
 #define NULL_FORMAT_SHORT_NAME "no_encoding"

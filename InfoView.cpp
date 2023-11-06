@@ -14,7 +14,6 @@
 #include <String.h>
 #include <StringView.h>
 
-#include <iostream>
 
 static BString
 GetFormatString(const char* formatName)

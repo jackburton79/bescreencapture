@@ -5,7 +5,6 @@
 #include "CamStatusView.h"
 
 #include "BSCApp.h"
-#include "Constants.h"
 #include "ControllerObserver.h"
 
 #include <Application.h>
@@ -23,7 +22,6 @@
 #include <Window.h>
 
 #include <algorithm>
-#include <iostream>
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "CamStatusView"

@@ -5,9 +5,7 @@
 #include "AdvancedOptionsView.h"
 
 #include "BSCApp.h"
-#include "Constants.h"
 #include "ControllerObserver.h"
-#include "DeskbarControlView.h"
 #include "FrameRateView.h"
 #include "MediaFormatView.h"
 #include "Settings.h"
