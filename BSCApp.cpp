@@ -328,7 +328,7 @@ BStringList
 SplitChangeLog(const char* changeLog)
 {
 	BStringList list;
-	char* stringStart = (char*)changeLog;
+	char* stringStart = const_cast<char*>(changeLog);
 	int i = 0;
 	char c;
 	while ((c = stringStart[i]) != '\0') {
@@ -393,7 +393,7 @@ BSCApp::AboutRequested()
 	int32 stringCount = list.CountStrings();
 	char** charArray = new char* [stringCount + 1];
 	for (int32 i = 0; i < stringCount; i++) {
-		charArray[i] = (char*)list.StringAt(i).String();
+		charArray[i] = const_cast<char*>(list.StringAt(i).String());
 	}
 	charArray[stringCount] = NULL;
 
@@ -767,9 +767,6 @@ BSCApp::EncodeMovie()
 	BMessage message(kMsgControllerEncodeStarted);
 	message.AddInt32("frames_total", RecordedFrames());
 	SendNotices(kMsgControllerEncodeStarted, &message);
-
-	//fEncoder->SetSource(fFileList);
-	//fFileList = NULL;
 
 	BMessenger messenger(this);
 	fEncoder->SetMessenger(messenger);
@@ -1194,9 +1191,6 @@ BSCApp::_ResumeCapture()
 void
 BSCApp::_EncodingFinished(const status_t status, const char* fileName)
 {
-	// Reminder: fFilelist is already NULL here, since it's deleted in MovieEncoder,
-	// except when Encoder didn't start at all, where it's deleted in EncodeMovie()
-	// TODO: Review fFileList ownership policy
 	fEncoderThread = -1;
 	fNumFrames = 0;
 
@@ -1342,7 +1336,7 @@ BSCApp::CaptureThread()
 			fileName << FramesList::Path() << "/" << lastFrameTime;
 			status_t status = FramesList::WriteFrame(bitmap, lastFrameTime, fileName);
 			if (status != B_OK) {
-			// Takes ownership of the bitmap
+				// Takes ownership of the bitmap
 				error = B_NO_MEMORY;
 				std::cerr << "BSCApp::CaptureThread(): error adding bitmap to frame list: " << ::strerror(error) << std::endl;
 				break;
