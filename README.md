@@ -4,8 +4,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/63f373e0c5c04abfa329e6d505d1f014)](https://app.codacy.com/gh/jackburton79/bescreencapture?utm_source=github.com&utm_medium=referral&utm_content=jackburton79/bescreencapture&utm_campaign=Badge_Grade_Settings)
 [![CodeFactor](https://www.codefactor.io/repository/github/jackburton79/bescreencapture/badge)](https://www.codefactor.io/repository/github/jackburton79/bescreencapture)
 
-<img src="BeScreenCapture.png" alt="Screenshot" width="50%">
-<img src="BeScreenCapture-options.png" alt="Screenshot" width="50%">
+![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture.png) ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture-options.png)
 
 BeScreenCapture lets you record what happens on your screen and save it 
 to a clip in any media format supported by Haiku.

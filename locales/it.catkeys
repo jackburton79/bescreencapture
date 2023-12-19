@@ -21,7 +21,7 @@ Pause	BSCWindow		Pausa
 Play	BSCWindow		Riproduci
 Quit	BSCWindow		Esci
 Really quit?	BSCWindow		Uscire davvero?
-Recording	BSCWindow		In registrazione
+Recording	BSCWindow		Registrare
 Reset to defaults	BSCWindow		Ripristina predefiniti
 Resume	BSCWindow		Riprendi
 Settings	BSCWindow		Impostazioni
