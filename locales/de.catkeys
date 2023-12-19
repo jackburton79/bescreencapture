@@ -12,7 +12,7 @@ Do you really want to quit BeScreenCapture?\n	BSCWindow		Soll BeScreenCapture ta
 Encoding failed	BSCWindow		Kodierung fehlgeschlagen
 Finished recording	BSCWindow		Aufnahme abgeschlossen
 Finished recording '%filename%'.	BSCWindow		Aufnahme von '%filename%' abgeschlossen.
-Help…	BSCWindow		Hilfe…
+Help…	BSCWindow		Hilfe …
 Info	BSCWindow		Info
 OK	BSCWindow		OK
 Open folder	BSCWindow		Ordner öffnen
@@ -47,7 +47,7 @@ Capture area:\n	PreviewView		Aufnahmebereich:\n
 left:	PreviewView		links:
 right:	PreviewView		rechts:
 top:	PreviewView		oben:
-Browse…	OutputView		Auswählen…
+Browse…	OutputView		Auswählen …
 File name:	OutputView		Dateiname:
 Output	OutputView		Ausgabe
 pixels	OutputView		Pixel

@@ -6,12 +6,12 @@ App	BSCWindow		Applicazione
 Capture	BSCWindow		Cattura
 Capture failed	BSCWindow		Cattura fallita
 Continue	BSCWindow		Continua
-Could not create clip:\n%s	BSCWindow		Impossibile creare la clip:\n%s
-Could not record clip:\n%s	BSCWindow		Impossibile registrare clip:\n%s
+Could not create clip:\n%s	BSCWindow		Impossibile creare il filmato:\n%s
+Could not record clip:\n%s	BSCWindow		Impossibile registrare il filmato:\n%s
 Do you really want to quit BeScreenCapture?\n	BSCWindow		Vuoi davvero chiudere BeScreenCapture?\n
 Encoding failed	BSCWindow		Codifica fallita
 Finished recording	BSCWindow		Registrazione terminata
-Finished recording '%filename%'.	BSCWindow		Completata registrazione di '%filename%'.
+Finished recording '%filename%'.	BSCWindow		Registrazione di '%filename%' completata.
 Help…	BSCWindow		Aiuto…
 Info	BSCWindow		Informazioni
 OK	BSCWindow		OK
