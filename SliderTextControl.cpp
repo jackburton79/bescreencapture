@@ -21,12 +21,9 @@ const int32 kSliderModificationMessage = '9SMM';
 class SizeSlider : public BSlider {
 public:
 	SizeSlider(const char* name, const char* label,
-		BMessage* message, int32 minValue,
-		int32 maxValue, int32 stepValue,
-		orientation posture,
-		thumb_style thumbType = B_BLOCK_THUMB,
-		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
-							| B_FRAME_EVENTS);
+		BMessage* message, int32 minValue, int32 maxValue, int32 stepValue,
+		orientation posture, thumb_style thumbType = B_BLOCK_THUMB,
+		uint32 flags = B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS);
 
 	virtual void SetValue(int32 value);
 private:
@@ -35,17 +32,16 @@ private:
 
 
 SliderTextControl::SliderTextControl(const char* name, const char* label,
-		BMessage* message, int32 minValue,
-		int32 maxValue, int32 stepValue, const char* unit,
-		orientation posture,
-		thumb_style thumbType,
-		uint32 flags)
+		BMessage* message, int32 minValue, int32 maxValue, int32 stepValue,
+		const char* unit, orientation posture, bool isPercent,
+		thumb_style thumbType, uint32 flags)
 	:
 	BControl(name, label, message, flags),
 	fSizeSlider(NULL),
 	fSizeTextControl(NULL),
 	fTextModificationRunner(NULL),
-	fWhat(message->what)
+	fWhat(message->what),
+	fIsPercent(isPercent)
 {
 	fSizeSlider = new SizeSlider("size_slider", label,
 		new BMessage(*message), minValue, maxValue, stepValue, B_HORIZONTAL);
@@ -54,12 +50,25 @@ SliderTextControl::SliderTextControl(const char* name, const char* label,
 	fSizeSlider->SetHashMarks(B_HASH_MARKS_BOTTOM);
 	fSizeSlider->SetHashMarkCount(8);
 
-	BString minLabel;
-	minLabel << minValue << " " << unit;
-	BString maxLabel;
-	maxLabel << maxValue << " " << unit;
+	if (isPercent) {
+		BString minData;
+		BString maxData;
 
-	fSizeSlider->SetLimitLabels(minLabel.String(), maxLabel.String());
+		if (fNumberFormat.FormatPercent(minData, (minValue / 100)) != B_OK)
+			minData.SetToFormat("%d%%", minValue);
+
+		if (fNumberFormat.FormatPercent(maxData, (maxValue / 100)) != B_OK)
+			minData.SetToFormat("%d%%", maxValue);
+
+		fSizeSlider->SetLimitLabels(minData.String(), maxData.String());
+	} else {
+		BString minLabel;
+		minLabel << minValue << " " << unit;
+		BString maxLabel;
+		maxLabel << maxValue << " " << unit;
+		fSizeSlider->SetLimitLabels(minLabel.String(), maxLabel.String());
+	}
+
 	fSizeTextControl = new BTextControl("", "", new BMessage(kTextControlMessage));
 	fTextLabel = new BStringView("label", unit);
 
@@ -122,7 +131,6 @@ SliderTextControl::MessageReceived(BMessage* message)
 			value = std::max(value, min);
 			value = std::min(value, max);
 			BControl::SetValue(value);
-
 			fSizeSlider->SetValue(value);
 
 			BString text;
@@ -165,8 +173,13 @@ SliderTextControl::SetValue(int32 value)
 	fSizeSlider->SetValue(value);
 	BString sizeString;
 	sizeString << (int32)fSizeSlider->Value();
-	fSizeTextControl->SetText(sizeString);
 
+	if (fIsPercent) {
+		if (fNumberFormat.FormatPercent(sizeString, fSizeSlider->Value() / 100) != B_OK)
+			sizeString.SetToFormat("%d%%", (int32)fSizeSlider->Value());
+	}
+
+	fSizeTextControl->SetText(sizeString);
 	BControl::SetValue(value);
 }
 
