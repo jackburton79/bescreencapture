@@ -2,20 +2,19 @@ name: Build
 
 on:
   workflow_dispatch:
-jobs:
+jobs:  
   build:
-    name: build
-    runs-on: ubuntu-latest
+    name: 'build-test on Haiku'
+    runs-on: 'ubuntu-latest'
+    container: 'docker.io/hectorm/qemu-haiku:latest'
     steps:
-      # Checkout the repository to the GitHub Actions runner
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Build rootfs
-        run: |
-          git config --global user.name "Jackburton79"
-          git config --global user.email "your-email@gmail.com"
-          git clone --depth 1 https://github.com/jessicah/cross-compiler.git
-          ./cross-compiler/build-rootfs.sh x86_64
-        
-      
+    - name: 'Wait until the VM is ready'
+      run: 'container-init & timeout 600 vmshell exit 0'
+    - name: 'Install packages'
+      run: 'vmshell pkgman install -y make'
+    - name: 'Checkout project'
+      uses: 'actions/checkout@main'
+    - name: 'Copy project to VM'
+      run: 'vmshell mkdir ./; tar -cf - ./ | vmshell tar -xf - -C ./'
+    - name: 'Test project'
+      run: 'vmshell make'
