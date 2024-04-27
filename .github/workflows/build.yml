@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 jobs:  
   build:
-    name: 'build-test on Haiku'
+    name: 'build on Haiku'
     runs-on: 'ubuntu-latest'
     container: 'docker.io/hectorm/qemu-haiku:latest'
     steps:
@@ -17,4 +17,4 @@ jobs:
     - name: 'Copy project to VM'
       run: 'vmshell mkdir ./src/; tar -cf - ./ | vmshell tar -xf - -C ./src/'
     - name: 'Build project'
-      run: 'vmshell make -C ./src/'
+      run: 'vmshell make BUILDHOME=\`finddir B_SYSTEM_DEVELOP_DIRECTORY\` -C ./src/'
