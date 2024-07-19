@@ -1318,12 +1318,14 @@ BSCApp::CaptureThread()
 
 			error = bitmap->InitCheck();
 			if (error != B_OK) {
+				delete bitmap;
 				std::cerr << "BSCApp::CaptureThread(): error initializing bitmap: " << ::strerror(error) << std::endl;
 				break;
 			}
 
 			error = ReadBitmap(bitmap, true, bounds);
 			if (error != B_OK) {
+				delete bitmap;
 				std::cerr << "BSCApp::CaptureThread(): error reading bitmap" << ::strerror(error) << std::endl;
 				break;
 			}
@@ -1333,11 +1335,12 @@ BSCApp::CaptureThread()
 			// TODO: set path ?
 			BString fileName;
 			fileName << FramesList::Path() << "/" << lastFrameTime;
+
 			status_t status = FramesList::WriteFrame(bitmap, lastFrameTime, fileName);
+			delete bitmap;
+
 			if (status != B_OK) {
-				// Takes ownership of the bitmap
-				error = B_NO_MEMORY;
-				std::cerr << "BSCApp::CaptureThread(): error adding bitmap to frame list: " << ::strerror(error) << std::endl;
+				std::cerr << "BSCApp::CaptureThread(): WriteFrame failed: " << ::strerror(error) << std::endl;
 				break;
 			}
 
