@@ -199,7 +199,7 @@ OutputView::MessageReceived(BMessage *message)
 					BRect rect;
 					BBitmap* bitmap = NULL;
 					if (message != NULL && message->FindRect("selection", &rect) == B_OK
-						&& message->FindPointer("bitmap", (void**)&bitmap) == B_OK) {
+						&& message->FindPointer("bitmap", reinterpret_cast<void**>(&bitmap)) == B_OK) {
 						_UpdatePreview(&rect, bitmap);
 						delete bitmap;
 					}
@@ -251,7 +251,7 @@ OutputView::MessageReceived(BMessage *message)
 			fFileName->SetText(path.Path());
 
 			BFilePanel* filePanel = NULL;
-			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
+			if (message->FindPointer("source", reinterpret_cast<void**>(&filePanel)) == B_OK)
 				delete filePanel;
 
 			_SetFileNameExtension(app->MediaFileFormat().file_extension);
@@ -264,7 +264,7 @@ OutputView::MessageReceived(BMessage *message)
 		case B_CANCEL:
 		{
 			BFilePanel* filePanel = NULL;
-			if (message->FindPointer("source", (void**)&filePanel) == B_OK)
+			if (message->FindPointer("source", reinterpret_cast<void**>(&filePanel)) == B_OK)
 				delete filePanel;
 			break;
 		}

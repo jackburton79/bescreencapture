@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2024, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "BSCApp.h"
@@ -290,7 +290,7 @@ BSCApp::MessageReceived(BMessage *message)
 		case kEncodingFinished:
 		{
 			status_t error;
-			message->FindInt32("status", (int32*)&error);
+			message->FindInt32("status", reinterpret_cast<int32*>(&error));
 			const char* fileName = NULL;
 			message->FindString("file_name", &fileName);
 			_EncodingFinished(error, fileName);
@@ -695,7 +695,7 @@ BSCApp::TogglePause()
 int32
 BSCApp::RecordedFrames() const
 {
-	return atomic_get((int32*)&fNumFrames);
+	return atomic_get(const_cast<int32*>(&fNumFrames));
 }
 
 
