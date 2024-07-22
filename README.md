@@ -12,7 +12,7 @@ to a clip in any media format supported by Haiku.
 
 The recorded clip can be scaled to suit your needs.
 
-Can be launched by using the `CTRL`+`ALT`+`SHIFT`+`r` shortcut, which will 
+Can be launched by using the `CTRL`+`ALT`+`SHIFT`+`r` shortcut, which will
 also start recording the specified area.
 Hit `CTRL`+`ALT`+`SHIFT`+`r` again to stop.
 
@@ -53,7 +53,7 @@ You can also define your own shortcuts in the "Shortcuts" preflet:
 
 ## HowTo
 
-Jonathan Steadman made a nice video tutorial on how to use BeScreenCapture 
+Jonathan Steadman made a nice video tutorial on how to use BeScreenCapture
 here: [https://youtu.be/kzwAKSbKDoU](https://youtu.be/kzwAKSbKDoU)
 
 ## Notes
