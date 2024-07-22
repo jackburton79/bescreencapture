@@ -48,8 +48,8 @@ Set recording time to 5 seconds
 
 You can also define your own shortcuts in the "Shortcuts" preflet:
 
-*   Start/Stop Recording: `SendMessage application/x-vnd.BeScreenCapture 'StoR'`
-*   Pause/Resume Recording: `SendMessage application/x-vnd.BeScreenCapture 'PauC'`
+* Start/Stop Recording: `SendMessage application/x-vnd.BeScreenCapture 'StoR'`
+* Pause/Resume Recording: `SendMessage application/x-vnd.BeScreenCapture 'PauC'`
 
 ## HowTo
 
@@ -58,8 +58,8 @@ here: [https://youtu.be/kzwAKSbKDoU](https://youtu.be/kzwAKSbKDoU)
 
 ## Notes
 
-*   Command constants could change in the next releases.
-*   In current Haiku nightlies, it seems that the most reliable codec/format to use for encoding is MPEG/Mpeg4. Other codec/format combos may cause various kinds of problems.
+* Command constants could change in the next releases.
+* In current Haiku nightlies, it seems that the most reliable codec/format to use for encoding is MPEG/Mpeg4. Other codec/format combos may cause various kinds of problems.
 
 ## Authors
 
@@ -67,18 +67,18 @@ Stefano Ceccherini
 
 ## Contributors
 
-*   Zumi, Pete Goodeve (icons)
-*   John Scipione (layout fixes)
-*   humdinger (layout fixes, other)
-*   Jessica Hamilton (fixes)
-*   puckipedia ("incognito" capture mode)
+* Zumi, Pete Goodeve (icons)
+* John Scipione (layout fixes)
+* humdinger (layout fixes, other)
+* Jessica Hamilton (fixes)
+* puckipedia ("incognito" capture mode)
 
 ## Acknowledgements
 
-*   Marc Flerackers,
-*   Francois Revol,
-*   Andrew Bachmann for the help,
-*   Marcin Konicki for the web space and support,
-*   Zumi and Pete Goodeve for the icons,
-*   Every Haiku contributor
-*   and to anyone I forgot
+* Marc Flerackers,
+* Francois Revol,
+* Andrew Bachmann for the help,
+* Marcin Konicki for the web space and support,
+* Zumi and Pete Goodeve for the icons,
+* Every Haiku contributor
+* and to anyone I forgot
