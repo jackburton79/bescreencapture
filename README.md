@@ -26,7 +26,7 @@ Stop recording
 
 `hey BeScreenCapture DO Stop`
 
-Get capture rect 
+Get capture rect
 
 `hey BeScreenCapture GET CaptureRect`
 
