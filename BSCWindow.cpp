@@ -207,7 +207,7 @@ BSCWindow::MessageReceived(BMessage *message)
 
 					fStartStopButton->SetEnabled(true);
 					status_t status = B_OK;
-					if (message->FindInt32("status", (int32*)&status) == B_OK
+					if (message->FindInt32("status", reinterpret_cast<int32*>(&status)) == B_OK
 						&& status != B_OK) {
 						BString errorString;
 						errorString.SetToFormat(B_TRANSLATE("Could not create clip:\n%s"),
@@ -304,7 +304,7 @@ BSCWindow::MenusBeginning()
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
 	if (app == NULL)
 		return;
-	
+
 	BMenuItem* start = menu->FindItem(LABEL_START);
 	BMenuItem* stop = menu->FindItem(LABEL_STOP);
 	BMenuItem* pause = menu->FindItem(LABEL_PAUSE);

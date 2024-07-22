@@ -396,7 +396,7 @@ BSCApp::AboutRequested()
 	}
 	charArray[stringCount] = NULL;
 
-	aboutWindow->AddVersionHistory((const char**)charArray);
+	aboutWindow->AddVersionHistory(const_cast<const char**>(charArray));
 	delete[] charArray;
 
 	aboutWindow->Show();
