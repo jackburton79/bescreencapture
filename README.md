@@ -7,7 +7,7 @@
 
 ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture.png) ![Screenshot](https://raw.github.com/jackburton79/bescreencapture/master/BeScreenCapture-options.png)
 
-BeScreenCapture lets you record what happens on your screen and save it 
+BeScreenCapture lets you record what happens on your screen and save it
 to a clip in any media format supported by Haiku.
 
 The recorded clip can be scaled to suit your needs.
