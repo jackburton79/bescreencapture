@@ -6,6 +6,7 @@
 #define SLIDERTEXTCONTROL_H
 
 
+#include <NumberFormat.h>
 #include <Slider.h>
 #include <SupportDefs.h>
 
@@ -16,12 +17,10 @@ class BTextControl;
 class SliderTextControl : public BControl {
 public:
 	SliderTextControl(const char* name, const char* label,
-		BMessage* message, int32 minValue,
-		int32 maxValue, int32 stepValue = 1,
+		BMessage* message, int32 minValue, int32 maxValue, int32 stepValue = 1,
 		const char* unit = "", orientation posture = B_HORIZONTAL,
-		thumb_style thumbType = B_BLOCK_THUMB,
-		uint32 flags = B_NAVIGABLE | B_WILL_DRAW
-							| B_FRAME_EVENTS);
+		bool isPercent = false, thumb_style thumbType = B_BLOCK_THUMB,
+		uint32 flags = B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS);
 
 	virtual void AttachedToWindow();
 	virtual void MessageReceived(BMessage* message);
@@ -32,7 +31,9 @@ private:
 	BTextControl* fSizeTextControl;
 	BStringView* fTextLabel;
 	BMessageRunner* fTextModificationRunner;
+	BNumberFormat fNumberFormat;
 	uint32 fWhat;
+	bool fIsPercent;
 };
 
 
