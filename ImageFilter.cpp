@@ -23,23 +23,6 @@ ImageFilter::ImageFilter(BRect frame, color_space colorSpace)
 }
 
 
-// private non-working
-ImageFilter::ImageFilter(const ImageFilter& other)
-	:
-	fBitmap(NULL),
-	fView(NULL)
-{
-}
-
-
-// private non-working
-ImageFilter&
-ImageFilter::operator=(const ImageFilter& other)
-{
-	return *this;
-}
-
-
 ImageFilter::~ImageFilter()
 {
 	delete fBitmap;

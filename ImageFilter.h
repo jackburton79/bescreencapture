@@ -26,8 +26,8 @@ private:
 	BBitmap* fBitmap;
 	BView* fView;
 
-	ImageFilter& operator=(const ImageFilter& other);
-	ImageFilter(const ImageFilter& other);
+	ImageFilter& operator=(const ImageFilter& other) = delete ;
+	ImageFilter(const ImageFilter& other) = delete ;
 };
 
 
