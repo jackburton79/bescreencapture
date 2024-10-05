@@ -431,7 +431,7 @@ MovieEncoder::_WriteRawFrames()
 	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
 	const BitmapEntry* lastEntry = fFileList->ItemAt(frames - 1);
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	float fps = CalculateFPS(fFileList->CountItems(), diff);
+	const float fps = CalculateFPS(fFileList->CountItems(), diff);
 
 	BMessage progressMessage(kEncodingProgress);
 	progressMessage.AddBool("reset", true);
@@ -440,7 +440,7 @@ MovieEncoder::_WriteRawFrames()
 	fMessenger.SendMessage(&progressMessage);
 
 	char tempDirectoryTemplate[PATH_MAX];
-	snprintf(tempDirectoryTemplate, PATH_MAX, "%s/BeScreenCapture_XXXXXX", path.Path());
+	::snprintf(tempDirectoryTemplate, PATH_MAX, "%s/BeScreenCapture_XXXXXX", path.Path());
 	char* tempDirectoryName = ::mkdtemp(tempDirectoryTemplate);
 	if (tempDirectoryName == NULL)
 		status = B_ERROR;

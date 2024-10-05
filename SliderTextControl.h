@@ -7,7 +7,6 @@
 
 
 #include <Slider.h>
-#include <SupportDefs.h>
 
 class BMessage;
 class BMessageRunner;

@@ -443,26 +443,26 @@ BSCApp::_HandleScripting(BMessage* message)
 {
 	uint32 what = message->what;
 	if (what != B_EXECUTE_PROPERTY &&
-		what != B_GET_PROPERTY &&
-		what != B_SET_PROPERTY)
-	return false;
+			what != B_GET_PROPERTY &&
+			what != B_SET_PROPERTY) {
+		return false;
+	}
 
 	BMessage reply(B_REPLY);
 	const char* property = NULL;
 	int32 index = 0;
 	int32 form = 0;
 	BMessage specifier;
-	status_t status = message->GetCurrentSpecifier(&index,
+	status_t result = message->GetCurrentSpecifier(&index,
 		&specifier, &form, &property);
-	if (status != B_OK || index == -1)
+	if (result != B_OK || index == -1)
 		return false;
 
-	status_t result = B_OK;
 	switch (what) {
 		case B_GET_PROPERTY:
 		case B_SET_PROPERTY:
 		{
-			if (strcmp(property, kPropertyCaptureRect) == 0) {
+			if (::strcmp(property, kPropertyCaptureRect) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_GET_PROPERTY) {
 						Settings& settings = Settings::Current();
@@ -478,7 +478,7 @@ BSCApp::_HandleScripting(BMessage* message)
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
-			} else if (strcmp(property, kPropertyScaleFactor) == 0) {
+			} else if (::strcmp(property, kPropertyScaleFactor) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_GET_PROPERTY) {
 						Settings& settings = Settings::Current();
@@ -493,7 +493,7 @@ BSCApp::_HandleScripting(BMessage* message)
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
-			} else if (strcmp(property, kPropertyRecordingTime) == 0) {
+			} else if (::strcmp(property, kPropertyRecordingTime) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_SET_PROPERTY) {
 						int32 seconds = 0;
@@ -505,7 +505,7 @@ BSCApp::_HandleScripting(BMessage* message)
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
-			} else if (strcmp(property, kPropertyQuitWhenFinished) == 0) {
+			} else if (::strcmp(property, kPropertyQuitWhenFinished) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (what == B_SET_PROPERTY) {
 						// No need to check for error, just assume "false" in that case
@@ -521,7 +521,7 @@ BSCApp::_HandleScripting(BMessage* message)
 		}
 		case B_EXECUTE_PROPERTY:
 		{
-			if (strcmp(property, kPropertyStartRecording) == 0) {
+			if (::strcmp(property, kPropertyStartRecording) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (State() == BSCApp::STATE_IDLE) {
 						BMessage toggleMessage(kMsgGUIToggleCapture);
@@ -531,7 +531,7 @@ BSCApp::_HandleScripting(BMessage* message)
 					reply.AddInt32("error", result);
 					message->SendReply(&reply);
 				}
-			} else if (strcmp(property, kPropertyStopRecording) == 0) {
+			} else if (::strcmp(property, kPropertyStopRecording) == 0) {
 				if (form == B_DIRECT_SPECIFIER) {
 					if (State() == BSCApp::STATE_RECORDING) {
 						BMessage toggleMessage(kMsgGUIToggleCapture);
@@ -744,7 +744,7 @@ BSCApp::EncodeMovie()
 	if (status != B_OK)
 		throw status;
 	char tempFileName[B_PATH_NAME_LENGTH];
-	snprintf(tempFileName, sizeof(tempFileName), "%s/BSC_clip_XXXXXXX", path.Path());
+	::snprintf(tempFileName, sizeof(tempFileName), "%s/BSC_clip_XXXXXXX", path.Path());
 	// mkstemp creates a fd with an unique file name.
 	// We then close the fd immediately, because we only need an unique file name.
 	// In theory, it's possible that between this and WriteFrame() someone

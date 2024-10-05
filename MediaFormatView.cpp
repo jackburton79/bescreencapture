@@ -151,7 +151,7 @@ MediaFormatView::MessageReceived(BMessage *message)
 					message->FindString("codec_name", &codecName);
 					for (int32 i = 0; i < fCodecMenu->Menu()->CountItems(); i++) {
 						BMenuItem* item = fCodecMenu->Menu()->ItemAt(i);
-						if (strcmp(item->Label(), codecName) == 0) {
+						if (::strcmp(item->Label(), codecName) == 0) {
 							item->SetMarked(true);
 							break;
 						}
@@ -284,7 +284,7 @@ MediaFormatView::_SelectFileFormatMenuItem(const char* formatName)
 	if (formatName != NULL) {
 		for (int32 i = 0; i < fOutputFileType->Menu()->CountItems(); i++) {
 			MediaFileFormatMenuItem* item = static_cast<MediaFileFormatMenuItem*>(fOutputFileType->Menu()->ItemAt(i));
-			if (strcmp(item->MediaFileFormat().pretty_name, formatName) == 0)
+			if (::strcmp(item->MediaFileFormat().pretty_name, formatName) == 0)
 				item->SetMarked(true);
 		}
 	}

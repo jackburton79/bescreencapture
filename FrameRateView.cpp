@@ -27,7 +27,6 @@
 const static char* kFrameRateLabel = B_TRANSLATE("Target frame rate");
 
 const static uint32 kLocalFrameRateChanged = 'FrCh';
-const static uint32 kAutoAdjust = 'FrCh';
 
 
 FrameRateView::FrameRateView()

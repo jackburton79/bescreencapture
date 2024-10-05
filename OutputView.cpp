@@ -33,7 +33,6 @@ const static int32 kInitialWarningCount = 20;
 
 const static uint32 kCheckBoxAreaSelectionChanged = 'CaCh';
 const static uint32 kOpenFilePanel = 'OpFp';
-const static uint32 kMsgTextControlSizeChanged = 'TCSC';
 const static uint32 kScaleChanged = 'ScCh';
 const static uint32 kWindowBorderFrameChanged = 'WbFc';
 const static uint32 kWarningRunnerMessage = 'WaRm';

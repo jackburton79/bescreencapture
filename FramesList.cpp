@@ -26,7 +26,6 @@ static BTranslatorRoster* sTranslatorRoster = NULL;
 char* FramesList::sTemporaryPath = NULL;
 
 const uint32 kBitmapFormat = 'BMP ';
-const uint64 kMinFreeMemory = (1 * 1024 * 1024 * 1024); // 1GB
 
 FramesList::FramesList(bool diskOnly)
 	:

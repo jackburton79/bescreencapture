@@ -198,7 +198,8 @@ SizeSlider::SizeSlider(const char* name, const char* label,
 void
 SizeSlider::SetValue(int32 value)
 {
-	int32 max, min;
+	int32 max;
+	int32 min;
 	GetLimits(&min, &max);
 
 	const int32 numValues = 1 + (max - min) / fStep;

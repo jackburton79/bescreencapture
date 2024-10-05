@@ -282,7 +282,7 @@ DeskbarControlView::_UpdateBitmap()
 	if (data != NULL) {
 		BBitmap* bitmap = new BBitmap(Bounds(), B_RGBA32);
 		if (bitmap->InitCheck() == B_OK && BIconUtils::GetVectorIcon(
-				(const uint8*)data, size, bitmap) == B_OK) {
+				reinterpret_cast<const uint8*>(data), size, bitmap) == B_OK) {
 			delete fBitmap;
 			fBitmap = bitmap;
 		}
@@ -306,7 +306,7 @@ DeskbarControlView::_LoadIconBitmap(const char* iconName)
 				be_control_look->ComposeIconSize(B_MINI_ICON));
 			bitmap = new BBitmap(bitmapRect, B_RGBA32);
 			if (bitmap->InitCheck() != B_OK || BIconUtils::GetVectorIcon(
-					(const uint8*)data, size, bitmap) != B_OK) {
+					reinterpret_cast<const uint8*>(data), size, bitmap) != B_OK) {
 				delete bitmap;
 				bitmap = NULL;
 			}
@@ -340,7 +340,7 @@ BSCMenuItem::GetContentSize(float* width, float* height)
 	if (fMenuIcon == NULL)
 		return;
 
-	const float limit = ceilf(fMenuIcon->Bounds().Height() +
+	const float limit = ::ceilf(fMenuIcon->Bounds().Height() +
 		be_control_look->DefaultLabelSpacing() / 3.0f);
 
 	if (height != NULL) {
@@ -372,7 +372,7 @@ BSCMenuItem::DrawContent()
 	}
 	// Text
 	BPoint textLocation = ContentLocation();
-	textLocation.x += ceilf(be_control_look->DefaultLabelSpacing() * 3.3f);
+	textLocation.x += ::ceilf(be_control_look->DefaultLabelSpacing() * 3.3f);
 	menu->MovePenTo(textLocation);
 	BMenuItem::DrawContent();
 }
