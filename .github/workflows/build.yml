@@ -15,7 +15,7 @@ jobs:
     - name: 'Wait until the VM is ready'
       run: 'container-init & timeout 600 vmshell exit 0'
     - name: 'Install packages'
-      run: 'vmshell pkgman install -y haiku_devel make makefile_engine gcc gcc_syslibs multimarkdown'
+      run: 'vmshell pkgman install -y haiku_devel make makefile_engine gcc multimarkdown'
     - name: 'Checkout project'
       uses: actions/checkout@v4
     - name: 'Copy project to VM'
