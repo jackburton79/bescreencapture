@@ -384,7 +384,6 @@ MovieEncoder::_EncoderThread()
 status_t
 MovieEncoder::_ApplyImageFilters()
 {
-	// TODO: update progress
 	if (Settings::Current().Scale() != 100) {
 		const int32 framesTotal = fFileList->CountItems();
 
@@ -464,7 +463,7 @@ MovieEncoder::EncodeThreaded()
 	fKillThread = false;
 
 	fEncoderThread = spawn_thread((thread_entry)EncodeStarter,
-		"Encoder Thread", B_DISPLAY_PRIORITY, this);
+		"Encoder Thread", B_NORMAL_PRIORITY, this);
 
 	if (fEncoderThread < 0)
 		return fEncoderThread;
@@ -693,7 +692,7 @@ MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFr
 	BMessage message(kEncodingFinished);
 	message.AddInt32("status", (int32)status);
 	if (numFrames > 0) {
-		message.AddInt32("frames", (int32)numFrames);
+		message.AddInt32("frames", numFrames);
 		if (strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0)
 			message.AddString("file_name", fTempPath.Path());
 		else
