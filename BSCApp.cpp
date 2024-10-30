@@ -1044,14 +1044,14 @@ BSCApp::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 		 ((uint32)bounds.top * rowBytes)) * bytesPerPixel;
 
 	const int32 height = bounds.IntegerHeight() + 1;
-	void* from = (void*)((uint8*)fDirectInfo.bits + offset);
-	void* to = bitmap->Bits();
+	uint8* from = reinterpret_cast<uint8*>(fDirectInfo.bits) + offset;
+	uint8* to = reinterpret_cast<uint8*>(bitmap->Bits());
 	const int32 bytesPerRow = bitmap->BytesPerRow();
 	const int32 areaSize = (bounds.IntegerWidth() + 1) * bytesPerPixel;
 	for (int32 y = 0; y < height; y++) {
 		::memcpy(to, from, areaSize);
-	   	to = (void*)((uint8*)to + bytesPerRow);
-		from = (void*)((uint8*)from + fDirectInfo.bytes_per_row);
+		to += bytesPerRow;
+		from += fDirectInfo.bytes_per_row;
 	}
 
 	return B_OK;
