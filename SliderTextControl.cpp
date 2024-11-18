@@ -93,7 +93,7 @@ SliderTextControl::MessageReceived(BMessage* message)
 {
 	if (message->what == fWhat) {
 		BString sizeString;
-		sizeString << (int32)fSizeSlider->Value();
+		sizeString << fSizeSlider->Value();
 		fSizeTextControl->SetModificationMessage(NULL);
 		fSizeTextControl->SetText(sizeString);
 		BControl::SetValue(fSizeSlider->Value());
