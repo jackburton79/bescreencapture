@@ -602,7 +602,7 @@ ExtractNumFrames(char* string)
 {
 	float numFrames = 0;
 	char rest[256];
-	if (sscanf(string, "frame=%f %s", &numFrames, rest) == 0)
+	if (::sscanf(string, "frame=%f %250s", &numFrames, rest) == 0)
 		return 0;
 
 	return uint32(numFrames);
