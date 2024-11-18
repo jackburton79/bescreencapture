@@ -15,6 +15,7 @@
 #include <Alert.h>
 #include <Button.h>
 #include <Catalog.h>
+#include <Debug.h>
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
 #include <MenuBar.h>
@@ -114,6 +115,8 @@ BSCWindow::QuitRequested()
 	BString reason;
 	bool canQuit = false;
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	ASSERT(app != NULL);
+
 	if (!Settings::Current().WarnOnQuit()) {
 		app->StopThreads();
 		canQuit = true;
@@ -142,6 +145,8 @@ void
 BSCWindow::MessageReceived(BMessage *message)
 {
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	ASSERT(app != NULL);
+
 	switch (message->what) {
 		case B_ABOUT_REQUESTED:
 			be_app->PostMessage(B_ABOUT_REQUESTED);
@@ -218,7 +223,7 @@ BSCWindow::MessageReceived(BMessage *message)
 						// TODO: Should be asynchronous
 						const char* destName = NULL;
 						message->FindString("file_name", &destName);
-						BEntry entry(destName);
+						const BEntry entry(destName);
 						if (entry.Exists()) {
 							BString buttonName;
 							BString successString;
@@ -236,15 +241,13 @@ BSCWindow::MessageReceived(BMessage *message)
 							int32 choice = alert->Go();
 							if (choice == 1) {
 								entry_ref ref;
-								if (entry.GetRef(&ref) == B_OK) {
-									entry_ref app;
+								if (entry.GetRef(&ref) == B_OK)
 									be_roster->Launch(&ref);
-								}
 							}
 						}
 					}
-					if (dynamic_cast<BSCApp*>(be_app)->WasLaunchedSilently())
-						be_app->PostMessage(B_QUIT_REQUESTED);
+					if (app->WasLaunchedSilently())
+						app->PostMessage(B_QUIT_REQUESTED);
 					break;
 				}
 				default:

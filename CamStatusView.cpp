@@ -11,6 +11,7 @@
 #include <Bitmap.h>
 #include <CardLayout.h>
 #include <Catalog.h>
+#include <Debug.h>
 #include <GroupLayoutBuilder.h>
 #include <IconUtils.h>
 #include <LayoutBuilder.h>
@@ -245,6 +246,7 @@ CamStatusView::Pulse()
 		return;
 
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	ASSERT(app != NULL);
 	fNumFrames = app->RecordedFrames();
 	BString str = _GetRecordingStatusString();
 	fStringView->SetText(str.String());
@@ -314,6 +316,7 @@ BString
 CamStatusView::_GetRecordingStatusString() const
 {
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	ASSERT(app != NULL);
 	time_t recordTime = (time_t)app->RecordTime() / 1000000;
 	if (recordTime < 0)
 		recordTime = 0;
