@@ -223,9 +223,9 @@ BSCApp::ReadyToRun()
 	if (fShouldStartRecording) {
 		fWindow->Run();
 		if (Settings::Current().SelectOnStart()) {
-			BMessenger(be_app).SendMessage(kSelectArea);
+			be_app_messenger.SendMessage(kSelectArea);
 		} else {
-			BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
+			be_app_messenger.SendMessage(kMsgGUIToggleCapture);
 		}
 	} else {
 		fWindow->Show();
@@ -257,9 +257,8 @@ BSCApp::MessageReceived(BMessage *message)
 			while (!fWindow->IsHidden())
 				snooze(500);
 			snooze(20000);
-			BMessenger messenger(this);
 			int mode = message->what == kSelectArea ? SelectionWindow::REGION : SelectionWindow::WINDOW;
-			SelectionWindow *window = new SelectionWindow(mode, messenger, kSelectionWindowClosed);
+			SelectionWindow *window = new SelectionWindow(mode, be_app_messenger, kSelectionWindowClosed);
 			window->Show();
 
 			break;
@@ -272,7 +271,7 @@ BSCApp::MessageReceived(BMessage *message)
 				SetCaptureArea(rect);
 			}
 			if (fShouldStartRecording && Settings::Current().SelectOnStart())
-				BMessenger(be_app).SendMessage(kMsgGUIToggleCapture);
+				be_app_messenger.SendMessage(kMsgGUIToggleCapture);
 			break;
 		}
 
@@ -290,7 +289,8 @@ BSCApp::MessageReceived(BMessage *message)
 		case kEncodingFinished:
 		{
 			status_t error;
-			message->FindInt32("status", reinterpret_cast<int32*>(&error));
+			if (message->FindInt32("status", reinterpret_cast<int32*>(&error)) != B_OK)
+				error = B_ERROR;
 			const char* fileName = NULL;
 			message->FindString("file_name", &fileName);
 			_EncodingFinished(error, fileName);
@@ -767,8 +767,7 @@ BSCApp::EncodeMovie()
 	message.AddInt32("frames_total", RecordedFrames());
 	SendNotices(kMsgControllerEncodeStarted, &message);
 
-	BMessenger messenger(this);
-	fEncoder->SetMessenger(messenger);
+	fEncoder->SetMessenger(be_app_messenger);
 
 	fEncoderThread = fEncoder->EncodeThreaded();
 }
@@ -1096,10 +1095,9 @@ BSCApp::StartCapture()
 	fStopRunner = NULL;
 
 	if (fRequestedRecordTime != 0) {
-		BMessenger messenger(NULL, this);
 		// TODO: Use a specific message instead of kMsgGUIToggleCapture
 		// since this could trigger start instead of stopping
-		fStopRunner = new BMessageRunner(messenger,
+		fStopRunner = new BMessageRunner(be_app_messenger,
 							new BMessage(kMsgGUIToggleCapture),
 							fRequestedRecordTime, 1);
 		// reset requested record time, so
