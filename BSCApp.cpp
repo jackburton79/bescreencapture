@@ -1020,10 +1020,15 @@ BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 void
 BSCApp::UpdateDirectInfo(direct_buffer_info* info)
 {
-	BAutolock _(this);
+	if (LockWithTimeout(5000000LL) != B_OK) {
+		std::cerr << "BUG! UpdateDirectInfo: locking be_app failed!!!" << std::endl;
+		return;
+	}
 	if (!fDirectWindowAvailable)
 		fDirectWindowAvailable = true;
 	fDirectInfo = *info;
+
+	Unlock();
 }
 
 
