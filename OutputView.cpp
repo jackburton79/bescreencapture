@@ -16,6 +16,7 @@
 #include <Box.h>
 #include <Button.h>
 #include <Catalog.h>
+#include <Debug.h>
 #include <FilePanel.h>
 #include <LayoutBuilder.h>
 #include <MessageRunner.h>
@@ -99,6 +100,9 @@ void
 OutputView::MessageReceived(BMessage *message)
 {
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+
+	ASSERT(app != NULL);
+
 	switch (message->what) {
 		case kOpenFilePanel:
 		{
@@ -132,7 +136,7 @@ OutputView::MessageReceived(BMessage *message)
 		}
 		case kFileNameChanged:
 		{
-			BEntry entry(fFileName->Text());
+			const BEntry entry(fFileName->Text());
 			if (entry.InitCheck() != B_OK)
 				_HandleInvalidFileName(fFileName->Text());
 
@@ -142,8 +146,8 @@ OutputView::MessageReceived(BMessage *message)
 		case kScaleChanged:
 		{
 			int32 value;
-			message->FindInt32("be:value", &value);
-			app->SetScale((float)value);
+			if (message->FindInt32("be:value", &value) == B_OK)
+				app->SetScale(float(value));
 			break;
 		}
 		case kWindowBorderFrameChanged:
@@ -175,7 +179,8 @@ OutputView::MessageReceived(BMessage *message)
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
-			message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code);
+			if (message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code) != B_OK)
+				break;
 			switch (code) {
 				case kMsgControllerSourceFrameChanged:
 				{
@@ -183,8 +188,8 @@ OutputView::MessageReceived(BMessage *message)
 					if (message->FindRect("frame", &rect) == B_OK) {
 						if (rect != BScreen().Frame())
 							fCustomCaptureRect = rect;
+						_UpdatePreview(&rect);
 					}
-					_UpdatePreview(&rect);
 					break;
 				}
 				case kMsgControllerTargetFrameChanged:
@@ -242,8 +247,9 @@ OutputView::MessageReceived(BMessage *message)
 		{
 			entry_ref ref;
 			const char* name = NULL;
-			message->FindRef("directory", &ref);
-			message->FindString("name", &name);
+			if (message->FindRef("directory", &ref) != B_OK
+				|| message->FindString("name", &name) != B_OK)
+				break;
 
 			BPath path(&ref);
 			path.Append(name);
@@ -277,7 +283,7 @@ OutputView::MessageReceived(BMessage *message)
 BPath
 OutputView::OutputFileName() const
 {
-	BPath path = fFileName->Text();
+	const BPath path = fFileName->Text();
 	return path;
 }
 
@@ -392,7 +398,8 @@ void
 OutputView::_UpdateFileNameControlState()
 {
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
-	bool enabled = ::strcmp(app->MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) != 0;
+	bool enabled = app != NULL && ::strcmp(app->MediaFileFormat().short_name,
+											NULL_FORMAT_SHORT_NAME) != 0;
 	fFileName->SetEnabled(enabled);
 }
 
@@ -402,8 +409,7 @@ OutputView::_CaptureRect() const
 {
 	if (fWholeScreen->Value() == B_CONTROL_ON)
 		return BScreen(Window()).Frame();
-	else
-		return fCustomCaptureRect;
+	return fCustomCaptureRect;
 }
 
 
@@ -429,7 +435,7 @@ void
 OutputView::_UpdatePreview(BRect* rect, BBitmap* bitmap)
 {
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
-	if (fPreviewView != NULL && app->State() == BSCApp::STATE_IDLE)
+	if (fPreviewView != NULL && app != NULL && app->State() == BSCApp::STATE_IDLE)
 		fPreviewView->Update(rect, bitmap);
 }
 
