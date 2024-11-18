@@ -169,12 +169,11 @@ MovieEncoder::_CreateFile(
 	const media_codec_info& mediaCodecInfo,
 	float quality)
 {
-	std::cerr << "MovieEncoder::_CreateFile()" << std::endl;
-	std::cerr << "path: " << path << std::endl;
 	entry_ref ref;
 	status_t status = get_ref_for_path(path, &ref);
 	if (status != B_OK) {
-		std::cerr << "MovieEncoder::_CreateFile(): get_ref_for_path() failed with " << ::strerror(status) << std::endl;
+		std::cerr << "MovieEncoder::_CreateFile(";
+		std::cerr << path << "): get_ref_for_path() failed: " << ::strerror(status) << std::endl;
 		return status;
 	}
 
@@ -196,11 +195,11 @@ MovieEncoder::_CreateFile(
 				fMediaTrack->SetQuality(quality);
 		}
 	} else {
-		std::cerr << "BMediaFile::InitCheck() failed with " << ::strerror(status) << std::endl;
+		std::cerr << "BMediaFile::InitCheck() failed: " << ::strerror(status) << std::endl;
 	}
 
 	// clean up if we incurred an error
-	if (status < B_OK) {
+	if (status != B_OK) {
 		fHeaderCommitted = false;
 		delete fMediaFile;
 		fMediaFile = NULL;
