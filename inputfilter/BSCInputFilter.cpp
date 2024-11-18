@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2021, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2024, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include <InputServerFilter.h>
@@ -25,17 +25,20 @@ public:
 private:
 	BLooper* fLooper;
 	BLocker fLocker;
-	BMessenger fMessenger;
 	node_ref fNodeRef;
 	bool fEnabled;
 };
 
 class InputFilterLooper : public BLooper {
 public:
-	InputFilterLooper(BSCInputFilter* filter) : BLooper("BSCInputFilter looper") {
+	InputFilterLooper(BSCInputFilter* filter)
+		:
+		BLooper("BSCInputFilter looper")
+	{
 		fFilter = filter;
-	};
-	virtual void MessageReceived(BMessage* message) {
+	}
+	virtual void MessageReceived(BMessage* message)
+	{
 		switch (message->what) {
 			case B_NODE_MONITOR:
 				Settings::Current().Load();
@@ -58,7 +61,6 @@ BSCInputFilter::BSCInputFilter()
 	fEnabled(true)
 {
 	fLooper = new InputFilterLooper(this);
-	fMessenger = BMessenger(fLooper);
 
 	Settings::Initialize();
 	fEnabled = Settings::Current().EnableShortcut();
@@ -100,7 +102,7 @@ BSCInputFilter::~BSCInputFilter()
 status_t
 BSCInputFilter::InitCheck()
 {
-	return B_NO_ERROR;
+	return BInputServerFilter::InitCheck();
 }
 
 
