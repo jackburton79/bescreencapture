@@ -321,9 +321,9 @@ CamStatusView::_GetRecordingStatusString() const
 	if (recordTime < 0)
 		recordTime = 0;
 	struct tm timeStruct;
-	struct tm* diffTime = gmtime_r(&recordTime, &timeStruct);
+	struct tm* diffTime = ::gmtime_r(&recordTime, &timeStruct);
 	BString timeString;
-	strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
+	::strftime(timeString.LockBuffer(128), 128, "%T", diffTime);
 	timeString.UnlockBuffer();
 	BString avgFrames;
 	avgFrames.SetToFormat(B_TRANSLATE_COMMENT(

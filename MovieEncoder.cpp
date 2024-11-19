@@ -292,8 +292,8 @@ MovieEncoder::_EncoderThread()
 	}
 
 	// TODO: Improve this: we are using the name of the media format to see if it's a fake format
-	if ((strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
-		(strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
+	if ((::strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) ||
+		(::strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) == 0)) {
 		return _WriteRawFrames();
 	}
 
@@ -545,7 +545,6 @@ BBitmap*
 MovieEncoder::GetCursorBitmap(const uint8* cursor)
 {
 	uint8 size = *cursor;
-
 	BBitmap* cursorBitmap = new BBitmap(BRect(0, 0, size - 1, size - 1), B_RGBA32);
 
 	uint32 black = 0xFF000000;
@@ -612,7 +611,7 @@ status_t
 MovieEncoder::_PostEncodingAction(const BPath& path, int32 numFrames, int32 fps)
 {
 	// For now we need PostEncoding only for GIF export
-	if (strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) != 0)
+	if (::strcmp(MediaFileFormat().short_name, GIF_FORMAT_SHORT_NAME) != 0)
 		return B_OK;
 
 	if (!IsFFMPEGAvailable()) {
@@ -692,7 +691,7 @@ MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFr
 	message.AddInt32("status", (int32)status);
 	if (numFrames > 0) {
 		message.AddInt32("frames", numFrames);
-		if (strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0)
+		if (::strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0)
 			message.AddString("file_name", fTempPath.Path());
 		else
 			message.AddString("file_name", fOutputFile.Path());

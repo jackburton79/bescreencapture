@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2013-2024, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "DeskbarControlView.h"
@@ -192,7 +192,8 @@ DeskbarControlView::MessageReceived(BMessage *message)
 		case B_OBSERVER_NOTICE_CHANGE:
 		{
 			int32 code;
-			message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code);
+			if (message->FindInt32(B_OBSERVE_WHAT_CHANGE, &code) != B_OK)
+				break;
 			switch (code) {
 				case kMsgControllerCaptureStarted:
 				case kMsgControllerCaptureProgress:
@@ -231,20 +232,20 @@ DeskbarControlView::MouseDown(BPoint where)
 	if (fRecording) {
 		BBitmap* stopBitmap = _LoadIconBitmap("stop_icon");
 		menu->AddItem(new BSCMenuItem(LABEL_STOP,
-		new BMessage(kMsgGUIToggleCapture), stopBitmap));
+			new BMessage(kMsgGUIToggleCapture), stopBitmap));
 		if (fPaused) {
 			BBitmap* resumeBitmap = _LoadIconBitmap("resume_icon");
 			menu->AddItem(new BSCMenuItem(LABEL_RESUME,
-			new BMessage(kMsgGUITogglePause), resumeBitmap));
+				new BMessage(kMsgGUITogglePause), resumeBitmap));
 		} else {
 			BBitmap* pauseBitmap = _LoadIconBitmap("pause_icon");
 			menu->AddItem(new BSCMenuItem(LABEL_PAUSE,
-			new BMessage(kMsgGUITogglePause), pauseBitmap));
+				new BMessage(kMsgGUITogglePause), pauseBitmap));
 		}
 	} else {
-		BBitmap* bitmap = _LoadIconBitmap("record_icon");
+		BBitmap* recordBitmap = _LoadIconBitmap("record_icon");
 		menu->AddItem(new BSCMenuItem(LABEL_START,
-		new BMessage(kMsgGUIToggleCapture), bitmap));
+			new BMessage(kMsgGUIToggleCapture), recordBitmap));
 	}
 	menu->SetTargetForItems(this);
 

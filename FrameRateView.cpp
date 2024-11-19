@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2023 Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2017-2024 Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 
@@ -13,6 +13,7 @@
 #include <Box.h>
 #include <Catalog.h>
 #include <CheckBox.h>
+#include <Debug.h>
 #include <GroupLayoutBuilder.h>
 #include <LayoutBuilder.h>
 #include <LayoutUtils.h>
@@ -61,6 +62,7 @@ void
 FrameRateView::MessageReceived(BMessage* message)
 {
 	BSCApp* app = dynamic_cast<BSCApp*>(be_app);
+	ASSERT(app != NULL);
 	switch (message->what) {
 		case kLocalFrameRateChanged:
 		{
