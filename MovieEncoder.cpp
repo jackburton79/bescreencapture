@@ -303,8 +303,9 @@ MovieEncoder::_EncoderThread()
 	ASSERT((firstEntry != NULL));
 	ASSERT((lastEntry != NULL));
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
-	float fps = CalculateFPS(framesLeft, diff);
-	std::cout << "CalculateFPS returned " << fps << std::endl;
+	const float fps = CalculateFPS(framesLeft, diff);
+	std::cout << "Setting up encoder: " << framesLeft << " frames, ";
+	std::cout << fps << " frames per second." << std::endl;
 	mediaFormat.u.raw_video.field_rate = fps;
 
 	// Create movie
