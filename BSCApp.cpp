@@ -1043,9 +1043,8 @@ BSCApp::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 	if (bytesPerPixel <= 0)
 		return B_ERROR;
 
-	const uint32 rowBytes = fDirectInfo.bytes_per_row / bytesPerPixel;
 	const int32 offset = ((uint32)bounds.left +
-		 ((uint32)bounds.top * rowBytes)) * bytesPerPixel;
+		 ((uint32)bounds.top * fDirectInfo.bytes_per_row));
 
 	const int32 height = bounds.IntegerHeight() + 1;
 	uint8* from = reinterpret_cast<uint8*>(fDirectInfo.bits) + offset;
