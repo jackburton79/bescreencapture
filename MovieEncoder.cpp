@@ -306,7 +306,9 @@ MovieEncoder::_EncoderThread()
 	const float fps = CalculateFPS(framesLeft, diff);
 	std::cout << "Setting up encoder: " << framesLeft << " frames, ";
 	std::cout << fps << " frames per second." << std::endl;
-	mediaFormat.u.raw_video.field_rate = fps;
+
+	// Looks like the decimal part is ignored, so we just round
+	mediaFormat.u.raw_video.field_rate = ::roundf(fps);
 
 	// Create movie
 	status = _CreateFile(fOutputFile.Path(), fFileFormat, mediaFormat, fCodecInfo);
