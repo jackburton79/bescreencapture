@@ -27,8 +27,6 @@ public:
 	virtual void DirectConnected(direct_buffer_info *info);
 	virtual void MenusBeginning();
 
-	status_t ReadBitmap(BBitmap *bitmap, BRect bounds);
-
 private:
 	void _BuildMenu();
 	void _LayoutWindow();
