@@ -25,4 +25,5 @@ jobs:
           version: ${{ matrix.config.version }}
           architecture: ${{ matrix.config.architecture }}
           run: |
+            pkgman install multimarkdown
             make
