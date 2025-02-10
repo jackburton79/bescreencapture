@@ -25,5 +25,5 @@ jobs:
           version: ${{ matrix.config.version }}
           architecture: ${{ matrix.config.architecture }}
           run: |
-            pkgman install -y multimarkdown
+            ssh user@localhost "pkgman update -y haiku_devel cmd:gcc multimarkdown" &&
             make
