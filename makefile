@@ -176,6 +176,8 @@ DRIVER_PATH =
 
 
 ## include the makefile-engine
+BUILDHOME := \
+	$(shell findpaths -r "makefile_engine" B_FIND_PATH_DEVELOP_DIRECTORY)
 include $(BUILDHOME)/etc/makefile-engine
 
 BSCApp.cpp : Changelog.h README.html
