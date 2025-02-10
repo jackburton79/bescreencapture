@@ -26,8 +26,10 @@ private:
 	BBitmap* fBitmap;
 	BView* fView;
 
+#if __cplusplus >= 201103L
 	ImageFilter& operator=(const ImageFilter& other) = delete ;
 	ImageFilter(const ImageFilter& other) = delete ;
+#endif
 };
 
 
