@@ -30,5 +30,10 @@ jobs:
           version: ${{ matrix.config.version }}
           architecture: ${{ matrix.config.architecture }}
           run: |
-            ssh user@localhost "pkgman update -y haiku_devel cmd:gcc gcc_syslibs_devel multimarkdown" &&
-            make
+            if [[ `uname -m` == BePC ]]; then
+              ssh user@localhost "pkgman update -y haiku_devel cmd:gcc gcc_syslibs_devel multimarkdown_x86" &&
+              make
+            else
+              ssh user@localhost "pkgman update -y haiku_devel cmd:gcc gcc_syslibs_devel multimarkdown" &&
+              make
+            fi
