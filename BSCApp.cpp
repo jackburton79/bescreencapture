@@ -4,18 +4,6 @@
  */
 #include "BSCApp.h"
 
-#include "Arguments.h"
-#include "BSCWindow.h"
-#include "Constants.h"
-#include "ControllerObserver.h"
-#include "DeskbarControlView.h"
-#include "FramesList.h"
-#include "MovieEncoder.h"
-#include "PublicMessages.h"
-#include "SelectionWindow.h"
-#include "Settings.h"
-#include "Utils.h"
-
 #include <private/interface/AboutWindow.h>
 #include <Autolock.h>
 #include <Bitmap.h>
@@ -37,9 +25,20 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 
-#include <iostream>
+#include "Arguments.h"
+#include "BSCWindow.h"
+#include "Constants.h"
+#include "ControllerObserver.h"
+#include "DeskbarControlView.h"
+#include "FramesList.h"
+#include "MovieEncoder.h"
+#include "PublicMessages.h"
+#include "SelectionWindow.h"
+#include "Settings.h"
+#include "Utils.h"
 
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "BSCApp"
@@ -1301,19 +1300,20 @@ BSCApp::CaptureThread()
 
 	const int32 windowEdge = settings.WindowFrameEdgeSize();
 	int32 token = GetWindowTokenForFrame(bounds, windowEdge);
-	status_t error = B_ERROR;
+	status_t status = B_OK;
 	const color_space colorSpace = BScreen().ColorSpace();
 	BBitmap *bitmap = new (std::nothrow) BBitmap(bounds.OffsetToCopy(B_ORIGIN), colorSpace);
-	if (bitmap == NULL) {
-		error = B_NO_MEMORY;
-		std::cerr << "BSCApp::CaptureThread(): error creating bitmap: " << ::strerror(error) << std::endl;
-		fKillCaptureThread = true;
-	}
-	error = bitmap->InitCheck();
-	if (error != B_OK) {
+	if (bitmap == NULL)
+		status = B_NO_MEMORY;
+
+	if (status == B_OK)
+		status = bitmap->InitCheck();
+
+	if (status != B_OK) {
 		delete bitmap;
 		bitmap = NULL;
-		std::cerr << "BSCApp::CaptureThread(): error initializing bitmap: " << ::strerror(error) << std::endl;
+		std::cerr << "BSCApp::CaptureThread(): error initializing bitmap: ";
+		std::cerr << ::strerror(status) << std::endl;
 		fKillCaptureThread = true;
 	}
 	while (!fKillCaptureThread) {
@@ -1324,9 +1324,10 @@ BSCApp::CaptureThread()
 					bounds.OffsetTo(windowBounds.LeftTop());
 			}
 
-			error = ReadBitmap(bitmap, true, bounds);
-			if (error != B_OK) {
-				std::cerr << "BSCApp::CaptureThread(): error reading bitmap" << ::strerror(error) << std::endl;
+			status = ReadBitmap(bitmap, true, bounds);
+			if (status != B_OK) {
+				std::cerr << "BSCApp::CaptureThread(): error reading bitmap: ";
+				std::cerr << ::strerror(status) << std::endl;
 				break;
 			}
 
@@ -1336,9 +1337,10 @@ BSCApp::CaptureThread()
 			BString fileName;
 			fileName << FramesList::Path() << "/" << lastFrameTime;
 
-			status_t status = FramesList::WriteFrame(bitmap, lastFrameTime, fileName);
+			status = FramesList::WriteFrame(bitmap, lastFrameTime, fileName);
 			if (status != B_OK) {
-				std::cerr << "BSCApp::CaptureThread(): WriteFrame failed: " << ::strerror(error) << std::endl;
+				std::cerr << "BSCApp::CaptureThread(): WriteFrame failed: ";
+				std::cerr << ::strerror(status) << std::endl;
 				break;
 			}
 
@@ -1361,9 +1363,9 @@ BSCApp::CaptureThread()
 
 	delete bitmap;
 
-	if (error != B_OK) {
+	if (status != B_OK) {
 		BMessage message(kMsgControllerCaptureStopped);
-		message.AddInt32("status", (int32)error);
+		message.AddInt32("status", int32(status));
 		SendNotices(kMsgControllerCaptureStopped, &message);
 	}
 
