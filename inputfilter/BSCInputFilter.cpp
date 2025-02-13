@@ -78,15 +78,13 @@ BSCInputFilter::BSCInputFilter()
 
 	status_t status = entry.GetNodeRef(&fNodeRef);
 	if (status != B_OK) {
-		syslog(LOG_ERR, "failed getting node ref: ");
-		syslog(LOG_ERR, strerror(status));
+		syslog(LOG_ERR, "failed getting node ref: %s", ::strerror(status));
 	} else {
 		status = watch_node(&fNodeRef, B_WATCH_ALL, fLooper);
 		syslog(LOG_ERR, "watching node");
 	}
 	if (status != B_OK) {
-		syslog(LOG_ERR, "failed watching node: ");
-		syslog(LOG_ERR, strerror(status));
+		syslog(LOG_ERR, "failed watching node: %s", ::strerror(status));
 	}
 }
 
