@@ -4,10 +4,15 @@
  */
 #include "BSCWindow.h"
 
+#define USE_INFOVIEW 0
+
 #include "AdvancedOptionsView.h"
 #include "BSCApp.h"
 #include "CamStatusView.h"
 #include "ControllerObserver.h"
+#if USE_INFOVIEW
+#include "InfoView.h"
+#endif
 #include "OutputView.h"
 #include "PublicMessages.h"
 #include "Settings.h"
@@ -29,8 +34,6 @@
 #undef B_TRANSLATION_CONTEXT
 #define B_TRANSLATION_CONTEXT "BSCWindow"
 
-
-#define USE_INFOVIEW 0
 
 const static BRect kWindowRect(0, 0, 400, 600);
 
