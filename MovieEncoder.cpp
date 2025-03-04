@@ -41,12 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MovieEncoder.h"
 
-#include "Constants.h"
-#include "FramesList.h"
-#include "ImageFilter.h"
-#include "Settings.h"
-#include "Utils.h"
-
 #include <Bitmap.h>
 #include <Debug.h>
 #include <Directory.h>
@@ -56,6 +50,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <View.h>
 
 #include <iostream>
+
+#include "Constants.h"
+#include "FramesList.h"
+#include "ImageFilter.h"
+#include "Settings.h"
+#include "Utils.h"
 
 
 MovieEncoder::MovieEncoder()
