@@ -287,11 +287,8 @@ BSCApp::MessageReceived(BMessage *message)
 
 		case kEncodingFinished:
 		{
-			status_t error;
-			if (message->FindInt32("status", reinterpret_cast<int32*>(&error)) != B_OK)
-				error = B_ERROR;
-			const char* fileName = NULL;
-			message->FindString("file_name", &fileName);
+			status_t error = static_cast<status_t>(message->GetInt32("status", B_ERROR));
+			const char* fileName = message->GetString("file_name", NULL);
 			_EncodingFinished(error, fileName);
 			break;
 		}
