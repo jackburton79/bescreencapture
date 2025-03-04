@@ -361,19 +361,19 @@ void
 BSCMenuItem::DrawContent()
 {
 	BMenu* menu = Menu();
+	float iconWidth = 0;
 	if (fMenuIcon != NULL) {
 		BPoint iconLocation = ContentLocation();
-		BRect frame = Frame();
-		iconLocation.y = frame.top
-			+ (frame.bottom - frame.top - fMenuIcon->Bounds().Height()) / 2;
+		iconLocation.y += 1;
 		menu->PushState();
 		menu->SetDrawingMode(B_OP_ALPHA);
 		menu->DrawBitmap(fMenuIcon, iconLocation);
 		menu->PopState();
+		iconWidth = fMenuIcon->Bounds().Width();
 	}
 	// Text
 	BPoint textLocation = ContentLocation();
-	textLocation.x += ::ceilf(be_control_look->DefaultLabelSpacing() * 3.3f);
+	textLocation.x += ::ceilf(iconWidth + be_control_look->DefaultLabelSpacing());
 	menu->MovePenTo(textLocation);
 	BMenuItem::DrawContent();
 }
