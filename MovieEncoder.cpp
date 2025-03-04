@@ -694,10 +694,19 @@ MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFr
 	message.AddInt32("status", int32(status));
 	if (numFrames > 0) {
 		message.AddInt32("frames_processed", numFrames);
-		if (::strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0)
-			message.AddString("file_name", fTempPath.Path());
-		else
+		// Unless we exported bitmaps...
+		if (::strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0) {
 			message.AddString("file_name", fOutputFile.Path());
+		} else {
+			// ...move temporary file to the correct destination
+			BEntry sourceFile(fTempPath.Path());
+			BPath destFile = GetUniqueFileName(fOutputFile.Path());
+			BPath parent;
+			destFile.GetParent(&parent);
+			BDirectory dir(parent.Path());
+			sourceFile.MoveTo(&dir, destFile.Path());
+			message.AddString("file_name", fTempPath.Path());
+		}
 	}
 	fMessenger.SendMessage(&message);
 }

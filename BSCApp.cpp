@@ -1195,22 +1195,11 @@ BSCApp::_EncodingFinished(const status_t status, const char* fileName)
 	fNumFrames = 0;
 
 	const Settings& settings = Settings::Current();
-	// TODO: Remove special case handling
-	media_file_format fileFormat = fEncoder->MediaFileFormat();
-	BPath destFile = fileName;
-	if (::strcmp(fileFormat.short_name, NULL_FORMAT_SHORT_NAME) != 0) {
-		// Move temporary file to the correct destination
-		BEntry sourceFile(fileName);
-		destFile = GetUniqueFileName(settings.OutputFileName().String());
-		BPath parent;
-		destFile.GetParent(&parent);
-		BDirectory dir(parent.Path());
-		sourceFile.MoveTo(&dir, destFile.Path());
-	}
+
 	BMessage message(kMsgControllerEncodeFinished);
 	message.AddInt32("status", int32(status));
 	if (fileName != NULL)
-		message.AddString("file_name", destFile.Path());
+		message.AddString("file_name", fileName);
 	SendNotices(kMsgControllerEncodeFinished, &message);
 
 	if (settings.QuitWhenFinished())
