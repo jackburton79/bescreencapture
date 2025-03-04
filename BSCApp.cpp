@@ -144,7 +144,7 @@ BSCApp::BSCApp()
 	fArgs(NULL),
 	fShouldStartRecording(false),
 	fCaptureThread(-1),
-	fNumFrames(0),
+	fRecordedFrames(0),
 	fRecordWatch(NULL),
 	fKillCaptureThread(true),
 	fPaused(false),
@@ -694,7 +694,7 @@ BSCApp::TogglePause()
 int32
 BSCApp::RecordedFrames() const
 {
-	return atomic_get(const_cast<int32*>(&fNumFrames));
+	return atomic_get(const_cast<int32*>(&fRecordedFrames));
 }
 
 
@@ -1063,7 +1063,7 @@ BSCApp::ReadBitmap(BBitmap* bitmap, bool includeCursor, BRect bounds)
 void
 BSCApp::StartCapture()
 {
-	fNumFrames = 0;
+	fRecordedFrames = 0;
 	fKillCaptureThread = false;
 	fPaused = false;
 
@@ -1192,7 +1192,7 @@ void
 BSCApp::_EncodingFinished(const status_t status, const char* fileName)
 {
 	fEncoderThread = -1;
-	fNumFrames = 0;
+	fRecordedFrames = 0;
 
 	const Settings& settings = Settings::Current();
 
@@ -1333,11 +1333,11 @@ BSCApp::CaptureThread()
 				break;
 			}
 
-			atomic_add(&fNumFrames, 1);
+			atomic_add(&fRecordedFrames, 1);
 
 			// Send notices every tenth frame so we don't
 			// overload receivers
-			if (fNumFrames % 10 == 0)
+			if (fRecordedFrames % 10 == 0)
 				SendNotices(kMsgControllerCaptureProgress);
 
 			bigtime_t toWait = (lastFrameTime + captureDelay) - system_time();

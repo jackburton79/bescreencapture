@@ -107,7 +107,7 @@ private:
 	bool fShouldStartRecording;
 
 	thread_id			fCaptureThread;
-	int32				fNumFrames;
+	int32				fRecordedFrames;
 	BStopWatch*			fRecordWatch;
 	bool				fKillCaptureThread;
 	bool				fPaused;
