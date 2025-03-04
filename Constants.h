@@ -24,7 +24,9 @@ enum appMessages {
 	kSelectWindow,
 	kSelectionWindowClosed,
 	kCaptureFinished,
-	kEncodingFinished,
+	kEncodingFinished,		// int32 "status",
+							// const char* "file_name",
+							// int32 "frames_processed"
 	kEncodingProgress,
 	kFileNameChanged
 };

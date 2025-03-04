@@ -594,7 +594,7 @@ MovieEncoder::PopCursorPosition(BPoint& point)
 int32
 MovieEncoder::EncodeStarter(void* arg)
 {
-	return static_cast<MovieEncoder*>(arg)->_EncoderThread();
+	return reinterpret_cast<MovieEncoder*>(arg)->_EncoderThread();
 }
 
 
@@ -691,9 +691,9 @@ MovieEncoder::_HandleEncodingFinished(const status_t& status, const int32& numFr
 		return;
 
 	BMessage message(kEncodingFinished);
-	message.AddInt32("status", (int32)status);
+	message.AddInt32("status", int32(status));
 	if (numFrames > 0) {
-		message.AddInt32("frames", numFrames);
+		message.AddInt32("frames_processed", numFrames);
 		if (::strcmp(MediaFileFormat().short_name, NULL_FORMAT_SHORT_NAME) == 0)
 			message.AddString("file_name", fTempPath.Path());
 		else

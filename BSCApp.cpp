@@ -1208,7 +1208,7 @@ BSCApp::_EncodingFinished(const status_t status, const char* fileName)
 		sourceFile.MoveTo(&dir, destFile.Path());
 	}
 	BMessage message(kMsgControllerEncodeFinished);
-	message.AddInt32("status", (int32)status);
+	message.AddInt32("status", int32(status));
 	if (fileName != NULL)
 		message.AddString("file_name", destFile.Path());
 	SendNotices(kMsgControllerEncodeFinished, &message);

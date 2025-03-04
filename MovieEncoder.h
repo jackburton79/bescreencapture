@@ -33,7 +33,6 @@ public:
 	status_t SetThreadPriority(const int32 &value);
 	status_t SetMessenger(const BMessenger &messenger);
 
-	BView*	CodecOptionsView();
 	media_file_format	MediaFileFormat() const;
 	media_format_family MediaFormatFamily() const;
 	media_format		MediaFormat() const;
