@@ -170,14 +170,13 @@ Settings::Save()
 
 
 /* static */
-BPath
-Settings::SettingsFilePath()
+status_t
+Settings::GetSettingsFilePath(BPath& path)
 {
-	BPath path;
 	status_t status = _GetSettingsPath(path);
 	if (status == B_OK)
 		status = path.Append("settings");
-	return path;
+	return status;
 }
 
 

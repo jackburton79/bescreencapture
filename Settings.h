@@ -27,7 +27,7 @@ public:
 	status_t Load();
 	status_t Save();
 
-	static BPath SettingsFilePath();
+	static status_t GetSettingsFilePath(BPath& path);
 
 	BRect CaptureArea() const;
 	void SetCaptureArea(const BRect &rect);

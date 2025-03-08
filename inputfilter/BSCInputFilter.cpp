@@ -69,7 +69,8 @@ BSCInputFilter::BSCInputFilter()
 
 	fLooper->Run();
 	// Watch settings
-	BPath settingsFile = Settings::SettingsFilePath();
+	BPath settingsFile;
+	Settings::GetSettingsFilePath(settingsFile);
 	BEntry entry(settingsFile.Path());
 	if (!entry.Exists()) {
 		// file doesn't exist, force creation
