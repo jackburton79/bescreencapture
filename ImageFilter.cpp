@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2023, Stefano Ceccherini <stefano.ceccherini@gmail.com>
+ * Copyright 2018-2025, Stefano Ceccherini <stefano.ceccherini@gmail.com>
  * All rights reserved. Distributed under the terms of the MIT license.
  */
 #include "ImageFilter.h"
@@ -30,14 +30,14 @@ ImageFilter::~ImageFilter()
 
 
 BBitmap*
-ImageFilter::Bitmap()
+ImageFilter::Bitmap() const
 {
 	return fBitmap;
 }
 
 
 BView*
-ImageFilter::View()
+ImageFilter::View() const
 {
 	return fView;
 }
