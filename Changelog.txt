@@ -1,3 +1,9 @@
+v2.9.9
+	- Fixed wrong rounding of fps while recording.
+	- Avoid allocating bitmaps at every loop.
+	- Hopefully made the code more robust in case of errors.
+	- Cleanups.
+---
 v2.9.1
 	- Fixed big memory leak.
 ---
