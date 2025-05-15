@@ -1,0 +1,65 @@
+1	Chinese (simplified)	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d frames (%.1f frames/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d frames)
+About BeScreenCapture	BSCWindow		关于Be截屏
+App	BSCWindow		App
+Capture	BSCWindow		Capture
+Capture failed	BSCWindow		Capture failed
+Continue	BSCWindow		继续
+Could not create clip:\n%s	BSCWindow		无法创建片段:\n%s
+Could not record clip:\n%s	BSCWindow		无法录制片段:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		您真打算退出Be截屏？\n
+Encoding failed	BSCWindow		编码失败
+Finished recording	BSCWindow		完成录制
+Finished recording '%filename%'.	BSCWindow		完成录制 '%filename%'.
+Help…	BSCWindow		帮助…
+Info	BSCWindow		信息
+OK	BSCWindow		OK
+Open folder	BSCWindow		打开目录
+Options	BSCWindow		选项
+Pause	BSCWindow		暂停
+Play	BSCWindow		播放
+Quit	BSCWindow		退出
+Really quit?	BSCWindow		真的退出?
+Recording	BSCWindow		Recording
+Reset to defaults	BSCWindow		恢复到默认
+Resume	BSCWindow		Resume
+Settings	BSCWindow		设置
+Start	BSCWindow		开始
+Stop	BSCWindow		停止
+Success	BSCWindow		成功
+Advanced	AdvancedOptionsView		高级
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		启用CTRL+ALT+SHIFT+R快捷键
+Encoding options	AdvancedOptionsView		编码选项
+Frame rate	AdvancedOptionsView		帧率
+Hide window when recording	AdvancedOptionsView		录制时隐藏窗口
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		隐身模式：隐藏窗口和桌面栏托盘图标
+Quit when finished	AdvancedOptionsView		完成时退出
+Select a region on start	AdvancedOptionsView		选择一个区域以启动
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		使用 CTRL+ALT+SHIFT+R 停止录制，\n或使用快捷方式首选项定义组合键。
+Use less CPU (BDirectWindow)	AdvancedOptionsView		消耗更少CPU (BDirectWindow)
+BeScreenCapture	System name		Be截屏
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture是一个屏幕录制程序。
+Encoding in progress.	BSCApp		编码进行中。
+Recording in progress.	BSCApp		录制进行中。
+bottom:	PreviewView		底:
+Capture area:\n	PreviewView		截屏区域:\n
+left:	PreviewView		左:
+right:	PreviewView		右:
+top:	PreviewView		顶:
+Browse…	OutputView		浏览…
+File name:	OutputView		文件名:
+Output	OutputView		Output
+pixels	OutputView		像素
+Region	OutputView		区域
+Scale	OutputView		缩放
+Select region	OutputView		选择区域
+Select window	OutputView		选择窗口
+Source	OutputView		Source
+Whole screen	OutputView		整个屏幕
+Window	OutputView		窗口
+Window edges	OutputView		窗口边界
+File format:	MediaFormatView		文件格式:
+Media codec:	MediaFormatView		Media codec:
+fps	FrameRateView		fps
+Target frame rate	FrameRateView		目标帧率

@@ -1,0 +1,65 @@
+1	Norwegian	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d bilder (%.1f bilder/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d bilder)
+About BeScreenCapture	BSCWindow		Om BeScreenCapture
+App	BSCWindow		App
+Capture	BSCWindow		Ta opp
+Capture failed	BSCWindow		Opptak feilet
+Continue	BSCWindow		Fortsett
+Could not create clip:\n%s	BSCWindow		Kunne ikke opprette klipp:\n%s
+Could not record clip:\n%s	BSCWindow		Kunne ikke ta opp klipp:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Vil du virkelig avslutte BeScreenCapture?\n
+Encoding failed	BSCWindow		Koding mislyktes
+Finished recording	BSCWindow		Opptak fullført
+Finished recording '%filename%'.	BSCWindow		Opptak av '%filename%' fullført.
+Help…	BSCWindow		Hjelp…
+Info	BSCWindow		Info
+OK	BSCWindow		OK
+Open folder	BSCWindow		Åpne mappe
+Options	BSCWindow		Alternativer
+Pause	BSCWindow		Pause
+Play	BSCWindow		Spill
+Quit	BSCWindow		Avslutt
+Really quit?	BSCWindow		Virkelig avslutte?
+Recording	BSCWindow		Tar opp
+Reset to defaults	BSCWindow		Tilbakestill til standardverdier
+Resume	BSCWindow		Fortsett
+Settings	BSCWindow		Innstillinger
+Start	BSCWindow		Start
+Stop	BSCWindow		Stopp
+Success	BSCWindow		Suksess
+Advanced	AdvancedOptionsView		Avansert
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Aktiver CTRL+ALT+SHIFT+R snarvei
+Encoding options	AdvancedOptionsView		Kodingsalternativer
+Frame rate	AdvancedOptionsView		Bildefrekvens
+Hide window when recording	AdvancedOptionsView		Skjul vindu ved opptak
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Inkognitomodus: Skjul vinduet og Deskbar-ikonet
+Quit when finished	AdvancedOptionsView		Avslutt når fullført
+Select a region on start	AdvancedOptionsView		Velg område ved oppstart
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Stopp opptak med CTRL+ALT+SHIFT+R, \neller definer en tastekombinasjon i innstillingene for hurtigtaster.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Reduser prosessorbruk (BDirectWindow)
+BeScreenCapture	System name		BeScreenCapture
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture er en skjermopptaksapplikasjon.
+Encoding in progress.	BSCApp		Koding pågår.
+Recording in progress.	BSCApp		Opptak pågår
+bottom:	PreviewView		bunn:
+Capture area:\n	PreviewView		Opptaksområde:\n
+left:	PreviewView		venstre:
+right:	PreviewView		høyre:
+top:	PreviewView		topp:
+Browse…	OutputView		Bla gjennom…
+File name:	OutputView		Filnavn:
+Output	OutputView		Utdata
+pixels	OutputView		piksler
+Region	OutputView		Område
+Scale	OutputView		Skala
+Select region	OutputView		Velg område
+Select window	OutputView		Velg vindu
+Source	OutputView		Kilde
+Whole screen	OutputView		Hele skjermen
+Window	OutputView		Vindu
+Window edges	OutputView		Vindusramme
+File format:	MediaFormatView		Filformat:
+Media codec:	MediaFormatView		Mediekodek:
+fps	FrameRateView		fps (bilder per sekund)
+Target frame rate	FrameRateView		Mål-bildehastighet

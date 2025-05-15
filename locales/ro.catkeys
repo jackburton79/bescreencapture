@@ -1,0 +1,65 @@
+1	Romanian	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d cadre (%.1f cadre/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d cadre)
+About BeScreenCapture	BSCWindow		Despre BeScreenCapture
+App	BSCWindow		Aplicație
+Capture	BSCWindow		Capturează
+Capture failed	BSCWindow		Captura a eșuat
+Continue	BSCWindow		Continuă
+Could not create clip:\n%s	BSCWindow		Nu s-a putut crea clipul:\n%s
+Could not record clip:\n%s	BSCWindow		Nu s-a putut înregistra clipul:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Sigur doriți să ieșiți din BeScreenCapture?\n
+Encoding failed	BSCWindow		Codarea a eșuat
+Finished recording	BSCWindow		S-a terminat înregistrarea
+Finished recording '%filename%'.	BSCWindow		S-a terminat înregistrarea „%filename%”.
+Help…	BSCWindow		Ajutor…
+Info	BSCWindow		Informații
+OK	BSCWindow		OK
+Open folder	BSCWindow		Deschide un fișier
+Options	BSCWindow		Opțiuni
+Pause	BSCWindow		Pauză
+Play	BSCWindow		Redă
+Quit	BSCWindow		Ieșire
+Really quit?	BSCWindow		Chiar ieșiți?
+Recording	BSCWindow		Înregistrare
+Reset to defaults	BSCWindow		Restabilește la implicite
+Resume	BSCWindow		Reluare
+Settings	BSCWindow		Configurări
+Start	BSCWindow		Începe
+Stop	BSCWindow		Oprește
+Success	BSCWindow		Succes
+Advanced	AdvancedOptionsView		Avansat
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Activează scurtătura CTRL+ALT+SHIFT+R
+Encoding options	AdvancedOptionsView		Opțiuni de codare
+Frame rate	AdvancedOptionsView		Rată de cadre
+Hide window when recording	AdvancedOptionsView		Ascunde fereastra în timpul înregistrării
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Mod incognito: ascunde fereastra și iconița Deskbar
+Quit when finished	AdvancedOptionsView		Ieși când s-a terminat
+Select a region on start	AdvancedOptionsView		Selectează o regiune la pornire
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Opriți înregistrarea cu CTRL+ALT+SHIFT+R,\nsau definiți o combinație de taste cu preferințele Shortcuts.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Utilizează mai puțin CPU (BDirectWindow)
+BeScreenCapture	System name		BeScreenCapture
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture este o aplicație de înregistrare a ecranului.
+Encoding in progress.	BSCApp		Codare în progres.
+Recording in progress.	BSCApp		Înregistrare în progres.
+bottom:	PreviewView		jos:
+Capture area:\n	PreviewView		Zonă de captură:\n
+left:	PreviewView		stânga:
+right:	PreviewView		dreapta:
+top:	PreviewView		sus:
+Browse…	OutputView		Navighează…
+File name:	OutputView		Nume fișier:
+Output	OutputView		Rezultat
+pixels	OutputView		pixeli
+Region	OutputView		Regiune
+Scale	OutputView		Scalează
+Select region	OutputView		Selectează regiunea
+Select window	OutputView		Selectează fereastra
+Source	OutputView		Sursă
+Whole screen	OutputView		Ecran complet
+Window	OutputView		Fereastră
+Window edges	OutputView		Marginile ferestrei
+File format:	MediaFormatView		Format fișier:
+Media codec:	MediaFormatView		Codec media:
+fps	FrameRateView		fps
+Target frame rate	FrameRateView		Rata de cadre țintă
