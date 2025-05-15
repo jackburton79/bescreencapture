@@ -1,0 +1,65 @@
+1	French	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d images (%.1f images/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d images)
+About BeScreenCapture	BSCWindow		À propos de BeScreenCapture
+App	BSCWindow		App
+Capture	BSCWindow		Capturer
+Capture failed	BSCWindow		Échec de la capture
+Continue	BSCWindow		Continuer
+Could not create clip:\n%s	BSCWindow		Impossible de créer le clip :\n%s
+Could not record clip:\n%s	BSCWindow		Impossible d'enregistrer le clip :\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Voulez-vous vraiment quitter BeScreenCapture ?\n
+Encoding failed	BSCWindow		Échec de l'encodage
+Finished recording	BSCWindow		Enregistrement terminé
+Finished recording '%filename%'.	BSCWindow		L'enregistrement de '%filename%' est terminé.
+Help…	BSCWindow		Aide…
+Info	BSCWindow		Info
+OK	BSCWindow		D'accord
+Open folder	BSCWindow		Ouvrir le dossier
+Options	BSCWindow		Options
+Pause	BSCWindow		Pause
+Play	BSCWindow		Lecture
+Quit	BSCWindow		Quitter
+Really quit?	BSCWindow		Vraiment quitter ?
+Recording	BSCWindow		Enregistrement
+Reset to defaults	BSCWindow		Rétablir les valeurs par défaut
+Resume	BSCWindow		Reprendre
+Settings	BSCWindow		Réglages
+Start	BSCWindow		Démarrer
+Stop	BSCWindow		Arrêter
+Success	BSCWindow		Succès
+Advanced	AdvancedOptionsView		Avancé
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Activer le raccourci CTRL+ALT+SHIFT+R
+Encoding options	AdvancedOptionsView		Options d'encodage
+Frame rate	AdvancedOptionsView		Fréquence d'images
+Hide window when recording	AdvancedOptionsView		Cacher la fenêtre lors de l'enregistrement
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Mode incognito : Cacher la fenêtre et l'icone du cartouche de la Deskbar
+Quit when finished	AdvancedOptionsView		Quitter quand c'est fini
+Select a region on start	AdvancedOptionsView		Sélectionner une région au démarrage
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Arrêter l'enregistrement avec CTRL+ALT+SHIFT+R,\nou définir une combinaison de touches avec l'outil Raccourcis.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Ménager le CPU (BDirectWindow)
+BeScreenCapture	System name		BeScreenCapture
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture est une application d'enregistrement de l'écran.
+Encoding in progress.	BSCApp		Encodage en cours
+Recording in progress.	BSCApp		Enregistrement en cours
+bottom:	PreviewView		Bas :
+Capture area:\n	PreviewView		Zone de capture :\n
+left:	PreviewView		Gauche :
+right:	PreviewView		Droite :
+top:	PreviewView		Haut :
+Browse…	OutputView		Parcourir…
+File name:	OutputView		Nom du fichier :
+Output	OutputView		Sortie
+pixels	OutputView		pixels
+Region	OutputView		Région
+Scale	OutputView		Échelle
+Select region	OutputView		Sélectionner une région
+Select window	OutputView		Sélectionner une fenêtre
+Source	OutputView		Source
+Whole screen	OutputView		Tout l’écran
+Window	OutputView		Fenêtre
+Window edges	OutputView		Bords de la fenêtre
+File format:	MediaFormatView		Format de fichier :
+Media codec:	MediaFormatView		Codec média :
+fps	FrameRateView		ips
+Target frame rate	FrameRateView		Fréquence d'images cible

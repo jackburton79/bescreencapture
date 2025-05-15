@@ -1,0 +1,65 @@
+1	Swedish	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d bildrutor (%.1f bildrutor/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d bildrutor)
+About BeScreenCapture	BSCWindow		Om BeScreenCapture
+App	BSCWindow		App
+Capture	BSCWindow		Fånga
+Capture failed	BSCWindow		Infångningen misslyckades
+Continue	BSCWindow		Fortsätta
+Could not create clip:\n%s	BSCWindow		Kunde inte skapa klipp:\n%s
+Could not record clip:\n%s	BSCWindow		Kunde inte spela in klipp:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Vill du verkligen avsluta BeScreenCapture?\n
+Encoding failed	BSCWindow		Kodningen misslyckades
+Finished recording	BSCWindow		Avslutad inspelning
+Finished recording '%filename%'.	BSCWindow		Avslutad inspelning av '%filename%'.
+Help…	BSCWindow		Hjälp..
+Info	BSCWindow		Info
+OK	BSCWindow		OK
+Open folder	BSCWindow		Öppen mapp
+Options	BSCWindow		Alternativ
+Pause	BSCWindow		Paus
+Play	BSCWindow		Spela
+Quit	BSCWindow		Avbryt
+Really quit?	BSCWindow		Verkligen avbryta?
+Recording	BSCWindow		Inspelning
+Reset to defaults	BSCWindow		Återställ till standardinställningar
+Resume	BSCWindow		Återuppta
+Settings	BSCWindow		Inställningar
+Start	BSCWindow		Start
+Stop	BSCWindow		Stopp
+Success	BSCWindow		Framgång
+Advanced	AdvancedOptionsView		Avancerat
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Aktivera CTRL+ALT+SHIFT+R genväg
+Encoding options	AdvancedOptionsView		Kodningsalternativ
+Frame rate	AdvancedOptionsView		Bildhastighet
+Hide window when recording	AdvancedOptionsView		Dölj fönstret vid inspelning
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Inkognitoläge: Dölj fönster och ikon i skrivbordsfältet
+Quit when finished	AdvancedOptionsView		Avsluta när du är klar
+Select a region on start	AdvancedOptionsView		Välj en region vid start
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Sluta spela in med CTRL+ALT+SHIFT+R,\eller definiera en tangentkombination med inställningarna för genvägar.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Använd mindre CPU (BDirectWindow)
+BeScreenCapture	System name		BeScreenCapture
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture är ett skärminspelningsprogram.
+Encoding in progress.	BSCApp		Kodning pågår.
+Recording in progress.	BSCApp		Inspelning pågår.
+bottom:	PreviewView		botten:
+Capture area:\n	PreviewView		Fångst område:\n
+left:	PreviewView		vänster:
+right:	PreviewView		höger:
+top:	PreviewView		topp:
+Browse…	OutputView		Bläddra…
+File name:	OutputView		Fil namn:
+Output	OutputView		Produktion
+pixels	OutputView		pixlar
+Region	OutputView		Region
+Scale	OutputView		Skala
+Select region	OutputView		Välj region
+Select window	OutputView		Välj fönster
+Source	OutputView		Källa
+Whole screen	OutputView		Hela skärmen
+Window	OutputView		Fönster
+Window edges	OutputView		Fönsterkanter
+File format:	MediaFormatView		Fil format:
+Media codec:	MediaFormatView		Media codec:
+fps	FrameRateView		fps
+Target frame rate	FrameRateView		Målbildfrekvens

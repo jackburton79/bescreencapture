@@ -1,0 +1,65 @@
+1	Czech	application/x-vnd.BeScreenCapture	2408250371
+, %d frames (%.1f frames/s)	CamStatusView	Progress as in '230 frames (14.9 frames/s)'	, %d snímků (%.1f snímek/s)
+(%d/%d frames)	CamStatusView	Progress as in '(10/230 frames)	(%d/%d snímků)
+About BeScreenCapture	BSCWindow		O BeScreenCapture
+App	BSCWindow		Aplikace
+Capture	BSCWindow		Zachytit
+Capture failed	BSCWindow		Zachycení selhalo
+Continue	BSCWindow		Pokračovat
+Could not create clip:\n%s	BSCWindow		Nelze vytvořit klip:\n%s
+Could not record clip:\n%s	BSCWindow		Nelze nahrát klip:\n%s
+Do you really want to quit BeScreenCapture?\n	BSCWindow		Opravdu chcete BeScreenCapture ukončit?\n
+Encoding failed	BSCWindow		Kódování se nezdařilo
+Finished recording	BSCWindow		Záznam dokončen
+Finished recording '%filename%'.	BSCWindow		Dokončeno nahrávání '%filename%'.
+Help…	BSCWindow		Pomoc…
+Info	BSCWindow		Info
+OK	BSCWindow		OK
+Open folder	BSCWindow		Otevřít složku
+Options	BSCWindow		Nastavení
+Pause	BSCWindow		Pauza
+Play	BSCWindow		Play
+Quit	BSCWindow		Ukončit
+Really quit?	BSCWindow		Opravdu ukončit?
+Recording	BSCWindow		Nahrávání
+Reset to defaults	BSCWindow		Obnovit výchozí nastavení
+Resume	BSCWindow		Pokračovat
+Settings	BSCWindow		Nastavení
+Start	BSCWindow		Start
+Stop	BSCWindow		Stop
+Success	BSCWindow		Úspěch
+Advanced	AdvancedOptionsView		Pokročilé
+Enable CTRL+ALT+SHIFT+R shortcut	AdvancedOptionsView		Povolit CTRL+ALT+SHIFT+R zkratku
+Encoding options	AdvancedOptionsView		Možnosti kódování
+Frame rate	AdvancedOptionsView		Snímková frekvence
+Hide window when recording	AdvancedOptionsView		Skrýt okno při nahrávání
+Incognito mode: Hide window and Deskbar tray icon	AdvancedOptionsView		Anonymní režim: Skrýt okno a ikonu na panelu Deskbar
+Quit when finished	AdvancedOptionsView		Po dokončení ukončete
+Select a region on start	AdvancedOptionsView		Na začátku vyberte region
+Stop recording with with CTRL+ALT+SHIFT+R,\nor define a key combination with the Shortcuts preferences.	AdvancedOptionsView		Zastavte nahrávání pomocí CTRL+ALT+SHIFT+R,\ani nedefinujte kombinaci kláves pomocí předvoleb Zkratky.
+Use less CPU (BDirectWindow)	AdvancedOptionsView		Použít méně CPU (BDirectWindow)
+BeScreenCapture	System name		BeScreenCapture
+BeScreenCapture is a screen recording application.	BSCApp		BeScreenCapture je aplikace pro nahrávání obrazovky.
+Encoding in progress.	BSCApp		Probíhá kódování.
+Recording in progress.	BSCApp		Probíhá nahrávání.
+bottom:	PreviewView		dole:
+Capture area:\n	PreviewView		Oblast snímání:\n
+left:	PreviewView		vlevo:
+right:	PreviewView		vpravo:
+top:	PreviewView		nahoře:
+Browse…	OutputView		Prohlížet…
+File name:	OutputView		Název souboru:
+Output	OutputView		Výstup
+pixels	OutputView		pixely
+Region	OutputView		Region
+Scale	OutputView		Škálovat
+Select region	OutputView		Vybrat region
+Select window	OutputView		Vybrat okno
+Source	OutputView		Zdroj
+Whole screen	OutputView		Celá obrazovka
+Window	OutputView		Okno
+Window edges	OutputView		Window edges
+File format:	MediaFormatView		Formát souboru:
+Media codec:	MediaFormatView		Média kodek:
+fps	FrameRateView		fps
+Target frame rate	FrameRateView		Cílová snímková frekvence

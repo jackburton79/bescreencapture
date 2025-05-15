@@ -11,7 +11,7 @@ Could not record clip:\n%s	BSCWindow		Klip kaydedilemedi:\n%s
 Do you really want to quit BeScreenCapture?\n	BSCWindow		BeScreenCapture uygulamasından çıkmayı gerçekten istiyor musunuz?\n
 Encoding failed	BSCWindow		Kodlama başarısız
 Finished recording	BSCWindow		Kayıt bitti
-Finished recording '%filename%'.	BSCWindow		'%filename%' kaydı bitti.
+Finished recording '%filename%'.	BSCWindow		“%filename%” kaydı bitti.
 Help…	BSCWindow		Yardım…
 Info	BSCWindow		Bilgi
 OK	BSCWindow		Tamam
