@@ -20,6 +20,7 @@
 #include <FilePanel.h>
 #include <LayoutBuilder.h>
 #include <MessageRunner.h>
+#include <NumberFormat.h>
 #include <RadioButton.h>
 #include <Screen.h>
 #include <TextControl.h>
@@ -337,7 +338,7 @@ OutputView::_LayoutView()
 	fFilePanelButton->SetExplicitAlignment(BAlignment(B_ALIGN_RIGHT, B_ALIGN_MIDDLE));
 
 	fScaleSlider = new SliderTextControl("scale_slider", B_TRANSLATE("Scale"),
-		new BMessage(kScaleChanged), 25, 200, 25, "%", B_HORIZONTAL);
+		new BMessage(kScaleChanged), 25, 200, 25, "", B_HORIZONTAL, true);
 
 	fBorderSlider = new SliderTextControl("border_slider", B_TRANSLATE("Window edges"),
 		new BMessage(kWindowBorderFrameChanged), 0, 40, 1, B_TRANSLATE("pixels"), B_HORIZONTAL);
