@@ -20,20 +20,22 @@ jobs:
           # https://github.com/cross-platform-actions/action/blob/master/changelog.md
           - { os: haiku, version: 'r1beta5', runner: 'ubuntu-latest', architecture: 'x86-64' }
           - { os: haiku, version: 'r1beta5',  runner: 'ubuntu-latest', architecture: 'x86' }
+          - { os: haiku, version: 'nightly', runner: 'ubuntu-latest', architecture: 'x86-64' }
+          - { os: haiku, version: 'nightly',  runner: 'ubuntu-latest', architecture: 'x86' }
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: korli/action@v0.25.0-haiku1
+      - uses: korli/action@v0.25.0-haiku3
         with:
           operating_system: ${{ matrix.config.os }}
           version: ${{ matrix.config.version }}
           architecture: ${{ matrix.config.architecture }}
           run: |
             if [[ `uname -m` == BePC ]]; then
-              ssh user@localhost "pkgman update -y haiku_devel cmd:gcc gcc_syslibs_devel multimarkdown_x86" &&
+              ssh user@localhost "pkgman install -y haiku_devel cmd:gcc multimarkdown_x86" &&
               make
             else
-              ssh user@localhost "pkgman update -y haiku_devel cmd:gcc gcc_syslibs_devel multimarkdown" &&
+              ssh user@localhost "pkgman install -y haiku_devel cmd:gcc multimarkdown" &&
               make
             fi
