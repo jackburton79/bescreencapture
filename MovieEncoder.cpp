@@ -278,7 +278,7 @@ MovieEncoder::_EncoderThread()
 	if (!fDestFrame.IsValid()) {
 		std::cerr << "MovieEncoder::_EncoderThread(): invalid destination frame. Getting it from first frame...";
 		std::flush(std::cerr);
-		BBitmap* bitmap = fFileList->ItemAt(0)->Bitmap();
+		BBitmap* bitmap = fFileList->FirstItem()->Bitmap();
 		if (bitmap == NULL) {
 			std::cerr << "FAILED" << std::endl;
 			status = B_ERROR;
@@ -298,8 +298,8 @@ MovieEncoder::_EncoderThread()
 	}
 
 	media_format mediaFormat = fFormat;
-	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
-	const BitmapEntry* lastEntry = fFileList->ItemAt(framesLeft - 1);
+	const BitmapEntry* firstEntry = fFileList->FirstItem();
+	const BitmapEntry* lastEntry = fFileList->LastItem();
 	ASSERT((firstEntry != NULL));
 	ASSERT((lastEntry != NULL));
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
@@ -386,6 +386,7 @@ MovieEncoder::_EncoderThread()
 status_t
 MovieEncoder::_ApplyImageFilters()
 {
+#if 0
 	if (Settings::Current().Scale() != 100) {
 		const int32 framesTotal = fFileList->CountItems();
 
@@ -413,7 +414,7 @@ MovieEncoder::_ApplyImageFilters()
 		}
 		delete filter;
 	}
-
+#endif
 	return B_OK;
 }
 
@@ -429,8 +430,8 @@ MovieEncoder::_WriteRawFrames()
 
 	// TODO: Code duplication between here and _EncoderThread
 	const int32 frames = fFileList->CountItems();
-	const BitmapEntry* firstEntry = fFileList->ItemAt(0);
-	const BitmapEntry* lastEntry = fFileList->ItemAt(frames - 1);
+	const BitmapEntry* firstEntry = fFileList->FirstItem();
+	const BitmapEntry* lastEntry = fFileList->LastItem();
 	const bigtime_t diff = lastEntry->TimeStamp() - firstEntry->TimeStamp();
 	const float fps = CalculateFPS(fFileList->CountItems(), diff);
 

@@ -9,6 +9,8 @@
 #include <ObjectList.h>
 #include <String.h>
 
+#include <list>
+
 class BBitmap;
 class BitmapEntry {
 public:
@@ -26,8 +28,10 @@ private:
 };
 
 
+typedef std::list<BitmapEntry*> bitmap_list;
+
 class BPath;
-class FramesList : private BObjectList<BitmapEntry> {
+class FramesList {
 public:
 	FramesList(bool diskOnly = false);
 	virtual ~FramesList();
@@ -39,8 +43,8 @@ public:
 	status_t AddItemsFromDisk();
 
 	BitmapEntry* Pop();
-	BitmapEntry* ItemAt(int32 index) const;
-	BitmapEntry* ItemAt(int32 index);
+	BitmapEntry* LastItem() const;
+	BitmapEntry* FirstItem() const;
 	int32 CountItems() const;
 	static const char* Path();
 
@@ -48,6 +52,8 @@ public:
 	static status_t WriteFrame(BBitmap* bitmap, bigtime_t frameTime, const BString& fileName);
 private:
 	static char* sTemporaryPath;
+
+	bitmap_list fList;
 };
 
 

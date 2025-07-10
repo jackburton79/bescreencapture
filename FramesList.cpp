@@ -28,8 +28,6 @@ char* FramesList::sTemporaryPath = NULL;
 const uint32 kBitmapFormat = 'BMP ';
 
 FramesList::FramesList(bool diskOnly)
-	:
-	BObjectList<BitmapEntry>(20, true)
 {
 }
 
@@ -39,7 +37,7 @@ FramesList::~FramesList()
 {
 	// Empty the list, which incidentally deletes the files
 	// on disk. Must be done before deleting the folder
-	BObjectList<BitmapEntry>::MakeEmpty(true);
+	fList.clear();
 
 	DeleteTempPath();
 }
@@ -78,11 +76,13 @@ FramesList::DeleteTempPath()
 }
 
 
-static int
-CompareTimestamps(const BitmapEntry* A, const BitmapEntry* B)
+struct
 {
-	return A->TimeStamp() > B->TimeStamp();
-}
+	bool operator()(BitmapEntry* A, BitmapEntry* B)
+	{
+		return A->TimeStamp() < B->TimeStamp();
+	}
+} TimeStampLess;
 
 
 status_t
@@ -96,11 +96,11 @@ FramesList::AddItemsFromDisk()
 		fullName << Path() << "/" << entry.Name();
 		BitmapEntry* bitmapEntry =
 			new (std::nothrow) BitmapEntry(fullName, timeStamp);
-		BObjectList<BitmapEntry>::AddItem(bitmapEntry);
+		fList.push_back(bitmapEntry);
 	}
 
 	// Sort items based on timestamps
-	SortItems(CompareTimestamps);
+	fList.sort(TimeStampLess);
 	return B_OK;
 }
 
@@ -108,28 +108,31 @@ FramesList::AddItemsFromDisk()
 BitmapEntry*
 FramesList::Pop()
 {
-	return BObjectList<BitmapEntry>::RemoveItemAt(int32(0));
+	BitmapEntry* entry = fList.front();
+	fList.pop_front();
+
+	return entry;
 }
 
 
 BitmapEntry*
-FramesList::ItemAt(int32 index) const
+FramesList::FirstItem() const
 {
-	return BObjectList<BitmapEntry>::ItemAt(index);
+	return fList.front();
 }
 
 
 BitmapEntry*
-FramesList::ItemAt(int32 index)
+FramesList::LastItem() const
 {
-	return BObjectList<BitmapEntry>::ItemAt(index);
+	return fList.back();
 }
 
 
 int32
 FramesList::CountItems() const
 {
-	return BObjectList<BitmapEntry>::CountItems();
+	return fList.size();
 }
 
 
