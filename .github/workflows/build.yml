@@ -3,9 +3,9 @@ name: haiku-ci
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 jobs:
   build-haiku:
     timeout-minutes: 60
