@@ -214,7 +214,7 @@ FixRect(BRect &rect, const BRect& maxRect,
 
 
 void
-GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border)
+GetWindowsFrameList(rect_list &framesList, int32 border)
 {
 	int32 tokenCount = 0;
 	// Haiku does not have a public API to retrieve windows from other teams,
@@ -226,9 +226,9 @@ GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border)
 			client_window_info* info = get_window_info(tokenList[i]);
 			if (info != NULL) {
 				if (info->layer >= 3 && !info->is_mini && info->show_hide_level == 0) {
-					BRect* rect = new BRect(info->window_left, info->window_top, info->window_right, info->window_bottom);
-					rect->InsetBy(-border, -border);
-					framesList.AddItem(rect);
+					BRect rect(info->window_left, info->window_top, info->window_right, info->window_bottom);
+					rect.InsetBy(-border, -border);
+					framesList.push_back(rect);
 				}
 				::free(info);
 			}

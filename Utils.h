@@ -9,7 +9,9 @@
 #include <StorageDefs.h>
 #include <SupportDefs.h>
 
-#include <ObjectList.h>
+#include <vector>
+
+typedef std::vector<BRect> rect_list;
 
 class BPath;
 class BRect;
@@ -24,7 +26,7 @@ void MakeNULLMediaFileFormat(media_file_format& outFormat);
 BPath GetUniqueFileName(const BPath& fileName);
 void FixRect(BRect &rect, const BRect& maxRect, const bool fixWidth = false, const bool fixHeight = false);
 
-void GetWindowsFrameList(BObjectList<BRect> &framesList, int32 border = 0);
+void GetWindowsFrameList(rect_list &framesList, int32 border = 0);
 BRect GetWindowFrameForToken(int32 token, int32 border = 0);
 int32 GetWindowTokenForFrame(BRect frame, int32 border = 0);
 

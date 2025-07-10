@@ -4,6 +4,7 @@
  */
 
 #include "MediaFormatView.h"
+
 #include "BSCApp.h"
 #include "ControllerObserver.h"
 #include "Utils.h"
@@ -237,13 +238,13 @@ MediaFormatView::_RebuildCodecsMenu(const char* currentCodec)
 
 	codecsMenu->RemoveItems(0, codecsMenu->CountItems(), true);
 
-	BObjectList<media_codec_info> codecList(1, true);
+	media_codec_list codecList;
 	if (app->GetCodecsList(codecList) == B_OK) {
-		for (int32 i = 0; i < codecList.CountItems(); i++) {
-			media_codec_info* codec = codecList.ItemAt(i);
-			BMenuItem* item = new BMenuItem(codec->pretty_name, new BMessage(kLocalCodecChanged));
+		for (size_t i = 0; i < codecList.size(); i++) {
+			const media_codec_info& codec = codecList.at(i);
+			BMenuItem* item = new BMenuItem(codec.pretty_name, new BMessage(kLocalCodecChanged));
 			codecsMenu->AddItem(item);
-			if (codec->pretty_name == currentCodecString)
+			if (codec.pretty_name == currentCodecString)
 				item->SetMarked(true);
 		}
 		// Make the app object the menu's message target

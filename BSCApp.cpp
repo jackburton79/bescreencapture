@@ -151,7 +151,6 @@ BSCApp::BSCApp()
 	fDirectWindowAvailable(false),
 	fEncoder(NULL),
 	fEncoderThread(-1),
-	fCodecList(NULL),
 	fStopRunner(NULL),
 	fRequestedRecordTime(0),
 	fSupportsWaitForRetrace(false)
@@ -175,7 +174,6 @@ BSCApp::~BSCApp()
 	StopThreads();
 	delete fRecordWatch;
 	delete fEncoder;
-	delete fCodecList;
 
 	FramesList::DeleteTempPath();
 
@@ -911,13 +909,13 @@ void
 BSCApp::SetMediaCodec(const char* codecName)
 {
 	BAutolock _(this);
-	for (int32 i = 0; i < fCodecList->CountItems(); i++) {
-		media_codec_info* codec = fCodecList->ItemAt(i);
-		if (!strcmp(codec->pretty_name, codecName)) {
-			fEncoder->SetMediaCodecInfo(*codec);
-			Settings::Current().SetOutputCodec(codec->pretty_name);
+	for (size_t i = 0; i < fCodecList.size(); i++) {
+		media_codec_info& codec = fCodecList.at(i);
+		if (!strcmp(codec.pretty_name, codecName)) {
+			fEncoder->SetMediaCodecInfo(codec);
+			Settings::Current().SetOutputCodec(codec.pretty_name);
 			BMessage message(kMsgControllerCodecChanged);
-			message.AddString("codec_name", codec->pretty_name);
+			message.AddString("codec_name", codec.pretty_name);
 			SendNotices(kMsgControllerCodecChanged, &message);
 			break;
 		}
@@ -934,10 +932,10 @@ BSCApp::MediaCodecName() const
 
 
 status_t
-BSCApp::GetCodecsList(BObjectList<media_codec_info>& codecList) const
+BSCApp::GetCodecsList(media_codec_list& codecList) const
 {
 	BAutolock _(const_cast<BSCApp*>(this));
-	codecList = *fCodecList;
+	codecList = fCodecList;
 	return B_OK;
 }
 
@@ -989,8 +987,7 @@ BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 
 	fEncoder->SetMediaFormat(mediaFormat);
 
-	delete fCodecList;
-	fCodecList = new BObjectList<media_codec_info> (1, true);
+	fCodecList.clear();
 
 	// Handle the NULL/GIF media_file_formats
 	media_file_format fileFormat = fEncoder->MediaFileFormat();
@@ -1001,9 +998,7 @@ BSCApp::UpdateMediaFormatAndCodecsForCurrentFamily()
 		media_format dummyFormat;
 		while (get_next_encoder(&cookie, &fileFormat, &mediaFormat,
 				&dummyFormat, &codec) == B_OK) {
-			media_codec_info* newCodec = new media_codec_info;
-			*newCodec = codec;
-			fCodecList->AddItem(newCodec);
+			fCodecList.push_back(codec);
 		}
 	}
 
@@ -1251,8 +1246,8 @@ BSCApp::_UpdateFromSettings()
 	const BString codecName = settings.OutputCodec();
 	if (codecName != "")
 		SetMediaCodec(codecName);
-	else if (fCodecList != NULL && fCodecList->ItemAt(0) != NULL)
-		SetMediaCodec(fCodecList->ItemAt(0)->pretty_name);
+	else if (fCodecList.size() > 0)
+		SetMediaCodec(fCodecList.at(0).pretty_name);
 }
 
 

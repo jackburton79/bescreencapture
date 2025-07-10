@@ -9,6 +9,11 @@
 #include <String.h>
 #include <View.h>
 
+#include <vector>
+
+typedef std::vector<media_codec_info> media_codec_list;
+
+
 class BMenuField;
 class MediaFormatView : public BView {
 public:

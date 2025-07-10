@@ -98,7 +98,7 @@ public:
 	virtual BRect SelectionRect() const;
 
 private:
-	BObjectList<BRect> fFrameList;
+	rect_list fFrameList;
 	BRect fHighlightFrame;
 
 	BRect HitTestFrame(BPoint& where);
@@ -472,11 +472,11 @@ SelectionViewWindow::SelectionRect() const
 BRect
 SelectionViewWindow::HitTestFrame(BPoint& where)
 {
-	int32 count = fFrameList.CountItems();
-	for (int32 i = 0; i < count; i++) {
-		BRect *frame = fFrameList.ItemAt(i);
-		if (frame->Contains(where))
-			return *frame;
+	size_t count = fFrameList.size();
+	for (size_t i = 0; i < count; i++) {
+		const BRect frame = fFrameList.at(i);
+		if (frame.Contains(where))
+			return frame;
 	}
 
 	return BRect(0, 0, -1, -1);

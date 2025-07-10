@@ -7,14 +7,17 @@
 
 #include <Application.h>
 
+#include <vector>
+
 #include <DirectWindow.h>
 #include <List.h>
 #include <MediaDefs.h>
 #include <MediaFile.h>
-#include <ObjectList.h>
 #include <OS.h>
 
 #define kAppSignature "application/x-vnd.BeScreenCapture"
+
+typedef std::vector<media_codec_info> media_codec_list;
 
 class BBitmap;
 class BMessageRunner;
@@ -83,7 +86,7 @@ public:
 	BString		MediaCodecName() const;
 	void		SetMediaCodec(const char* codecName);
 
-	status_t	GetCodecsList(BObjectList<media_codec_info>& codecList) const;
+	status_t	GetCodecsList(media_codec_list& codecList) const;
 	status_t	UpdateMediaFormatAndCodecsForCurrentFamily();
 
 	void		UpdateDirectInfo(direct_buffer_info *info);
@@ -117,7 +120,7 @@ private:
 	MovieEncoder*		fEncoder;
 	thread_id			fEncoderThread;
 
-	BObjectList<media_codec_info>* fCodecList;
+	media_codec_list fCodecList;
 
 	BMessageRunner*		fStopRunner;
 	bigtime_t			fRequestedRecordTime;
