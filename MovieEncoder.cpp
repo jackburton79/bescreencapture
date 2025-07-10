@@ -386,7 +386,7 @@ MovieEncoder::_EncoderThread()
 status_t
 MovieEncoder::_ApplyImageFilters()
 {
-#if 0
+
 	if (Settings::Current().Scale() != 100) {
 		const int32 framesTotal = fFileList->CountItems();
 
@@ -399,22 +399,25 @@ MovieEncoder::_ApplyImageFilters()
 		// First pass: scale frames if needed
 		// TODO: we could apply different filters
 		ImageFilterScale* filter = new ImageFilterScale(fDestFrame, fColorSpace);
-		for (int32 c = 0; c < framesTotal; c++) {
+		bitmap_list::const_iterator i;
+		int c = 0;
+		for (i = fFileList->List()->begin(); i != fFileList->List()->end(); i++) {
 			if (fKillThread) {
 				delete filter;
 				return B_ERROR;
 			}
-			BitmapEntry* entry = fFileList->ItemAt(c);
+			BitmapEntry* entry = *i;
 			BBitmap* filtered = filter->ApplyFilter(entry->Bitmap());
 			entry->Replace(filtered);
 
+			c++;
 			BMessage progressMessage(kEncodingProgress);
 			progressMessage.AddInt32("frames_remaining", framesTotal - c);
 			fMessenger.SendMessage(&progressMessage);
 		}
 		delete filter;
 	}
-#endif
+
 	return B_OK;
 }
 

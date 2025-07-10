@@ -129,6 +129,13 @@ FramesList::LastItem() const
 }
 
 
+const bitmap_list*
+FramesList::List() const
+{
+	return &fList;
+}
+
+
 int32
 FramesList::CountItems() const
 {

@@ -45,6 +45,7 @@ public:
 	BitmapEntry* Pop();
 	BitmapEntry* LastItem() const;
 	BitmapEntry* FirstItem() const;
+	const bitmap_list* List() const;
 	int32 CountItems() const;
 	static const char* Path();
 
