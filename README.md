@@ -1,5 +1,9 @@
 # BeScreenCapture
 
+This project has moved to Codeberg :
+
+https://codeberg.org/Jackburton/bescreencapture
+
 [![Build](https://github.com/jackburton79/bescreencapture/actions/workflows/build.yml/badge.svg)](https://github.com/jackburton79/bescreencapture/actions/workflows/build.yml)
 [![Codacy Security Scan](https://github.com/jackburton79/bescreencapture/actions/workflows/codacy-analysis.yml/badge.svg)](https://github.com/jackburton79/bescreencapture/actions/workflows/codacy-analysis.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/63f373e0c5c04abfa329e6d505d1f014)](https://app.codacy.com/gh/jackburton79/bescreencapture?utm_source=github.com&utm_medium=referral&utm_content=jackburton79/bescreencapture&utm_campaign=Badge_Grade_Settings)
